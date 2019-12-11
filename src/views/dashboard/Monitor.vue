@@ -36,15 +36,27 @@
                   <div class="weather_content">
                     <div class="weather_basic">
                       <div class="weather_basic_content">
-                        <img src="../supervise/img/water.png" alt="" style="margin-right:5px;height:12px;width:12px">
+                        <img
+                          src="../supervise/img/water.png"
+                          alt
+                          style="margin-right:5px;height:12px;width:12px"
+                        />
                         <span>未来2小时无雨</span>
                       </div>
                       <div class="weather_basic_content">
-                        <img src="../supervise/img/wind.png" alt="" style="margin-right:5px;height:12px;width:12px">
+                        <img
+                          src="../supervise/img/wind.png"
+                          alt
+                          style="margin-right:5px;height:12px;width:12px"
+                        />
                         <span>东北风 3级</span>
                       </div>
                       <div class="weather_basic_content">
-                        <img src="../supervise/img/cloudiness.png" alt="" style="margin-right:5px;height:12px;width:12px">
+                        <img
+                          src="../supervise/img/cloudiness.png"
+                          alt
+                          style="margin-right:5px;height:12px;width:12px"
+                        />
                         <span>云量数据</span>
                       </div>
                     </div>
@@ -52,10 +64,14 @@
                       <!-- <div class="time24" v-for="item in weatherList" :key="item.id">
                         <div>{{item.temperature}}</div>
 
-                      </div> -->
+                      </div>-->
                       <div class="time24" v-for="item in weatherList" :key="item.id">
                         <div style="text-align:center;">{{item.temperature}}</div>
-                        <img src="../supervise/img/fine.png" alt="" style="margin:12px 5px;height:19px;width:19px">
+                        <img
+                          src="../supervise/img/fine.png"
+                          alt
+                          style="margin:12px 5px;height:19px;width:19px"
+                        />
                         <div style="text-align:center;">{{item.time}}</div>
                       </div>
                     </div>
@@ -69,7 +85,12 @@
               <div class="patrol-plan">
                 <!-- <a-tree defaultExpandAll v-model="checkedPlan" @select="selectPatrol" :treeData="patrolPlanInfo"/> -->
                 <a-collapse v-model="activeKey" @change="changeCollapse" accordion>
-                  <a-collapse-panel :header="item.river.name"  style="text-align: left" v-for="item in patrolPlanInfo" :key="item.river.id">
+                  <a-collapse-panel
+                    :header="item.river.name"
+                    style="text-align: left"
+                    v-for="item in patrolPlanInfo"
+                    :key="item.river.id"
+                  >
                     <p style="margin:0;">{{text}}</p>
                   </a-collapse-panel>
                 </a-collapse>
@@ -378,232 +399,249 @@
       <template slot="paneR">
         <div class="right-info">
           <div class="right-body">
-            <!-- 首页内容展示 -->
-            <a-card
+            <!-- <a-card
               class="mainCard"
               :tabList="planCard"
               :activeTabKey="noTitleKey"
               @tabChange="key => onTabChange(key,'noTitleKey')"
               v-if="firstShow"
-            >
-              <!-- 新建计划 -->
-              <div v-if="noTitleKey === 'addPlan'">
-                <a-spin size="large" :spinning="spinning">
-                <!-- 判断显示内容 -->
-                <div v-if="ishidden == 1">
-                  <a-row
-                    type="flex"
-                    justify="center"
-                    style="margin-bottom:15px;margin-top:15px;text-align:center;"
-                  >
-                    <a-col :span="12">
-                      <a-button style="padding:0 22px;color:#1890ff;" @click="addRiverBtn">添加河道</a-button>
-                    </a-col>
-                    <a-col :span="12">
-                      <a-button @click="addSurveyPoint" class="commBtn">添加调查点</a-button>
-                    </a-col>
-                  </a-row>
-                  <div class="riverInfo" v-for="item in riverMontion" :key="item.value">
-                    <div class="river_info">
-                      <a-row type="flex" justify="space-between" align="middle">
-                        <a-col :span="8" @click="choosePointTask(item.id)">{{item.objectName}}</a-col>
-                        <a-col :span="10">
-                          <!-- <a-select defaultValue @change="handleChange" style="width:100%;">
-                            <a-select-option value="jack">Jack</a-select-option>
-                          </a-select>-->
-                        </a-col>
-                        <a-col :span="3">
-                          <a-popconfirm
-                            title="是否确认删除?"
-                            @confirm="getInspectPointDel(item.id)"
-                            @cancel="cancel"
-                            okText="确认"
-                            cancelText="取消"
-                          >
-                            <a-button shape="circle" icon="close" style="font-size:8px;"></a-button>
-                          </a-popconfirm>
-                        </a-col>
-                      </a-row>
-                    </div>
-                    <a-tree
-                      checkable
-                      defaultExpandAll
-                      :defaultSelectedKeys="defaultSelect"
-                      v-model="item.taskChoose"
-                      @select="onSelect"
-                      :selectedKeys="selectedKeys"
-                      :treeData="item.taskPage"
-                    ></a-tree>
-                    <div  v-show="hidingJudgment2">
-                    <a-button
-                      class="addTask_btn commBtn"
-                      icon="plus"
-                      @click="addTaskBtn(item.objectId,item.objectName,item.code)"
-                      v-show="cBtn"
-                    >追加任务</a-button>
-                    </div>
-                    <add-task
-                      ref="addTask"
-                      @chooseLocation="addLineTool"
-                      @cancleBtn="cancelAddTask"
-                      @addPoint="addPoint"
-                      @addLineTool="addLineTool"
-                      @addPolygonTool="addPolygonTool"
-                    ></add-task>
-                  </div>
-                </div>
-                <div v-show="ishidden == 2">
-                  <creat-group ref="creatGroup"></creat-group>
-                </div>
-                <div v-show="ishidden == 3">
-                  <plan-list ref="planList"></plan-list>
-                </div>
-                </a-spin>
-              </div>
-              <!-- 今日计划 -->
-              <div v-if="noTitleKey === 'nowPlan'">
-                <a-spin size="large" :spinning="spinning">
-                <a-collapse
-                  v-model="activePlanKey"
-                  class="active_plan"
-                  v-for=" item in planListPage"
-                  :key="item.plan.id"
-                  >
-                  <a-collapse-panel :key="item.plan.id" class="collapse_header">
-                    <template slot="header">
-                      <a-row type="flex" justify="space-between" align="middle">
-                        <a-col :span="8">
-                          <span>{{item.plan.name}}</span>
-                        </a-col>
-                        <a-col :span="16">
-                          <a-progress :percent="70" />
-                        </a-col>
-                      </a-row>
-                    </template>
-                    <div class="planGroup">
-                      <a-collapse
-                        v-model="activeGroupKey"
-                        v-for=" index in item.teams"
-                        :key="index.team.id"
+            ></a-card> -->
+            <a-tabs defaultActiveKey="addPlan" @change="onTabChange" v-show="firstShow" class="custom_tabs mainCard">
+              <a-tab-pane key="addPlan">
+                <span slot="tab">
+                  <a-icon type="plus-circle" />新建计划
+                </span>
+                <!-- 新建计划 -->
+                <div class="task_face">
+                  <a-spin size="large" :spinning="spinning">
+                    <!-- 判断显示内容 -->
+                    <div v-if="ishidden == 1">
+                      <a-row
+                        type="flex"
+                        justify="center"
+                        style="margin-bottom:15px;margin-top:15px;text-align:center;"
                       >
-                        <a-collapse-panel :key="index.team.id" class="collapse_group">
-                          <template slot="header">
-                            <a-row type="flex" justify="space-between" align="middle">
-                              <a-col :span="8">
-                                <span>{{index.team.name}}</span>
-                              </a-col>
-                              <a-col :span="16">
-                                <a-progress :percent="70" />
-                              </a-col>
-                            </a-row>
-                          </template>
-                          <div class="river_group">
-                            <a-collapse
-                              v-model="activeRiverKey"
-                              style="border-bottom:1px solid d9d9d9;"
-                              v-for=" targetId in index.targets"
-                              :key="targetId.id"
-                            >
-                              <a-collapse-panel :key="targetId.target.id" class="collapse_river">
-                                <template slot="header">
-                                  <a-row type="flex" justify="space-between" align="middle">
-                                    <a-col :span="16">
-                                      <div
-                                        @click="choosePointTask1(targetId.target.id)"
-                                      >{{targetId.target.objectName}}</div>
-                                    </a-col>
-                                    <a-col :span="8">
-                                      <a-popconfirm
-                                        :title="'是否确认删除'+targetId.target.objectName+'?'"
-                                        okText="确认"
-                                        cancelText="取消"
-                                        @confirm="del(targetId.target.id)"
-                                      >
-                                        <a>删除</a>
-                                      </a-popconfirm>
-                                    </a-col>
-                                  </a-row>
-                                </template>
-                                <div style="padding:10px 10px;">
-                                  <div>
-                                    <div class="riverGroup_info">未完成</div>
-                                    <a-tree
-                                      v-model="checkedKeys"
-                                      @select="onSelect"
-                                      :selectedKeys="selectedKeys"
-                                      :treeData="targetId.incomplete"
-                                    ></a-tree>
-                                  </div>
-                                  <div class>
-                                    <div class="riverGroup_success">已完成</div>
-                                    <a-tree
-                                      v-model="checkedKeys"
-                                      @select="onSelect"
-                                      :selectedKeys="selectedKeys"
-                                      :treeData="targetId.complete"
-                                      class="tree_succ"
-                                    >
-                                      <template slot="custom" slot-scope="item">
-                                        <span>{{ item.name }}</span>
-                                        <span class>
-                                          <a-button class="but_type" @click="searchItme(item.id)">查看</a-button>
-                                        </span>
-                                      </template>
-                                    </a-tree>
-                                  </div>
-                                  <div>
-                                    <div class="riverGroup_warning">已取消</div>
-                                    <a-tree
-                                      v-model="checkedKeys"
-                                      @select="onSelect"
-                                      :selectedKeys="selectedKeys"
-                                      :treeData="targetId.anomalous"
-                                    ></a-tree>
-                                  </div>
-                                </div>
-                                <div class="addTaskBtn"  v-show="hidingJudgment2">
-                                  <!-- <a-button class="addTask_btn" icon="plus" @click="addNewTask">追加任务</a-button> -->
-                                  <a-button
-                                    class="addTask_btn commBtn"
-                                    icon="plus"
-                                    @click="addTaskBtn1(item.plan.id,targetId.target.objectId,targetId.target.objectName,targetId.target.object.code)"
-                                    v-show="cBtn"
-                                  >追加任务</a-button>
-                                  <add-task
-                                    ref="addTask"
-                                    @chooseLocation="addLineTool"
-                                    @cancleBtn="cancelAddTask"
-                                    @addPoint="addPoint"
-                                    @addLineTool="addLineTool"
-                                    @addPolygonTool="addPolygonTool"
-                                  ></add-task>
-                                </div>
-                              </a-collapse-panel>
-                            </a-collapse>
-                          </div>
-                        </a-collapse-panel>
-                      </a-collapse>
-                    </div>
-                    <div class="btn_group">
-                      <a-row type="flex" justify="space-around">
-                        <a-col :span="10">
-                          <a-button class="groupBtn" @click="detailPlan(item.plan.id)">详情</a-button>
+                        <a-col :span="12">
+                          <a-button style="padding:0 22px;color:#1890ff;" @click="addRiverBtn">添加河道</a-button>
                         </a-col>
-                        <a-col :span="10">
-                          <a-button
-                            class="groupBtn"
-                            @click="supervision_btn(item.plan.id)"
-                            v-show="hidingJudgment1"
-                          >监管</a-button>
-                          <a-button class="groupBtn" @click="updateTime" v-if="undone">修改时间</a-button>
+                        <a-col :span="12">
+                          <a-button @click="addSurveyPoint" class="commBtn">添加调查点</a-button>
                         </a-col>
                       </a-row>
+                      <div class="riverInfo" v-for="item in riverMontion" :key="item.value">
+                        <div class="river_info">
+                          <a-row type="flex" justify="space-between" align="middle">
+                            <a-col :span="8" @click="choosePointTask(item.id)">{{item.objectName}}</a-col>
+                            <a-col :span="10">
+                              <!-- <a-select defaultValue @change="handleChange" style="width:100%;">
+                            <a-select-option value="jack">Jack</a-select-option>
+                              </a-select>-->
+                            </a-col>
+                            <a-col :span="3">
+                              <a-popconfirm
+                                title="是否确认删除?"
+                                @confirm="getInspectPointDel(item.id)"
+                                @cancel="cancel"
+                                okText="确认"
+                                cancelText="取消"
+                              >
+                                <a-button shape="circle" icon="close" style="font-size:8px;"></a-button>
+                              </a-popconfirm>
+                            </a-col>
+                          </a-row>
+                        </div>
+                        <a-tree
+                          checkable
+                          defaultExpandAll
+                          :defaultSelectedKeys="defaultSelect"
+                          v-model="item.taskChoose"
+                          @select="onSelect"
+                          :selectedKeys="selectedKeys"
+                          :treeData="item.taskPage"
+                        ></a-tree>
+                        <div v-show="hidingJudgment2">
+                          <a-button
+                            class="addTask_btn commBtn"
+                            icon="plus"
+                            @click="addTaskBtn(item.objectId,item.objectName,item.code)"
+                            v-show="cBtn"
+                          >追加任务</a-button>
+                        </div>
+                        <add-task
+                          ref="addTask"
+                          @chooseLocation="addLineTool"
+                          @cancleBtn="cancelAddTask"
+                          @addPoint="addPoint"
+                          @addLineTool="addLineTool"
+                          @addPolygonTool="addPolygonTool"
+                        ></add-task>
+                      </div>
                     </div>
-                  </a-collapse-panel>
-                </a-collapse>
-                </a-spin>
-              </div>
-            </a-card>
+                    <div v-show="ishidden == 2">
+                      <creat-group ref="creatGroup"></creat-group>
+                    </div>
+                    <div v-show="ishidden == 3">
+                      <plan-list ref="planList"></plan-list>
+                    </div>
+                  </a-spin>
+                </div>
+              </a-tab-pane>
+              <a-tab-pane key="nowPlan">
+                <span slot="tab">
+                  <a-icon type="calendar" />当日计划
+                </span>
+                <!-- 今日计划 -->
+                <div class="task_face">
+                  <a-spin size="large" :spinning="spinning">
+                    <a-collapse
+                      v-model="activePlanKey"
+                      class="active_plan"
+                      v-for=" item in planListPage"
+                      :key="item.plan.id"
+                    >
+                      <a-collapse-panel :key="item.plan.id" class="collapse_header">
+                        <template slot="header">
+                          <a-row type="flex" justify="space-between" align="middle">
+                            <a-col :span="8">
+                              <span>{{item.plan.name}}</span>
+                            </a-col>
+                            <a-col :span="16">
+                              <a-progress :percent="70" />
+                            </a-col>
+                          </a-row>
+                        </template>
+                        <div class="planGroup">
+                          <a-collapse
+                            v-model="activeGroupKey"
+                            v-for=" index in item.teams"
+                            :key="index.team.id"
+                          >
+                            <a-collapse-panel :key="index.team.id" class="collapse_group">
+                              <template slot="header">
+                                <a-row type="flex" justify="space-between" align="middle">
+                                  <a-col :span="8">
+                                    <span>{{index.team.name}}</span>
+                                  </a-col>
+                                  <a-col :span="16">
+                                    <a-progress :percent="70" />
+                                  </a-col>
+                                </a-row>
+                              </template>
+                              <div class="river_group">
+                                <a-collapse
+                                  v-model="activeRiverKey"
+                                  style="border-bottom:1px solid d9d9d9;"
+                                  v-for=" targetId in index.targets"
+                                  :key="targetId.id"
+                                >
+                                  <a-collapse-panel
+                                    :key="targetId.target.id"
+                                    class="collapse_river"
+                                  >
+                                    <template slot="header">
+                                      <a-row type="flex" justify="space-between" align="middle">
+                                        <a-col :span="16">
+                                          <div
+                                            @click="choosePointTask1(targetId.target.id)"
+                                          >{{targetId.target.objectName}}</div>
+                                        </a-col>
+                                        <a-col :span="8">
+                                          <a-popconfirm
+                                            :title="'是否确认删除'+targetId.target.objectName+'?'"
+                                            okText="确认"
+                                            cancelText="取消"
+                                            @confirm="del(targetId.target.id)"
+                                          >
+                                            <a>删除</a>
+                                          </a-popconfirm>
+                                        </a-col>
+                                      </a-row>
+                                    </template>
+                                    <div style="padding:10px 10px;">
+                                      <div>
+                                        <div class="riverGroup_info">未完成</div>
+                                        <a-tree
+                                          v-model="checkedKeys"
+                                          @select="onSelect"
+                                          :selectedKeys="selectedKeys"
+                                          :treeData="targetId.incomplete"
+                                        ></a-tree>
+                                      </div>
+                                      <div class>
+                                        <div class="riverGroup_success">已完成</div>
+                                        <a-tree
+                                          v-model="checkedKeys"
+                                          @select="onSelect"
+                                          :selectedKeys="selectedKeys"
+                                          :treeData="targetId.complete"
+                                          class="tree_succ"
+                                        >
+                                          <template slot="custom" slot-scope="item">
+                                            <span>{{ item.name }}</span>
+                                            <span class>
+                                              <a-button
+                                                class="but_type"
+                                                @click="searchItme(item.id)"
+                                              >查看</a-button>
+                                            </span>
+                                          </template>
+                                        </a-tree>
+                                      </div>
+                                      <div>
+                                        <div class="riverGroup_warning">已取消</div>
+                                        <a-tree
+                                          v-model="checkedKeys"
+                                          @select="onSelect"
+                                          :selectedKeys="selectedKeys"
+                                          :treeData="targetId.anomalous"
+                                        ></a-tree>
+                                      </div>
+                                    </div>
+                                    <div class="addTaskBtn" v-show="hidingJudgment2">
+                                      <!-- <a-button class="addTask_btn" icon="plus" @click="addNewTask">追加任务</a-button> -->
+                                      <a-button
+                                        class="addTask_btn commBtn"
+                                        icon="plus"
+                                        @click="addTaskBtn1(item.plan.id,targetId.target.objectId,targetId.target.objectName,targetId.target.object.code)"
+                                        v-show="cBtn"
+                                      >追加任务</a-button>
+                                      <add-task
+                                        ref="addTask"
+                                        @chooseLocation="addLineTool"
+                                        @cancleBtn="cancelAddTask"
+                                        @addPoint="addPoint"
+                                        @addLineTool="addLineTool"
+                                        @addPolygonTool="addPolygonTool"
+                                      ></add-task>
+                                    </div>
+                                  </a-collapse-panel>
+                                </a-collapse>
+                              </div>
+                            </a-collapse-panel>
+                          </a-collapse>
+                        </div>
+                        <div class="btn_group">
+                          <a-row type="flex" justify="space-around">
+                            <a-col :span="10">
+                              <a-button class="groupBtn" @click="detailPlan(item.plan.id)">详情</a-button>
+                            </a-col>
+                            <a-col :span="10">
+                              <a-button
+                                class="groupBtn"
+                                @click="supervision_btn(item.plan.id)"
+                                v-show="hidingJudgment1"
+                              >监管</a-button>
+                              <a-button class="groupBtn" @click="updateTime" v-if="undone">修改时间</a-button>
+                            </a-col>
+                          </a-row>
+                        </div>
+                      </a-collapse-panel>
+                    </a-collapse>
+                  </a-spin>
+                </div>
+              </a-tab-pane>
+            </a-tabs>
+            <!-- 首页内容展示 -->
             <a-card
               :tabList="superCard"
               :activeTabKey="nosuperKey"
@@ -616,7 +654,7 @@
                   class="active_plan"
                   v-for=" item in planListPage"
                   :key="item.plan.id"
-                  >
+                >
                   <a-collapse-panel :key="item.plan.id" class="collapse_header">
                     <template slot="header">
                       <a-row type="flex" justify="space-between" align="middle">
@@ -855,11 +893,16 @@
     <communication ref="communication"></communication>
 
     <!-- 河道信息弹框 -->
-    <a-modal :visible="infoVisible" :closable="false" :mask="false" :width="400" class="cmModal"
+    <a-modal
+      :visible="infoVisible"
+      :closable="false"
+      :mask="false"
+      :width="400"
+      class="cmModal"
       @ok="showOk"
       :confirmLoading="confirmLoading"
       @cancel="showCancel"
-      >
+    >
       <template slot="title">
         <span>河道信息</span>
       </template>
@@ -868,7 +911,12 @@
       </div>
     </a-modal>
     <!-- 推荐巡河方案 -->
-    <a-modal :visible="infoVisibleRecommend" :closable="false" :mask="false" :width="400" class="cmModal"
+    <a-modal
+      :visible="infoVisibleRecommend"
+      :closable="false"
+      :mask="false"
+      :width="400"
+      class="cmModal"
       @ok="recommendOk"
       :confirmLoading="confirmLoading"
       @cancel="recommendCancel"
@@ -889,7 +937,7 @@
       @ok="handleOk"
       :confirmLoading="confirmLoading"
       @cancel="handleCancel"
-     >
+    >
       <template slot="title">
         <span>调查点编辑/添加</span>
       </template>
@@ -1091,18 +1139,18 @@ export default {
     'search-river': searchRiver,
     'add-task': addTask,
     'creat-group': creatGroup,
-    'plan-list':planList,
-    'add-survey':addSurvey,
+    'plan-list': planList,
+    'add-survey': addSurvey,
     'add-new-task': addNewTask,
     'plan-detail': planDetail,
-    'sitution-info':situtionInfo,
-    'update-time':updateTime,
+    'sitution-info': situtionInfo,
+    'update-time': updateTime,
     communication,
     'water-quality': waterquality
   },
   data() {
     return {
-      confirmLoading:false,
+      confirmLoading: false,
       hidingJudgment: true, //计划显示方案
       hidingJudgment1: true,
       regulatoryPage: [], //监管列表
@@ -1117,11 +1165,13 @@ export default {
       planCard: [
         {
           key: 'addPlan',
-          tab: '新建计划'
+          tab: '新建计划',
+          scopedSlots: { tab: 'customRender' }
         },
         {
           key: 'nowPlan',
-          tab: '当日计划'
+          tab: '当日计划',
+          scopedSlots: { tab: 'customRender' }
         }
       ],
       planList1: {
@@ -1138,10 +1188,10 @@ export default {
           tab: '轨迹'
         }
       ],
-      recommend:{
-        name:'',
-        id:'',
-      },//推荐巡河方案内容
+      recommend: {
+        name: '',
+        id: ''
+      }, //推荐巡河方案内容
       taskPage: [],
       noTitleKey: 'addPlan',
       nosuperKey: 'taskCard',
@@ -1180,7 +1230,7 @@ export default {
       markerInfo: '', //任务弹出框
       treenfo: [],
       infoVisible: false,
-      infoVisibleRecommend:false,//推荐训和方案
+      infoVisibleRecommend: false, //推荐训和方案
       firstShow: true,
       childNode: '',
       checked: false,
@@ -1193,7 +1243,7 @@ export default {
       alertLeft: -1000,
       alertTop: -1000,
       alertShow: false,
-      spinning:true,
+      spinning: true,
       defaultLineTask: '',
       riskMapPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.23493, lng: 121.51566 } },
@@ -1236,31 +1286,31 @@ export default {
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24315, lng: 121.49606 } },
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.23668, lng: 121.49656 } }
       ],
-      weatherList:[
+      weatherList: [
         {
-          temperature:'26°',
-          time:'10:00'
+          temperature: '26°',
+          time: '10:00'
         },
         {
-          temperature:'27°',
-          time:'12:00'
+          temperature: '27°',
+          time: '12:00'
         },
         {
-          temperature:'24°',
-          time:'14:00'
+          temperature: '24°',
+          time: '14:00'
         },
         {
-          temperature:'20°',
-          time:'16:00'
+          temperature: '20°',
+          time: '16:00'
         },
         {
-          temperature:'16°',
-          time:'18:00',
+          temperature: '16°',
+          time: '18:00'
         },
         {
-          temperature:'15°',
-          time:'20:00',
-        },
+          temperature: '15°',
+          time: '20:00'
+        }
       ],
       patrolPlanInfo: [],
       riverList: [],
@@ -1350,7 +1400,7 @@ export default {
     },
     //-----------------------------------------------推荐巡河方案*-------------------------------------------------------
     //推荐巡河方案
-    getRecommendFangan(){
+    getRecommendFangan() {
       let picker = this.picker.split('-')
       let data = {
         projectId: this.$store.state.id,
@@ -1358,16 +1408,16 @@ export default {
         month: picker[1],
         day: picker[2]
       }
-      recommendFangan(data).then(res=>{
-        console.log(res.data);
+      recommendFangan(data).then(res => {
+        console.log(res.data)
         this.patrolPlanInfo = res.data
       })
     },
     //选择推荐训和方案
-    changeCollapse(key){
-      this.map.clearOverLays()//将之前绘制的清除
+    changeCollapse(key) {
+      this.map.clearOverLays() //将之前绘制的清除
       // 设置绘制的多边形
-      for(const item of this.patrolPlanInfo){
+      for (const item of this.patrolPlanInfo) {
         if (key == item.river.id) {
           let polygon = new T.Polygon(item.river.region, {
             color: 'red', //线颜色
@@ -1382,7 +1432,7 @@ export default {
           this.map.setViewport(item.river.region)
           this.map.addOverLay(polygon)
           polygon.addEventListener('click', this.recommendClick)
-          for(const index of item.taskLines){
+          for (const index of item.taskLines) {
             let line = new T.Polyline(index.line, {
               color: 'blue', //线颜色
               weight: 3, //线宽
@@ -1393,7 +1443,7 @@ export default {
             //向地图上添加线
             this.map.addOverLay(line)
           }
-          for(const points of item.taskPoints){
+          for (const points of item.taskPoints) {
             let markerTool = new T.Marker(points.coordinate, { title: points.name, id: points.id })
             this.map.addOverLay(markerTool)
           }
@@ -1401,111 +1451,118 @@ export default {
       }
     },
     //推荐巡河方案点击事件
-    recommendClick(index){
-      this.recommend.id=index.target.options.id
+    recommendClick(index) {
+      this.recommend.id = index.target.options.id
       this.recommend.name = index.target.options.title
       this.infoVisibleRecommend = true
     },
     recommendOk() {
-      this.confirmLoading = true;
+      this.confirmLoading = true
       var ar = {
         id: '',
         planId: this.planList1.id,
         object: 'river',
         objectId: this.recommend.id,
-        objectName: this.recommend.name,
+        objectName: this.recommend.name
       }
-      targetSave(ar).then(res => {
-        this.$message.success('成功')
-        
-        this.recommendCancel()
-      }).catch(err => {
-        this.confirmLoading = false;
-        this.$message.error(err.response.data.message)
-      })
+      targetSave(ar)
+        .then(res => {
+          this.$message.success('成功')
+
+          this.recommendCancel()
+        })
+        .catch(err => {
+          this.confirmLoading = false
+          this.$message.error(err.response.data.message)
+        })
     },
-    recommendCancel(){
+    recommendCancel() {
       this.infoVisibleRecommend = false
-      this.recommend.id=''
+      this.recommend.id = ''
       this.recommend.name = ''
-      this.confirmLoading = false;
+      this.confirmLoading = false
       this.getinspectPointPage()
     },
     //-----------------------------------------------推荐巡河方案*-------------------------------------------------------
     getList() {
       //河道列表
-      getRiverList(this.$store.state.id).then(res => {
-        let arr = res.data.data
-        arr.forEach(v => {
-          v.lineData = v.region
-          v.clicked = false
+      getRiverList(this.$store.state.id)
+        .then(res => {
+          let arr = res.data.data
+          arr.forEach(v => {
+            v.lineData = v.region
+            v.clicked = false
+          })
+          this.riverList = arr
         })
-        this.riverList = arr
-      }).catch(err => {})
+        .catch(err => {})
     },
     //目标列表
     getinspectPointPage() {
       var list = {
         id: this.planList1.id
       }
-      targetPage(list).then(res => {
-        var arr = res.data.data
-        if (arr.length > 0) {
-          for (let a = 0; a < arr.length; a++) {
-            arr[a].taskChoose = []
-            if (arr[a].object.code != 'river') {
-              arr[a].latlng =arr[a].coordinate
-            }else{
-              arr[a].latlng = arr[a].region
-            }
-            arr[a].taskPage = []
+      targetPage(list)
+        .then(res => {
+          var arr = res.data.data
+          if (arr.length > 0) {
+            for (let a = 0; a < arr.length; a++) {
+              arr[a].taskChoose = []
+              if (arr[a].object.code != 'river') {
+                arr[a].latlng = arr[a].coordinate
+              } else {
+                arr[a].latlng = arr[a].region
+              }
+              arr[a].taskPage = []
               arr[a].clicked = false
               arr[a].code = arr[a].object.code
-            var data = {
-              id: this.planList1.id,
-              object: arr[a].object.code,
-              objectId: arr[a].objectId,
-              projectId:this.$store.state.id,
+              var data = {
+                id: this.planList1.id,
+                object: arr[a].object.code,
+                objectId: arr[a].objectId,
+                projectId: this.$store.state.id
+              }
+              taskInspectPage(data)
+                .then(res => {
+                  var ar = res.data.data
+                  ar.forEach(v => {
+                    v.key = v.id
+                    v.title = v.name
+                    v.latlng = v.region[0]
+                    v.code = v.status.code
+                    if (v.status.code != 'hold') {
+                      arr[a].taskChoose.push(v.id)
+                    } else {
+                      v.clicked = false
+                    }
+                  })
+                  arr[a].taskPage = ar
+                  this.spinning = false
+                })
+                .catch(err => {
+                  this.spinning = false
+                  this.$message.error('加载数据失败')
+                })
             }
-            taskInspectPage(data).then(res => {
-              var ar = res.data.data
-              ar.forEach(v => {
-                v.key = v.id
-                v.title = v.name
-                v.latlng = v.region[0]
-                v.code =v.status.code
-                if (v.status.code != 'hold') {
-                  arr[a].taskChoose.push(v.id)
-                }else{
-                  v.clicked = false
-                }      
-              })
-              arr[a].taskPage = ar
-              this.spinning = false
-            }).catch(err => {
-              this.spinning=false
-              this.$message.error('加载数据失败')
-            })
+            this.riverMontion = arr
+            if (this.noTitleKey == 'nowPlan') {
+              this.planDayDraw()
+            } else {
+              this.judgeDate()
+            }
+          } else {
+            this.spinning = false
           }
-          this.riverMontion = arr
-          if (this.noTitleKey == 'nowPlan') {
-            this.planDayDraw()
-          }else{
-            this.judgeDate()
-          }
-        }else{
-         this.spinning = false
-          
-        }
-      }).catch(err => {
-        this.spinning=false
-        this.$message.error('加载数据失败')
-      })
+        })
+        .catch(err => {
+          this.spinning = false
+          this.$message.error('加载数据失败')
+        })
     },
     //显示河道或调查点
     judgeDate() {
-      this.map.clearOverLays()//将之前绘制的清除
-      var sss=this.riverMontion
+      this.map.clearOverLays() //将之前绘制的清除
+      var sss = this.riverMontion
       for (var i = 0; i < sss.length; i++) {
         var code = sss[i].code
         if (code == 'point') {
@@ -1513,11 +1570,11 @@ export default {
         }
         if (code == 'river') {
           this.drawAllRiver(sss[i])
-        } 
+        }
       }
     },
     //绘制目标调查点
-    renderingTarget(task){
+    renderingTarget(task) {
       let icon = new T.Icon({
         iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
         iconSize: new T.Point(19, 27),
@@ -1537,7 +1594,7 @@ export default {
         circle.disableEdit()
         this.map.addOverLay(circle)
         this.pointTarget(task.taskPage)
-      }else{
+      } else {
         let circle = new T.Circle(task.latlng, 1000, {
           color: 'blue',
           weight: 2,
@@ -1550,18 +1607,18 @@ export default {
         this.map.addOverLay(circle)
       }
       // this.pointTarget(data.taskPage)
-    }, 
-    pointTarget(taskPage){
-      console.log(taskPage);
-      
-      for(const item of taskPage){
-        if(item.type.code =='dot'){
+    },
+    pointTarget(taskPage) {
+      console.log(taskPage)
+
+      for (const item of taskPage) {
+        if (item.type.code == 'dot') {
           let markerTool = new T.Marker(item.region[0], { title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
-        }else if(item.type.code =="plan"){
+        } else if (item.type.code == 'plan') {
           let markerTool = new T.Marker(item.region[0], { title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
-        }else{
+        } else {
           let line = new T.Polyline(item.region, {
             color: 'blue', //线颜色
             weight: 3, //线宽
@@ -1704,7 +1761,7 @@ export default {
         this.spotTaskList = arr
       })
     },
-    
+
     //--------------------------------------------------------------------------------------------当日计划---------------------------------------
     //计划列表
     getPage() {
@@ -1716,11 +1773,11 @@ export default {
         month: picker[1],
         day: picker[2]
       }
-      function formatDate(now) { 
-        var year=now.getFullYear();  //取得4位数的年份
-        var month=now.getMonth()+1;  //取得日期中的月份，其中0表示1月，11表示12月
-        var date=now.getDate();      //返回日期月份中的天数（1到31）
-        return year+"-"+month+"-"+date
+      function formatDate(now) {
+        var year = now.getFullYear() //取得4位数的年份
+        var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
+        var date = now.getDate() //返回日期月份中的天数（1到31）
+        return year + '-' + month + '-' + date
       }
       function tab(date1) {
         var oDate1 = new Date(date1)
@@ -1740,105 +1797,106 @@ export default {
           return true
         }
       }
-      function tab2(date1,date2) {   
+      function tab2(date1, date2) {
         var oDate1 = new Date(date1)
         var oDate2 = new Date(date2)
         if (oDate1.getTime() >= oDate2.getTime()) {
-          return true 
+          return true
         } else {
           return false
         }
       }
       this.hidingJudgment = tab(this.picker)
       this.hidingJudgment1 = tab1(this.picker)
-      this.hidingJudgment2 = tab2(this.picker,formatDate(new Date()))
+      this.hidingJudgment2 = tab2(this.picker, formatDate(new Date()))
       this.planListPage = []
-      planPage(data).then(res => {
-        var arr = res.data
-        var k = 0
-        for (const item of arr) {
-          k = k + 1
-          item.plan.name = item.plan.name.slice(0, 2) + '-' + k
-          for (const a of item.teams) {
-            if (a.targets != undefined) {
-              for (const b of a.targets) {
-                b.clicked = false
-                b.code = b.target.object.code
-                if (b.target.object.code == 'point') {
-                  b.latlng = b.target.coordinate
-                } else {
-                  b.latlng = b.target.region
-                }
-                for (const c of b.incomplete) {
-                  c.key = c.id
-                  c.title = c.name
-                  c.latlng = c.region[0]
-                  c.scopedSlots = {
-                    title: 'custom'
+      planPage(data)
+        .then(res => {
+          var arr = res.data
+          var k = 0
+          for (const item of arr) {
+            k = k + 1
+            item.plan.name = item.plan.name.slice(0, 2) + '-' + k
+            for (const a of item.teams) {
+              if (a.targets != undefined) {
+                for (const b of a.targets) {
+                  b.clicked = false
+                  b.code = b.target.object.code
+                  if (b.target.object.code == 'point') {
+                    b.latlng = b.target.coordinate
+                  } else {
+                    b.latlng = b.target.region
+                  }
+                  for (const c of b.incomplete) {
+                    c.key = c.id
+                    c.title = c.name
+                    c.latlng = c.region[0]
+                    c.scopedSlots = {
+                      title: 'custom'
+                    }
+                  }
+                  for (const c of b.inprogress) {
+                    c.key = c.id
+                    c.title = c.name
+                    c.latlng = c.region[0]
+                    c.scopedSlots = {
+                      title: 'custom'
+                    }
+                  }
+                  for (const c of b.complete) {
+                    c.key = c.id
+                    c.title = c.name
+                    c.latlng = c.region[0]
+                    c.scopedSlots = {
+                      title: 'custom'
+                    }
+                  }
+                  for (const c of b.anomalous) {
+                    c.key = c.id
+                    c.title = c.name
+                    c.latlng = c.region[0]
+                    c.scopedSlots = {
+                      title: 'custom'
+                    }
                   }
                 }
-                for (const c of b.inprogress) {
-                  c.key = c.id
-                  c.title = c.name
-                  c.latlng = c.region[0]
-                  c.scopedSlots = {
-                    title: 'custom'
-                  }
-                }
-                for (const c of b.complete) {
-                  c.key = c.id
-                  c.title = c.name
-                  c.latlng = c.region[0]
-                  c.scopedSlots = {
-                    title: 'custom'
-                  }
-                }
-                for (const c of b.anomalous) {
-                  c.key = c.id
-                  c.title = c.name
-                  c.latlng = c.region[0]
-                  c.scopedSlots = {
-                    title: 'custom'
-                  }
-                }
+              } else {
+                a.targets = []
               }
-            }else{
-              a.targets=[]
             }
-            
           }
-        }
-        this.planListPage = arr
-        if (this.planListPage.length == 0 && hidingJudgment == true) {
-          this.hidingJudgment = true
-        } else {
-          this.hidingJudgment = false
-        }
-      }).catch(err => {
-        if (err.response != undefined) {
-          if (err.response.data.success == false && hidingJudgment == true) {
+          this.planListPage = arr
+          if (this.planListPage.length == 0 && hidingJudgment == true) {
             this.hidingJudgment = true
           } else {
             this.hidingJudgment = false
           }
-        }
-      })
+        })
+        .catch(err => {
+          if (err.response != undefined) {
+            if (err.response.data.success == false && hidingJudgment == true) {
+              this.hidingJudgment = true
+            } else {
+              this.hidingJudgment = false
+            }
+          }
+        })
     },
     //当日计划绘制
-    planDayDraw(){
-      this.map.clearOverLays()//将之前绘制的清除
-      
+    planDayDraw() {
+      this.map.clearOverLays() //将之前绘制的清除
+
       for (const item of this.planListPage) {
         for (const a of item.teams) {
           for (const b of a.targets) {
             // if (b.target.id == id) {
-              // b.clicked = true
-              if (b.code == 'point') {
-                this.planDayDrawTarget(b)
-              }
-              if (b.code == 'river') {
-                this.planDayDrawRiver(b)
-              }
+            // b.clicked = true
+            if (b.code == 'point') {
+              this.planDayDrawTarget(b)
+            }
+            if (b.code == 'river') {
+              this.planDayDrawRiver(b)
+            }
             // } else {
             //   b.clicked = false
             // }
@@ -1847,7 +1905,7 @@ export default {
       }
     },
     //当日计划绘制目标调查点
-    planDayDrawTarget(task){
+    planDayDrawTarget(task) {
       let icon = new T.Icon({
         iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
         iconSize: new T.Point(19, 27),
@@ -1866,7 +1924,7 @@ export default {
         })
         circle.disableEdit()
         this.map.addOverLay(circle)
-      }else{
+      } else {
         let circle = new T.Circle(task.latlng, 1000, {
           color: 'blue',
           weight: 2,
@@ -1876,24 +1934,24 @@ export default {
           lineStyle: 'solid'
         })
         circle.disableEdit()
-        
+
         this.map.addOverLay(circle)
       }
       this.planDayDrawSpot(task)
-    }, 
+    },
     //当日计划绘制河道，调查点内的任务
-    planDayDrawSpot(taskPage){
-      for(const item of taskPage.anomalous){
-        if(item.region.length ==1){
+    planDayDrawSpot(taskPage) {
+      for (const item of taskPage.anomalous) {
+        if (item.region.length == 1) {
           let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
           markerTool.addEventListener('click', this.planDayDrawClick)
-        // if(item.region.length ==1){
-        //   let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
-        //   this.map.addOverLay(markerTool)
-        //   markerTool.addEventListener('click', this.planDayDrawClick)
-        }else{
-          if (taskPage.clicked ==true) {
+          // if(item.region.length ==1){
+          //   let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+          //   this.map.addOverLay(markerTool)
+          //   markerTool.addEventListener('click', this.planDayDrawClick)
+        } else {
+          if (taskPage.clicked == true) {
             let line = new T.Polyline(item.region, {
               color: 'blue', //线颜色
               weight: 3, //线宽
@@ -1903,7 +1961,7 @@ export default {
             })
             //向地图上添加线
             this.map.addOverLay(line)
-          }else{
+          } else {
             let line = new T.Polyline(item.region, {
               color: 'blue', //线颜色
               weight: 3, //线宽
@@ -1916,15 +1974,14 @@ export default {
             line.addEventListener('click', this.planDayDrawClick)
           }
         }
-
       }
-      for(const item of taskPage.complete){
-        if(item.region.length ==1){
+      for (const item of taskPage.complete) {
+        if (item.region.length == 1) {
           let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
           markerTool.addEventListener('click', this.planDayDrawClick)
-        }else{
-          if (taskPage.clicked ==true) {
+        } else {
+          if (taskPage.clicked == true) {
             let line = new T.Polyline(item.region, {
               color: 'blue', //线颜色
               weight: 3, //线宽
@@ -1934,7 +1991,7 @@ export default {
             })
             //向地图上添加线
             this.map.addOverLay(line)
-          }else{
+          } else {
             let line = new T.Polyline(item.region, {
               color: 'blue', //线颜色
               weight: 3, //线宽
@@ -1946,50 +2003,16 @@ export default {
             this.map.addOverLay(line)
             line.addEventListener('click', this.planDayDrawClick)
           }
-          
         }
         // markerTool.addEventListener('click', this.taskPointClick)
       }
-      for(const item of taskPage.incomplete){
-       if(item.region.length ==1){
-         let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
-          this.map.addOverLay(markerTool)
-          markerTool.addEventListener('click', this.planDayDrawClick)
-        }else{
-          if (taskPage.clicked ==true) {
-            let line = new T.Polyline(item.region, {
-              color: 'blue', //线颜色
-              weight: 3, //线宽
-              opacity: 0.5, //透明度
-              id: item.id,
-              name: item.name
-            })
-            //向地图上添加线
-            this.map.addOverLay(line)
-          }else{
-            let line = new T.Polyline(item.region, {
-              color: 'blue', //线颜色
-              weight: 3, //线宽
-              opacity: 0.5, //透明度
-              id: item.id,
-              name: item.name
-            })
-            //向地图上添加线
-            this.map.addOverLay(line)
-            line.addEventListener('click', this.planDayDrawClick)
-          }
-          
-        }
-        // markerTool.addEventListener('click', this.taskPointClick)
-      }
-      for(const item of taskPage.inprogress){
-        
-        if(item.region.length ==1){
+      for (const item of taskPage.incomplete) {
+        if (item.region.length == 1) {
           let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
           markerTool.addEventListener('click', this.planDayDrawClick)
-        }else{
-          if (taskPage.clicked ==true) {
+        } else {
+          if (taskPage.clicked == true) {
             let line = new T.Polyline(item.region, {
               color: 'blue', //线颜色
               weight: 3, //线宽
@@ -1999,7 +2022,7 @@ export default {
             })
             //向地图上添加线
             this.map.addOverLay(line)
-          }else{
+          } else {
             let line = new T.Polyline(item.region, {
               color: 'blue', //线颜色
               weight: 3, //线宽
@@ -2011,14 +2034,44 @@ export default {
             this.map.addOverLay(line)
             line.addEventListener('click', this.planDayDrawClick)
           }
-          
+        }
+        // markerTool.addEventListener('click', this.taskPointClick)
+      }
+      for (const item of taskPage.inprogress) {
+        if (item.region.length == 1) {
+          let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+          this.map.addOverLay(markerTool)
+          markerTool.addEventListener('click', this.planDayDrawClick)
+        } else {
+          if (taskPage.clicked == true) {
+            let line = new T.Polyline(item.region, {
+              color: 'blue', //线颜色
+              weight: 3, //线宽
+              opacity: 0.5, //透明度
+              id: item.id,
+              name: item.name
+            })
+            //向地图上添加线
+            this.map.addOverLay(line)
+          } else {
+            let line = new T.Polyline(item.region, {
+              color: 'blue', //线颜色
+              weight: 3, //线宽
+              opacity: 0.5, //透明度
+              id: item.id,
+              name: item.name
+            })
+            //向地图上添加线
+            this.map.addOverLay(line)
+            line.addEventListener('click', this.planDayDrawClick)
+          }
         }
         // markerTool.addEventListener('click', this.taskPointClick)
       }
     },
     //当日计划绘制河道，调查点内的任务点击事件
-    planDayDrawClick(arr){
-      console.log(arr);
+    planDayDrawClick(arr) {
+      console.log(arr)
       this.$refs.situtionInfo.show(arr.target.options.id)
     },
     //当日计划绘制河道
@@ -2057,20 +2110,21 @@ export default {
         month: picker[1],
         day: picker[2]
       }
-      planSave(data).then(res => {
-        // console.log(res.data.id);
-        this.planList1.id = res.data.id
-        this.planList1.name = res.data.name
-        this.getinspectPointPage()
-      })
-      .catch(err => {})
+      planSave(data)
+        .then(res => {
+          // console.log(res.data.id);
+          this.planList1.id = res.data.id
+          this.planList1.name = res.data.name
+          this.getinspectPointPage()
+        })
+        .catch(err => {})
     },
     //调查点保存
     handleOk() {
       if (this.inspectPointId == true) {
         this.handleCancel()
       } else {
-        this.confirmLoading = true;
+        this.confirmLoading = true
         var data = {
           id: '',
           planId: this.planList1.id,
@@ -2087,16 +2141,17 @@ export default {
             planId: this.planList1.id,
             object: 'point',
             objectId: arr.id,
-            objectName: arr.name,
+            objectName: arr.name
             // coordinate: this.lng + ',' + this.lat
           }
-          targetSave(ar).then(res => {
-            
-            this.handleCancel()
-          }).catch(err => {
-            this.confirmLoading = false;
-            this.$message.error(err.response.data.message)
-          })
+          targetSave(ar)
+            .then(res => {
+              this.handleCancel()
+            })
+            .catch(err => {
+              this.confirmLoading = false
+              this.$message.error(err.response.data.message)
+            })
           // this.getinspectPointPage()
         })
       }
@@ -2105,7 +2160,7 @@ export default {
     handleCancel() {
       this.getinspectPointPage()
       this.taskId = ''
-      this.confirmLoading = false;
+      this.confirmLoading = false
       this.inspectPointId = false
       this.inspectVisible = false
     },
@@ -2137,13 +2192,12 @@ export default {
         for (const a of item.teams) {
           for (const b of a.targets) {
             if (b.target.id == id) {
-
               b.clicked = true
-              if (b.code == "point") {
+              if (b.code == 'point') {
                 let arr = []
                 arr.push(b.latlng)
                 this.map.setViewport(arr)
-              }else{
+              } else {
                 this.map.setViewport(b.latlng)
               }
               this.map.setZoom('14')
@@ -2158,11 +2212,11 @@ export default {
     choosePointTask(id) {
       for (const item of this.riverMontion) {
         if (item.id === id) {
-          if (item.code == "point") {
+          if (item.code == 'point') {
             let arr = []
             arr.push(item.latlng)
             this.map.setViewport(arr)
-          }else{
+          } else {
             this.map.setViewport(item.latlng)
           }
           this.map.setZoom('14')
@@ -2171,7 +2225,7 @@ export default {
           item.clicked = false
         }
       }
-      this.judgeDate() 
+      this.judgeDate()
     },
     allPointTask(arr) {
       this.map.clearOverLays()
@@ -2295,7 +2349,7 @@ export default {
     },
     //选中添加河道或今日计划面板
     onTabChange(key, type) {
-      console.log(key);
+      console.log(key)
       this[type] = key
       if (key == 'addPlan') {
         this.ishidden = 1
@@ -2322,7 +2376,7 @@ export default {
         }
       }
     },
-    onsuperChange(key, type) {  
+    onsuperChange(key, type) {
       this[type] = key
       if (key == 'taskCard') {
         this.loadPoint()
@@ -2343,15 +2397,14 @@ export default {
     //日期选择
     selectData(date) {
       this.spinning = true
-      this.map.clearOverLays()//将之前绘制的清除
+      this.map.clearOverLays() //将之前绘制的清除
       this.riverMontion = []
       if (this.firstShow == true) {
         this.getPage()
         this.getPlanSave()
-      }else{
+      } else {
         this.loadPoint()
       }
-      
     },
     //选中巡河方案
     selectPatrol() {},
@@ -2445,7 +2498,7 @@ export default {
     },
     //今日计划模块监管按钮
     supervision_btn(key) {
-      this.map.clearOverLays()//将之前绘制的清除
+      this.map.clearOverLays() //将之前绘制的清除
       this.firstShow = !this.firstShow
       if (this.firstShow == false) {
         this.ishidden = 4
@@ -2486,23 +2539,25 @@ export default {
       // for (const item of this.asasd.region) {
       //   reh = reh + item.lng + ',' + item.lat + '|'
       // }
-      this.confirmLoading = true;
+      this.confirmLoading = true
       var ar = {
         id: '',
         planId: this.planList1.id,
         object: 'river',
         objectId: this.asasd.id,
-        objectName: this.asasd.name,
+        objectName: this.asasd.name
       }
-      targetSave(ar).then(res => {
-        this.$message.success('成功')
-        console.log(res.data)
-        this.infoVisible = false
-        this.handleCancel()
-      }).catch(err => {
-        this.confirmLoading = false;
-        this.$message.error(err.response.data.message)
-      })
+      targetSave(ar)
+        .then(res => {
+          this.$message.success('成功')
+          console.log(res.data)
+          this.infoVisible = false
+          this.handleCancel()
+        })
+        .catch(err => {
+          this.confirmLoading = false
+          this.$message.error(err.response.data.message)
+        })
     },
     showCancel() {
       this.infoVisible = false
@@ -2693,17 +2748,16 @@ export default {
       }
       dataManual(data).then(res => {
         var arr = res.data.data
-        console.log(arr);
+        console.log(arr)
         for (const item of arr) {
-          var marker = new T.Marker(item.coordinate, { id: item.id ,coordinate: item.coordinate})
+          var marker = new T.Marker(item.coordinate, { id: item.id, coordinate: item.coordinate })
           this.map.addOverLay(marker)
           marker.addEventListener('click', this.taskPointClick)
         }
       })
     },
     taskPointClick(index) {
-
-      this.$refs.communication.show(index,this.picker.split('-'))
+      this.$refs.communication.show(index, this.picker.split('-'))
     },
     //车辆轴迹
     cardTrack() {
@@ -2776,8 +2830,8 @@ export default {
           this.showPosition(marker, riverData)
         }
       } else {
-        console.log(riverData.lng, riverData.lat);
-        
+        console.log(riverData.lng, riverData.lat)
+
         var lnglat = new T.LngLat(riverData.lng, riverData.lat)
         var marker = new T.Marker(lnglat)
         this.map.addOverLay(marker)
@@ -2840,8 +2894,8 @@ export default {
     },
     //河道计划点击事件
     onSelect(selectedKeys, info) {
-      console.log(selectedKeys, info);
-      
+      console.log(selectedKeys, info)
+
       this.selectedKeys = selectedKeys
       this.treeinfo = info.node.dataRef
       var info = info.node.dataRef
@@ -2887,7 +2941,7 @@ export default {
     },
     //添加调查点
     addSurveyPoint() {
-      this.map.clearOverLays()//将之前绘制的清除
+      this.map.clearOverLays() //将之前绘制的清除
       this.addSurveyPoints()
     },
     // 添加调查点
@@ -2899,7 +2953,7 @@ export default {
       })
       let markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
       markerTool.open()
-      markerTool.addEventListener('mouseup', this.addPointed) 
+      markerTool.addEventListener('mouseup', this.addPointed)
     },
     // 添加调查点后
     addPointed(e) {
@@ -2925,8 +2979,8 @@ export default {
         console.log(res.data, '周围的点')
         var arr = res.data
         arr.forEach(v => {
-          v.latlng =v.coordinate
-        });
+          v.latlng = v.coordinate
+        })
         this.pointTarget(arr)
       })
     },
@@ -3144,30 +3198,30 @@ export default {
     box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.4);
     border-radius: 10px;
     padding: 10px;
-    .weather_basic{
-      width:100%;
+    .weather_basic {
+      width: 100%;
       display: flex;
-      flex-wrap:wrap ;
-      .weather_basic_content{
+      flex-wrap: wrap;
+      .weather_basic_content {
         width: 50%;
         color: #595959;
         font-size: 12px;
         margin-bottom: 12px;
       }
     }
-    .weather24{
+    .weather24 {
       padding: 15px 9px;
-      box-sizing:border-box;
+      box-sizing: border-box;
       width: 100%;
-      border-top: 1px solid rgba(216,216,216,0.5);
-      border-bottom: 1px solid rgba(216,216,216,0.5);
+      border-top: 1px solid rgba(216, 216, 216, 0.5);
+      border-bottom: 1px solid rgba(216, 216, 216, 0.5);
       font-size: 12px;
       display: flex;
-      .time24{
+      .time24 {
         width: 30px;
         margin-right: 22px;
         display: flex;
-        flex-direction:column;
+        flex-direction: column;
       }
     }
   }
@@ -3180,5 +3234,11 @@ export default {
 }
 .splitter-pane splitter-paneR vertical {
   width: 28%;
+}
+
+.task_face {
+  width: 100%;
+  height: calc(100vh - 157px);
+  overflow: auto;
 }
 </style>
