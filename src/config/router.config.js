@@ -18,13 +18,13 @@ export const asyncRouterMap = [
         redirect: '/dashboard/analysis',
         component: RouteView,
         hideChildrenInMenu: true,
-        meta: { title: '巡河', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] },
+        meta: { title: '立体巡河实况', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] },
         children: [
           {
             path: '/dashboard/analysis',
             name: 'Analysis',
             component: () => import('@/views/dashboard/Monitor'),
-            meta: { title: '巡河', keepAlive: true, permission: [ 'dashboard' ] }
+            meta: { title: '立体巡河实况', keepAlive: true, permission: [ 'dashboard' ] }
           },
         ]
       },
@@ -35,13 +35,13 @@ export const asyncRouterMap = [
         component: RouteView,
         redirect: '/supervise/Supervise',
         hideChildrenInMenu: true,
-        meta: { title: '监管', keepAlive: true, icon: 'eye', permission: [ 'dashboard' ] },
+        meta: { title: '数据统计分析', keepAlive: true, icon: 'eye', permission: [ 'dashboard' ] },
         children: [
           {
             path: '/supervise/Supervise',
             name: 'Supervise',
             component: () => import('@/views/supervise/Supervise'),
-            meta: { title: '监管', permission: [ 'dashboard' ] }
+            meta: { title: '数据统计分析', permission: [ 'dashboard' ] }
           },
           {
             path: '/supervise/Vtour',

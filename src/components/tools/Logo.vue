@@ -1,5 +1,5 @@
 <template>
-  <div class="logo" title="河流监管系统">
+  <div class="logo" title="城市河道水质风险评估系统">
     <router-link :to="{name:'dashboard'}">
       <!-- <LogoSvg alt="logo" /> -->
       <img src="../../assets/logo.png" alt="logo">
@@ -20,7 +20,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: '河流监管系统',
+      default: '城市河道水质风险评估系统',
       required: false
     },
     showTitle: {

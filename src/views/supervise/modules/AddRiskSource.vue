@@ -138,7 +138,7 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="类别">
-              <a-select  :allowClear="true" placeholder="选择风险源类别"  @change="typeChange" v-model="list.type">
+              <a-select  :allowClear="true" placeholder="选择风险源类别"  @change="typeChange" v-model="list.typeId">
                 <a-select-option :value="item.id" v-for="item in typeList" :key="item.id">{{item.name}}</a-select-option>
                 <!-- <a-select-option value="surface_ratio">水面率</a-select-option>
                 <a-select-option value="bank_risk">河岸风险</a-select-option>
@@ -270,7 +270,7 @@ export default {
         priority:'',
         lat:'',
         lng:'',
-        type:'',
+        typeId:'',
         landmarkLocation:'',
         accurateLocation:'',
         level:'',
@@ -398,7 +398,7 @@ export default {
         accurateLocation:this.list.accurateLocation,
         riverId:this.list.riverId,
         streetId:this.list.streetId,
-        type:this.list.type,
+        typeId:this.list.typeId,
         level:this.list.level,
         statement:this.list.statement,
         discoveryTime:this.list.discoveryTime,
