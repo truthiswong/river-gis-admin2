@@ -390,7 +390,7 @@
               <div v-if="noTitleKey === 'addPlan'">
                 <a-spin size="large" :spinning="spinning">
                 <!-- 判断显示内容 -->
-                <div v-if="ishidden == 1">
+                <div v-show="ishidden == 1">
                   <a-row
                     type="flex"
                     justify="center"
@@ -435,22 +435,22 @@
                       :treeData="item.taskPage"
                     ></a-tree>
                     <div  v-show="hidingJudgment2">
-                    <a-button
-                      class="addTask_btn commBtn"
-                      icon="plus"
-                      @click="addTaskBtn(item.objectId,item.objectName,item.code)"
-                      v-show="cBtn"
-                    >追加任务</a-button>
+                      <a-button
+                        class="addTask_btn commBtn"
+                        icon="plus"
+                        @click="addTaskBtn(item.objectId,item.objectName,item.code)"
+                        v-show="cBtn"
+                      >追加任务</a-button>
                     </div>
-                    <add-task
-                      ref="addTask"
-                      @chooseLocation="addLineTool"
-                      @cancleBtn="cancelAddTask"
-                      @addPoint="addPoint"
-                      @addLineTool="addLineTool"
-                      @addPolygonTool="addPolygonTool"
-                    ></add-task>
                   </div>
+                  <add-task
+                    ref="addTask"
+                    @chooseLocation="addLineTool"
+                    @cancleBtn="cancelAddTask"
+                    @addPoint="addPoint"
+                    @addLineTool="addLineTool"
+                    @addPolygonTool="addPolygonTool"
+                  ></add-task>
                 </div>
                 <div v-show="ishidden == 2">
                   <creat-group ref="creatGroup"></creat-group>
@@ -1166,6 +1166,7 @@ export default {
       text: '当前河道方位内出现红色风险源',
       // 地图对象
       map: {},
+      addTaskId:0,
       layer: [],
       // 地图节点对象（里面含节点对象、区域对象、任务弹窗对象）
       mapPoint: new Map(),
@@ -2349,21 +2350,25 @@ export default {
         this.getPage()
         this.getPlanSave()
       }else{
-        this.loadPoint()
+        this.loadPoint() 
       }
       
     },
     //选中巡河方案
     selectPatrol() {},
     addTaskBtn(id, name, code) {
-      console.log(this.$refs.addTask)
-      this.$refs.addTask[0].show(this.planList1.id, id, name, code)
+      // for (let i = 0; i < this.riverMontion.length; i++) {
+      //   if (id == this.riverMontion[i].objectId) {
+      //     this.addTaskId =  i 
+          
+      //   }
+      // }
+      this.$refs.addTask.show(this.planList1.id, id, name, code)
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
     addTaskBtn1(planId, id, name, code) {
-      console.log(this.$refs.addTask)
-      this.$refs.addTask[0].show(planId, id, name, code)
+      this.$refs.addTask.show(planId, id, name, code)
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
@@ -2877,9 +2882,8 @@ export default {
     },
     //获取绘制线坐标
     getLineDate(e) {
-      console.log(e)
-      console.log(e.currentLnglats)
-      this.$refs.addTask[0].getLineDate(e.currentLnglats)
+      console.log(this.addTaskId)
+      this.$refs.addTask.getLineDate(e.currentLnglats)
     },
     //取消追加任务
     cancelAddTask() {
@@ -2944,8 +2948,8 @@ export default {
       // this.markerTool.addEventListener('mouseup', this.addPointed)
     },
     addPointDate(e) {
-      console.log(e.currentLnglat)
-      this.$refs.addTask[0].getMarkDate(e.currentLnglat)
+      console.log(this.addTaskId)
+      this.$refs.addTask[this.addTaskId ].getMarkDate(e.currentLnglat)
     },
     //画面
     addPolygonTool(clickPolygon) {
@@ -2967,8 +2971,8 @@ export default {
       }
     },
     addPolygonDate(e) {
-      console.log(e.currentLnglats)
-      this.$refs.addTask[0].getPolygonDate(e.currentLnglats)
+      console.log(this.addTaskId)
+      this.$refs.addTask.getPolygonDate(e.currentLnglats)
     },
     //显示地图上调查点内任务点
     addMorePoint() {
