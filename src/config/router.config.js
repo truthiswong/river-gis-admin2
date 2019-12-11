@@ -9,17 +9,23 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '首页' },
-    redirect: '/dashboard/analysis',
+    redirect: '/dashboard/home',
     children: [
       // dashboard
       {
         path: '/dashboard',
         name: 'dashboard',
-        redirect: '/dashboard/analysis',
+        redirect: '/dashboard/home',
         component: RouteView,
-        hideChildrenInMenu: true,
+        // hideChildrenInMenu: true,
         meta: { title: '立体巡河实况', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] },
         children: [
+          {
+            path: '/dashboard/home',
+            name: 'Home',
+            component: () => import('@/views/dashboard/Home'),
+            meta: { title: '首页', keepAlive: true, permission: [ 'dashboard' ] }
+          },
           {
             path: '/dashboard/analysis',
             name: 'Analysis',
