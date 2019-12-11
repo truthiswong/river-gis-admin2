@@ -467,15 +467,15 @@
                             v-show="cBtn"
                           >追加任务</a-button>
                         </div>
-                        <add-task
-                          ref="addTask"
-                          @chooseLocation="addLineTool"
-                          @cancleBtn="cancelAddTask"
-                          @addPoint="addPoint"
-                          @addLineTool="addLineTool"
-                          @addPolygonTool="addPolygonTool"
-                        ></add-task>
                       </div>
+                       <add-task
+                        ref="addTask"
+                        @chooseLocation="addLineTool"
+                        @cancleBtn="cancelAddTask"
+                        @addPoint="addPoint"
+                        @addLineTool="addLineTool"
+                        @addPolygonTool="addPolygonTool"
+                      ></add-task>
                     </div>
                     <div v-show="ishidden == 2">
                       <creat-group ref="creatGroup"></creat-group>
@@ -2410,13 +2410,13 @@ export default {
     selectPatrol() {},
     addTaskBtn(id, name, code) {
       console.log(this.$refs.addTask)
-      this.$refs.addTask[0].show(this.planList1.id, id, name, code)
+      this.$refs.addTask.show(this.planList1.id, id, name, code)
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
     addTaskBtn1(planId, id, name, code) {
       console.log(this.$refs.addTask)
-      this.$refs.addTask[0].show(planId, id, name, code)
+      this.$refs.addTask.show(planId, id, name, code)
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
@@ -2933,7 +2933,7 @@ export default {
     getLineDate(e) {
       console.log(e)
       console.log(e.currentLnglats)
-      this.$refs.addTask[0].getLineDate(e.currentLnglats)
+      this.$refs.addTask.getLineDate(e.currentLnglats)
     },
     //取消追加任务
     cancelAddTask() {
@@ -2999,7 +2999,7 @@ export default {
     },
     addPointDate(e) {
       console.log(e.currentLnglat)
-      this.$refs.addTask[0].getMarkDate(e.currentLnglat)
+      this.$refs.addTask.getMarkDate(e.currentLnglat)
     },
     //画面
     addPolygonTool(clickPolygon) {
@@ -3022,7 +3022,7 @@ export default {
     },
     addPolygonDate(e) {
       console.log(e.currentLnglats)
-      this.$refs.addTask[0].getPolygonDate(e.currentLnglats)
+      this.$refs.addTask.getPolygonDate(e.currentLnglats)
     },
     //显示地图上调查点内任务点
     addMorePoint() {
