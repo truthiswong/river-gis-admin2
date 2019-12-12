@@ -1530,16 +1530,11 @@ export default {
                     v.title = v.name
                     v.latlng = v.region[0]
                     v.code = v.status.code
-                    if (v.status.code != 'hold') {
-                      arr[a].taskChoose.push(v.id)
-                    } else {
-                      v.clicked = false
-                    }
+                    arr[a].taskChoose.push(v.id)
                   })
                   arr[a].taskPage = ar
                   this.spinning = false
-                })
-                .catch(err => {
+                }).catch(err => {
                   this.spinning = false
                   this.$message.error('加载数据失败')
                 })
@@ -1953,7 +1948,7 @@ export default {
         } else {
           if (taskPage.clicked == true) {
             let line = new T.Polyline(item.region, {
-              color: 'blue', //线颜色
+              color: 'orange', //线颜色
               weight: 3, //线宽
               opacity: 0.5, //透明度
               id: item.id,
@@ -1963,7 +1958,7 @@ export default {
             this.map.addOverLay(line)
           } else {
             let line = new T.Polyline(item.region, {
-              color: 'blue', //线颜色
+              color: 'orange', //线颜色
               weight: 3, //线宽
               opacity: 0.5, //透明度
               id: item.id,
@@ -1983,7 +1978,7 @@ export default {
         } else {
           if (taskPage.clicked == true) {
             let line = new T.Polyline(item.region, {
-              color: 'blue', //线颜色
+              color: 'green', //线颜色
               weight: 3, //线宽
               opacity: 0.5, //透明度
               id: item.id,
@@ -1993,7 +1988,7 @@ export default {
             this.map.addOverLay(line)
           } else {
             let line = new T.Polyline(item.region, {
-              color: 'blue', //线颜色
+              color: 'green', //线颜色
               weight: 3, //线宽
               opacity: 0.5, //透明度
               id: item.id,
@@ -2014,7 +2009,7 @@ export default {
         } else {
           if (taskPage.clicked == true) {
             let line = new T.Polyline(item.region, {
-              color: 'blue', //线颜色
+              color: 'orange', //线颜色
               weight: 3, //线宽
               opacity: 0.5, //透明度
               id: item.id,
@@ -2024,7 +2019,7 @@ export default {
             this.map.addOverLay(line)
           } else {
             let line = new T.Polyline(item.region, {
-              color: 'blue', //线颜色
+              color: 'orange', //线颜色
               weight: 3, //线宽
               opacity: 0.5, //透明度
               id: item.id,
