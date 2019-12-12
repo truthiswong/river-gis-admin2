@@ -2453,7 +2453,7 @@ export default {
             }
             if (item.locationType.code == 'line') {
               // line.push(item)
-              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '')
+              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '',item.innerType.code)
             }
             if (item.locationType.code == 'polygon') {
               this.noodlesDraw(
@@ -2464,7 +2464,8 @@ export default {
                 item.shapeColor,
                 item.shapePellucidity,
                 '',
-                item.id
+                item.id,
+                item.innerType.code
               )
             }
           }
@@ -2487,7 +2488,7 @@ export default {
             }
             if (item.locationType.code == 'line') {
               // line.push(item)
-              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '')
+              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '',item.innerType.code)
             }
             if (item.locationType.code == 'polygon') {
               this.noodlesDraw(
@@ -2498,7 +2499,8 @@ export default {
                 item.shapeColor,
                 item.shapePellucidity,
                 '',
-                item.id
+                item.id,
+                item.innerType.code
               )
             }
           }
@@ -2508,18 +2510,26 @@ export default {
     },
     //绘制点
     spotDraw(pointLists) {
+      console.log(pointLists);
+      
       for (const item of pointLists) {
-        this.drawAllPoint(item.latlng, item.innerCode, item.id)
+        this.drawAllPoint1(item.latlng, item.innerCode, item.id,item.innerType.code)
       }
     },
+    drawAllPoint1(latlng, index, id,code) {
+      let markerTool = new T.Marker(latlng, { title: index, id: id,code:code })
+      this.map.addOverLay(markerTool)
+      markerTool.addEventListener('click', this.sourceRiskClick)
+    },
     //绘制线
-    lineDraw(points, color, weight, opacity, id, name) {
+    lineDraw(points, color, weight, opacity, id, name,) {
       let line = new T.Polyline(points, {
         color: color, //线颜色
         weight: weight, //线宽
         opacity: opacity, //透明度
         id: id,
-        name: name
+        name: name,
+        code:code
       })
       
       //向地图上添加线
@@ -2527,7 +2537,7 @@ export default {
       line.addEventListener('click', this.sourceRiskClick)
     },
     // 绘制面
-    noodlesDraw(lineData, color, weight, opacity, fillColor, fillOpacity, title, id) {
+    noodlesDraw(lineData, color, weight, opacity, fillColor, fillOpacity, title, id,code) {
       let polygon = new T.Polygon(lineData, {
         color: color, //线颜色
         weight: weight, //线宽
@@ -2535,15 +2545,16 @@ export default {
         fillColor: fillColor, //填充颜色
         fillOpacity: fillOpacity, // 填充透明度
         title: title, // 名字
-        id: id // id
+        id: id ,// id
+        code:code
       })
       //向地图上添加面
       this.map.addOverLay(polygon)
       polygon.addEventListener('click', this.sourceRiskClick )
     },
     //排口水面漂浮物风险源弹窗
-    sourceRiskClick(){
-      this.$refs.riskInfo.riskInfo()
+    sourceRiskClick(row){
+      this.$refs.riskInfo.riskInfo(row)
     },
     // 河岸风险源
     onRiverRisk() {
@@ -2560,7 +2571,7 @@ export default {
             }
             if (item.locationType.code == 'line') {
               // line.push(item)
-              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '')
+              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '',item.innerType.code)
             }
             if (item.locationType.code == 'polygon') {
               this.noodlesDraw(
@@ -2571,7 +2582,8 @@ export default {
                 item.shapeColor,
                 item.shapePellucidity,
                 '',
-                item.id
+                item.id,
+                item.innerType.code
               )
             }
           }

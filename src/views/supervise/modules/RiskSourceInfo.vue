@@ -14,14 +14,14 @@
   >
     <a-row>
       <a-col :span="12">
-        <p>内部编码: CDSCD</p>
-        <p>准确位置: 上海黄浦区九江</p>
-        <p>面积: 45646平方公里</p>
+        <p>内部编码: {{list.innerCode}}</p>
+        <p>准确位置: {{list.accurateLocation}}</p>
+        <p>面积: </p>
       </a-col>
       <a-col :span="12">
-        <p>风险源类别: 4564654</p>
-        <p>首次发现时间: 2019-06-06</p>
-        <p>河道所属: 黄浦江</p>
+        <p>风险源类别: {{list.type}}</p>
+        <p>首次发现时间: {{list.discoveryTime}}</p>
+        <p>河道所属: {{list.river}}</p>
         <router-link to="#111">
           <a-button type="primary" ghost size="small">查看详情</a-button>
         </router-link>
@@ -33,7 +33,7 @@
       itemLayout="horizontal"
       :dataSource="data"
       size="small"
-    >
+     >
       <a-list-item slot="renderItem" slot-scope="item" class="comment_list">
         <a-comment :author="item.author" :avatar="item.avatar">
           <div class="comment_level">
@@ -57,12 +57,15 @@
 </template>
 
 <script>
+import { riskDetails, dischargeDetails, floatageDetails, } from '@/api/login'
 export default {
   data() {
     return {
       visible: false,
       confirmLoading: false,
+      list:{
 
+      },
       data: [
         {
           author: '李白',
@@ -121,7 +124,39 @@ export default {
   },
   computed: {},
   methods: {
-    riskInfo() {
+    riskInfo(row) {
+      console.log(row);
+      function formatDate(now) { 
+          var year=now.getFullYear();  //取得4位数的年份
+          var month=now.getMonth()+1;  //取得日期中的月份，其中0表示1月，11表示12月
+          var date=now.getDate();      //返回日期月份中的天数（1到31）
+          var hour=now.getHours();     //返回日期中的小时数（0到23）
+          var minute=now.getMinutes(); //返回日期中的分钟数（0到59）
+          var second=now.getSeconds(); //返回日期中的秒数（0到59）
+          return year+"-"+month+"-"+date
+        }  
+      if (row.target.options.code == "risk") {
+        riskDetails(row.target.options.id).then(res=>{
+           
+          let arr = res.data
+          arr.discoveryTime = formatDate(new Date( arr.discoveryTime))
+          arr.type = arr.type.name
+          arr.river = arr.river.name
+          this.list = arr 
+        })
+      }
+      if (row.target.options.code == "discharge") {
+        dischargeDetails(row.target.options.id).then(res=>{
+          let arr = res.data
+          
+        })
+      }
+      if (row.target.options.code == "floatage") {
+        floatageDetails(row.target.options.id).then(res=>{
+          let arr = res.data
+          
+        })
+      }
       this.visible = true
     },
     // 添加河流

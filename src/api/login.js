@@ -828,6 +828,25 @@ export function mediaList(id) {
     method: 'get',
   })
 }
+//风险源  排口   漂浮物详情
+export function riskDetails(id) {
+  return axios({
+    url: '/server/data/admin/mapdraw/detail/risk/info4draw/'+id,
+    method: 'get',
+  })
+}
+export function dischargeDetails(id) {
+  return axios({
+    url: '/server/data/admin/mapdraw/detail/discharge/info4draw/'+id,
+    method: 'get',
+  })
+}
+export function floatageDetails(id) {
+  return axios({
+    url: '/server/data/admin/mapdraw/detail/floatage/info4draw/'+id,
+    method: 'get',
+  })
+}
 //时间轴
 export function daydataList(data) {
   return axios({
