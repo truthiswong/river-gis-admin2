@@ -1532,7 +1532,11 @@ export default {
         .then(res => {
           let arr = res.data.data
           arr.forEach(v => {
-            v.lineData = v.region
+            if (v.region == null) {
+              v.lineData =[]
+            }else{
+              v.lineData = v.region
+            }
             v.clicked = false
           })
           this.streetShowList = arr
@@ -1542,8 +1546,14 @@ export default {
         .then(res => {
           let arr = res.data.data
           arr.forEach(v => {
-            v.lineData = v.region
+            if (v.region == null) {
+              v.lineData =[]
+            }else{
+              v.lineData = v.region
+            }
+            
             v.clicked = false
+
           })
           this.riverShowList = arr
         })
