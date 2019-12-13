@@ -749,7 +749,7 @@
 </template>
 
 <script>
-import { getRiverList, getStreetList, getWaterQualityList, paramList, mapdrawSave, mapdrawPage,daydataList,weatherList } from '@/api/login'
+import { getRiverList, getStreetList, getWaterQualityList, paramList, mapdrawSave, mapdrawPage,daydataList,weatherList,panoramaList,panoramaImgList } from '@/api/login'
 import RiskSourceInfo from './modules/RiskSourceInfo'
 import AddRiskSource from './modules/AddRiskSource'
 import AddFloatage from './modules/AddFloatage'
@@ -1497,8 +1497,21 @@ export default {
       }
       paramList(datarisk).then(res => {
         this.riskSourceList = res.data
-        // var arr = []
-        // this.otherList = arr
+      })
+      let ssss={
+        projectId: this.$store.state.id,
+        // year: picker[0],
+        // month: picker[1],
+        // day: picker[2]
+      }
+      panoramaList(ssss).then(res=>{
+        console.log(res.data.data);
+        let hh = res.data.data
+        hh.forEach(v => {
+          v.name = v.title
+          v.latlng = v.coordinate
+        });
+        this.panoramaPoints = hh
       })
     },
     getMapdrawPage(id) {
@@ -1512,12 +1525,16 @@ export default {
           day: picker[2]
         }
         mapdrawPage(arr).then(res => {
-          var data = res.data
+          let data = res.data
+          let ar =[]
           data.forEach(v => {
             v.shapePellucidity = v.shapePellucidity / 100
             v.framePellucidity = v.framePellucidity / 100
+            if (v.innerType !=undefined) {
+              ar.push(v)
+            }
           })
-          this.drawPage = data
+          this.drawPage = ar
         })
         this.gengduo = '2'
       } 
@@ -1993,7 +2010,13 @@ export default {
         for(const item of res.data){
           if (item.uavData != 0) {
             item.level = 1
-          }else if(item.manualData !=0&&item.manualLocus !=0&&item.mapdrawData !=0&&item.panoramaData !=0){
+          }else if(item.manualData !=0){
+            item.level = 0
+          }else if(item.manualLocus !=0){
+            item.level = 0
+          }else if(item.mapdrawData !=0){
+            item.level = 0
+          }else if(item.panoramaData !=0){
             item.level = 0
           }else{
             item.level = 2

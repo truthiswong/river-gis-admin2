@@ -21,7 +21,7 @@ export default {
       map: {},
       panoramaPoints: [
         {
-          id: 0,
+          id: '5dcbee2739d04308d0656113',
           name: '监测点1',
           clicked: false,
           latlng: { lat: 31.21493, lng: 121.49566 },

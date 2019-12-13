@@ -847,6 +847,26 @@ export function floatageDetails(id) {
     method: 'get',
   })
 }
+//360数据
+export function panoramaList(data) {
+  return axios({
+    url: '/server/data/admin/regulator/manual/data/points',
+    method: 'get',
+    params:{
+      projectId:data.projectId,
+      year:data.year,
+      month:data.month,
+      day:data.day
+    }
+  })
+}
+//360数据
+export function panoramaImgList(id) {
+  return axios({
+    url: '/server/data/admin/regulator/panorama/data/detail/' + id,
+    method: 'get',
+  })
+}
 //时间轴
 export function daydataList(data) {
   return axios({
