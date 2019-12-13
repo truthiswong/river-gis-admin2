@@ -11,60 +11,113 @@
     class="comment_model"
     :bodyStyle="{margin: 0, left:0}"
     :footer="null"
-  >
-    <a-row>
-      <a-col :span="12">
-        <p>内部编码: {{list.innerCode}}</p>
-        <p>准确位置: {{list.accurateLocation}}</p>
-        <p>面积: </p>
-      </a-col>
-      <a-col :span="12">
-        <p>风险源类别: {{list.type}}</p>
-        <p>首次发现时间: {{list.discoveryTime}}</p>
-        <p>河道所属: {{list.river}}</p>
-        <router-link to="#111">
-          <a-button type="primary" ghost size="small">查看详情</a-button>
-        </router-link>
-      </a-col>
-    </a-row>
-    <a-list
-      class="comment-list custom_comment"
-      :header="`${data.length} 条评论`"
-      itemLayout="horizontal"
-      :dataSource="data"
-      size="small"
-     >
-      <a-list-item slot="renderItem" slot-scope="item" class="comment_list">
-        <a-comment :author="item.author" :avatar="item.avatar">
-          <div class="comment_level">
-            <p
-              :class="{'danger_level0': item.dangerLevel == 0, 'danger_level1': item.dangerLevel == 1,'danger_level2': item.dangerLevel == 2}"
-            >{{item.dangerDescribe}}</p>
-            <span>{{item.dangerContent}}</span>
+  > 
+    <div v-show="show">
+      <a-row>
+        <a-col :span="12">
+          <p>内部编码: {{list.innerCode}}</p>
+          <p>准确位置: {{list.accurateLocation}}</p>
+          <p>面积: </p>
+        </a-col>
+        <a-col :span="12">
+          <p>风险源类别: {{list.type}}</p>
+          <p>首次发现时间: {{list.discoveryTime}}</p>
+          <p>河道所属: {{list.river}}</p>
+          <router-link to="#111">
+            <a-button type="primary" ghost size="small">查看详情</a-button>
+          </router-link>
+        </a-col>
+      </a-row>
+      <a-list
+        class="comment-list custom_comment"
+        :header="`${data.length} 条评论`"
+        itemLayout="horizontal"
+        :dataSource="data"
+        size="small"
+      >
+        <a-list-item slot="renderItem" slot-scope="item" class="comment_list">
+          <a-comment :author="item.author" :avatar="item.avatar">
+            <div class="comment_level">
+              <p
+                :class="{'danger_level0': item.dangerLevel == 0, 'danger_level1': item.dangerLevel == 1,'danger_level2': item.dangerLevel == 2}"
+              >{{item.dangerDescribe}}</p>
+              <span>{{item.dangerContent}}</span>
+            </div>
+            <p slot="content" style="ma">{{item.content}}</p>
+            <div class="comment_img">
+              <img v-for="img in item.imgList" :key="img.id" :src="img.url" :alt="img.alt" />
+            </div>
+            <a-tooltip slot="datetime" :title="item.datetime">
+              <span>{{item.datetime}}</span>
+            </a-tooltip>
+          </a-comment>
+        </a-list-item>
+      </a-list>
+      <a-button type="primary" block @click="renewClick('1')">更新风险状态</a-button>
+    </div>
+    <div v-show="show_type">
+      <a-form >
+        <a-form-item label="是否存在" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+           <a-select defaultValue="true"  >
+            <a-select-option value="true">是</a-select-option>
+            <a-select-option value="false">否</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="管理建议" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+          <a-textarea placeholder="请输入" :rows="4" />
+        </a-form-item>
+        <a-form-item :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" label="图片">
+          <el-upload
+            class="upload-demo"
+            ref="upload"
+            :data="list"
+            name="icon"
+            :headers="headers"
+            action="/server/data/admin/param/save"
+            :on-preview="handlePreview"
+            :on-success="handleSuccess"
+            :on-change="handleChange"
+            :on-remove="handleRemove"
+            :file-list="fileList"
+            :limit='1'
+            :auto-upload="false">
+            <a-button type="primary" icon="plus" >添加</a-button>
+          </el-upload>
+          <!-- <viewer >
+            <img  :src="attachmentJpg" alt="" style="height:70px;">
+          </viewer > -->
+        </a-form-item>
+        <a-form-item :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" label="操作">
+          <div>
+            <a-button @click="renewClick('2')" style="margin-right:20px">取消</a-button>
+            <a-button type="primary">保存</a-button>
           </div>
-          <p slot="content" style="ma">{{item.content}}</p>
-          <div class="comment_img">
-            <img v-for="img in item.imgList" :key="img.id" :src="img.url" :alt="img.alt" />
-          </div>
-          <a-tooltip slot="datetime" :title="item.datetime">
-            <span>{{item.datetime}}</span>
-          </a-tooltip>
-        </a-comment>
-      </a-list-item>
-    </a-list>
-    <a-button type="primary" block>更新风险状态</a-button>
+        </a-form-item>
+      </a-form>
+    </div>
   </a-modal>
 </template>
 
 <script>
+import Vue from 'vue'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { riskDetails, dischargeDetails, floatageDetails, } from '@/api/login'
 export default {
   data() {
     return {
+      fileList:[],
+      file:false,
+      attachmentJpg:'',
+      show:true,
+      show_type:false,
       visible: false,
       confirmLoading: false,
       list:{
 
+      },
+      headers: {
+        Authorization: '',
+        'X-TENANT-ID': 'jl:jlgis@2019' 
       },
       data: [
         {
@@ -122,6 +175,9 @@ export default {
       ]
     }
   },
+  mounted(){
+    this.headers.Authorization=Vue.ls.get(ACCESS_TOKEN)
+  },
   computed: {},
   methods: {
     riskInfo(row) {
@@ -159,30 +215,6 @@ export default {
       }
       this.visible = true
     },
-    // 添加河流
-    addRiver(value) {
-      console.log(value)
-    },
-    // 风险源类型
-    handleChange(selectedItems) {
-      this.selectedItems = selectedItems
-      console.log(selectedItems)
-    },
-    // 文件上传
-    fileUpload(info) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList)
-      }
-      if (info.file.status === 'done') {
-        this.$message.success(`${info.file.name} file uploaded successfully`)
-      } else if (info.file.status === 'error') {
-        this.$message.error(`${info.file.name} file upload failed.`)
-      }
-    },
-    // 标签
-    handleChangeTag(value) {
-      console.log(`selected ${value}`)
-    },
     handleSubmit() {
       const {
         form: { validateFields }
@@ -200,6 +232,33 @@ export default {
           this.confirmLoading = false
         }
       })
+    },
+    handleSuccess(response, file, fileList){
+      this.attachmentJpg=''
+      this.$message.success('保存成功');
+    },
+    handleChange(file, fileList){
+      if(this.fileList.length==0){
+        this.fileList=fileList
+      }else{
+        this.fileList=[]
+      }
+      this.attachmentJpg=URL.createObjectURL(file.raw)
+    },
+    handleRemove(file, fileList) {
+      
+    },
+    handlePreview(file) {
+    },
+    renewClick(row){
+      if (row == '1') {
+        this.show=false
+        this.show_type=true
+      }else{
+         this.show=true
+        this.show_type=false
+      }
+      
     },
     handleCancel() {
       this.visible = false
