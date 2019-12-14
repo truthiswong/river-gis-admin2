@@ -8,7 +8,8 @@
     </div>
     <div class="time_line">
       <ul class="time_ul">
-         <li ><!--v-for="item in timeData" :key="item.id" -->
+        <li>
+          <!--v-for="item in timeData" :key="item.id" -->
           <!-- <h6 style="font-size:12px;text-align:center;margin:0;">{{item.title}}</h6> -->
           <a-tooltip
             placement="right"
@@ -127,15 +128,15 @@
           <div class="weather_content">
             <div class="weather_basic">
               <div class="weather_basic_content">
-                <img src="./img/water.png" alt="" style="margin-right:5px;height:12px;width:12px">
+                <img src="./img/water.png" alt style="margin-right:5px;height:12px;width:12px" />
                 <span>未来2小时无雨</span>
               </div>
               <div class="weather_basic_content">
-                <img src="./img/wind.png" alt="" style="margin-right:5px;height:12px;width:12px">
+                <img src="./img/wind.png" alt style="margin-right:5px;height:12px;width:12px" />
                 <span>东北风 3级</span>
               </div>
               <div class="weather_basic_content">
-                <img src="./img/cloudiness.png" alt="" style="margin-right:5px;height:12px;width:12px">
+                <img src="./img/cloudiness.png" alt style="margin-right:5px;height:12px;width:12px" />
                 <span>云量数据</span>
               </div>
             </div>
@@ -143,10 +144,10 @@
               <!-- <div class="time24" v-for="item in weatherList" :key="item.id">
                 <div>{{item.temperature}}</div>
 
-              </div> -->
+              </div>-->
               <div class="time24" v-for="item in weatherList" :key="item.id">
                 <div style="text-align:center;">{{item.temperature}}</div>
-                <img src="./img/fine.png" alt="" style="margin:12px 5px;height:19px;width:19px">
+                <img src="./img/fine.png" alt style="margin:12px 5px;height:19px;width:19px" />
                 <div style="text-align:center;">{{item.time}}</div>
               </div>
             </div>
@@ -572,7 +573,11 @@
                           <p style="margin:0;">{{item.name}}</p>
                         </a-col>
                         <a-col :span="6">
-                          <a-switch size="small" v-model="waterLandLoss" @click="onWaterLandLoss(item.id)" />
+                          <a-switch
+                            size="small"
+                            v-model="waterLandLoss"
+                            @click="onWaterLandLoss(item.id)"
+                          />
                         </a-col>
                       </a-row>
                     </a-list-item>
@@ -615,7 +620,7 @@
                           <a-switch size="small" v-model="landAndWater" @click="onLandAndWater" />
                         </a-col>
                       </a-row>
-                    </a-list-item> -->
+                    </a-list-item>-->
                   </a-list>
                 </template>
                 <template slot="title">
@@ -630,7 +635,7 @@
           <template slot="title">
             <span>更多</span>
           </template>
-          <img src="../../assets/img/more.png" alt="更多" title="更多"  @click="getMapdrawPage(gengduo)"/>
+          <img src="../../assets/img/more.png" alt="更多" title="更多" @click="getMapdrawPage(gengduo)" />
         </a-popover>
       </li>
     </ul>
@@ -749,7 +754,18 @@
 </template>
 
 <script>
-import { getRiverList, getStreetList, getWaterQualityList, paramList, mapdrawSave, mapdrawPage,daydataList,weatherList,panoramaList,panoramaImgList } from '@/api/login'
+import {
+  getRiverList,
+  getStreetList,
+  getWaterQualityList,
+  paramList,
+  mapdrawSave,
+  mapdrawPage,
+  daydataList,
+  weatherList,
+  panoramaList,
+  panoramaImgList
+} from '@/api/login'
 import RiskSourceInfo from './modules/RiskSourceInfo'
 import AddRiskSource from './modules/AddRiskSource'
 import AddFloatage from './modules/AddFloatage'
@@ -814,12 +830,12 @@ export default {
         // 文件上传
         authorization: 'authorization-text'
       },
-      defaultTime:'',//默认日期
-      otherList:[],//其他
-      riskSourceList:[],//河岸风险源
-      currentArea:'',//面积
+      defaultTime: '', //默认日期
+      otherList: [], //其他
+      riskSourceList: [], //河岸风险源
+      currentArea: '', //面积
       drawTypeId: '', //绘制类型
-      mapdrawId:'5dde340a9ff8c45790c6b938',//基础绘制id
+      mapdrawId: '5dde340a9ff8c45790c6b938', //基础绘制id
       paramPage: [], //绘制类型列表
       polygonList: [], //绘制面坐标
       pointList: {}, //绘制点坐标
@@ -979,31 +995,31 @@ export default {
           ]
         }
       ],
-      weatherList:[
+      weatherList: [
         {
-          temperature:'26°',
-          time:'10:00'
+          temperature: '26°',
+          time: '10:00'
         },
         {
-          temperature:'27°',
-          time:'12:00'
+          temperature: '27°',
+          time: '12:00'
         },
         {
-          temperature:'24°',
-          time:'14:00'
+          temperature: '24°',
+          time: '14:00'
         },
         {
-          temperature:'20°',
-          time:'16:00'
+          temperature: '20°',
+          time: '16:00'
         },
         {
-          temperature:'16°',
-          time:'18:00',
+          temperature: '16°',
+          time: '18:00'
         },
         {
-          temperature:'15°',
-          time:'20:00',
-        },
+          temperature: '15°',
+          time: '20:00'
+        }
       ],
       startDateRight: '', // 开始日期
       endDateRight: '', // 结束日期
@@ -1038,6 +1054,10 @@ export default {
       mapLayerSatellite: '', // 卫星影像图
       mapLayerWord: '', // 道路标注
       mapLayerImage: '', // 正射影像
+      mapImage: '', // 正射影像url
+      mapYear: '', // 地图年
+      mapMonth: '', // 地图月
+      mapDay: '', // 地图日
 
       toolsCard: false, //工具卡片
       toolCard: false, //选中工具卡片
@@ -1086,15 +1106,7 @@ export default {
       streetShowList: [], //街道
       phonePhotoPoints: [
         {
-          id: 0,
-          name: '手机照片1',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto1.jpg'),
-          direction: 0,
-          latlng: { lat: 31.22493, lng: 121.51566 }
-        },
-        {
-          id: 1,
+          id: '111111111',
           name: '手机照片2',
           clicked: false,
           imgUrl: require('./img/phonePhoto2.jpg'),
@@ -1102,7 +1114,7 @@ export default {
           latlng: { lat: 31.24344, lng: 121.49892 }
         },
         {
-          id: 2,
+          id: '222222222222',
           name: '手机照片3',
           clicked: false,
           imgUrl: require('./img/phonePhoto3.jpg'),
@@ -1110,7 +1122,7 @@ export default {
           latlng: { lat: 31.22649, lng: 121.49712 }
         },
         {
-          id: 3,
+          id: '33333333333',
           name: '手机照片4',
           clicked: false,
           imgUrl: require('./img/phonePhoto4.jpg'),
@@ -1118,52 +1130,12 @@ export default {
           latlng: { lat: 31.19482, lng: 121.46819 }
         },
         {
-          id: 4,
+          id: '4444444444444',
           name: '手机照片5',
           clicked: false,
           imgUrl: require('./img/phonePhoto5.jpg'),
           direction: 0,
           latlng: { lat: 31.19649, lng: 121.45995 }
-        },
-        {
-          id: 5,
-          name: '手机照片6',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto6.jpg'),
-          direction: 0,
-          latlng: { lat: 31.20649, lng: 121.47995 }
-        },
-        {
-          id: 6,
-          name: '手机照片7',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto7.jpg'),
-          direction: 0,
-          latlng: { lat: 31.21049, lng: 121.48495 }
-        },
-        {
-          id: 7,
-          name: '手机照片8',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto8.jpg'),
-          direction: 0,
-          latlng: { lat: 31.21549, lng: 121.49195 }
-        },
-        {
-          id: 8,
-          name: '手机照片9',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto9.jpg'),
-          direction: 0,
-          latlng: { lat: 31.21509, lng: 121.47056 }
-        },
-        {
-          id: 9,
-          name: '手机照片10',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto10.jpg'),
-          direction: 0,
-          latlng: { lat: 31.20969, lng: 121.49023 }
         }
       ],
       UAVPhotoPoints: [
@@ -1354,7 +1326,7 @@ export default {
           latlng: { lat: 31.22664, lng: 121.49048 }
         }
       ],
-      gengduo:'1',
+      gengduo: '1',
       riverLink: false, // 河道连通性
       riverLinkPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.23841, lng: 121.516833 } },
@@ -1367,7 +1339,7 @@ export default {
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24304, lng: 121.49392 } },
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.2645, lng: 121.49356 } }
       ],
-      drawPage:[]
+      drawPage: []
     }
   },
   watch: {
@@ -1455,8 +1427,8 @@ export default {
     let wordLabel = 'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
     this.mapLayerWord = new T.TileLayer(wordLabel, { minZoom: 4, maxZoom: 18, zIndex: 15 })
     // 正射影像
-    let mapImage = `http://jleco.jl-shgroup.com/server/data/admin/regulator/uav/data/mbtiles?year&month&day&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
-    this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
+    this.mapImage = `http://jleco.jl-shgroup.com/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
+    this.mapLayerImage = new T.TileLayer(this.mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
     this.map = new T.Map('map', {
       minZoom: 4,
       maxZoom: 23,
@@ -1469,7 +1441,7 @@ export default {
     this.map.addControl(new T.Control.Scale())
     this.getTimeQuantum() // 获取时间段
     this.getRiverStreeList()
-    
+
     this.getWaterQualityPoints()
     this.getParamList()
     // this.getMapdrawPage()
@@ -1484,12 +1456,16 @@ export default {
       paramList(data).then(res => {
         this.paramPage = res.data
         var arr = []
-        for(const item of res.data){
-          if (item.id!='5da8374dea6c157d2d61007c'&&item.id!='5da8389eea6c157d2d61007f'&&item.id!='5dafe6c8ea6c159999a0549c') {
+        for (const item of res.data) {
+          if (
+            item.id != '5da8374dea6c157d2d61007c' &&
+            item.id != '5da8389eea6c157d2d61007f' &&
+            item.id != '5dafe6c8ea6c159999a0549c'
+          ) {
             arr.push(item)
           }
         }
-        
+
         this.otherList = arr
       })
       var datarisk = {
@@ -1498,19 +1474,19 @@ export default {
       paramList(datarisk).then(res => {
         this.riskSourceList = res.data
       })
-      let ssss={
-        projectId: this.$store.state.id,
+      let ssss = {
+        projectId: this.$store.state.id
         // year: picker[0],
         // month: picker[1],
         // day: picker[2]
       }
-      panoramaList(ssss).then(res=>{
-        console.log(res.data.data);
+      panoramaList(ssss).then(res => {
+        console.log(res.data.data)
         let hh = res.data.data
         hh.forEach(v => {
           v.name = v.title
           v.latlng = v.coordinate
-        });
+        })
         this.panoramaPoints = hh
       })
     },
@@ -1526,18 +1502,18 @@ export default {
         }
         mapdrawPage(arr).then(res => {
           let data = res.data
-          let ar =[]
+          let ar = []
           data.forEach(v => {
             v.shapePellucidity = v.shapePellucidity / 100
             v.framePellucidity = v.framePellucidity / 100
-            if (v.innerType !=undefined) {
+            if (v.innerType != undefined) {
               ar.push(v)
             }
           })
           this.drawPage = ar
         })
         this.gengduo = '2'
-      } 
+      }
     },
     mapZoomChange() {
       // console.log(this.map.getZoom())
@@ -1550,8 +1526,8 @@ export default {
           let arr = res.data.data
           arr.forEach(v => {
             if (v.region == null) {
-              v.lineData =[]
-            }else{
+              v.lineData = []
+            } else {
               v.lineData = v.region
             }
             v.clicked = false
@@ -1564,13 +1540,12 @@ export default {
           let arr = res.data.data
           arr.forEach(v => {
             if (v.region == null) {
-              v.lineData =[]
-            }else{
+              v.lineData = []
+            } else {
               v.lineData = v.region
             }
-            
-            v.clicked = false
 
+            v.clicked = false
           })
           this.riverShowList = arr
         })
@@ -1691,18 +1666,19 @@ export default {
           pointRadius: '0.4',
           drawTypeId: this.drawTypeId
         }
-        mapdrawSave(data) .then(res => {
-          this.$message.success('保存成功')
-          this.mapdrawId = res.data.id
-          let result = this.toolIndexPointData.findIndex(item => {
-            return this.toolIndexId == item.id
+        mapdrawSave(data)
+          .then(res => {
+            this.$message.success('保存成功')
+            this.mapdrawId = res.data.id
+            let result = this.toolIndexPointData.findIndex(item => {
+              return this.toolIndexId == item.id
+            })
+            let geocode = new T.Geocoder()
+            geocode.getLocation(this.toolIndexPointData[result].latlng, this.searchResult)
           })
-          let geocode = new T.Geocoder()
-          geocode.getLocation(this.toolIndexPointData[result].latlng, this.searchResult)
-        }).catch(err => {
-          this.$message.error(err.response.data.message)
-        })
-        
+          .catch(err => {
+            this.$message.error(err.response.data.message)
+          })
       } else if (this.toolIndex === 2) {
         // 工具-线
         this.lineTool.clear()
@@ -1744,7 +1720,7 @@ export default {
             this.$message.error(err.response.data.message)
           })
         // 获取地理位置
-        
+
         this.polyline = new T.Polyline(this.toolIndexLineData[result].lineData, {
           id: this.toolIndexId
         })
@@ -1764,33 +1740,35 @@ export default {
         for (const index of this.polygonList) {
           polygon = polygon + index.lng + ',' + index.lat + '|'
         }
-        let data ={
-          id:'',
-          projectId:this.$store.state.id,
+        let data = {
+          id: '',
+          projectId: this.$store.state.id,
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          locationType:'polygon',
-          polygon:polygon,
-          frameColor:this.borderColor,
+          locationType: 'polygon',
+          polygon: polygon,
+          frameColor: this.borderColor,
           shapeColor: this.fullColor,
-          shapePellucidity:this.fullOpacity ,
-          framePellucidity:this.borderOpacity ,
-          drawTypeId:this.drawTypeId
+          shapePellucidity: this.fullOpacity,
+          framePellucidity: this.borderOpacity,
+          drawTypeId: this.drawTypeId
         }
-        mapdrawSave(data).then( res=>{
-          this.$message.success('保存成功')
-          this.mapdrawId = res.data.id
-          // 获取地理位置
-          let geocode = new T.Geocoder()
-          geocode.getLocation(this.toolIndexPolygonData[result].lineData[0], this.searchResult)
-          if (this.isToolEdit) {
-            this.watchAllSwitch()
-            return
-          }
-        }).catch(err => {
-          this.$message.error(err.response.data.message)
-        })
+        mapdrawSave(data)
+          .then(res => {
+            this.$message.success('保存成功')
+            this.mapdrawId = res.data.id
+            // 获取地理位置
+            let geocode = new T.Geocoder()
+            geocode.getLocation(this.toolIndexPolygonData[result].lineData[0], this.searchResult)
+            if (this.isToolEdit) {
+              this.watchAllSwitch()
+              return
+            }
+          })
+          .catch(err => {
+            this.$message.error(err.response.data.message)
+          })
         this.toolIndexPolygonData[result].borderColor = this.borderColor
         this.toolIndexPolygonData[result].fullColor = this.fullColor
         this.toolIndexPolygonData[result].borderOpacity = this.borderOpacity / 100
@@ -1816,11 +1794,11 @@ export default {
         this.$message.error('获取地址失败')
       }
       if (this.drawTypeId == '5da8374dea6c157d2d61007c') {
-        this.$refs.addRisk.add(this.mapdrawId,this.currentArea,result)
+        this.$refs.addRisk.add(this.mapdrawId, this.currentArea, result)
       } else if (this.drawTypeId == '5da8389eea6c157d2d61007f') {
-        this.$refs.addOutlet.add(this.mapdrawId,result)
+        this.$refs.addOutlet.add(this.mapdrawId, result)
       } else if (this.drawTypeId == '5dafe6c8ea6c159999a0549c') {
-        this.$refs.AddFloatage.add(this.mapdrawId,this.currentArea,result)
+        this.$refs.AddFloatage.add(this.mapdrawId, this.currentArea, result)
       }
     },
     // 绘制取消
@@ -1857,7 +1835,7 @@ export default {
       this.toolIndexId = id
       console.log(e)
       if (this.toolIndex === 1) {
-        this.currentArea =  0
+        this.currentArea = 0
         this.toolCard = true
         this.markerTool.close()
         this.pointList = e.currentLnglat
@@ -1867,7 +1845,7 @@ export default {
         })
       } else if (this.toolIndex === 2) {
         // 工具-线
-        this.currentArea =  0
+        this.currentArea = 0
         console.log((e.currentDistance / 1000).toFixed(3)) //获取距离 km
         this.toolCard = true
         this.lineTool.close()
@@ -1955,9 +1933,9 @@ export default {
       this.startDate = dateString[0]
       this.endDate = dateString[1]
       this.timeQuantum = `${dateString[0]} ~ ${dateString[1]}`
-      var start =  dateString[0].split('-')
-      var end =  dateString[1].split('-')
-      this.getdaydataList(start[0]+start[1]+start[2],end[0]+end[1]+end[2])
+      var start = dateString[0].split('-')
+      var end = dateString[1].split('-')
+      this.getdaydataList(start[0] + start[1] + start[2], end[0] + end[1] + end[2])
     },
     getTimeQuantum() {
       let myDate = new Date()
@@ -1972,59 +1950,66 @@ export default {
         starty = endy
         startm = endm - 3
       }
-      if (startm <10) {
-        var startm1 = '0'+startm
-        var start = starty+''+startm1 +''+endd
-      }else{
-        var start = starty+''+startm +''+endd
+      if (startm < 10) {
+        var startm1 = '0' + startm
+        var start = starty + '' + startm1 + '' + endd
+      } else {
+        var start = starty + '' + startm + '' + endd
       }
-      if (endm <10) {
-        var endm1 = '0'+endm
-        var end = endy+''+endm1+''+endd 
-      }else{
-        var end = endy+''+endm+''+endd 
+      if (endm < 10) {
+        var endm1 = '0' + endm
+        var end = endy + '' + endm1 + '' + endd
+      } else {
+        var end = endy + '' + endm + '' + endd
       }
       this.startDate = `${starty}-${startm}-${endd}`
       this.endDate = `${endy}-${endm}-${endd}`
       this.timeQuantum = `${this.startDate} ~ ${this.endDate}`
-      this.getdaydataList(start,end)
+      this.getdaydataList(start, end)
     },
-    getdaydataList(start,end){
+    getdaydataList(start, end) {
       let data = {
         projectId: this.$store.state.id,
-        start:start,
-        end:end
+        start: start,
+        end: end
       }
-      daydataList(data).then(res=>{
+      daydataList(data).then(res => {
         var arr = res.data.reverse()
         for (let i = 0; i < arr.length; i++) {
-          if (arr[i].manualData !=0&&arr[i].manualLocus !=0&&arr[i].mapdrawData !=0&&arr[i].panoramaData !=0&&arr[i].uavData != 0) {
-            this.defaultTime=arr[i].date.substring(0, 4) + "-" + arr[i].date.substring(4, 6) + "-" + arr[i].date.substring(6, 8)
+          if (
+            arr[i].manualData != 0 &&
+            arr[i].manualLocus != 0 &&
+            arr[i].mapdrawData != 0 &&
+            arr[i].panoramaData != 0 &&
+            arr[i].uavData != 0
+          ) {
+            this.defaultTime =
+              arr[i].date.substring(0, 4) + '-' + arr[i].date.substring(4, 6) + '-' + arr[i].date.substring(6, 8)
             break
-          }else{
-            if( i == arr.length - 1){
-              this.defaultTime=this.endDate
+          } else {
+            if (i == arr.length - 1) {
+              this.defaultTime = this.endDate
             }
           }
         }
-        for(const item of res.data){
+        for (const item of res.data) {
           if (item.uavData != 0) {
             item.level = 1
-          }else if(item.manualData !=0){
+          } else if (item.manualData != 0) {
             item.level = 0
-          }else if(item.manualLocus !=0){
+          } else if (item.manualLocus != 0) {
             item.level = 0
-          }else if(item.mapdrawData !=0){
+          } else if (item.mapdrawData != 0) {
             item.level = 0
-          }else if(item.panoramaData !=0){
+          } else if (item.panoramaData != 0) {
             item.level = 0
-          }else{
+          } else {
             item.level = 2
           }
-          item.title = item.date.substring(item.date.length-2,item.date.length);
+          item.title = item.date.substring(item.date.length - 2, item.date.length)
           item.clicked = false
         }
-        this.timeData = res.data   
+        this.timeData = res.data
         // this.getWeatherList()
       })
     },
@@ -2041,13 +2026,20 @@ export default {
     // },
     // 时间轴
     timeLineItem(mouth) {
-      console.log(mouth.substring(0, 4) + "-" + mouth.substring(4, 6) + "-" + mouth.substring(6, 8))
+      console.log(mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8))
       for (const item of this.timeData) {
         if (mouth == item.date) {
-          if (item.level!= 2) {
+          if (item.level != 2) {
             if (item.date == mouth) {
-              this.defaultTime=mouth.substring(0, 4) + "-" + mouth.substring(4, 6) + "-" + mouth.substring(6, 8)
+              this.defaultTime = mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8)
               this.getMapdrawPage('1')
+              this.mapYear = mouth.substring(0, 4)
+              this.mapMonth = mouth.substring(4, 6)
+              this.mapDay = mouth.substring(6, 8)
+              this.map.removeLayer(this.mapLayerImage)
+              let mapImage = `http://jleco.jl-shgroup.com/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
+              this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
+              this.map.addLayer(this.mapLayerImage)
               item.clicked = true
             } else {
               item.clicked = false
@@ -2143,10 +2135,19 @@ export default {
     mapZoomOut() {
       this.map.zoomOut()
     },
+    removeOverLays(itemList) {
+      for (const overlay of this.map.getOverlays()) {
+        for (const item of itemList) {
+          if (item.id == overlay.options.id) {
+            this.map.removeOverLay(overlay)
+          }
+        }
+      }
+    },
     // 更多-历史数据
     onHistoryData() {
       if (this.historyData) {
-        this.allPointTask(this.historyPoints)
+        // this.allPointTask(this.historyPoints)
       }
     },
     // 河道显示
@@ -2169,6 +2170,8 @@ export default {
           polygon.addEventListener('mousemove', this.polygonMousemove)
           polygon.addEventListener('mouseout', this.polygonMouseout)
         }
+      } else {
+        this.removeOverLays(this.riverShowList)
       }
     },
     // 多边形点击事件
@@ -2218,6 +2221,8 @@ export default {
           polygon.addEventListener('mousemove', this.polygonStreetMousemove)
           polygon.addEventListener('mouseout', this.polygonStreetMouseout)
         }
+      } else {
+        this.removeOverLays(this.streetShowList)
       }
     },
     // 多边形点击事件
@@ -2251,12 +2256,16 @@ export default {
     onPhonePhoto() {
       if (this.phonePhoto) {
         this.allImageTask(this.phonePhotoPoints)
+      } else {
+        this.removeOverLays(this.phonePhotoPoints)
       }
     },
     // 无人机照片
     onUAVPhoto() {
       if (this.UAVPhoto) {
         this.allPointTask(this.UAVPhotoPoints)
+      } else {
+        this.removeOverLays(this.UAVPhotoPoints)
       }
     },
     // 360全景图
@@ -2268,6 +2277,8 @@ export default {
           this.map.addOverLay(markerTool)
           markerTool.addEventListener('click', this.panoramaPointClick)
         }
+      } else {
+        this.removeOverLays(this.panoramaPoints)
       }
     },
     // 360点点击事件
@@ -2310,6 +2321,9 @@ export default {
             )
           }
         }
+      } else {
+        this.removeOverLays(this.riskMapRiver)
+        this.removeOverLays(this.riskPolygonData)
       }
     },
     // 绘制线
@@ -2382,7 +2396,7 @@ export default {
       this.polygonTool.close()
       this.riskPolygonData.push({
         id: id,
-        lineData: e.currentLnglats,
+        lineData: e.currentLnglats
       })
       this.isRiskSaveShow = true
     },
@@ -2465,6 +2479,8 @@ export default {
           this.map.addOverLay(marker)
           marker.addEventListener('click', this.waterQualityClick)
         }
+      } else {
+        this.removeOverLays(this.waterQualityPoints)
       }
     },
     // 水质监测点点击
@@ -2475,18 +2491,18 @@ export default {
     onWaterFlotage() {
       if (this.waterFlotage) {
         let point = []
-        for(const item of this.drawPage){
-          if (item.drawType.id =='5dafe6c8ea6c159999a0549c') {
+        for (const item of this.drawPage) {
+          if (item.drawType.id == '5dafe6c8ea6c159999a0549c') {
             if (item.locationType.code == 'point') {
-              item.latlng={
-                lng:item.point[0],
-                lat:item.point[1]
+              item.latlng = {
+                lng: item.point[0],
+                lat: item.point[1]
               }
               point.push(item)
             }
             if (item.locationType.code == 'line') {
               // line.push(item)
-              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '',item.innerType.code)
+              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
             }
             if (item.locationType.code == 'polygon') {
               this.noodlesDraw(
@@ -2502,26 +2518,28 @@ export default {
               )
             }
           }
-        }   
+        }
         this.spotDraw(point)
+      } else {
+        this.removeOverLays(this.drawPage)
       }
     },
     // 排口
     onOutlet() {
       if (this.outlet) {
         let point = []
-        for(const item of this.drawPage){
-          if (item.drawType.id =='5da8389eea6c157d2d61007f') {
+        for (const item of this.drawPage) {
+          if (item.drawType.id == '5da8389eea6c157d2d61007f') {
             if (item.locationType.code == 'point') {
-              item.latlng={
-                lng:item.point[0],
-                lat:item.point[1]
+              item.latlng = {
+                lng: item.point[0],
+                lat: item.point[1]
               }
               point.push(item)
             }
             if (item.locationType.code == 'line') {
               // line.push(item)
-              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '',item.innerType.code)
+              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
             }
             if (item.locationType.code == 'polygon') {
               this.noodlesDraw(
@@ -2537,40 +2555,41 @@ export default {
               )
             }
           }
-        }   
+        }
         this.spotDraw(point)
+      } else {
+        this.removeOverLays(this.drawPage)
       }
     },
     //绘制点
     spotDraw(pointLists) {
-      console.log(pointLists);
-      
+      console.log(pointLists)
       for (const item of pointLists) {
-        this.drawAllPoint1(item.latlng, item.innerCode, item.id,item.innerType.code)
+        this.drawAllPoint1(item.latlng, item.innerCode, item.id, item.innerType.code)
       }
     },
-    drawAllPoint1(latlng, index, id,code) {
-      let markerTool = new T.Marker(latlng, { title: index, id: id,code:code })
+    drawAllPoint1(latlng, index, id, code) {
+      let markerTool = new T.Marker(latlng, { title: index, id: id, code: code })
       this.map.addOverLay(markerTool)
       markerTool.addEventListener('click', this.sourceRiskClick)
     },
     //绘制线
-    lineDraw(points, color, weight, opacity, id, name,) {
+    lineDraw(points, color, weight, opacity, id, name) {
       let line = new T.Polyline(points, {
         color: color, //线颜色
         weight: weight, //线宽
         opacity: opacity, //透明度
         id: id,
         name: name,
-        code:code
+        code: code
       })
-      
+
       //向地图上添加线
       this.map.addOverLay(line)
       line.addEventListener('click', this.sourceRiskClick)
     },
     // 绘制面
-    noodlesDraw(lineData, color, weight, opacity, fillColor, fillOpacity, title, id,code) {
+    noodlesDraw(lineData, color, weight, opacity, fillColor, fillOpacity, title, id, code) {
       let polygon = new T.Polygon(lineData, {
         color: color, //线颜色
         weight: weight, //线宽
@@ -2578,33 +2597,33 @@ export default {
         fillColor: fillColor, //填充颜色
         fillOpacity: fillOpacity, // 填充透明度
         title: title, // 名字
-        id: id ,// id
-        code:code
+        id: id, // id
+        code: code
       })
       //向地图上添加面
       this.map.addOverLay(polygon)
-      polygon.addEventListener('click', this.sourceRiskClick )
+      polygon.addEventListener('click', this.sourceRiskClick)
     },
     //排口水面漂浮物风险源弹窗
-    sourceRiskClick(row){
+    sourceRiskClick(row) {
       this.$refs.riskInfo.riskInfo(row)
     },
     // 河岸风险源
     onRiverRisk() {
       if (this.riverRisk) {
         let point = []
-        for(const item of this.drawPage){
-          if (item.drawType.id =='5da8374dea6c157d2d61007c') {
+        for (const item of this.drawPage) {
+          if (item.drawType.id == '5da8374dea6c157d2d61007c') {
             if (item.locationType.code == 'point') {
-              item.latlng={
-                lng:item.point[0],
-                lat:item.point[1]
+              item.latlng = {
+                lng: item.point[0],
+                lat: item.point[1]
               }
               point.push(item)
             }
             if (item.locationType.code == 'line') {
               // line.push(item)
-              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '',item.innerType.code)
+              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
             }
             if (item.locationType.code == 'polygon') {
               this.noodlesDraw(
@@ -2620,26 +2639,34 @@ export default {
               )
             }
           }
-        }   
+        }
         this.spotDraw(point)
+      } else {
+        this.removeOverLays(this.drawPage)
       }
     },
     // 水土流失
     onWaterLandLoss() {
       if (this.waterLandLoss) {
         this.allPointTask(this.waterLandLossPoints)
+      } else {
+        this.removeOverLays(this.waterLandLossPoints)
       }
     },
     // 水面率
     onWaterRatio() {
       if (this.waterRatio) {
         this.allPointTask(this.waterRatioPoints)
+      } else {
+        this.removeOverLays(this.waterRatioPoints)
       }
     },
     // 底泥
     onBottomMud() {
       if (this.bottomMud) {
         this.allPointTask(this.bottomMudPoints)
+      } else {
+        this.removeOverLays(this.bottomMudPoints)
       }
     },
     // 专项调查点
@@ -2655,23 +2682,29 @@ export default {
           this.map.addOverLay(marker)
           marker.addEventListener('click', this.taskPointClick)
         }
+      } else {
+        this.removeOverLays(this.surveyPointPoints)
       }
     },
     // 河道连通性
     onRiverLink() {
       if (this.riverLink) {
         this.allPointTask(this.riverLinkPoints)
+      } else {
+        this.removeOverLays(this.riverLinkPoints)
       }
     },
     // 水陆分布
     onLandAndWater() {
       if (this.landAndWater) {
         this.allPointTask(this.landAndWaterPoints)
+      } else {
+        this.removeOverLays(this.landAndWaterPoints)
       }
     },
     // 监听所有的开关属性
     watchAllSwitch() {
-      this.map.clearOverLays()
+      // this.map.clearOverLays()
       // 绘制工具画的点
       // this.toolDrawPoint()
       // // 绘制工具画的线
@@ -3063,30 +3096,30 @@ export default {
       box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.4);
       border-radius: 10px;
       padding: 10px;
-      .weather_basic{
-        width:100%;
+      .weather_basic {
+        width: 100%;
         display: flex;
-        flex-wrap:wrap ;
-        .weather_basic_content{
+        flex-wrap: wrap;
+        .weather_basic_content {
           width: 50%;
           color: #595959;
           font-size: 12px;
           margin-bottom: 12px;
         }
       }
-      .weather24{
+      .weather24 {
         padding: 15px 9px;
-        box-sizing:border-box;
+        box-sizing: border-box;
         width: 100%;
-        border-top: 1px solid rgba(216,216,216,0.5);
-        border-bottom: 1px solid rgba(216,216,216,0.5);
+        border-top: 1px solid rgba(216, 216, 216, 0.5);
+        border-bottom: 1px solid rgba(216, 216, 216, 0.5);
         font-size: 12px;
         display: flex;
-        .time24{
+        .time24 {
           width: 30px;
           margin-right: 22px;
           display: flex;
-          flex-direction:column;
+          flex-direction: column;
         }
       }
     }
