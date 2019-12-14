@@ -162,6 +162,21 @@ export default {
     // 显示弹窗
     showVisible() {
       this.visible = true
+      // new ImageEditor(document.querySelector('#tui-image-editor'), {
+      //   includeUI: {
+      //     loadImage: {
+      //       path: require('../../../assets/loginBg.jpg'),
+      //       name: 'SampleImage'
+      //     },
+      //     menu: ['shape', 'filter'],
+      //     initMenu: 'filter',
+      //     uiSize: {
+      //       width: '1000px',
+      //       height: '700px'
+      //     },
+      //     menuBarPosition: 'bottom'
+      //   }
+      // })
     },
     // 关闭弹窗
     handleCancel() {
