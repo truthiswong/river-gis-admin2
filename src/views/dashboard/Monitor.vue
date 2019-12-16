@@ -140,7 +140,7 @@
                 <img src="../../assets/min.png" alt="缩小" />
               </li>
               <li>
-                <a-popover title="图像" placement="leftBottom" trigger="click">
+                <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
                   <template slot="content">
                     <a-row style="width: 100%;">
                       <a-col :span="24">
@@ -150,8 +150,19 @@
                         </a-radio-group>
                       </a-col>
                     </a-row>
+                    <a-row style="width: 100%; margin-top: 8px;">
+                      <a-col :span="16">
+                        <span>道路标注</span>
+                      </a-col>
+                      <a-col :span="8" style="text-align: right;">
+                        <a-switch size="small" v-model="roadWordChange" @click="onChangeSwitch" />
+                      </a-col>
+                    </a-row>
                   </template>
-                  <img src="../../assets/map.png" alt="图像" />
+                  <template slot="title">
+                    <span>图像</span>
+                  </template>
+                  <img src="../../assets/map.png" alt="图像" title="图像" />
                 </a-popover>
               </li>
               <li class="popMore">
@@ -292,9 +303,6 @@
                             <a-col :span="18">
                               <span>风险管理</span>
                             </a-col>
-                            <!-- <a-col :span="6">
-                              <a-switch size="small" v-model="checked" @click="onChangeSwitch" />
-                            </a-col>-->
                           </a-row>
                         </a-list-item>
                       </a-popover>
@@ -379,9 +387,6 @@
                             <a-col :span="18">
                               <span>风险等级</span>
                             </a-col>
-                            <!-- <a-col :span="6">
-                              <a-switch size="small" v-model="checked" @click="onChangeSwitch" />
-                            </a-col>-->
                           </a-row>
                         </a-list-item>
                       </a-popover>
@@ -405,8 +410,13 @@
               :activeTabKey="noTitleKey"
               @tabChange="key => onTabChange(key,'noTitleKey')"
               v-if="firstShow"
-            ></a-card> -->
-            <a-tabs defaultActiveKey="addPlan" @change="onTabChange" v-show="firstShow" class="custom_tabs mainCard">
+            ></a-card>-->
+            <a-tabs
+              defaultActiveKey="addPlan"
+              @change="onTabChange"
+              v-show="firstShow"
+              class="custom_tabs mainCard"
+            >
               <a-tab-pane key="addPlan">
                 <span slot="tab">
                   <a-icon type="plus-circle" />新建计划
@@ -468,7 +478,7 @@
                           >追加任务</a-button>
                         </div>
                       </div>
-                       <add-task
+                      <add-task
                         ref="addTask"
                         @chooseLocation="addLineTool"
                         @cancleBtn="cancelAddTask"
@@ -1216,6 +1226,12 @@ export default {
       text: '当前河道方位内出现红色风险源',
       // 地图对象
       map: {},
+      mapType: 'b',
+      mapLayer2d: '', // 2D影像图
+      mapLayerSatellite: '', // 卫星影像图
+      mapLayerWord: '', // 道路标注
+      roadWordChange: true, // 道路标注
+      mapLayerImage: '', // 正射影像
       layer: [],
       // 地图节点对象（里面含节点对象、区域对象、任务弹窗对象）
       mapPoint: new Map(),
@@ -1534,7 +1550,8 @@ export default {
                   })
                   arr[a].taskPage = ar
                   this.spinning = false
-                }).catch(err => {
+                })
+                .catch(err => {
                   this.spinning = false
                   this.$message.error('加载数据失败')
                 })
@@ -2708,23 +2725,21 @@ export default {
     },
     //图像显示修改
     onMapChange(e) {
-      this.map.clearLayers() //移除所有叠加层
-      const vecLayer = 'http://t4.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
-      const cvaLayer = 'http://t3.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
-      const imgLayer =
-        'http://t0.tianditu.gov.cn/img_w/wmts?' +
-        'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles' +
-        '&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=a659a60049b130a5d1fececfd5a6b822'
       if (e.target.value == 'a') {
-        var mapLayer2d = new T.TileLayer(vecLayer, { minZoom: 4, maxZoom: 18 })
-        this.map.addLayer(mapLayer2d)
+        this.map.addLayer(this.mapLayer2d)
+        this.map.removeLayer(this.mapLayerSatellite)
       } else if (e.target.value == 'b') {
-        var mapLayerSatellite = new T.TileLayer(imgLayer, { minZoom: 4, maxZoom: 18 })
-        this.map.addLayer(mapLayerSatellite)
+        this.map.addLayer(this.mapLayerSatellite)
+        this.map.removeLayer(this.mapLayer2d)
       }
-      var mapLayerCva = new T.TileLayer(cvaLayer, { minZoom: 4, maxZoom: 18 })
-      this.map.addLayer(mapLayerCva)
-      this.map.clearLayers()
+    },
+    // 道路开关
+    onChangeSwitch() {
+      if (this.roadWordChange) {
+        this.map.addLayer(this.mapLayerWord)
+      } else {
+        this.map.removeLayer(this.mapLayerWord)
+      }
     },
     //任务模块任务点
     loadPoint() {
@@ -2804,8 +2819,6 @@ export default {
       var marker = new T.Marker(new T.LngLat(121.495505, 31.21098), { icon: icon })
       this.map.addOverLay(marker)
     },
-    //点击滑动关闭按钮
-    onChangeSwitch() {},
     //添加河道按钮事件
     addRiverBtn() {
       this.drawRiver()
