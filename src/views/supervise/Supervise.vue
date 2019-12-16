@@ -777,13 +777,17 @@ import WaterQuality from './modules/waterQualityData'
 import moment from 'moment' // 时间格式
 
 import 'ol/ol.css'
-import Map from 'ol/Map'
-import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
-import LayerGroup from 'ol/layer/Group'
-import XYZ from 'ol/source/XYZ'
-
 import OSM from 'ol/source/OSM'
+import LayerGroup from 'ol/layer/Group'
+import VectorLayer from 'ol/layer/Vector'
+import VectorSource from 'ol/source/Vector'
+import XYZ from 'ol/source/XYZ'
+import { Map, View, Feature } from 'ol'
+import { Style, Icon } from 'ol/style'
+import Text from 'ol/style/Text'
+import { Point } from 'ol/geom'
+// import { defaults } from 'ol/control/util.js'
 
 // 拖拽缩放
 // import { defaults as defaultInteractions, DragRotateAndZoom } from 'ol/interaction'
@@ -814,7 +818,6 @@ function debounce(func, wait = 500) {
 export default {
   name: 'Supervise',
   components: {
-    // 'world-map': WorldMap
     'risk-source-info': RiskSourceInfo,
     'add-risk-source': AddRiskSource,
     'water-quality': WaterQuality,
@@ -1023,12 +1026,7 @@ export default {
       ],
       startDateRight: '', // 开始日期
       endDateRight: '', // 结束日期
-      mapType: 'b',
-      roadWordChange: true, // 道路标注
-      mapLayerWord: '', // 道路层级
-      sharedChecked: false, // 双球
-      swipeChecked: false, // 卷帘
-      showView: true,
+      
       customStyle: 'background: #fff;margin: 0;overflow: hidden', // 折叠面板样式
       canDownload: true, // 是否可以图片截图下载
       riskMapColor: {
@@ -1050,6 +1048,8 @@ export default {
 
       // 地图对象
       map: null,
+      map1: null,
+      map2: null,
       mapLayer2d: '', // 2D影像图
       mapLayerSatellite: '', // 卫星影像图
       mapLayerWord: '', // 道路标注
@@ -1058,6 +1058,17 @@ export default {
       mapYear: '', // 地图年
       mapMonth: '', // 地图月
       mapDay: '', // 地图日
+      mapType: 'b',
+      roadWordChange: true, // 道路标注显隐
+      sharedChecked: false, // 双球
+      swipeChecked: false, // 卷帘
+      showView: true,
+
+      // openlayers 地图
+      olMap1: null, // 双球左
+      olMap2: null, // 双球右
+      imglayerGroup: null,
+      veclayerGroup: null,
 
       toolsCard: false, //工具卡片
       toolCard: false, //选中工具卡片
@@ -1229,34 +1240,6 @@ export default {
           clicked: false,
           imgUrl: require('./img/waterQualityIcon1.png'),
           latlng: { lat: 31.21935, lng: 121.50035 }
-        },
-        {
-          id: 1,
-          name: '水质监测点2',
-          clicked: false,
-          imgUrl: require('./img/waterQualityIcon2.png'),
-          latlng: { lat: 31.2163, lng: 121.49885 }
-        },
-        {
-          id: 2,
-          name: '水质监测点3',
-          clicked: false,
-          imgUrl: require('./img/waterQualityIcon3.png'),
-          latlng: { lat: 31.20945, lng: 121.49645 }
-        },
-        {
-          id: 3,
-          name: '水质监测点4',
-          clicked: false,
-          imgUrl: require('./img/waterQualityIcon4.png'),
-          latlng: { lat: 31.21405, lng: 121.49157 }
-        },
-        {
-          id: 4,
-          name: '水质监测点5',
-          clicked: false,
-          imgUrl: require('./img/waterQualityIcon2.png'),
-          latlng: { lat: 31.21945, lng: 121.50605 }
         }*/
       ],
       waterFlotage: false, // 水质漂浮物
@@ -2037,7 +2020,11 @@ export default {
               this.mapMonth = mouth.substring(4, 6)
               this.mapDay = mouth.substring(6, 8)
               this.map.removeLayer(this.mapLayerImage)
-              let mapImage = `http://jleco.jl-shgroup.com/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
+              let mapImage = `http://jleco.jl-shgroup.com/server/data/admin/regulator/uav/data/mbtiles?year=${
+                this.mapYear
+              }&month=${this.mapMonth}&day=${
+                this.mapDay
+              }&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
               this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
               this.map.addLayer(this.mapLayerImage)
               item.clicked = true
@@ -2835,10 +2822,10 @@ export default {
       var cva_c = this.getTdLayer('cva_w')
       var img_c = this.getTdLayer('img_w')
 
-      var veclayerGroup = new LayerGroup({
+      let veclayerGroup = new LayerGroup({
         layers: [vec_c, cva_c]
       })
-      var imglayerGroup = new LayerGroup({
+      let imglayerGroup = new LayerGroup({
         layers: [img_c, cva_c]
       })
       var view = new View({
@@ -2846,17 +2833,18 @@ export default {
         center: [121.495505, 31.21098],
         zoom: 14
       })
-      var map1 = new Map({
+      this.olMap1 = new Map({
         target: 'roadMap',
         layers: [veclayerGroup],
         view: view
       })
-      var map2 = new Map({
+      this.olMap2 = new Map({
         target: 'aerialMap',
         layers: [imglayerGroup],
         view: view
       })
     },
+    // 双球
     sharedView() {
       if (this.sharedChecked == true) {
         this.showView = false
@@ -2870,8 +2858,11 @@ export default {
         var show = document.getElementById('showmap')
         show.style.display = 'none'
         this.showView = true
+        this.olMap1.removeLayer(this.veclayerGroup)
+        this.olMap2.removeLayer(this.imglayerGroup)
       }
     },
+    // 卷帘
     showSwipeMap() {
       var vec_c = this.getTdLayer('vec_w')
       var cva_c = this.getTdLayer('cva_w')
@@ -2928,6 +2919,7 @@ export default {
       if (this.swipeChecked == false) {
         var layerMap = document.getElementById('layerMap')
         layerMap.style.display = 'none'
+
         this.showView = true
       }
     }
@@ -2959,6 +2951,11 @@ export default {
   height: 100%;
 }
 .showMap {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 555;
   display: none;
 }
 .main {
