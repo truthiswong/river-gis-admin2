@@ -851,7 +851,7 @@
                         </a-list-item>
                       </a-list>
                     </template>
-                    <a-button class="groupBtn" @click="getplanPageList">加入计划</a-button>
+                    <a-button class="groupBtn" @click="getplanPageList" v-show="hidingJudgment">加入计划</a-button>
                   </a-popover>
                 </a-col>
               </a-row>
