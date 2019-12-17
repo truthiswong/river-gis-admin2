@@ -1810,9 +1810,9 @@ export default {
         var oDate1 = new Date(date1)
         var oDate2 = new Date()
         if (oDate1.getTime() < oDate2.getTime()) {
-          return false
-        } else {
           return true
+        } else {
+          return false
         }
       }
       function tab2(date1, date2) {

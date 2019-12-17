@@ -5,11 +5,11 @@
     :options="options"
     @change="onChange"
     changeOnSelect
-  />
+  /> 
 </template>
 <script>
 import {
-  projectMineList
+  projectMinesTructure
 } from '@/api/login'
 export default {
   data() {
@@ -52,23 +52,44 @@ export default {
   },
   methods: {
     getList(){
-      projectMineList().then(res=>{
+      projectMinesTructure().then(res=>{
         var arr = res.data
+        arr.forEach(v => {
+          if (v.children == null) {
+            v.children =[]
+          }
+          v.value =v.id
+          v.label = v.name
+          v.code ='1'
+          v.children.forEach(a => {
+            if (a.children == null) {
+              a.children =[]
+            }
+            a.value =a.id
+            a.label = a.name
+            a.code ='2'
+          })
+        })
         console.log(arr);
         
+        this.options = arr
       })
     },
     onChange(value) {
-      console.log(this.$route.path);
-      this.$store.commit('show','123123123')
-      this.$router.push({
-        path: this.$route.path,
-        query: {
-          id: value
-        }
-      })
+      if (value.length>1) {
+        // console.log(value)
+        // console.log(this.$route.path);
+        this.$store.commit('show',value[1])
+        this.$router.push({
+          path: this.$route.path,
+          query: {
+            id: value[1]
+          }
+        })
+      }
+      
      
-      console.log(value)
+      
     }
   }
 }

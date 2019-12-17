@@ -1166,9 +1166,10 @@ export default {
           var zs = []
 
           for (let i = 0; i < arr.staff.length; i++) {
-            sz.push(arr.staff[i].role.id)
             for (let a = 0; a < this.personnelList.length; a++) {
+              
               if (arr.staff[i].role.id == this.personnelList[a].id) {
+                sz.push(arr.staff[i].role.id)
                 this.personnelList[a].num = arr.staff[i].amount
                 break
               }
@@ -1176,11 +1177,11 @@ export default {
           }
           this.spotList.roleId = sz
           for (const item of arr.device) {
-            zs.push(item.device.id)
             for (const d of this.equipmentList) {
               for (const cc of d.children) {
                 for (const aa of cc.children) {
                   if (item.device.id == aa.id) {
+                    zs.push(item.device.id)
                     aa.num = item.amount
                     break
                   }
@@ -1189,8 +1190,6 @@ export default {
             }
           }
           this.deviceTypeId = zs
-
-          console.log(arr)
         })
         .catch(err => {})
       this.addTask()

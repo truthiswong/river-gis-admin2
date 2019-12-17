@@ -874,6 +874,13 @@ export function projectMineList() {
     method: 'get',
   })
 }
+//我的项目列表
+export function projectMinesTructure() {
+  return axios({
+    url: '/server/data/admin/project/structure',
+    method: 'get',
+  })
+}
 //
 //时间轴
 export function daydataList(data) {

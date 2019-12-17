@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import {  projectTypeList,projectTypeSave,projectTypeDel,projectNewsList,projectNewsSave,projectNewsDel } from '@/api/login'
+import {  projectMinesTructure,projectTypeSave,projectTypeDel,projectNewsList,projectNewsSave,projectNewsDel } from '@/api/login'
 const treeData = []
 const columns = [
   {
@@ -101,7 +101,7 @@ const columns = [
   },
   {
     title: '一级分类名称',
-    dataIndex: 'name'
+    dataIndex: 'label'
   },
   {
     title: '操作',
@@ -181,12 +181,13 @@ export default {
       var data={
         id:'0'
       }
-      projectTypeList(data).then(res => {
+      projectMinesTructure(data).then(res => {
          var arr = res.data
         for (let i = 0; i < arr.length; i++) {
            arr[i].key=i+1
            arr[i].code='2'
            arr[i].label=arr[i].name
+           arr[i].children =[]
         }
         for (let i = 0; i < arr.length; i++) {
           this.treeData[0].children.push(arr[i])
@@ -275,7 +276,7 @@ export default {
     },
     select(e) {
       // console.log(this.treeData);
-      // console.log(e);
+      console.log(e);
       if (e.code=='1') {
         this.treeId=true
       }else if(e.code=='2') {
@@ -308,7 +309,6 @@ export default {
           this.$message.error(err.response.data.message);
         })
       }
-     
     },
     cancel(e) {
 
