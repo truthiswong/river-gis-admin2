@@ -8,6 +8,9 @@
   />
 </template>
 <script>
+import {
+  projectMineList
+} from '@/api/login'
 export default {
   data() {
     return {
@@ -44,11 +47,27 @@ export default {
     }
   },
   mounted() {
+    this.getList()
     // this.$store.commit('show','5555')
   },
   methods: {
+    getList(){
+      projectMineList().then(res=>{
+        var arr = res.data
+        console.log(arr);
+        
+      })
+    },
     onChange(value) {
-      // this.$store.commit('show',value)
+      console.log(this.$route.path);
+      this.$store.commit('show','123123123')
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          id: value
+        }
+      })
+     
       console.log(value)
     }
   }

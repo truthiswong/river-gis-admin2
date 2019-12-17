@@ -130,7 +130,7 @@ export default {
                         this.spinning=false
                     }).catch(err => {
                         this.spinning=false
-                        this.$message.error('加载数据失败')
+                        // this.$message.error('加载数据失败')
                     })
                     staffInspectPage(item.id).then(res=>{
                         var ar= res.data
@@ -206,9 +206,9 @@ export default {
             planPublish(this.id).then(res=>{
                 this.$message.success('成功');
                 this.spinning=true
-                this.$parent.$parent.$parent.$parent.$parent.getPage()
-                this.$parent.$parent.$parent.$parent.$parent.getinspectPointPage()
-                this.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
+                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getinspectPointPage()
+                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
             })
             this.visible = false;
         },

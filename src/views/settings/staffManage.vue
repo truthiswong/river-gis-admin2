@@ -94,7 +94,11 @@ export default {
       data: []
     }
   },
-  watch: {},
+  watch: {
+    $route(){
+      this.getList()
+    }
+  },
   mounted() {
     this.getList()
   },

@@ -112,6 +112,11 @@ export default {
       },
     }
   },
+  watch: {
+    $route(){
+      this.getList()
+    },
+  },
   mounted(){
     this.getList()
     this.headers.Authorization=Vue.ls.get(ACCESS_TOKEN)

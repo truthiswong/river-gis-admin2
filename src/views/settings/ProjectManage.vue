@@ -160,6 +160,11 @@ export default {
       ]
     }
   },
+  watch: {
+    $route(){
+      this.getList()
+    },
+  },
   mounted(){
     this.getList()
   },
@@ -186,7 +191,6 @@ export default {
         for (let i = 0; i < arr.length; i++) {
           this.treeData[0].children.push(arr[i])
         }
-         console.log(arr);
          this.data=arr
         }).catch(err => {
 
@@ -249,7 +253,7 @@ export default {
         id:this.id
       }
       projectNewsList(data).then(res => {
-        var arr = res.data
+        var arr = res.data.data     
         for (let i = 0; i < arr.length; i++) {
            arr[i].key=i+1
            arr[i].code='3'

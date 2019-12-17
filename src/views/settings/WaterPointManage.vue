@@ -125,6 +125,15 @@ export default {
       pointInfo: { id: '', name: '', clicked: '', latlng: { lat: '', lng: '' } } // 点信息
     }
   },
+  watch: {
+    $route(){
+      this.getLineList()
+      this.getRiverStreeList() //获取街道河道
+      this.getRoleList()
+      this.riverListGet()
+      this.getStructDeviceList()
+    }
+  },
   mounted() {
     this.initMap()
     this.getFixedList()

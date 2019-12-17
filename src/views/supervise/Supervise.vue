@@ -764,7 +764,8 @@ import {
   daydataList,
   weatherList,
   panoramaList,
-  panoramaImgList
+  panoramaImgList,
+  dataManual
 } from '@/api/login'
 import RiskSourceInfo from './modules/RiskSourceInfo'
 import AddRiskSource from './modules/AddRiskSource'
@@ -1116,38 +1117,38 @@ export default {
       riverShowList: [], // 河道
       streetShowList: [], //街道
       phonePhotoPoints: [
-        {
-          id: '111111111',
-          name: '手机照片2',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto2.jpg'),
-          direction: 0,
-          latlng: { lat: 31.24344, lng: 121.49892 }
-        },
-        {
-          id: '222222222222',
-          name: '手机照片3',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto3.jpg'),
-          direction: 0,
-          latlng: { lat: 31.22649, lng: 121.49712 }
-        },
-        {
-          id: '33333333333',
-          name: '手机照片4',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto4.jpg'),
-          direction: 0,
-          latlng: { lat: 31.19482, lng: 121.46819 }
-        },
-        {
-          id: '4444444444444',
-          name: '手机照片5',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto5.jpg'),
-          direction: 0,
-          latlng: { lat: 31.19649, lng: 121.45995 }
-        }
+        // {
+        //   id: '111111111',
+        //   name: '手机照片2',
+        //   clicked: false,
+        //   imgUrl: require('./img/phonePhoto2.jpg'),
+        //   direction: 0,
+        //   latlng: { lat: 31.24344, lng: 121.49892 }
+        // },
+        // {
+        //   id: '222222222222',
+        //   name: '手机照片3',
+        //   clicked: false,
+        //   imgUrl: require('./img/phonePhoto3.jpg'),
+        //   direction: 0,
+        //   latlng: { lat: 31.22649, lng: 121.49712 }
+        // },
+        // {
+        //   id: '33333333333',
+        //   name: '手机照片4',
+        //   clicked: false,
+        //   imgUrl: require('./img/phonePhoto4.jpg'),
+        //   direction: 0,
+        //   latlng: { lat: 31.19482, lng: 121.46819 }
+        // },
+        // {
+        //   id: '4444444444444',
+        //   name: '手机照片5',
+        //   clicked: false,
+        //   imgUrl: require('./img/phonePhoto5.jpg'),
+        //   direction: 0,
+        //   latlng: { lat: 31.19649, lng: 121.45995 }
+        // }
       ],
       UAVPhotoPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.24493, lng: 121.52566 } },
@@ -1326,6 +1327,13 @@ export default {
     }
   },
   watch: {
+    $route(){
+      this.getTimeQuantum() // 获取时间段
+      this.getRiverStreeList()
+
+      this.getWaterQualityPoints()
+      this.getParamList()
+    },
     // 历史数据
     historyData() {
       this.watchAllSwitch()
@@ -1431,6 +1439,12 @@ export default {
     // console.log(this.$store.state.id, 'ssasasa')
   },
   methods: {
+    fetchData(newVal, oldVa) {
+      this.getTimeQuantum() // 获取时间段
+      this.getRiverStreeList()
+      this.getWaterQualityPoints()
+      this.getParamList()
+    },
     //获取绘制类型
     getParamList() {
       var data = {
@@ -1464,7 +1478,6 @@ export default {
         // day: picker[2]
       }
       panoramaList(ssss).then(res => {
-        console.log(res.data.data)
         let hh = res.data.data
         hh.forEach(v => {
           v.name = v.title
@@ -1474,15 +1487,15 @@ export default {
       })
     },
     getMapdrawPage(id) {
+      var time = this.defaultTime
+      var picker = time.split('-')
+      var arr = {
+        projectId: this.$store.state.id,
+        // year: picker[0],
+        // month: picker[1],
+        // day: picker[2]
+      }
       if (id == '1') {
-        var time = this.defaultTime
-        var picker = time.split('-')
-        var arr = {
-          projectId: this.$store.state.id,
-          year: picker[0],
-          month: picker[1],
-          day: picker[2]
-        }
         mapdrawPage(arr).then(res => {
           let data = res.data
           let ar = []
@@ -1497,6 +1510,18 @@ export default {
         })
         this.gengduo = '2'
       }
+      dataManual(arr).then(res=>{
+        console.log(res.data.data);
+        let arr = res.data.data 
+        arr.forEach(v => {
+          v.latlng = v.coordinate
+          v.name = v.title
+          v.clicked = false
+          v.imgUrl = v.media
+          v.direction =0
+        });
+        this.phonePhotoPoints = arr
+      })
     },
     mapZoomChange() {
       // console.log(this.map.getZoom())
@@ -1983,9 +2008,9 @@ export default {
           } else if (item.manualLocus != 0) {
             item.level = 0
           } else if (item.mapdrawData != 0) {
-            item.level = 0
+            item.level = 2
           } else if (item.panoramaData != 0) {
-            item.level = 0
+            item.level = 2
           } else {
             item.level = 2
           }
@@ -2269,7 +2294,7 @@ export default {
       }
     },
     // 360点点击事件
-    panoramaPointClick(e) {
+    panoramaPointClick(e) {   
       this.$router.push({
         path: '/supervise/Vtour',
         query: {

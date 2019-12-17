@@ -1334,6 +1334,13 @@ export default {
     }
   },
   watch: {
+    $route(){
+      this.getPicker()
+      this.getTask()
+      this.getList()
+      this.getPage()
+      this.getRecommendFangan()
+    },
     //选中树节点
     checkedKeys(val) {
       console.log('onCheck', val)
@@ -1394,7 +1401,6 @@ export default {
 
     this.getPicker()
     this.getTask()
-    // this.getinspectPointPage()
     this.getList()
     this.getPage()
     this.getRecommendFangan()

@@ -12,7 +12,7 @@
       </div>
 
       <route-view></route-view>
-
+  
       <div class="footer">
         <!-- <div class="links">
           <a href="_self">帮助</a>

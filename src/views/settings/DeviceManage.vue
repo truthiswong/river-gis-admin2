@@ -241,7 +241,13 @@ export default {
       form: this.$form.createForm(this)
     }
   },
-  watch: {},
+  watch: {
+    $route(){
+      this.getList()
+      this.getstructure()
+      this.getstructDeviceList()
+    },
+  },
   mounted(){
     this.getList()
     this.getstructure()

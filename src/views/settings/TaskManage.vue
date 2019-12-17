@@ -765,6 +765,13 @@ export default {
     this.headers.Authorization = Vue.ls.get(ACCESS_TOKEN)
   },
   watch: {
+    $route(){
+      this.getLineList()
+      this.getRiverStreeList() //获取街道河道
+      this.getRoleList()
+      this.riverListGet()
+      this.getStructDeviceList()
+    },
     checkedKeys(val) {
       console.log('onCheck', val)
     },

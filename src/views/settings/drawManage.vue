@@ -74,7 +74,11 @@ export default {
       ]
     }
   },
-  watch: {},
+  watch: {
+    $route(){
+      this.getList()
+    },
+  },
   mounted(){
     this.getList()
   },
