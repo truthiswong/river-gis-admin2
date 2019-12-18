@@ -3,7 +3,6 @@
     <!-- 任务管理 -->
     <div class="left">
       <div id="map" ref="worldMap"></div>
-      <!-- <world-map></world-map> -->
       <ul class="menu">
         <li>
           <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
@@ -804,7 +803,8 @@ export default {
         type: 'dot',
         id: this.$store.state.id
       }
-      taskList(data).then(res => {
+      taskList(data)
+        .then(res => {
           var arr = res.data.data
           arr.forEach(v => {
             v.name = v.title
@@ -859,7 +859,8 @@ export default {
     //任务点列表
     gettTaskPointList(key) {
       if (key != undefined) {
-        taskSpotPage(key).then(res => {
+        taskSpotPage(key)
+          .then(res => {
             var arr = res.data.data
             for (let a = 0; a < arr.length; a++) {
               // arr[a].latlng = {
@@ -876,9 +877,8 @@ export default {
               }
             }
             this.allPointTask()
-          }) .catch(err => {
-            
           })
+          .catch(err => {})
       }
     },
     //河道列表
@@ -1056,7 +1056,7 @@ export default {
     },
     // 添加所有的标注点
     allPointTask() {
-      this.map.clearOverLays()
+      // this.map.clearOverLays()
       for (const item of this.pointTaskList) {
         for (const point of item.pointList) {
           this.drawAllPoint(point.latlng, point.id, point.name, item.pic)
@@ -1237,11 +1237,25 @@ export default {
     },
     // tab切换
     callback(key) {
-      console.log(key)
-      this.map.clearOverLays()
       if (key == 1) {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.pointTaskList) {
+            for (const point of item.pointList) {
+              if (point.id == overlay.options.id) {
+                this.map.removeOverLay(overlay)
+              }
+            }
+          }
+        }
         this.drawAllLine()
       } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.lineTaskList) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
         this.getList()
       }
     },

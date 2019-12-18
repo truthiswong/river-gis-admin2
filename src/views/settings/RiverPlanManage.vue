@@ -37,6 +37,26 @@
                 <a-list-item>
                   <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                     <a-col :span="18">
+                      <p style="margin:0;">自动监测点</p>
+                    </a-col>
+                    <a-col :span="6">
+                      <a-switch size="small" v-model="autoDetection" />
+                    </a-col>
+                  </a-row>
+                </a-list-item>
+                <a-list-item>
+                  <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                    <a-col :span="18">
+                      <p style="margin:0;">人工监测点</p>
+                    </a-col>
+                    <a-col :span="6">
+                      <a-switch size="small" v-model="peopleDetection" />
+                    </a-col>
+                  </a-row>
+                </a-list-item>
+                <a-list-item>
+                  <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                    <a-col :span="18">
                       <p style="margin:0;">街道</p>
                     </a-col>
                     <a-col :span="6">
@@ -81,7 +101,7 @@
           >
             <a-select-option
               :value="item.id"
-              v-for="(item, index) in riverShowList"
+              v-for="(item, index) in riverList"
               :key="index"
             >{{item.name}}</a-select-option>
           </a-select>
@@ -122,6 +142,17 @@
                 :selectedKeys="selectedKeys"
                 :treeData="item.dataTree"
               ></a-tree>
+              <!-- <a-directory-tree multiple defaultExpandAll @select="riverPlan" @expand="onExpand">
+              <a-tree-node title="360" key="0-0">
+                <a-tree-node title="调查点1" key="0-0-0" isLeaf />
+                <a-tree-node title="调查点2" key="0-0-1" isLeaf />
+              </a-tree-node>
+              <a-tree-node title="人工调查" key="0-1">
+                <a-tree-node title="人工调查1" key="0-1-0" isLeaf />
+                <a-tree-node title="人工调查2" key="0-1-1" isLeaf />
+              </a-tree-node>
+              <a-tree-node title="巡河线路1" key="0-2"></a-tree-node>
+              </a-directory-tree>-->
             </a-collapse-panel>
           </a-collapse>
           <a-form v-show="addLineShow" style="width: 100%;">
@@ -149,7 +180,7 @@
               >
                 <a-select-option
                   :value="item.id"
-                  v-for="(item, index) in riverShowList"
+                  v-for="(item, index) in riverList"
                   :key="index"
                 >{{item.name}}</a-select-option>
               </a-select>
@@ -235,6 +266,14 @@
         </a-row>
       </div>
     </div>
+    <!-- 鼠标跟随弹窗 -->
+    <div
+      class="mouse_alert"
+      v-show="alertShow"
+      :style="{left: alertLeft + 'px', top: alertTop + 'px'}"
+    >
+      <span>{{defaultRiver}}</span>
+    </div>
   </div>
 </template>
 
@@ -252,6 +291,7 @@ const formTailLayout = {
 }
 import {
   getRiverList,
+  getStreetList,
   programmeList,
   programmeSave,
   programmeDetail,
@@ -259,7 +299,7 @@ import {
   programmePrimary,
   taskSpotList,
   taskLineList,
-  getStreetList
+  testingPage,
 } from '@/api/login'
 import { TreeSelect } from 'ant-design-vue'
 const SHOW_PARENT = TreeSelect.SHOW_PARENT
@@ -282,6 +322,13 @@ export default {
       once: 0, // 移入次数
       riverShowList: [], // 河道
       streetShowList: [], //街道
+      alertLeft: -1000,
+      alertTop: -1000,
+      alertShow: false,
+      autoDetection: false, // 自动监测点
+      peopleDetection: false, // 人工监测点
+      fixedPointList: [], //固定监测点
+      peoplePointList: [], //人工监测点
 
       list: {
         id: '',
@@ -316,6 +363,13 @@ export default {
 
       SHOW_PARENT,
       value: '',
+      riverList: [
+        // {
+        //   id: 0,
+        //   name: '黄浦江',
+        //   clicked: true
+        // }
+      ],
       expandedKeys: ['0-0-0', '0-0-1'],
       autoExpandParent: true,
       checkedKeys: ['0-0-0'],
@@ -352,11 +406,22 @@ export default {
     // scale.setColor("red")
     this.map.addControl(scale)
 
+    // this.getList()
     this.getRiverStreeList()
+    this.getFixedList() // 获取固定监测点
+    this.getManualList() // 获取人工监测点
   },
   watch: {
     $route(){
-      this.getRiverStreeList()
+      this.getList()
+    },
+    autoDetection() {
+      // 自动监测点
+      this.watchAllSwitch()
+    },
+    peopleDetection() {
+      //人工监测点
+      this.watchAllSwitch()
     },
     // 河道显示
     riverShow() {
@@ -368,6 +433,17 @@ export default {
     }
   },
   methods: {
+    getList() {
+      getRiverList(this.$store.state.id)
+        .then(res => {
+          var arr = res.data.data
+          arr.forEach(v => {
+            v.clicked = false
+          })
+          this.riverList = arr
+        })
+        .catch(err => {})
+    },
     //编辑
     edit(id) {
       this.addLineShow = true
@@ -506,16 +582,16 @@ export default {
 
       this.selectedKeys = selectedKeys
       var info = info.node.dataRef
-      // this.clearLays()
+      this.clearLays()
       if (info.children) {
         for (var i = 0; i < info.children.length; i++) {
           if (info.children[i].riverData.length > 1) {
             console.log(info.children[i].riverData)
             this.positionArea(info.children[i].riverData)
-            // this.map.setZoom('13')
+            this.map.setZoom('13')
           }
           if (info.children[i].riverData.length == 1) {
-            // this.map.setZoom('10')
+            this.map.setZoom('10')
             this.setMarkerInfo(info.children[i].riverData)
           }
         }
@@ -524,7 +600,7 @@ export default {
           this.positionArea(info.riverData)
         }
         if (info.riverData.length == 1) {
-          // this.map.setZoom('14')
+          this.map.setZoom('14')
           this.setMarkerInfo(info.riverData)
         }
       }
@@ -657,7 +733,7 @@ export default {
           this.lineList = arr
         })
         .catch(err => {})
-      this.riverShowList.forEach(value => {
+      this.riverList.forEach(value => {
         if (value.name === index) {
           value.clicked = true
         } else {
@@ -733,19 +809,76 @@ export default {
         .catch(err => {})
       getRiverList(this.$store.state.id)
         .then(res => {
-          var arr = res.data.data
+          let arr = res.data.data
           arr.forEach(v => {
+            v.lineData = v.region
             v.clicked = false
           })
-          this.riverShowList = arr
+          this.riverShowList = arr // 河流显隐
+          this.riverList = arr // 河流列表
         })
         .catch(err => {})
+    },
+    //固定监测分页
+    getFixedList() {
+      var data = {
+        id: 'fixed',
+        prid: this.$store.state.id
+      }
+      testingPage(data)
+        .then(res => {
+          var arr = res.data.data
+          arr.forEach(v => {
+            v.latlng = v.coordinate
+            v.clicked = false
+          })
+          this.fixedPointList = arr
+        })
+        .catch(err => {})
+    },
+    //人工监测分页
+    getManualList() {
+      var data = {
+        id: 'manual',
+        prid: this.$store.state.id
+      }
+      testingPage(data)
+        .then(res => {
+          var arr = res.data.data
+          arr.forEach(v => {
+            v.latlng = v.coordinate
+            v.clicked = false
+          })
+          this.peoplePointList = arr
+        })
+        .catch(err => {})
+    },
+    allPointTestingTask(pointLists) {
+      for (const item of pointLists) {
+        this.drawTestingAllPoint(item.latlng, item.id, item.name, item.type.code)
+      }
+    },
+    // 添加标注图片
+    drawTestingAllPoint(latlng, id, title, type) {
+      let iconUrl
+      if (type == 'fixed') {
+        iconUrl = require('../../assets/img/fixedIcon.png')
+      } else if (type == 'manual') {
+        iconUrl = require('../../assets/img/peopleIcon.png')
+      }
+      let icon = new T.Icon({
+        iconUrl: iconUrl,
+        iconSize: new T.Point(41, 40),
+        iconAnchor: new T.Point(21, 40)
+      })
+      let marker = new T.Marker(latlng, { icon: icon, id: id, title: title })
+      this.map.addOverLay(marker)
     },
     // 检测所有开关
     watchAllSwitch() {
       // 固定监测点
       if (this.autoDetection) {
-        this.allPointTask(this.fixedPointList)
+        this.allPointTestingTask(this.fixedPointList)
       } else {
         for (const overlay of this.map.getOverlays()) {
           for (const item of this.fixedPointList) {
@@ -757,38 +890,10 @@ export default {
       }
       //人工监测点
       if (this.peopleDetection) {
-        this.allPointTask(this.peoplePointList)
+        this.allPointTestingTask(this.peoplePointList)
       } else {
         for (const overlay of this.map.getOverlays()) {
           for (const item of this.peoplePointList) {
-            if (item.id == overlay.options.id) {
-              this.map.removeOverLay(overlay)
-            }
-          }
-        }
-      }
-      // 河道显示
-      if (this.riverShow) {
-        for (const item of this.riverShowList) {
-          let polygon = new T.Polygon(item.lineData, {
-            color: 'blue', //线颜色
-            weight: 3, //线宽
-            opacity: 0.5, //透明度
-            fillColor: '#FFFFFF', //填充颜色
-            fillOpacity: 0, // 填充透明度
-            title: item.name, // 名字
-            id: item.id // id
-          })
-          //向地图上添加面
-          this.map.addOverLay(polygon)
-          polygon.addEventListener('click', this.polygonRiverClick)
-          polygon.addEventListener('mouseover', this.polygonMouseover)
-          polygon.addEventListener('mousemove', this.polygonMousemove)
-          polygon.addEventListener('mouseout', this.polygonMouseout)
-        }
-      } else {
-        for (const overlay of this.map.getOverlays()) {
-          for (const item of this.riverShowList) {
             if (item.id == overlay.options.id) {
               this.map.removeOverLay(overlay)
             }
@@ -817,6 +922,34 @@ export default {
       } else {
         for (const overlay of this.map.getOverlays()) {
           for (const item of this.streetShowList) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
+      }
+      // 河道显示
+      if (this.riverShow) {
+        for (const item of this.riverShowList) {
+          let polygon = new T.Polygon(item.lineData, {
+            color: 'blue', //线颜色
+            weight: 3, //线宽
+            opacity: 0.5, //透明度
+            fillColor: '#FFFFFF', //填充颜色
+            fillOpacity: 0, // 填充透明度
+            title: item.name, // 名字
+            id: item.id // id
+          })
+          //向地图上添加面
+          this.map.addOverLay(polygon)
+          polygon.addEventListener('click', this.polygonRiverClick)
+          polygon.addEventListener('mouseover', this.polygonMouseover)
+          polygon.addEventListener('mousemove', this.polygonMousemove)
+          polygon.addEventListener('mouseout', this.polygonMouseout)
+        }
+      } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.riverShowList) {
             if (item.id == overlay.options.id) {
               this.map.removeOverLay(overlay)
             }
@@ -891,7 +1024,6 @@ export default {
   width: 100%;
   height: 100%;
 }
-
 .left {
   position: relative;
   width: calc(100% - 300px);
@@ -925,6 +1057,21 @@ export default {
   bottom: 10px;
   margin: auto;
   width: 70%;
+}
+
+.mouse_alert {
+  position: absolute;
+  z-index: 999;
+  border: 1px solid #333;
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 0 4px;
+  border-radius: 3px;
+  box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.5);
+  span {
+    color: rgba(255, 0, 0, 0.8);
+    font-size: 14px;
+  }
 }
 
 .menu {
