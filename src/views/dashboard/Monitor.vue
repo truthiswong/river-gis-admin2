@@ -1633,9 +1633,8 @@ export default {
       // this.pointTarget(data.taskPage)
     },
     pointTarget(taskPage) {
-      console.log(taskPage)
-
       for (const item of taskPage) {
+
         if (item.type.code == 'dot') {
           let markerTool = new T.Marker(item.region[0], { title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
@@ -1685,7 +1684,7 @@ export default {
       this.map.addOverLay(marker)
       var data = {
         coordinate: this.lng + ',' + this.lat,
-        radius: '4'
+        radius: '1'
       }
       if (arr.clicked == true) {
         this.addCircle(this.lng, this.lat, 1000, 'red', 2, arr.id)
@@ -1707,7 +1706,7 @@ export default {
       marker.addEventListener('click', this.clickCircle)
       var data = {
         coordinate: this.lng + ',' + this.lat,
-        radius: '4'
+        radius: '1'
       }
       if (arr.clicked == true) {
         this.addCircle(this.lng, this.lat, 1000, 'red', 2, arr.id)
@@ -1964,17 +1963,45 @@ export default {
       }
       this.planDayDrawSpot(task)
     },
+    showPosition(marker, riverData) {
+      inspectTaskDetail(riverData.id).then(res => {
+        console.log(res.data);
+        
+        marker.addEventListener('click', function() {
+          var html =
+            "<div style='margin:0px;'>" +
+            "<div style='line-height:30px;font-size:18px;margin-bottom:5px'>" +
+            riverData.name +
+            '</div>' +
+            "<div style='line-height:25px;'>" +
+            "<div><span style='color:;'>任务名称</span>：" +
+            res.data.name +
+            '</div>' +
+            '<div>任务内容：' +
+            res.data.content +
+            '</div>'
+          // +'<div>位置信息：上海市徐汇区龙川北路422-5' +
+          // '</div>'
+          // +'<div>备注：' +
+          // '<div>当月计划执行次数：5' +
+          // '</div>' +
+          // '<div>当月待执行次数：2' +
+          // '</div>' +
+          // '</div>' +
+          // '</div>' +
+          // '</div>'
+          var infoWin = new T.InfoWindow(html)
+          marker.openInfoWindow(infoWin)
+        })
+      })
+    },
     //当日计划绘制河道，调查点内的任务
     planDayDrawSpot(taskPage) {
       for (const item of taskPage.anomalous) {
         if (item.region.length == 1) {
           let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
-          markerTool.addEventListener('click', this.planDayDrawClick)
-          // if(item.region.length ==1){
-          //   let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
-          //   this.map.addOverLay(markerTool)
-          //   markerTool.addEventListener('click', this.planDayDrawClick)
+          this.showPosition(markerTool, item)
         } else {
           if (taskPage.clicked == true) {
             let line = new T.Polyline(item.region, {
@@ -1996,7 +2023,7 @@ export default {
             })
             //向地图上添加线
             this.map.addOverLay(line)
-            line.addEventListener('click', this.planDayDrawClick)
+            this.showPosition(line, item)
           }
         }
       }
@@ -2004,7 +2031,7 @@ export default {
         if (item.region.length == 1) {
           let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
-          markerTool.addEventListener('click', this.planDayDrawClick)
+          this.showPosition(markerTool, item)
         } else {
           if (taskPage.clicked == true) {
             let line = new T.Polyline(item.region, {
@@ -2016,6 +2043,7 @@ export default {
             })
             //向地图上添加线
             this.map.addOverLay(line)
+            this.showPosition(line, item)
           } else {
             let line = new T.Polyline(item.region, {
               color: 'green', //线颜色
@@ -2026,7 +2054,8 @@ export default {
             })
             //向地图上添加线
             this.map.addOverLay(line)
-            line.addEventListener('click', this.planDayDrawClick)
+            this.showPosition(line, item)
+            // line.addEventListener('click', this.planDayDrawClick)
           }
         }
         // markerTool.addEventListener('click', this.taskPointClick)
@@ -2035,7 +2064,7 @@ export default {
         if (item.region.length == 1) {
           let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
-          markerTool.addEventListener('click', this.planDayDrawClick)
+          this.showPosition(markerTool, item)
         } else {
           let line = new T.Polyline(item.region, {
             color: 'blue', //线颜色
@@ -2046,7 +2075,7 @@ export default {
           })
           //向地图上添加线
           this.map.addOverLay(line)
-          line.addEventListener('click', this.planDayDrawClick)
+          this.showPosition(line, item)
           // if (taskPage.clicked == true) {
           //   let line = new T.Polyline(item.region, {
           //     color: 'bule', //线颜色
@@ -2136,8 +2165,7 @@ export default {
         month: picker[1],
         day: picker[2]
       }
-      planSave(data)
-        .then(res => {
+      planSave(data).then(res => {
           // console.log(res.data.id);
           this.planList1.id = res.data.id
           this.planList1.name = res.data.name
@@ -2156,7 +2184,7 @@ export default {
           planId: this.planList1.id,
           name: '',
           coordinate: this.lng + ',' + this.lat,
-          radius: '4',
+          radius: '1',
           fromTaskId: this.taskId
         }
         inspectPointSave(data).then(res => {
@@ -2282,7 +2310,7 @@ export default {
         if (item.clicked == true) {
           this.setPolygonFn(item.lineData, 'red', 3, 1, 0, item.name, item.id)
         } else {
-          this.setPolygonFn(item.lineData, 'blue', 3, 1, 0, item.name, item.id)
+          // this.setPolygonFn(item.lineData, 'blue', 3, 1, 0, item.name, item.id)
         }
       }
     },
@@ -2864,9 +2892,11 @@ export default {
         console.log(riverData.lng, riverData.lat)
 
         var lnglat = new T.LngLat(riverData.lng, riverData.lat)
+        
         var marker = new T.Marker(lnglat)
-        this.map.addOverLay(marker)
+        
         this.showPosition(marker, riverData)
+        this.map.addOverLay(marker)
       }
     },
     //地图上信息弹框
@@ -2899,29 +2929,6 @@ export default {
           marker.openInfoWindow(infoWin)
         })
       })
-      // marker.addEventListener('click', function() {
-      //   var html =
-      //     "<div style='margin:0px;'>" +
-      //     "<div style='line-height:30px;font-size:18px;margin-bottom:5px'>" +
-      //     '采集水样标本</div>' +
-      //     "<div style='line-height:25px;'>" +
-      //     "<div><span style='color:;'>任务名称</span>：水样调查" +
-      //     '</div>' +
-      //     '<div>任务内容：现场测定：ph、溶解氧、浊度（3次）、电导率、透明度' +
-      //     '</div>' +
-      //     '<div>位置信息：上海市徐汇区龙川北路422-5' +
-      //     '</div>' +
-      //     '<div>备注：' +
-      //     '<div>当月计划执行次数：5' +
-      //     '</div>' +
-      //     '<div>当月待执行次数：2' +
-      //     '</div>' +
-      //     '</div>' +
-      //     '</div>' +
-      //     '</div>'
-      //   var infoWin = new T.InfoWindow(html)
-      //   marker.openInfoWindow(infoWin)
-      // })
     },
     //河道计划点击事件
     onSelect(selectedKeys, info) {
@@ -3021,8 +3028,14 @@ export default {
         arr.forEach(v => {
           v.latlng = v.coordinate
         })
-        this.pointTarget(arr)
+        this.pointTargetAround(arr)
       })
+    },
+    pointTargetAround(taskPage) {
+      for (const item of taskPage) {
+        let markerTool = new T.Marker(item.coordinate, { title: item.name, id: item.id })
+        this.map.addOverLay(markerTool)
+      }
     },
     //画点
     addPoint(clickPoint, num) {
