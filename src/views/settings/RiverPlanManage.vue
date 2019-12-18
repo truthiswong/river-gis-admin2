@@ -659,17 +659,15 @@ export default {
         id:this.defaultRiver,
         prid:this.$store.state.id
       }
-      programmeList(data)
-        .then(res => {
+      programmeList(data).then(res => {
           var arr = res.data.data
           for (let a = 0; a < arr.length; a++) {
             if (arr[a].points != null) {
               arr[a].points.forEach(v => {
-                v.riverData = [{ lat: '', lng: '' }]
                 v.title = v.name
                 v.key = v.id
-                v.riverData[0].lat = v.coordinate[1]
-                v.riverData[0].lng = v.coordinate[0]
+                v.children = false
+                v.riverData = v.coordinate
               })
             } else {
               arr[a].points = []

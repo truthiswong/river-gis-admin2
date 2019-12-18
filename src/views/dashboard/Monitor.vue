@@ -1544,8 +1544,7 @@ export default {
                 objectId: arr[a].objectId,
                 projectId: this.$store.state.id
               }
-              taskInspectPage(data)
-                .then(res => {
+              taskInspectPage(data).then(res => {
                   var ar = res.data.data
                   ar.forEach(v => {
                     v.key = v.id
@@ -1562,7 +1561,7 @@ export default {
                   this.$message.error('加载数据失败')
                 })
             }
-            this.riverMontion = arr
+            
             if (this.noTitleKey == 'nowPlan') {
               this.planDayDraw()
             } else {
@@ -1571,6 +1570,7 @@ export default {
           } else {
             this.spinning = false
           }
+          this.riverMontion = arr
         })
         .catch(err => {
           this.spinning = false
@@ -1891,13 +1891,13 @@ export default {
           }
         })
         .catch(err => {
-          if (err.response != undefined) {
-            if (err.response.data.success == false && hidingJudgment == true) {
-              this.hidingJudgment = true
-            } else {
-              this.hidingJudgment = false
-            }
-          }
+          // if (err.response != undefined) {
+          //   if (err.response.data.success == false && hidingJudgment == true) {
+          //     this.hidingJudgment = true
+          //   } else {
+          //     this.hidingJudgment = false
+          //   }
+          // }
         })
     },
     //当日计划绘制
@@ -2434,8 +2434,8 @@ export default {
       // this.$refs.addTask.chooseLocation()
     },
     addTaskBtn1(planId, id, name, code) {
-      console.log(this.$refs.addTask)
-      this.$refs.addTask.show(planId, id, name, code)
+      console.log(this.$refs)
+      // this.$refs.addTask.show(planId, id, name, code)
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
