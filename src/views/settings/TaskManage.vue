@@ -771,7 +771,7 @@ export default {
     this.getManualList() // 获取人工监测点
   },
   watch: {
-    $route(){
+    $route() {
       this.getLineList()
       this.getRiverStreeList() //获取街道河道
       this.getRoleList()
@@ -910,7 +910,7 @@ export default {
     },
     // 绘制线
     drawLine(points, color, weight, opacity, id, name) {
-      let line = new T.Polyline(points, {
+      let line = new T.Polygon(points, {
         color: color, //线颜色
         weight: weight, //线宽
         opacity: opacity, //透明度
@@ -1004,8 +1004,6 @@ export default {
             }
           }
           this.deviceTypeId = zs
-
-          console.log(arr)
         })
         .catch(err => {})
       this.addTask()
@@ -1030,7 +1028,6 @@ export default {
           this.drawLine(item.lineData, 'red', 3, 0.5, item.id, item.name)
         }
       }
-      // this.drawAllLine()
       this.once++
     },
     taskLineMousemove() {
@@ -1039,13 +1036,20 @@ export default {
       // this.alertTop = event.pageY - 44
       // this.alertShow = true
     },
-    taskLineMouseout() {
+    taskLineMouseout(index) {
       this.once--
       this.alertShow = false
       for (const item of this.lineTaskList) {
-        item.clicked = false
+        if (item.id == index.target.options.id) {
+          this.defaultLineTask = item.name
+          for (const overlay of this.map.getOverlays()) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+          this.drawLine(item.lineData, 'blue', 3, 0.5, item.id, item.name)
+        }
       }
-      this.drawAllLine()
     },
     // 添加所有的标注点
     allPointTask() {
@@ -1168,7 +1172,6 @@ export default {
 
           for (let i = 0; i < arr.staff.length; i++) {
             for (let a = 0; a < this.personnelList.length; a++) {
-              
               if (arr.staff[i].role.id == this.personnelList[a].id) {
                 sz.push(arr.staff[i].role.id)
                 this.personnelList[a].num = arr.staff[i].amount
