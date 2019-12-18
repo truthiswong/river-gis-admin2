@@ -84,7 +84,7 @@
           okText="确定"
           cancelText="取消"
         >
-          <a >删除</a>
+          <a>删除</a>
         </a-popconfirm>
       </template>
     </a-table>
@@ -182,6 +182,12 @@ export default {
       selectedRowKeys: [],
       selectedRows: []
     }
+  },
+  watch: {
+    $route(){
+      this.getPage()
+      this.getType()
+    },
   },
   mounted(){
     this.getPage()

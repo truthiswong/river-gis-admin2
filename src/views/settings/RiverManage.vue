@@ -223,6 +223,10 @@ export default {
     }
   },
   watch: {
+    $route(){
+      this.getList()
+      this.getStreetShowList()
+    },
     streetShow() {
       this.watchAllSwitch()
     }

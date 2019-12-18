@@ -170,6 +170,12 @@
             <a-button style="width:198px;" block>
               <a-icon type="upload" />上传照片
             </a-button>
+            <div>
+              <div v-for="item of phonePhotoPoints" :key="item.id">
+                <img src="" alt="">
+                <div>11111</div>
+              </div>
+            </div>
           </a-upload>
         </a-collapse-panel>
         <a-collapse-panel
@@ -313,7 +319,7 @@
               <p style="margin:0;">{{item.name}}</p>
             </a-col>
             <a-col :span="6">
-              <a-switch size="small" />
+              <a-switch size="small" v-model="item.clicked" @click="onDrawType(item.id,item.clicked)"/>
             </a-col>
           </a-row>
         </a-list-item>
@@ -764,7 +770,8 @@ import {
   daydataList,
   weatherList,
   panoramaList,
-  panoramaImgList
+  panoramaImgList,
+  dataManual
 } from '@/api/login'
 import RiskSourceInfo from './modules/RiskSourceInfo'
 import AddRiskSource from './modules/AddRiskSource'
@@ -1130,38 +1137,38 @@ export default {
       riverShowList: [], // 河道
       streetShowList: [], //街道
       phonePhotoPoints: [
-        {
-          id: '111111111',
-          name: '手机照片2',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto2.jpg'),
-          direction: 0,
-          latlng: { lat: 31.24344, lng: 121.49892 }
-        },
-        {
-          id: '222222222222',
-          name: '手机照片3',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto3.jpg'),
-          direction: 0,
-          latlng: { lat: 31.22649, lng: 121.49712 }
-        },
-        {
-          id: '33333333333',
-          name: '手机照片4',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto4.jpg'),
-          direction: 0,
-          latlng: { lat: 31.19482, lng: 121.46819 }
-        },
-        {
-          id: '4444444444444',
-          name: '手机照片5',
-          clicked: false,
-          imgUrl: require('./img/phonePhoto5.jpg'),
-          direction: 0,
-          latlng: { lat: 31.19649, lng: 121.45995 }
-        }
+        // {
+        //   id: '111111111',
+        //   name: '手机照片2',
+        //   clicked: false,
+        //   imgUrl: require('./img/phonePhoto2.jpg'),
+        //   direction: 0,
+        //   latlng: { lat: 31.24344, lng: 121.49892 }
+        // },
+        // {
+        //   id: '222222222222',
+        //   name: '手机照片3',
+        //   clicked: false,
+        //   imgUrl: require('./img/phonePhoto3.jpg'),
+        //   direction: 0,
+        //   latlng: { lat: 31.22649, lng: 121.49712 }
+        // },
+        // {
+        //   id: '33333333333',
+        //   name: '手机照片4',
+        //   clicked: false,
+        //   imgUrl: require('./img/phonePhoto4.jpg'),
+        //   direction: 0,
+        //   latlng: { lat: 31.19482, lng: 121.46819 }
+        // },
+        // {
+        //   id: '4444444444444',
+        //   name: '手机照片5',
+        //   clicked: false,
+        //   imgUrl: require('./img/phonePhoto5.jpg'),
+        //   direction: 0,
+        //   latlng: { lat: 31.19649, lng: 121.45995 }
+        // }
       ],
       UAVPhotoPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.24493, lng: 121.52566 } },
@@ -1268,6 +1275,7 @@ export default {
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.23555, lng: 121.50555 } },
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.22333, lng: 121.51333 } }
       ],
+      drawType:false,
       riverRisk: false, // 河岸风险源
       riverRiskPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.20333, lng: 121.49999 } },
@@ -1340,6 +1348,13 @@ export default {
     }
   },
   watch: {
+    $route(){
+      this.getTimeQuantum() // 获取时间段
+      this.getRiverStreeList()
+
+      this.getWaterQualityPoints()
+      this.getParamList()
+    },
     // 历史数据
     historyData() {
       this.watchAllSwitch()
@@ -1382,6 +1397,9 @@ export default {
     },
     // 河岸风险源
     riverRisk() {
+      this.watchAllSwitch()
+    },
+    drawType(){
       this.watchAllSwitch()
     },
     // 水土流失
@@ -1445,6 +1463,12 @@ export default {
     // console.log(this.$store.state.id, 'ssasasa')
   },
   methods: {
+    fetchData(newVal, oldVa) {
+      this.getTimeQuantum() // 获取时间段
+      this.getRiverStreeList()
+      this.getWaterQualityPoints()
+      this.getParamList()
+    },
     //获取绘制类型
     getParamList() {
       var data = {
@@ -1469,6 +1493,9 @@ export default {
         type: 'risk_source_type'
       }
       paramList(datarisk).then(res => {
+        res.data.forEach(v => {
+          v.clicked = false
+        });
         this.riskSourceList = res.data
       })
       let ssss = {
@@ -1478,7 +1505,6 @@ export default {
         // day: picker[2]
       }
       panoramaList(ssss).then(res => {
-        console.log(res.data.data)
         let hh = res.data.data
         hh.forEach(v => {
           v.name = v.title
@@ -1488,15 +1514,15 @@ export default {
       })
     },
     getMapdrawPage(id) {
+      var time = this.defaultTime
+      var picker = time.split('-')
+      var arr = {
+        projectId: this.$store.state.id,
+        year: picker[0],
+        month: picker[1],
+        day: picker[2]
+      }
       if (id == '1') {
-        var time = this.defaultTime
-        var picker = time.split('-')
-        var arr = {
-          projectId: this.$store.state.id,
-          year: picker[0],
-          month: picker[1],
-          day: picker[2]
-        }
         mapdrawPage(arr).then(res => {
           let data = res.data
           let ar = []
@@ -1511,6 +1537,18 @@ export default {
         })
         this.gengduo = '2'
       }
+      dataManual(arr).then(res=>{
+        console.log(res.data.data);
+        let arr = res.data.data 
+        arr.forEach(v => {
+          v.latlng = v.coordinate
+          v.name = v.title
+          v.clicked = false
+          v.imgUrl = v.media
+          v.direction =0
+        });
+        this.phonePhotoPoints = arr
+      })
     },
     mapZoomChange() {
       // console.log(this.map.getZoom())
@@ -1997,9 +2035,9 @@ export default {
           } else if (item.manualLocus != 0) {
             item.level = 0
           } else if (item.mapdrawData != 0) {
-            item.level = 0
+            item.level = 2
           } else if (item.panoramaData != 0) {
-            item.level = 0
+            item.level = 2
           } else {
             item.level = 2
           }
@@ -2490,7 +2528,7 @@ export default {
       }
     },
     // 360点点击事件
-    panoramaPointClick(e) {
+    panoramaPointClick(e) {   
       this.$router.push({
         path: '/supervise/Vtour',
         query: {
@@ -2779,7 +2817,9 @@ export default {
     drawAllPoint1(latlng, index, id, code) {
       let markerTool = new T.Marker(latlng, { title: index, id: id, code: code })
       this.map.addOverLay(markerTool)
-      markerTool.addEventListener('click', this.sourceRiskClick)
+      if (code == 'risk') {
+        markerTool.addEventListener('click', this.sourceRiskClick)
+      }
     },
     //绘制线
     lineDraw(points, color, weight, opacity, id, name) {
@@ -2791,10 +2831,11 @@ export default {
         name: name,
         code: code
       })
-
       //向地图上添加线
       this.map.addOverLay(line)
-      line.addEventListener('click', this.sourceRiskClick)
+      if (code == 'risk') {
+        line.addEventListener('click', this.sourceRiskClick)
+      }
     },
     // 绘制面
     noodlesDraw(lineData, color, weight, opacity, fillColor, fillOpacity, title, id, code) {
@@ -2810,7 +2851,10 @@ export default {
       })
       //向地图上添加面
       this.map.addOverLay(polygon)
-      polygon.addEventListener('click', this.sourceRiskClick)
+      if (code == 'risk') {
+        polygon.addEventListener('click', this.sourceRiskClick)
+      }
+      
     },
     //排口水面漂浮物风险源弹窗
     sourceRiskClick(row) {
@@ -2819,36 +2863,107 @@ export default {
     // 河岸风险源
     onRiverRisk() {
       if (this.riverRisk) {
+        // let point = []
+        // for (const item of this.drawPage) {
+        //   console.log(item);
+          
+        //   if (item.drawType.id == '5da8374dea6c157d2d61007c') {
+        //     if (item.locationType.code == 'point') {
+        //       console.log('1');
+              
+        //       item.latlng = {
+        //         lng: item.point[0],
+        //         lat: item.point[1]
+        //       }
+        //       point.push(item)
+        //     }
+        //     if (item.locationType.code == 'line') {
+        //       // line.push(item)
+        //       this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+        //     }
+        //     if (item.locationType.code == 'polygon') {
+        //       this.noodlesDraw(
+        //         item.polygon,
+        //         item.frameColor,
+        //         3,
+        //         item.framePellucidity,
+        //         item.shapeColor,
+        //         item.shapePellucidity,
+        //         '',
+        //         item.id,
+        //         item.innerType.code
+        //       )
+        //     }
+        //   }
+        // }
+        // this.spotDraw(point)
+      } else {
+        this.removeOverLays(this.drawPage)
+      }
+    },
+    // 河岸风险源
+    onDrawType(id,clicked) {
+      if (clicked) {
         let point = []
         for (const item of this.drawPage) {
-          if (item.drawType.id == '5da8374dea6c157d2d61007c') {
-            if (item.locationType.code == 'point') {
-              item.latlng = {
-                lng: item.point[0],
-                lat: item.point[1]
+          if (item.drawType.id == id) {
+             if (item.locationType.code == 'point') {
+                item.latlng = {
+                  lng: item.point[0],
+                  lat: item.point[1]
+                }
+                point.push(item)
               }
-              point.push(item)
-            }
-            if (item.locationType.code == 'line') {
-              // line.push(item)
-              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
-            }
-            if (item.locationType.code == 'polygon') {
-              this.noodlesDraw(
-                item.polygon,
-                item.frameColor,
-                3,
-                item.framePellucidity,
-                item.shapeColor,
-                item.shapePellucidity,
-                '',
-                item.id,
-                item.innerType.code
-              )
-            }
+              if (item.locationType.code == 'line') {
+                this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+              }
+              if (item.locationType.code == 'polygon') {
+                this.noodlesDraw(
+                  item.polygon,
+                  item.frameColor,
+                  3,
+                  item.framePellucidity,
+                  item.shapeColor,
+                  item.shapePellucidity,
+                  '',
+                  item.id,
+                  item.innerType.code
+                )
+              }
           }
         }
         this.spotDraw(point)
+        // for (const item of this.drawPage) {
+        //   if (item.drawType.id == '5da8374dea6c157d2d61007c') {
+        //     if (item.locationType.code == 'point') {
+        //       console.log('1');
+              
+        //       item.latlng = {
+        //         lng: item.point[0],
+        //         lat: item.point[1]
+        //       }
+        //       point.push(item)
+        //     }
+        //     if (item.locationType.code == 'line') {
+        //       // line.push(item)
+        //       this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+        //     }
+        //     if (item.locationType.code == 'polygon') {
+        //       this.noodlesDraw(
+        //         item.polygon,
+        //         item.frameColor,
+        //         3,
+        //         item.framePellucidity,
+        //         item.shapeColor,
+        //         item.shapePellucidity,
+        //         '',
+        //         item.id,
+        //         item.innerType.code
+        //       )
+        //     }
+        //   }
+        // }
+        
       } else {
         this.removeOverLays(this.drawPage)
       }

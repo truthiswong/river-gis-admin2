@@ -109,28 +109,30 @@ export default {
                     name:'河道管理员'
                 },
             ],
-            treeData : [{
-                title: '全部',
-                key: '1',
-                id:'1',
-                children: [{
-                    title: '无人机类型',
-                    key: '2-2',
-                    id:'2',
-                    children: [
-                    { title: '无人机', key: '3-1',id:'3' },
-                    { title: '无人机螺旋桨', key: '3-2',id:'3' },
-                    { title: '无人机电池', key: '3-3' ,id:'3'},
-                    ],
-                }, {
-                    title: '采水样类型',
-                    key: '2-3',
-                    id:'2',
-                    children: [
+            treeData : [
+            //     {
+            //     title: '全部',
+            //     key: '1',
+            //     id:'1',
+            //     children: [{
+            //         title: '无人机类型',
+            //         key: '2-2',
+            //         id:'2',
+            //         children: [
+            //         { title: '无人机', key: '3-1',id:'3' },
+            //         { title: '无人机螺旋桨', key: '3-2',id:'3' },
+            //         { title: '无人机电池', key: '3-3' ,id:'3'},
+            //         ],
+            //     }, {
+            //         title: '采水样类型',
+            //         key: '2-3',
+            //         id:'2',
+            //         children: [
                     
-                    ],
-                }],
-            }],
+            //         ],
+            //     }],
+            // }
+            ],
         }
     },
     mounted(){

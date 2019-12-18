@@ -70,33 +70,39 @@ export const asyncRouterMap = [
             name: 'RiverManage',
             // hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
             component: () => import('@/views/settings/RiverManage'),
-            meta: { title: '河道管理', keepAlive: true, permission: [ 'table' ] }
+            meta: { title: '河道管理', keepAlive: false, permission: [ 'table' ] }
           },
           {
             path: '/settings/StreetManage',
             name: 'StreetManage',
             component: () => import('@/views/settings/StreetManage'),
-            meta: { title: '街道管理', keepAlive: true, permission: [ 'table' ] }
+            meta: { title: '街道管理', keepAlive: false, permission: [ 'table' ] }
           },
           {
             path: '/settings/TaskManage',
             name: 'TaskManage',
             component: () => import('@/views/settings/TaskManage'),
-            meta: { title: '任务管理', keepAlive: true, permission: [ 'table' ] }
+            meta: { title: '任务管理', keepAlive: false, permission: [ 'table' ] }
           },
           {
             path: '/settings/RiverPlanManage',
             name: 'RiverPlanManage',
-            // hidden: true,
+            // hidden: false,
             component: () => import('@/views/settings/RiverPlanManage'),
-            meta: { title: '巡河方案管理', keepAlive: true, permission: [ 'table' ] }
+            meta: { title: '巡河方案管理', keepAlive: false, permission: [ 'table' ] }
           },
           {
             path: '/settings/WaterPointManage',
             name: 'WaterPointManage',
-            // hidden: true,
+            // hidden: false,
             component: () => import('@/views/settings/WaterPointManage'),
-            meta: { title: '水质监测点管理', keepAlive: true, permission: [ 'table' ] }
+            meta: { title: '水质监测点管理', keepAlive: false, permission: [ 'table' ] }
+          },
+          {
+            path: '/settings/SupervisoryUnitsManage',
+            name: 'SupervisoryUnitsManage',
+            component: () => import('@/views/settings/SupervisoryUnitsManage'),
+            meta: { title: '督办单管理', keepAlive: false, permission: [ 'table' ] }
           },
           {
             path: '/settings/DeviceManage',
@@ -121,12 +127,6 @@ export const asyncRouterMap = [
             name: 'ProjectManage',
             component: () => import('@/views/settings/ProjectManage'),
             meta: { title: '项目管理', keepAlive: false, permission: [ 'table' ] }
-          },
-          {
-            path: '/settings/SupervisoryUnitsManage',
-            name: 'SupervisoryUnitsManage',
-            component: () => import('@/views/settings/SupervisoryUnitsManage'),
-            meta: { title: '督办单管理', keepAlive: true, permission: [ 'table' ] }
           },
           {
             path: '/settings/UserRootManage',

@@ -205,6 +205,12 @@ export default {
       points: []
     }
   },
+  watch: {
+    $route(){
+      this.getStreetShowList()
+      this.getRiverShowList()
+    }
+  },
   mounted() {
     let token = Vue.ls.get(ACCESS_TOKEN)
     let zoom = 14

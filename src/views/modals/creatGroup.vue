@@ -93,7 +93,7 @@ export default {
         },
         //判断有无分组
         judge(){
-            this.$parent.$parent.$parent.$parent.$parent.showPlanJudge(this.groupingList)
+            this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.showPlanJudge(this.groupingList)
         },
         //分组保存
         getGroupingSave(){

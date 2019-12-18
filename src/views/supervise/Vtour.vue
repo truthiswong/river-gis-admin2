@@ -10,6 +10,9 @@
   </div>
 </template>
 <script>
+import {
+  panoramaImgList
+} from '@/api/login'
 import PhotoSphereViewer from 'photo-sphere-viewer'
 import 'photo-sphere-viewer/dist/photo-sphere-viewer.css'
 export default {
@@ -21,7 +24,7 @@ export default {
       map: {},
       panoramaPoints: [
         {
-          id: '5dcbee2739d04308d0656113',
+          id: 0,
           name: '监测点1',
           clicked: false,
           latlng: { lat: 31.21493, lng: 121.49566 },
@@ -44,13 +47,20 @@ export default {
       ],
       panoramaLink: '', // 360链接
       panoramaName: '', // 360名字
-      panoramaId: this.$route.query.id, // 360id
+      panoramaId: 0, // 360id
     }
   },
   mounted() {
     this.initMap()
   },
   methods: {
+    getList(){
+      panoramaImgList(this.$route.query.id).then(res=>{
+        this.panoramaLink = res.data.panoramicPic
+        this.panoramaName =  res.data.title
+        this.initPhotoSphere()
+      })
+    },
     initMap() {
       //初始化地图控件
       let zoom = 14
@@ -61,7 +71,7 @@ export default {
       this.map.addControl(new T.Control.Scale())
       this.map.setMinZoom(4)
       this.map.setMaxZoom(18)
-      this.onPanorama()
+      this.getList()
     },
     // 360全景图
     onPanorama() {

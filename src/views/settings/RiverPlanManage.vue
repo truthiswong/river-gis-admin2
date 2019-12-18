@@ -495,6 +495,10 @@ export default {
     this.getList()
   },
   watch: {
+    $route(){
+      this.initCruisePlan()
+      this.getList()
+    },
     checkedKeys(val) {
       console.log('onCheck', val)
     }
