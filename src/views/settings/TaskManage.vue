@@ -3,7 +3,6 @@
     <!-- 任务管理 -->
     <div class="left">
       <div id="map" ref="worldMap"></div>
-      <!-- <world-map></world-map> -->
       <ul class="menu">
         <li>
           <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
@@ -1050,7 +1049,7 @@ export default {
     },
     // 添加所有的标注点
     allPointTask() {
-      this.map.clearOverLays()
+      // this.map.clearOverLays()
       for (const item of this.pointTaskList) {
         for (const point of item.pointList) {
           this.drawAllPoint(point.latlng, point.id, point.name, item.pic)
@@ -1231,11 +1230,25 @@ export default {
     },
     // tab切换
     callback(key) {
-      console.log(key)
-      this.map.clearOverLays()
       if (key == 1) {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.pointTaskList) {
+            for (const point of item.pointList) {
+              if (point.id == overlay.options.id) {
+                this.map.removeOverLay(overlay)
+              }
+            }
+          }
+        }
         this.drawAllLine()
       } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.lineTaskList) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
         this.getList()
       }
     },
