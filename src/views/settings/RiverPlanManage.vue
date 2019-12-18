@@ -3,17 +3,66 @@
     <!-- 任务管理 -->
     <div class="left">
       <div id="map" ref="worldMap"></div>
-      <!-- <world-map></world-map> -->
-      <div class="mapChange">
-        <a-row style="width:100%">
-          <a-col :span="24">
-            <a-checkbox @change="onChange">水质监测点</a-checkbox>
-          </a-col>
-          <a-col :span="24">
-            <a-checkbox @change="onChange">风险源</a-checkbox>
-          </a-col>
-        </a-row>
-      </div>
+      <ul class="menu">
+        <li>
+          <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
+            <template slot="content">
+              <a-row style="width: 100%;">
+                <a-col :span="24">
+                  <a-radio-group @change="onMapChange" v-model="mapType">
+                    <a-radio-button value="a">2D影像图</a-radio-button>
+                    <a-radio-button value="b">卫星影像图</a-radio-button>
+                  </a-radio-group>
+                </a-col>
+              </a-row>
+              <a-row style="width: 100%; margin-top: 8px;">
+                <a-col :span="16">
+                  <span>道路标注</span>
+                </a-col>
+                <a-col :span="8" style="text-align: right;">
+                  <a-switch size="small" v-model="roadWordChange" @click="onChangeSwitch" />
+                </a-col>
+              </a-row>
+            </template>
+            <template slot="title">
+              <span>图像</span>
+            </template>
+            <img src="../../assets/img/map.png" alt="图像" title="图像" />
+          </a-popover>
+        </li>
+        <li>
+          <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
+            <template slot="content" style="overflow-y: scroll;">
+              <a-list size="small">
+                <a-list-item>
+                  <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                    <a-col :span="18">
+                      <p style="margin:0;">街道</p>
+                    </a-col>
+                    <a-col :span="6">
+                      <a-switch size="small" v-model="streetShow" />
+                    </a-col>
+                  </a-row>
+                </a-list-item>
+                <a-list-item>
+                  <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                    <a-col :span="18">
+                      <p style="margin:0;">河道</p>
+                    </a-col>
+                    <a-col :span="6">
+                      <a-switch size="small" v-model="riverShow" />
+                    </a-col>
+                  </a-row>
+                </a-list-item>
+              </a-list>
+            </template>
+            <template slot="title">
+              <span>更多</span>
+            </template>
+            <img src="../../assets/img/more.png" alt="更多" title="更多" />
+          </a-popover>
+        </li>
+      </ul>
     </div>
     <div class="right">
       <h3 style="font-size: 16px; font-weight: 600; margin:10px 0 0 10px; text-align:center;">巡河方案管理</h3>
@@ -32,7 +81,7 @@
           >
             <a-select-option
               :value="item.id"
-              v-for="(item, index) in riverList"
+              v-for="(item, index) in riverShowList"
               :key="index"
             >{{item.name}}</a-select-option>
           </a-select>
@@ -73,17 +122,6 @@
                 :selectedKeys="selectedKeys"
                 :treeData="item.dataTree"
               ></a-tree>
-              <!-- <a-directory-tree multiple defaultExpandAll @select="riverPlan" @expand="onExpand">
-              <a-tree-node title="360" key="0-0">
-                <a-tree-node title="调查点1" key="0-0-0" isLeaf />
-                <a-tree-node title="调查点2" key="0-0-1" isLeaf />
-              </a-tree-node>
-              <a-tree-node title="人工调查" key="0-1">
-                <a-tree-node title="人工调查1" key="0-1-0" isLeaf />
-                <a-tree-node title="人工调查2" key="0-1-1" isLeaf />
-              </a-tree-node>
-              <a-tree-node title="巡河线路1" key="0-2"></a-tree-node>
-              </a-directory-tree>-->
             </a-collapse-panel>
           </a-collapse>
           <a-form v-show="addLineShow" style="width: 100%;">
@@ -111,7 +149,7 @@
               >
                 <a-select-option
                   :value="item.id"
-                  v-for="(item, index) in riverList"
+                  v-for="(item, index) in riverShowList"
                   :key="index"
                 >{{item.name}}</a-select-option>
               </a-select>
@@ -201,6 +239,9 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
+
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 }
@@ -217,177 +258,14 @@ import {
   programmeRemove,
   programmePrimary,
   taskSpotList,
-  taskLineList
+  taskLineList,
+  getStreetList
 } from '@/api/login'
 import { TreeSelect } from 'ant-design-vue'
 const SHOW_PARENT = TreeSelect.SHOW_PARENT
 
 const treeData = [
-  // {
-  //   title: '360',
-  //   key: 'wqewfsaf',
-  //   children: [
-  //     {
-  //       title: '360调查点1',
-  //       key: 'adasdwqeqwe',
-  //       riverData: [
-  //         {
-  //           lat: 31.24539,
-  //           lng: 121.48686
-  //         },
-  //         {
-  //           lat: 31.24616,
-  //           lng: 121.48411
-  //         },
-  //         {
-  //           lat: 31.2466,
-  //           lng: 121.4824
-  //         },
-  //         {
-  //           lat: 31.24612,
-  //           lng: 121.48051
-  //         },
-  //         {
-  //           lat: 31.24484,
-  //           lng: 121.47901
-  //         },
-  //         {
-  //           lat: 31.24462,
-  //           lng: 121.47939
-  //         },
-  //         {
-  //           lat: 31.24543,
-  //           lng: 121.48089
-  //         },
-  //         {
-  //           lat: 31.2459,
-  //           lng: 121.48261
-  //         },
-  //         {
-  //           lat: 31.2448,
-  //           lng: 121.4857
-  //         },
-  //         {
-  //           lat: 31.2444,
-  //           lng: 121.4872
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       title: '360调查点2',
-  //       value: '0-0-1',
-  //       key: '0-0-1',
-  //       riverData: [
-  //         {
-  //           lat: 31.21882,
-  //           lng: 121.50364
-  //         },
-  //         {
-  //           lat: 31.21265,
-  //           lng: 121.50227
-  //         },
-  //         {
-  //           lat: 31.20583,
-  //           lng: 121.49703
-  //         },
-  //         {
-  //           lat: 31.19915,
-  //           lng: 121.49197
-  //         },
-  //         {
-  //           lat: 31.19702,
-  //           lng: 121.49591
-  //         },
-  //         {
-  //           lat: 31.2164,
-  //           lng: 121.50759
-  //         },
-  //         {
-  //           lat: 31.21948,
-  //           lng: 121.50759
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       title: '360调查点3',
-  //       value: '0-0-2',
-  //       key: '0-0-2',
-  //       riverData: [
-  //         {
-  //           lat: 31.25153,
-  //           lng: 121.52409
-  //         },
-  //         {
-  //           lat: 31.25355,
-  //           lng: 121.53085
-  //         },
-  //         {
-  //           lat: 31.25858,
-  //           lng: 121.53934
-  //         },
-  //         {
-  //           lat: 31.25535,
-  //           lng: 121.54334
-  //         },
-  //         {
-  //           lat: 31.2499,
-  //           lng: 121.53353
-  //         },
-  //         {
-  //           lat: 31.24786,
-  //           lng: 121.52737
-  //         },
-  //         {
-  //           lat: 31.24682,
-  //           lng: 121.51709
-  //         },
-  //         {
-  //           lat: 31.25111,
-  //           lng: 121.51711
-  //         }
-  //       ]
-  //     }
-  //   ]
-  // },
-  // {
-  //   title: '人工调查点',
-  //   value: '0-1',
-  //   key: '0-1',
-  //   children: [
-  //     {
-  //       title: '调查点1',
-  //       value: '0-1-0',
-  //       key: '0-1-0',
-  //       riverData: [
-  //         {
-  //           lat: 31.24539,
-  //           lng: 121.48686
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       title: '调查点2',
-  //       value: '0-1-1',
-  //       key: '0-1-1',
-  //       riverData: [
-  //         {
-  //           lat: 31.21882,
-  //           lng: 121.50364
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       title: '调查点3',
-  //       key: '0-1-2',
-  //       riverData: [
-  //         {
-  //           lat: 31.25153,
-  //           lng: 121.52409
-  //         }
-  //       ]
-  //     }
-  //   ]
-  // }
+  
 ]
 export default {
   name: 'RiverPlanManage',
@@ -396,6 +274,15 @@ export default {
   },
   data() {
     return {
+      mapType: 'b', // 地图类型
+      roadWordChange: true, // 道路标注
+      mapLayerWord: '', // 道路层级
+      riverShow: false, // 河道
+      streetShow: false, // 街道
+      once: 0, // 移入次数
+      riverShowList: [], // 河道
+      streetShowList: [], //街道
+
       list: {
         id: '',
         projectId: this.$store.state.id,
@@ -415,18 +302,6 @@ export default {
         //   name: '黄浦江方案1',
         //   key: 0,
         //   default: true
-        // },
-        // {
-        //   id: 1,
-        //   name: '黄浦江方案2',
-        //   key: 1,
-        //   default: false
-        // },
-        // {
-        //   id: 2,
-        //   name: '黄浦江方案3',
-        //   key: 2,
-        //   default: false
         // }
       ],
       customStyle: 'background: #fff;margin: 0;overflow: hidden',
@@ -441,43 +316,6 @@ export default {
 
       SHOW_PARENT,
       value: '',
-      riverList: [
-        // {
-        //   id: 0,
-        //   name: '黄浦江',
-        //   clicked: true
-        // },
-        // {
-        //   id: 1,
-        //   name: '大治河',
-        //   clicked: false
-        // },
-        // {
-        //   id: 2,
-        //   name: '川杨河',
-        //   clicked: false
-        // },
-        // {
-        //   id: 3,
-        //   name: '蕰藻浜',
-        //   clicked: false
-        // },
-        // {
-        //   id: 4,
-        //   name: '龙华港',
-        //   clicked: false
-        // },
-        // {
-        //   id: 5,
-        //   name: '太浦河',
-        //   clicked: false
-        // },
-        // {
-        //   id: 6,
-        //   name: '太湖',
-        //   clicked: false
-        // }
-      ],
       expandedKeys: ['0-0-0', '0-0-1'],
       autoExpandParent: true,
       checkedKeys: ['0-0-0'],
@@ -486,35 +324,50 @@ export default {
 
       // 地图对象
       map: {},
-      // 地图节点对象（里面含节点对象、区域对象、任务弹窗对象）
-      mapPoint: new Map()
+      once: 0 // 移入次数
     }
   },
   mounted() {
-    this.initCruisePlan()
-    this.getList()
+    let token = Vue.ls.get(ACCESS_TOKEN)
+    let zoom = 14
+    let twoDimensionURL =
+      'http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
+    this.mapLayer2d = new T.TileLayer(twoDimensionURL, { minZoom: 4, maxZoom: 18, zIndex: 10 })
+    let satelliteURL = 'http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
+    this.mapLayerSatellite = new T.TileLayer(satelliteURL, { minZoom: 4, maxZoom: 18, zIndex: 10 })
+    // 创建自定义图层对象
+    let wordLabel = 'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
+    this.mapLayerWord = new T.TileLayer(wordLabel, { minZoom: 4, maxZoom: 18, zIndex: 15 })
+    // 正射影像
+    let mapImage = `http://jleco.jl-shgroup.com/server/data/admin/regulator/uav/data/mbtiles?year=&month&day&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
+    this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
+    this.map = new T.Map('map', {
+      minZoom: 4,
+      maxZoom: 23,
+      layers: [this.mapLayerSatellite, this.mapLayerWord, this.mapLayerImage]
+    })
+    this.map.centerAndZoom(new T.LngLat(121.43429, 31.15847), zoom)
+    //添加比例尺控件
+    let scale = new T.Control.Scale()
+    // scale.setColor("red")
+    this.map.addControl(scale)
+
+    this.getRiverStreeList()
   },
   watch: {
     $route(){
-      this.initCruisePlan()
-      this.getList()
+      this.getRiverStreeList()
     },
-    checkedKeys(val) {
-      console.log('onCheck', val)
+    // 河道显示
+    riverShow() {
+      this.watchAllSwitch()
+    },
+    // 街道显示
+    streetShow() {
+      this.watchAllSwitch()
     }
   },
   methods: {
-    getList() {
-      getRiverList(this.$store.state.id)
-        .then(res => {
-          var arr = res.data.data
-          arr.forEach(v => {
-            v.clicked = false
-          })
-          this.riverList = arr
-        })
-        .catch(err => {})
-    },
     //编辑
     edit(id) {
       this.addLineShow = true
@@ -561,32 +414,6 @@ export default {
     },
     cancelDelete(e) {
       // this.$message.error('Click on No')
-    },
-    initCruisePlan() {
-      const that = this
-      //初始化地图控件
-      let zoom = 14
-      that.map = new T.Map('map')
-      that.map.centerAndZoom(new T.LngLat(121.495505, 31.21098), zoom)
-      // this.map.TileLayerOptions({zIndex: 1});
-
-      // 初始化天气插件
-      /*        let a = d.getElementById('weather-float-he')
-        if (a) {
-          a.parentNode.removeChild(a)
-        }
-        a = d.createElement('div')
-        a.id = 'weather-float-he'
-        let b = d.getElementsByTagName('body')[0]
-        b.appendChild(a);
-        let c = d.createElement('link')
-        c.rel = 'stylesheet'
-        c.href = 'https://apip.weatherdt.com/float/static/css/tqw_widget_float.css?v=0101'
-        let s = d.createElement('script')
-        s.src = 'https://apip.weatherdt.com/float/static/js/tqw_widget_float.js?v=0101'
-        let sn = d.getElementsByTagName('script')[0]
-        sn.parentNode.insertBefore(c, sn)
-        sn.parentNode.insertBefore(s, sn);*/
     },
     //请求点线任务
     collapseChange(key) {
@@ -679,16 +506,16 @@ export default {
 
       this.selectedKeys = selectedKeys
       var info = info.node.dataRef
-      this.clearLays()
+      // this.clearLays()
       if (info.children) {
         for (var i = 0; i < info.children.length; i++) {
           if (info.children[i].riverData.length > 1) {
             console.log(info.children[i].riverData)
             this.positionArea(info.children[i].riverData)
-            this.map.setZoom('13')
+            // this.map.setZoom('13')
           }
           if (info.children[i].riverData.length == 1) {
-            this.map.setZoom('10')
+            // this.map.setZoom('10')
             this.setMarkerInfo(info.children[i].riverData)
           }
         }
@@ -697,7 +524,7 @@ export default {
           this.positionArea(info.riverData)
         }
         if (info.riverData.length == 1) {
-          this.map.setZoom('14')
+          // this.map.setZoom('14')
           this.setMarkerInfo(info.riverData)
         }
       }
@@ -832,7 +659,7 @@ export default {
           this.lineList = arr
         })
         .catch(err => {})
-      this.riverList.forEach(value => {
+      this.riverShowList.forEach(value => {
         if (value.name === index) {
           value.clicked = true
         } else {
@@ -875,6 +702,183 @@ export default {
     //清楚覆盖物
     clearLays() {
       this.map.clearOverLays()
+    },
+    // 图像
+    onMapChange(e) {
+      if (e.target.value == 'a') {
+        this.map.addLayer(this.mapLayer2d)
+        this.map.removeLayer(this.mapLayerSatellite)
+      } else if (e.target.value == 'b') {
+        this.map.addLayer(this.mapLayerSatellite)
+        this.map.removeLayer(this.mapLayer2d)
+      }
+    },
+    // 道路开关
+    onChangeSwitch() {
+      if (this.roadWordChange) {
+        this.map.addLayer(this.mapLayerWord)
+      } else {
+        this.map.removeLayer(this.mapLayerWord)
+      }
+    },
+    // 获取所有河道街道列表
+    getRiverStreeList() {
+      getStreetList(this.$store.state.id)
+        .then(res => {
+          let arr = res.data.data
+          arr.forEach(v => {
+            v.lineData = v.region
+            v.clicked = false
+          })
+          this.streetShowList = arr
+        })
+        .catch(err => {})
+      getRiverList(this.$store.state.id)
+        .then(res => {
+          var arr = res.data.data
+          arr.forEach(v => {
+            v.clicked = false
+          })
+          this.riverShowList = arr
+        })
+        .catch(err => {})
+    },
+    // 检测所有开关
+    watchAllSwitch() {
+      // 固定监测点
+      if (this.autoDetection) {
+        this.allPointTask(this.fixedPointList)
+      } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.fixedPointList) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
+      }
+      //人工监测点
+      if (this.peopleDetection) {
+        this.allPointTask(this.peoplePointList)
+      } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.peoplePointList) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
+      }
+      // 河道显示
+      if (this.riverShow) {
+        for (const item of this.riverShowList) {
+          let polygon = new T.Polygon(item.lineData, {
+            color: 'blue', //线颜色
+            weight: 3, //线宽
+            opacity: 0.5, //透明度
+            fillColor: '#FFFFFF', //填充颜色
+            fillOpacity: 0, // 填充透明度
+            title: item.name, // 名字
+            id: item.id // id
+          })
+          //向地图上添加面
+          this.map.addOverLay(polygon)
+          polygon.addEventListener('click', this.polygonRiverClick)
+          polygon.addEventListener('mouseover', this.polygonMouseover)
+          polygon.addEventListener('mousemove', this.polygonMousemove)
+          polygon.addEventListener('mouseout', this.polygonMouseout)
+        }
+      } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.riverShowList) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
+      }
+      // 街道显示
+      if (this.streetShow) {
+        for (const item of this.streetShowList) {
+          let polygon = new T.Polygon(item.lineData, {
+            color: 'blue', //线颜色
+            weight: 3, //线宽
+            opacity: 0.5, //透明度
+            fillColor: '#FFFFFF', //填充颜色
+            fillOpacity: 0, // 填充透明度
+            title: item.name, // 名字
+            id: item.id // id
+          })
+          //向地图上添加面
+          this.map.addOverLay(polygon)
+          polygon.addEventListener('click', this.polygonStreetClick)
+          polygon.addEventListener('mouseover', this.polygonStreetMouseover)
+          polygon.addEventListener('mousemove', this.polygonStreetMousemove)
+          polygon.addEventListener('mouseout', this.polygonStreetMouseout)
+        }
+      } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.streetShowList) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
+      }
+    },
+    // 多边形点击事件
+    polygonRiverClick(index) {
+      console.log(index)
+    },
+    // 多边形移入事件
+    polygonMouseover(index) {
+      if (this.once == 1) {
+        return
+      }
+      for (const item of this.riverShowList) {
+        if (item.id == index.target.options.id) {
+          this.defaultRiver = item.name
+        }
+      }
+      this.once++
+    },
+    polygonMousemove() {
+      let event = event || window.event //兼容写法
+      this.alertLeft = event.pageX + 10
+      this.alertTop = event.pageY - 44
+      this.alertShow = true
+    },
+    // 多边形移出事件
+    polygonMouseout() {
+      this.once--
+      this.alertShow = false
+    },
+    // 多边形点击事件
+    polygonStreetClick(index) {
+      console.log(index)
+    },
+    // 多边形移入事件
+    polygonStreetMouseover(index) {
+      if (this.once == 1) {
+        return
+      }
+      for (const item of this.streetShowList) {
+        if (item.id == index.target.options.id) {
+          this.defaultRiver = item.name
+        }
+      }
+      this.once++
+    },
+    polygonStreetMousemove() {
+      let event = event || window.event //兼容写法
+      this.alertLeft = event.pageX + 10
+      this.alertTop = event.pageY - 44
+      this.alertShow = true
+    },
+    // 多边形移出事件
+    polygonStreetMouseout() {
+      this.once--
+      this.alertShow = false
     }
   }
 }
@@ -888,13 +892,6 @@ export default {
 #map {
   width: 100%;
   height: 100%;
-}
-.mapChange {
-  position: fixed;
-  left: 10px;
-  bottom: 10px;
-  width: 120px;
-  z-index: 1500;
 }
 
 .left {
@@ -930,5 +927,31 @@ export default {
   bottom: 10px;
   margin: auto;
   width: 70%;
+}
+
+.menu {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 36px;
+  z-index: 888;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  li {
+    width: 100%;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
+    margin-top: 10px;
+    img {
+      width: 100%;
+      height: 36px;
+      padding: 10px;
+    }
+  }
+}
+.ant-col-6 {
+  text-align: right;
 }
 </style>
