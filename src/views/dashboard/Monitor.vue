@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%;height:calc(100vh - 64px);">
+  <div style="width:100%;height:calc(100vh - 64px);" ref="monitor">
     <water-quality ref="waterquality"></water-quality>
     <split-pane :min-percent="25" :default-percent="81.5" split="vertical">
       <template slot="paneL">
@@ -447,7 +447,7 @@
                             <a-select-option value="jack">Jack</a-select-option>
                               </a-select>-->
                             </a-col>
-                            <a-col :span="3" > 
+                            <a-col :span="3">
                               <a-popconfirm
                                 title="是否确认删除?"
                                 @confirm="getInspectPointDel(item.id)"
@@ -480,8 +480,10 @@
                       </div>
                       <add-task
                         ref="addTask"
+                        :msg="newTaskObj"
                         @chooseLocation="addLineTool"
                         @cancleBtn="cancelAddTask"
+                        @confirmBtn="confirmAddTask($event)"
                         @addPoint="addPoint"
                         @addLineTool="addLineTool"
                         @addPolygonTool="addPolygonTool"
@@ -607,7 +609,7 @@
                                         ></a-tree>
                                       </div>
                                     </div>
-                                    <div class="addTaskBtn" >
+                                    <div class="addTaskBtn">
                                       <!-- <a-button class="addTask_btn" icon="plus" @click="addNewTask">追加任务</a-button> -->
                                       <a-button
                                         class="addTask_btn commBtn"
@@ -1261,7 +1263,7 @@ export default {
       alertShow: false,
       spinning: true,
       defaultLineTask: '',
-      hidingJudgment3:false,
+      hidingJudgment3: false,
       riskMapPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.23493, lng: 121.51566 } },
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24344, lng: 121.49892 } },
@@ -1303,7 +1305,7 @@ export default {
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24315, lng: 121.49606 } },
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.23668, lng: 121.49656 } }
       ],
-      addTaskCode:'1',
+      addTaskCode: '1',
       weatherList: [
         {
           temperature: '26°',
@@ -1332,11 +1334,12 @@ export default {
       ],
       patrolPlanInfo: [],
       riverList: [],
-      asasd: {}
+      asasd: {},
+      newTaskObj: {} // 新建计划传值
     }
   },
   watch: {
-    $route(){
+    $route() {
       this.getPicker()
       this.getTask()
       this.getList()
@@ -1546,7 +1549,8 @@ export default {
                 objectId: arr[a].objectId,
                 projectId: this.$store.state.id
               }
-              taskInspectPage(data).then(res => {
+              taskInspectPage(data)
+                .then(res => {
                   var ar = res.data.data
                   ar.forEach(v => {
                     v.key = v.id
@@ -1563,7 +1567,7 @@ export default {
                   this.$message.error('加载数据失败')
                 })
             }
-            
+
             if (this.noTitleKey == 'nowPlan') {
               this.planDayDraw()
             } else {
@@ -2054,7 +2058,7 @@ export default {
           //   //向地图上添加线
           //   this.map.addOverLay(line)
           // } else {
-            
+
           // }
         }
         // markerTool.addEventListener('click', this.taskPointClick)
@@ -2088,7 +2092,7 @@ export default {
       //       line.addEventListener('click', this.planDayDrawClick)
       //     }
       //   }
-        // markerTool.addEventListener('click', this.taskPointClick)
+      // markerTool.addEventListener('click', this.taskPointClick)
       //}
     },
     //当日计划绘制河道，调查点内的任务点击事件
@@ -2431,6 +2435,13 @@ export default {
     //选中巡河方案
     selectPatrol() {},
     addTaskBtn(id, name, code) {
+      this.newTaskObj = {
+        planId: this.planList1.id,
+        objectId: id,
+        objectName: name,
+        isShow: true,
+        object: code
+      }
       console.log(this.$refs.addTask)
       this.$refs.addTask.show(this.planList1.id, id, name, code)
       this.addTaskCode = '1'
@@ -2953,17 +2964,20 @@ export default {
     getLineDate(e) {
       console.log(e)
       console.log(e.currentLnglats)
-      if (this.addTaskCode =='1') {
+      if (this.addTaskCode == '1') {
         this.$refs.addTask.getLineDate(e.currentLnglats)
       }
-      if (this.addTaskCode =='2') {
+      if (this.addTaskCode == '2') {
         this.$refs.addTask[0].getLineDate(e.currentLnglats)
       }
-
     },
     //取消追加任务
     cancelAddTask() {
       this.cBtn = true
+    },
+    // 确认追加任务
+    confirmAddTask(e) {
+      console.log(e)
     },
     //添加调查点
     addSurveyPoint() {
@@ -3011,7 +3025,7 @@ export default {
       })
     },
     //画点
-    addPoint(clickPoint,num) {
+    addPoint(clickPoint, num) {
       console.log(num)
       this.clickPoint = clickPoint
       if (this.markerTool && this.clickPoint == false) {
@@ -3025,11 +3039,11 @@ export default {
     },
     addPointDate(e) {
       console.log(e.currentLnglat)
-      if (this.addTaskCode =='1') {
+      if (this.addTaskCode == '1') {
         this.$refs.addTask.getMarkDate(e.currentLnglat)
       }
-      if (this.addTaskCode =='2') {
-       this.$refs.addTask[0].getMarkDate(e.currentLnglat)
+      if (this.addTaskCode == '2') {
+        this.$refs.addTask[0].getMarkDate(e.currentLnglat)
       }
     },
     //画面
@@ -3053,13 +3067,12 @@ export default {
     },
     addPolygonDate(e) {
       console.log(e.currentLnglats)
-      if (this.addTaskCode =='1') {
+      if (this.addTaskCode == '1') {
         this.$refs.addTask.getPolygonDate(e.currentLnglats)
       }
-      if (this.addTaskCode =='2') {
-       this.$refs.addTask[0].getPolygonDate(e.currentLnglats)
+      if (this.addTaskCode == '2') {
+        this.$refs.addTask[0].getPolygonDate(e.currentLnglats)
       }
-      
     },
     //显示地图上调查点内任务点
     addMorePoint() {
