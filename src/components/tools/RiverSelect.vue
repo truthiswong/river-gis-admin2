@@ -15,34 +15,7 @@ export default {
   data() {
     return {
       options: [
-        {
-          value: '上海',
-          label: '上海',
-          children: [
-            {
-              value: '浦东新区',
-              label: '浦东新区'
-            },
-            {
-              value: '闵行区',
-              label: '闵行区'
-            },
-            {
-              value: '徐汇区',
-              label: '徐汇区'
-            }
-          ]
-        },
-        {
-          value: 'jiangsu',
-          label: 'Jiangsu',
-          children: [
-            {
-              value: 'nanjing',
-              label: 'Nanjing'
-            }
-          ]
-        }
+
       ]
     }
   },

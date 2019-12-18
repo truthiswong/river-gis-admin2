@@ -442,7 +442,7 @@
                       class="upload-demo"
                       ref="upload1"
                       :data="spotList"
-                      name="kmz"
+                      name="pic"
                       :headers="headers"
                       action="/server/data/admin/task/save"
                       :on-preview="handlePreview"
@@ -1057,7 +1057,7 @@ export default {
       this.map.clearOverLays()
       for (const item of this.pointTaskList) {
         for (const point of item.pointList) {
-          this.drawAllPoint(point.latlng, point.id, point.name, item.kmz)
+          this.drawAllPoint(point.latlng, point.id, point.name, item.pic)
         }
       }
     },
@@ -1114,7 +1114,7 @@ export default {
       for (const item of this.pointTaskList) {
         if (item.id == index) {
           let icon = new T.Icon({
-            iconUrl: item.kmz,
+            iconUrl: item.pic,
             iconSize: new T.Point(41, 40),
             iconAnchor: new T.Point(21, 40)
           })
@@ -1167,7 +1167,7 @@ export default {
           this.spotList.remark = arr.info.remark
           this.spotList.duty = arr.info.duty
           this.spotList.template = arr.info.template.code
-          this.attachmentJpg = arr.info.kmz
+          this.attachmentJpg = arr.info.pic
           var sz = []
           var zs = []
 
