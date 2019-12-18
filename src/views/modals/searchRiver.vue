@@ -10,10 +10,10 @@
             <a-button shape="circle" icon="search" class="searchRiverBtn"/> -->
             <a-select
                 showSearch
-                mode="multiple"
                 :value="value"
                 placeholder="请选择"
                 style="width: 90%"
+                v-model="list"
                 :allowClear="true"
                 :filterOption="filterOption"
                 @search="handleSearch"
@@ -30,11 +30,10 @@ export default {
     name:'searchRiver',
     data(){
         return{
+            list:'',
             visible:false,
             riverData: [
-                {text:'黄浦江',value:'huang'},
-                {text:'松花江',value:'song'},
-                {text:'长江',value:'chang'}
+
             ],
             riverList:[],
             value: undefined,
@@ -57,7 +56,6 @@ export default {
             return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
         },
         handleSearch(value) {
-            console.log('fetching user', value);
             this.riverData = this.riverData;
         },
         handleChange(id) {

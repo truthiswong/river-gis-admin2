@@ -2278,7 +2278,7 @@ export default {
         if (item.clicked == true) {
           this.setPolygonFn(item.lineData, 'red', 3, 1, 0, item.name, item.id)
         } else {
-          this.setPolygonFn(item.lineData, 'blue', 3, 1, 0, item.name, item.id)
+          // this.setPolygonFn(item.lineData, 'blue', 3, 1, 0, item.name, item.id)
         }
       }
     },
