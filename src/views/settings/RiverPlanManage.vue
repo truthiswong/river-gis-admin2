@@ -37,6 +37,26 @@
                 <a-list-item>
                   <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                     <a-col :span="18">
+                      <p style="margin:0;">自动监测点</p>
+                    </a-col>
+                    <a-col :span="6">
+                      <a-switch size="small" v-model="autoDetection" />
+                    </a-col>
+                  </a-row>
+                </a-list-item>
+                <a-list-item>
+                  <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                    <a-col :span="18">
+                      <p style="margin:0;">人工监测点</p>
+                    </a-col>
+                    <a-col :span="6">
+                      <a-switch size="small" v-model="peopleDetection" />
+                    </a-col>
+                  </a-row>
+                </a-list-item>
+                <a-list-item>
+                  <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                    <a-col :span="18">
                       <p style="margin:0;">街道</p>
                     </a-col>
                     <a-col :span="6">
@@ -278,7 +298,8 @@ import {
   programmeRemove,
   programmePrimary,
   taskSpotList,
-  taskLineList
+  taskLineList,
+  testingPage,
 } from '@/api/login'
 import { TreeSelect } from 'ant-design-vue'
 const SHOW_PARENT = TreeSelect.SHOW_PARENT
@@ -304,6 +325,10 @@ export default {
       alertLeft: -1000,
       alertTop: -1000,
       alertShow: false,
+      autoDetection: false, // 自动监测点
+      peopleDetection: false, // 人工监测点
+      fixedPointList: [], //固定监测点
+      peoplePointList: [], //人工监测点
 
       list: {
         id: '',
@@ -383,10 +408,20 @@ export default {
 
     // this.getList()
     this.getRiverStreeList()
+    this.getFixedList() // 获取固定监测点
+    this.getManualList() // 获取人工监测点
   },
   watch: {
     $route(){
       this.getList()
+    },
+    autoDetection() {
+      // 自动监测点
+      this.watchAllSwitch()
+    },
+    peopleDetection() {
+      //人工监测点
+      this.watchAllSwitch()
     },
     // 河道显示
     riverShow() {
@@ -784,8 +819,87 @@ export default {
         })
         .catch(err => {})
     },
+    //固定监测分页
+    getFixedList() {
+      var data = {
+        id: 'fixed',
+        prid: this.$store.state.id
+      }
+      testingPage(data)
+        .then(res => {
+          var arr = res.data.data
+          arr.forEach(v => {
+            v.latlng = v.coordinate
+            v.clicked = false
+          })
+          this.fixedPointList = arr
+        })
+        .catch(err => {})
+    },
+    //人工监测分页
+    getManualList() {
+      var data = {
+        id: 'manual',
+        prid: this.$store.state.id
+      }
+      testingPage(data)
+        .then(res => {
+          var arr = res.data.data
+          arr.forEach(v => {
+            v.latlng = v.coordinate
+            v.clicked = false
+          })
+          this.peoplePointList = arr
+        })
+        .catch(err => {})
+    },
+    allPointTestingTask(pointLists) {
+      for (const item of pointLists) {
+        this.drawTestingAllPoint(item.latlng, item.id, item.name, item.type.code)
+      }
+    },
+    // 添加标注图片
+    drawTestingAllPoint(latlng, id, title, type) {
+      let iconUrl
+      if (type == 'fixed') {
+        iconUrl = require('../../assets/img/fixedIcon.png')
+      } else if (type == 'manual') {
+        iconUrl = require('../../assets/img/peopleIcon.png')
+      }
+      let icon = new T.Icon({
+        iconUrl: iconUrl,
+        iconSize: new T.Point(41, 40),
+        iconAnchor: new T.Point(21, 40)
+      })
+      let marker = new T.Marker(latlng, { icon: icon, id: id, title: title })
+      this.map.addOverLay(marker)
+    },
     // 检测所有开关
     watchAllSwitch() {
+      // 固定监测点
+      if (this.autoDetection) {
+        this.allPointTestingTask(this.fixedPointList)
+      } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.fixedPointList) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
+      }
+      //人工监测点
+      if (this.peopleDetection) {
+        this.allPointTestingTask(this.peoplePointList)
+      } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.peoplePointList) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
+      }
       // 街道显示
       if (this.streetShow) {
         for (const item of this.streetShowList) {
