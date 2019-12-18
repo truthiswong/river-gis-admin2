@@ -4,6 +4,7 @@
     placeholder="项目选择"
     :options="options"
     @change="onChange"
+    v-model="list"
     changeOnSelect
   /> 
 </template>
@@ -14,6 +15,7 @@ import {
 export default {
   data() {
     return {
+      list:[],
       options: [
 
       ]
@@ -59,10 +61,10 @@ export default {
             id: value[1]
           }
         })
+      }else{
+        this.list =[]
+        this.$message.warning('请至少选择到项目');
       }
-      
-     
-      
     }
   }
 }

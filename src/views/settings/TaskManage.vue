@@ -89,6 +89,7 @@
       <h3 style="font-size: 16px; font-weight: 600; margin:10px 0 0 10px; text-align:center;">任务管理</h3>
       <a-divider style="margin: 10px 0 0;" />
       <div style="padding: 0 10px">
+        <a-spin :spinning="spinning" :delay="delayTime">
         <a-tabs defaultActiveKey="1" @change="callback" v-model="actionTab" class="custom_tabs">
           <a-tab-pane tab="线路任务" key="1">
             <section class="task_face">
@@ -529,6 +530,7 @@
             </section>
           </a-tab-pane>
         </a-tabs>
+        </a-spin>
         <a-button
           type="primary"
           block
@@ -625,7 +627,8 @@ export default {
       streetShowList: [], //街道
       fixedPointList: [], //固定监测点
       peoplePointList: [], //人工监测点
-
+      spinning: true,
+      delayTime: 500,
       attachmentJpg: '', //图片
       alertLeft: -1000,
       alertTop: -1000,
@@ -817,6 +820,7 @@ export default {
         type: 'line',
         id: this.$store.state.id
       }
+      this.spinning = true
       taskList(data)
         .then(res => {
           var arr = res.data.data
@@ -830,9 +834,12 @@ export default {
             }
           })
           this.lineTaskList = arr
+          this.spinning = false
           this.drawAllLine()
+        }).catch(err => {
+          this.spinning = false
+          this.$message.error('数据加载失败');
         })
-        .catch(err => {})
     },
     //人员配置列表
     getRoleList() {

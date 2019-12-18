@@ -447,7 +447,7 @@
                             <a-select-option value="jack">Jack</a-select-option>
                               </a-select>-->
                             </a-col>
-                            <a-col :span="3">
+                            <a-col :span="3" > 
                               <a-popconfirm
                                 title="是否确认删除?"
                                 @confirm="getInspectPointDel(item.id)"
@@ -555,7 +555,7 @@
                                             @click="choosePointTask1(targetId.target.id)"
                                           >{{targetId.target.objectName}}</div>
                                         </a-col>
-                                        <a-col :span="8">
+                                        <a-col :span="8" v-if="hidingJudgment3 == true">
                                           <a-popconfirm
                                             :title="'是否确认删除'+targetId.target.objectName+'?'"
                                             okText="确认"
@@ -1261,6 +1261,7 @@ export default {
       alertShow: false,
       spinning: true,
       defaultLineTask: '',
+      hidingJudgment3:false,
       riskMapPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.23493, lng: 121.51566 } },
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24344, lng: 121.49892 } },
@@ -1827,6 +1828,7 @@ export default {
       this.hidingJudgment = tab(this.picker)
       this.hidingJudgment1 = tab1(this.picker)
       this.hidingJudgment2 = tab2(this.picker, formatDate(new Date()))
+      this.hidingJudgment3 = tab(this.picker)
       this.planListPage = []
       planPage(data)
         .then(res => {

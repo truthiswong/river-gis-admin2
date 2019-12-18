@@ -1353,7 +1353,6 @@ export default {
       this.getRiverStreeList()
 
       this.getWaterQualityPoints()
-      this.getParamList()
     },
     // 历史数据
     historyData() {
@@ -1463,12 +1462,6 @@ export default {
     // console.log(this.$store.state.id, 'ssasasa')
   },
   methods: {
-    fetchData(newVal, oldVa) {
-      this.getTimeQuantum() // 获取时间段
-      this.getRiverStreeList()
-      this.getWaterQualityPoints()
-      this.getParamList()
-    },
     //获取绘制类型
     getParamList() {
       var data = {
@@ -1488,6 +1481,8 @@ export default {
         }
 
         this.otherList = arr
+      }).catch(err => {
+        this.$message.warning('绘制类型数据加载失败')
       })
       var datarisk = {
         type: 'risk_source_type'
@@ -2933,39 +2928,15 @@ export default {
           }
         }
         this.spotDraw(point)
-        // for (const item of this.drawPage) {
-        //   if (item.drawType.id == '5da8374dea6c157d2d61007c') {
-        //     if (item.locationType.code == 'point') {
-        //       console.log('1');
-              
-        //       item.latlng = {
-        //         lng: item.point[0],
-        //         lat: item.point[1]
-        //       }
-        //       point.push(item)
-        //     }
-        //     if (item.locationType.code == 'line') {
-        //       // line.push(item)
-        //       this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
-        //     }
-        //     if (item.locationType.code == 'polygon') {
-        //       this.noodlesDraw(
-        //         item.polygon,
-        //         item.frameColor,
-        //         3,
-        //         item.framePellucidity,
-        //         item.shapeColor,
-        //         item.shapePellucidity,
-        //         '',
-        //         item.id,
-        //         item.innerType.code
-        //       )
-        //     }
-        //   }
-        // }
         
       } else {
-        this.removeOverLays(this.drawPage)
+        let data = []
+        for (const item of this.drawPage) {
+         if (item.drawType.id == id) {
+          data.push(item)
+          }
+        }
+        this.removeOverLays(data) 
       }
     },
     // 水土流失
