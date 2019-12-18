@@ -594,7 +594,9 @@ import {
   taskPointDel,
   taskRemove,
   structDeviceList,
-  getStreetList
+  getStreetList,
+  testingPage,
+  testingDel
 } from '@/api/login'
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -622,6 +624,8 @@ export default {
       once: 0, // 移入次数
       riverShowList: [], // 河道
       streetShowList: [], //街道
+      fixedPointList: [], //固定监测点
+      peoplePointList: [], //人工监测点
 
       attachmentJpg: '', //图片
       alertLeft: -1000,
@@ -763,18 +767,17 @@ export default {
     this.riverListGet()
     this.getStructDeviceList()
     this.headers.Authorization = Vue.ls.get(ACCESS_TOKEN)
+    this.getFixedList() // 获取固定监测点
+    this.getManualList() // 获取人工监测点
   },
   watch: {
-    checkedKeys(val) {
-      console.log('onCheck', val)
-    },
     autoDetection() {
       // 自动监测点
-      console.log(this.autoDetection)
+      this.watchAllSwitch()
     },
     peopleDetection() {
       //人工监测点
-      console.log(this.peopleDetection)
+      this.watchAllSwitch()
     },
     // 河道显示
     riverShow() {
@@ -816,11 +819,10 @@ export default {
             v.clicked = false
             v.name = v.title
             if (v.coordinate == null) {
-              v.lineData=[]
-            }else{
+              v.lineData = []
+            } else {
               v.lineData = v.coordinate
             }
-            
           })
           this.lineTaskList = arr
           this.drawAllLine()
@@ -864,9 +866,7 @@ export default {
             }
             this.allPointTask()
           })
-          .catch(err => {
-            
-          })
+          .catch(err => {})
       }
     },
     //河道列表
@@ -880,13 +880,8 @@ export default {
     },
     // 添加所有的线
     drawAllLine() {
-      this.map.clearOverLays()
       for (const item of this.lineTaskList) {
-        if (item.clicked == true) {
-          this.drawLine(item.lineData, 'red', 3, 0.5, item.id, item.name)
-        } else {
-          this.drawLine(item.lineData, 'blue', 3, 0.5, item.id, item.name)
-        }
+        this.drawLine(item.lineData, 'blue', 3, 0.5, item.id, item.name)
       }
     },
     // 线路任务
@@ -900,6 +895,7 @@ export default {
           item.clicked = false
         }
       }
+      console.log(this.lineTaskList)
       this.drawAllLine()
     },
     // 绘制线
@@ -1015,13 +1011,16 @@ export default {
       }
       for (const item of this.lineTaskList) {
         if (item.id == index.target.options.id) {
-          item.clicked = true
           this.defaultLineTask = item.name
-        } else {
-          item.clicked = false
+          for (const overlay of this.map.getOverlays()) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+          this.drawLine(item.lineData, 'red', 3, 0.5, item.id, item.name)
         }
       }
-      this.drawAllLine()
+      // this.drawAllLine()
       this.once++
     },
     taskLineMousemove() {
@@ -1100,7 +1099,6 @@ export default {
       for (const item of this.pointTaskList) {
         if (item.id == index) {
           let icon = new T.Icon({
-            
             iconUrl: item.kmz,
             iconSize: new T.Point(41, 40),
             iconAnchor: new T.Point(21, 40)
@@ -1244,10 +1242,6 @@ export default {
       // or, you can remove all expanded children keys.
       this.expandedKeys = expandedKeys
       this.autoExpandParent = false
-    },
-    onCheck(checkedKeys) {
-      console.log('onCheck', checkedKeys)
-      this.checkedKeys = checkedKeys
     },
     onSelect(selectedKeys, info) {
       console.log('onSelect', info)
@@ -1498,13 +1492,87 @@ export default {
         })
         .catch(err => {})
     },
+    //固定监测分页
+    getFixedList() {
+      var data = {
+        id: 'fixed',
+        prid: this.$store.state.id
+      }
+      testingPage(data)
+        .then(res => {
+          var arr = res.data.data
+          arr.forEach(v => {
+            v.latlng = v.coordinate
+            v.clicked = false
+          })
+          this.fixedPointList = arr
+        })
+        .catch(err => {})
+    },
+    //人工监测分页
+    getManualList() {
+      var data = {
+        id: 'manual',
+        prid: this.$store.state.id
+      }
+      testingPage(data)
+        .then(res => {
+          var arr = res.data.data
+          arr.forEach(v => {
+            v.latlng = v.coordinate
+            v.clicked = false
+          })
+          this.peoplePointList = arr
+          console.log(this.peoplePointList)
+        })
+        .catch(err => {})
+    },
+    allPointTask(pointLists) {
+      for (const item of pointLists) {
+        this.drawAllPoint(item.latlng, item.id, item.name, item.type.code)
+      }
+    },
+    // 添加标注图片
+    drawAllPoint(latlng, id, title, type) {
+      let iconUrl
+      if (type == 'fixed') {
+        iconUrl = require('../../assets/img/fixedIcon.png')
+      } else if (type == 'manual') {
+        iconUrl = require('../../assets/img/peopleIcon.png')
+      }
+      let icon = new T.Icon({
+        iconUrl: iconUrl,
+        iconSize: new T.Point(41, 40),
+        iconAnchor: new T.Point(21, 40)
+      })
+      let marker = new T.Marker(latlng, { icon: icon, id: id, title: title })
+      this.map.addOverLay(marker)
+    },
     // 检测所有开关
     watchAllSwitch() {
-      // 自动监测点
+      // 固定监测点
       if (this.autoDetection) {
+        this.allPointTask(this.fixedPointList)
+      } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.fixedPointList) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
       }
       //人工监测点
       if (this.peopleDetection) {
+        this.allPointTask(this.peoplePointList)
+      } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.peoplePointList) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
       }
       // 河道显示
       if (this.riverShow) {
@@ -1681,7 +1749,7 @@ export default {
 }
 .task_face {
   width: 100%;
-  height: calc(100vh - 205px);
+  height: calc(100vh - 195px);
   overflow: auto;
   .ant-spin-container {
     .ant-list-item:hover {
