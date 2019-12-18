@@ -891,7 +891,7 @@ export default {
     // 添加所有的线
     drawAllLine() {
       for (const item of this.lineTaskList) {
-        this.drawLine(item.lineData, 'blue', 3, 0.5, item.id, item.name)
+        this.drawLine(item.lineData, 'blue', 3, 0.5, 'blue', 0, item.id, item.name)
       }
     },
     // 线路任务
@@ -909,11 +909,13 @@ export default {
       this.drawAllLine()
     },
     // 绘制线
-    drawLine(points, color, weight, opacity, id, name) {
+    drawLine(points, color, weight, opacity, fillColor, fillOpacity, id, name) {
       let line = new T.Polygon(points, {
         color: color, //线颜色
         weight: weight, //线宽
         opacity: opacity, //透明度
+        fillColor: fillColor, //填充颜色
+        fillOpacity: fillOpacity, //填充透明度
         id: id,
         name: name
       })
@@ -1025,7 +1027,7 @@ export default {
               this.map.removeOverLay(overlay)
             }
           }
-          this.drawLine(item.lineData, 'red', 3, 0.5, item.id, item.name)
+          this.drawLine(item.lineData, 'red', 3, 0.5, 'red', 0, item.id, item.name)
         }
       }
       this.once++
@@ -1047,7 +1049,7 @@ export default {
               this.map.removeOverLay(overlay)
             }
           }
-          this.drawLine(item.lineData, 'blue', 3, 0.5, item.id, item.name)
+          this.drawLine(item.lineData, 'blue', 3, 0.5, 'blue', 0, item.id, item.name)
         }
       }
     },
