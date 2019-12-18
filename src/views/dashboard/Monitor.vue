@@ -607,12 +607,12 @@
                                         ></a-tree>
                                       </div>
                                     </div>
-                                    <div class="addTaskBtn" v-show="hidingJudgment2">
+                                    <div class="addTaskBtn" >
                                       <!-- <a-button class="addTask_btn" icon="plus" @click="addNewTask">追加任务</a-button> -->
                                       <a-button
                                         class="addTask_btn commBtn"
                                         icon="plus"
-                                        @click="addTaskBtn1(item.plan.id,targetId.target.objectId,targetId.target.objectName,targetId.target.object.code)"
+                                        @click="addTaskBtnDay(item.plan.id,targetId.target.objectId,targetId.target.objectName,targetId.target.object.code)"
                                         v-show="cBtn"
                                       >追加任务</a-button>
                                       <add-task
@@ -1303,6 +1303,7 @@ export default {
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24315, lng: 121.49606 } },
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.23668, lng: 121.49656 } }
       ],
+      addTaskCode:'1',
       weatherList: [
         {
           temperature: '26°',
@@ -2432,12 +2433,14 @@ export default {
     addTaskBtn(id, name, code) {
       console.log(this.$refs.addTask)
       this.$refs.addTask.show(this.planList1.id, id, name, code)
+      this.addTaskCode = '1'
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
-    addTaskBtn1(planId, id, name, code) {
+    addTaskBtnDay(planId, id, name, code) {
       console.log(this.$refs)
-      // this.$refs.addTask.show(planId, id, name, code)
+      this.$refs.addTask[0].show(planId, id, name, code)
+      this.addTaskCode = '2'
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
@@ -2950,7 +2953,13 @@ export default {
     getLineDate(e) {
       console.log(e)
       console.log(e.currentLnglats)
-      this.$refs.addTask.getLineDate(e.currentLnglats)
+      if (this.addTaskCode =='1') {
+        this.$refs.addTask.getLineDate(e.currentLnglats)
+      }
+      if (this.addTaskCode =='2') {
+        this.$refs.addTask[0].getLineDate(e.currentLnglats)
+      }
+
     },
     //取消追加任务
     cancelAddTask() {
@@ -3002,8 +3011,8 @@ export default {
       })
     },
     //画点
-    addPoint(clickPoint) {
-      console.log('aaaaaaaaaa')
+    addPoint(clickPoint,num) {
+      console.log(num)
       this.clickPoint = clickPoint
       if (this.markerTool && this.clickPoint == false) {
         this.markerTool.clear()
@@ -3016,7 +3025,12 @@ export default {
     },
     addPointDate(e) {
       console.log(e.currentLnglat)
-      this.$refs.addTask.getMarkDate(e.currentLnglat)
+      if (this.addTaskCode =='1') {
+        this.$refs.addTask.getMarkDate(e.currentLnglat)
+      }
+      if (this.addTaskCode =='2') {
+       this.$refs.addTask[0].getMarkDate(e.currentLnglat)
+      }
     },
     //画面
     addPolygonTool(clickPolygon) {
@@ -3039,7 +3053,13 @@ export default {
     },
     addPolygonDate(e) {
       console.log(e.currentLnglats)
-      this.$refs.addTask.getPolygonDate(e.currentLnglats)
+      if (this.addTaskCode =='1') {
+        this.$refs.addTask.getPolygonDate(e.currentLnglats)
+      }
+      if (this.addTaskCode =='2') {
+       this.$refs.addTask[0].getPolygonDate(e.currentLnglats)
+      }
+      
     },
     //显示地图上调查点内任务点
     addMorePoint() {

@@ -65,6 +65,7 @@ export default {
     name:'addTask',
     data(){
         return{
+            num:'',
            isShow:false,
            cBtn:true,
            addPlan:{},
@@ -132,6 +133,7 @@ export default {
         },
         //获取绘制线坐标
         getLineDate(currentLnglats){
+            console.log(this);
             
             var _this = this
             _this.lineLnglats = currentLnglats
@@ -152,19 +154,14 @@ export default {
         addPlanInfo(){
             var data = this.list
             if (data.locationType == 'point') {
-                console.log(this.markLnglat);
-                
                 data.region = this.markLnglat.lng +','+this.markLnglat.lat
             }
             if (data.locationType == 'line') {
-                console.log(this.lineLnglats);
-                for (const item of this.lineLnglats) {
-                    
+                for (const item of this.lineLnglats) { 
                     data.region = data.region + item.lng +','+item.lat+'|'
                 }
             }
             if (data.locationType == 'surface') {
-                console.log(this.polygonDate);
                 for (const item of this.polygonDate) {
                     data.region = data.region +item.lng +','+item.lat+'|'
                 }
@@ -186,7 +183,6 @@ export default {
                 this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getinspectPointPage()
                 this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
                 this.$emit('cancleBtn')
-                
             })
         },
         submitPlan(){

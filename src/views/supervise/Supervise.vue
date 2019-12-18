@@ -2005,23 +2005,6 @@ export default {
       }
       daydataList(data).then(res => {
         var arr = res.data.reverse()
-        for (let i = 0; i < arr.length; i++) {
-          if (
-            arr[i].manualData != 0 &&
-            arr[i].manualLocus != 0 &&
-            arr[i].mapdrawData != 0 &&
-            arr[i].panoramaData != 0 &&
-            arr[i].uavData != 0
-          ) {
-            this.defaultTime =
-              arr[i].date.substring(0, 4) + '-' + arr[i].date.substring(4, 6) + '-' + arr[i].date.substring(6, 8)
-            break
-          } else {
-            if (i == arr.length - 1) {
-              this.defaultTime = this.endDate
-            }
-          }
-        }
         for (const item of res.data) {
           if (item.uavData != 0) {
             item.level = 1
@@ -2039,6 +2022,31 @@ export default {
           item.title = item.date.substring(item.date.length - 2, item.date.length)
           item.clicked = false
         }
+        for (const item of res.data) {
+          if (item.uavData != 0) {
+             item.clicked = true
+             this.defaultTime =item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+             break
+          } else if (item.manualData != 0) {
+            item.clicked = true
+            this.defaultTime =item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+            break
+          } else if (item.manualLocus != 0) {
+             item.clicked = true
+             this.defaultTime =item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+             break
+          } else if (item.mapdrawData != 0) {
+            item.clicked = false
+            this.defaultTime = this.endDate
+          } else if (item.panoramaData != 0) {
+            item.clicked = false
+            this.defaultTime = this.endDate
+          } else {
+            item.clicked = false
+            this.defaultTime = this.endDate
+          }
+        }
+        this.gengduo = '1'
         this.timeData = res.data
         // this.getWeatherList()
       })
@@ -2733,7 +2741,7 @@ export default {
       if (this.waterFlotage) {
         let point = []
         for (const item of this.drawPage) {
-          if (item.drawType.id == '5dafe6c8ea6c159999a0549c') {
+          if (item.drawType.name == '水面漂浮物') {
             if (item.locationType.code == 'point') {
               item.latlng = {
                 lng: item.point[0],
@@ -2742,7 +2750,6 @@ export default {
               point.push(item)
             }
             if (item.locationType.code == 'line') {
-              // line.push(item)
               this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
             }
             if (item.locationType.code == 'polygon') {
@@ -2753,16 +2760,24 @@ export default {
                 item.framePellucidity,
                 item.shapeColor,
                 item.shapePellucidity,
-                '',
+                item.innerName,
                 item.id,
                 item.innerType.code
               )
             }
           }
         }
-        this.spotDraw(point)
+        if (point.length >0) {
+          this.spotDraw(point)
+        }
       } else {
-        this.removeOverLays(this.drawPage)
+        let data =[]
+        for (const item of this.drawPage) {
+          if (item.drawType.name == '水面漂浮物') {
+            data.push(item)
+          }
+        }
+        this.removeOverLays(data)
       }
     },
     // 排口
@@ -2770,7 +2785,7 @@ export default {
       if (this.outlet) {
         let point = []
         for (const item of this.drawPage) {
-          if (item.drawType.id == '5da8389eea6c157d2d61007f') {
+          if (item.drawType.name == '排口') {
             if (item.locationType.code == 'point') {
               item.latlng = {
                 lng: item.point[0],
@@ -2779,7 +2794,6 @@ export default {
               point.push(item)
             }
             if (item.locationType.code == 'line') {
-              // line.push(item)
               this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
             }
             if (item.locationType.code == 'polygon') {
@@ -2790,16 +2804,24 @@ export default {
                 item.framePellucidity,
                 item.shapeColor,
                 item.shapePellucidity,
-                '',
+                item.innerName,
                 item.id,
                 item.innerType.code
               )
             }
           }
         }
-        this.spotDraw(point)
+        if (point.length >0) {
+          this.spotDraw(point)
+        }
       } else {
-        this.removeOverLays(this.drawPage)
+        let data =[]
+        for (const item of this.drawPage) {
+          if (item.drawType.name == '排口') {
+            data.push(item)
+          }
+        }
+        this.removeOverLays(data)
       }
     },
     //绘制点
@@ -2818,6 +2840,7 @@ export default {
     },
     //绘制线
     lineDraw(points, color, weight, opacity, id, name) {
+      console.log(points);
       let line = new T.Polyline(points, {
         color: color, //线颜色
         weight: weight, //线宽
@@ -2847,7 +2870,9 @@ export default {
       //向地图上添加面
       this.map.addOverLay(polygon)
       if (code == 'risk') {
-        polygon.addEventListener('click', this.sourceRiskClick)
+         polygon.addEventListener('click', this.sourceRiskClick)
+      }else{
+
       }
       
     },
@@ -2893,7 +2918,13 @@ export default {
         // }
         // this.spotDraw(point)
       } else {
-        this.removeOverLays(this.drawPage)
+        let data =[]
+        for (const item of this.drawPage) {
+          if (item.innerType.name == '风险源') {
+            data.push(item)
+          }
+        }
+        this.removeOverLays(data)
       }
     },
     // 河岸风险源
@@ -3022,11 +3053,11 @@ export default {
       // 水质
       this.onWaterQuality()
       // 水质漂浮物
-      this.onWaterFlotage()
+      // this.onWaterFlotage()
       // 排口
-      this.onOutlet()
+      // this.onOutlet()
       // 河岸风险源
-      this.onRiverRisk()
+      // this.onRiverRisk()
       // 水土流失
       this.onWaterLandLoss()
       // 水面率
