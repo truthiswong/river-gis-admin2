@@ -2030,62 +2030,63 @@ export default {
           this.map.addOverLay(markerTool)
           markerTool.addEventListener('click', this.planDayDrawClick)
         } else {
-          if (taskPage.clicked == true) {
-            let line = new T.Polyline(item.region, {
-              color: 'orange', //线颜色
-              weight: 3, //线宽
-              opacity: 0.5, //透明度
-              id: item.id,
-              name: item.name
-            })
-            //向地图上添加线
-            this.map.addOverLay(line)
-          } else {
-            let line = new T.Polyline(item.region, {
-              color: 'orange', //线颜色
-              weight: 3, //线宽
-              opacity: 0.5, //透明度
-              id: item.id,
-              name: item.name
-            })
-            //向地图上添加线
-            this.map.addOverLay(line)
-            line.addEventListener('click', this.planDayDrawClick)
-          }
+          let line = new T.Polyline(item.region, {
+            color: 'blue', //线颜色
+            weight: 3, //线宽
+            opacity: 0.5, //透明度
+            id: item.id,
+            name: item.name
+          })
+          //向地图上添加线
+          this.map.addOverLay(line)
+          line.addEventListener('click', this.planDayDrawClick)
+          // if (taskPage.clicked == true) {
+          //   let line = new T.Polyline(item.region, {
+          //     color: 'bule', //线颜色
+          //     weight: 3, //线宽
+          //     opacity: 0.5, //透明度
+          //     id: item.id,
+          //     name: item.name
+          //   })
+          //   //向地图上添加线
+          //   this.map.addOverLay(line)
+          // } else {
+            
+          // }
         }
         // markerTool.addEventListener('click', this.taskPointClick)
       }
-      for (const item of taskPage.inprogress) {
-        if (item.region.length == 1) {
-          let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
-          this.map.addOverLay(markerTool)
-          markerTool.addEventListener('click', this.planDayDrawClick)
-        } else {
-          if (taskPage.clicked == true) {
-            let line = new T.Polyline(item.region, {
-              color: 'blue', //线颜色
-              weight: 3, //线宽
-              opacity: 0.5, //透明度
-              id: item.id,
-              name: item.name
-            })
-            //向地图上添加线
-            this.map.addOverLay(line)
-          } else {
-            let line = new T.Polyline(item.region, {
-              color: 'blue', //线颜色
-              weight: 3, //线宽
-              opacity: 0.5, //透明度
-              id: item.id,
-              name: item.name
-            })
-            //向地图上添加线
-            this.map.addOverLay(line)
-            line.addEventListener('click', this.planDayDrawClick)
-          }
-        }
+      // for (const item of taskPage.inprogress) {
+      //   if (item.region.length == 1) {
+      //     let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+      //     this.map.addOverLay(markerTool)
+      //     markerTool.addEventListener('click', this.planDayDrawClick)
+      //   } else {
+      //     if (taskPage.clicked == true) {
+      //       let line = new T.Polyline(item.region, {
+      //         color: 'blue', //线颜色
+      //         weight: 3, //线宽
+      //         opacity: 0.5, //透明度
+      //         id: item.id,
+      //         name: item.name
+      //       })
+      //       //向地图上添加线
+      //       this.map.addOverLay(line)
+      //     } else {
+      //       let line = new T.Polyline(item.region, {
+      //         color: 'blue', //线颜色
+      //         weight: 3, //线宽
+      //         opacity: 0.5, //透明度
+      //         id: item.id,
+      //         name: item.name
+      //       })
+      //       //向地图上添加线
+      //       this.map.addOverLay(line)
+      //       line.addEventListener('click', this.planDayDrawClick)
+      //     }
+      //   }
         // markerTool.addEventListener('click', this.taskPointClick)
-      }
+      //}
     },
     //当日计划绘制河道，调查点内的任务点击事件
     planDayDrawClick(arr) {

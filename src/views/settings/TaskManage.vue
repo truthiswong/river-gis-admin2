@@ -805,8 +805,7 @@ export default {
         type: 'dot',
         id: this.$store.state.id
       }
-      taskList(data)
-        .then(res => {
+      taskList(data).then(res => {
           var arr = res.data.data
           arr.forEach(v => {
             v.name = v.title
@@ -857,8 +856,7 @@ export default {
     //任务点列表
     gettTaskPointList(key) {
       if (key != undefined) {
-        taskSpotPage(key)
-          .then(res => {
+        taskSpotPage(key).then(res => {
             var arr = res.data.data
             for (let a = 0; a < arr.length; a++) {
               // arr[a].latlng = {
@@ -875,8 +873,9 @@ export default {
               }
             }
             this.allPointTask()
+          }) .catch(err => {
+            
           })
-          .catch(err => {})
       }
     },
     //河道列表
@@ -1090,7 +1089,6 @@ export default {
     },
     // 任务点点击移入移出事件
     taskPointMouse(index) {
-      console.log(index)
       for (const item of this.pointTaskList) {
         for (const point of item.pointList) {
           if (index.target.options.id === point.id) {
@@ -1111,7 +1109,6 @@ export default {
     },
     // 注册添加点击事件
     addTaskPoint(index) {
-      console.log(this.pointTaskList)
       for (const item of this.pointTaskList) {
         if (item.id == index) {
           let icon = new T.Icon({
@@ -1291,7 +1288,6 @@ export default {
     },
     // 关联河道
     handleChange(index) {
-      console.log(`selected ${index}`)
       this.riverList.forEach(value => {
         if (value.name === index) {
           value.clicked = true
@@ -1537,17 +1533,16 @@ export default {
             v.clicked = false
           })
           this.peoplePointList = arr
-          console.log(this.peoplePointList)
         })
         .catch(err => {})
     },
-    allPointTask(pointLists) {
+    allPointTestingTask(pointLists) {
       for (const item of pointLists) {
-        this.drawAllPoint(item.latlng, item.id, item.name, item.type.code)
+        this.drawTestingAllPoint(item.latlng, item.id, item.name, item.type.code)
       }
     },
     // 添加标注图片
-    drawAllPoint(latlng, id, title, type) {
+    drawTestingAllPoint(latlng, id, title, type) {
       let iconUrl
       if (type == 'fixed') {
         iconUrl = require('../../assets/img/fixedIcon.png')
@@ -1566,7 +1561,7 @@ export default {
     watchAllSwitch() {
       // 固定监测点
       if (this.autoDetection) {
-        this.allPointTask(this.fixedPointList)
+        this.allPointTestingTask(this.fixedPointList)
       } else {
         for (const overlay of this.map.getOverlays()) {
           for (const item of this.fixedPointList) {
@@ -1578,7 +1573,7 @@ export default {
       }
       //人工监测点
       if (this.peopleDetection) {
-        this.allPointTask(this.peoplePointList)
+        this.allPointTestingTask(this.peoplePointList)
       } else {
         for (const overlay of this.map.getOverlays()) {
           for (const item of this.peoplePointList) {
