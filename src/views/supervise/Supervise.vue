@@ -777,20 +777,34 @@ import WaterQuality from './modules/waterQualityData'
 import moment from 'moment' // 时间格式
 
 import 'ol/ol.css'
+import { Map, View, Feature } from 'ol'
 import TileLayer from 'ol/layer/Tile'
 import OSM from 'ol/source/OSM'
 import LayerGroup from 'ol/layer/Group'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
-import { Map, View, Feature } from 'ol'
 import { Style, Icon } from 'ol/style'
 import Text from 'ol/style/Text'
-import { Point } from 'ol/geom'
-// import { defaults } from 'ol/control/util.js'
+// import { Point } from 'ol/geom'
+
+import Point from 'ol/geom/Point'
+import { fromLonLat } from 'ol/proj'
+import TileJSON from 'ol/source/TileJSON'
 
 // 拖拽缩放
 // import { defaults as defaultInteractions, DragRotateAndZoom } from 'ol/interaction'
+
+// import 'ol/ol.css'
+// import Map from 'ol/Map'
+// import View from 'ol/View'
+// import TileLayer from 'ol/layer/Tile'
+// import TileJSON from 'ol/source/TileJSON'
+// import Feature from 'ol/Feature'
+// import Point from 'ol/geom/Point'
+// import { Vector } from 'ol/source'
+// import { fromLonLat } from 'ol/proj'
+// import WebGLPointsLayer from 'ol/layer/WebGLPoints'
 
 import Vue from 'vue'
 // token
@@ -1026,7 +1040,7 @@ export default {
       ],
       startDateRight: '', // 开始日期
       endDateRight: '', // 结束日期
-      
+
       customStyle: 'background: #fff;margin: 0;overflow: hidden', // 折叠面板样式
       canDownload: true, // 是否可以图片截图下载
       riskMapColor: {
@@ -2131,11 +2145,218 @@ export default {
         }
       }
     },
+    getTdLayer(lyr) {
+      var url =
+        'http://t{0-7}.tianditu.com/DataServer?T=' + lyr + '&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
+      var layer = new TileLayer({
+        source: new XYZ({
+          url: url
+        })
+      })
+      return layer
+    },
+    showMap() {
+      // this.map.removeLayer(map1);
+      // this.map.removeLayer(map2);
+      var vec_c = this.getTdLayer('vec_w')
+      var cva_c = this.getTdLayer('cva_w')
+      var img_c = this.getTdLayer('img_w')
+
+      let veclayerGroup = new LayerGroup({
+        layers: [vec_c, cva_c]
+      })
+      let imglayerGroup = new LayerGroup({
+        layers: [img_c, cva_c]
+      })
+      var view = new View({
+        projection: 'EPSG:4326',
+        center: [121.495505, 31.21098],
+        zoom: 14
+      })
+      this.olMap1 = new Map({
+        target: 'roadMap',
+        layers: [veclayerGroup],
+        view: view
+      })
+      console.log(this.olMap1)
+      this.olMap2 = new Map({
+        target: 'aerialMap',
+        layers: [imglayerGroup],
+        view: view
+      })
+    },
+    // 双球
+    sharedView() {
+      if (this.sharedChecked == true) {
+        this.showView = false
+        this.swipeChecked = false
+        var layerMap = document.getElementById('layerMap')
+        layerMap.style.display = 'none'
+        var show = document.getElementById('showmap')
+        show.style.display = 'block'
+        this.showMap()
+      } else if (this.sharedChecked == false) {
+        var show = document.getElementById('showmap')
+        show.style.display = 'none'
+        this.showView = true
+        this.olMap1.removeLayer(this.veclayerGroup)
+        this.olMap2.removeLayer(this.imglayerGroup)
+      }
+    },
+    // 卷帘
+    showSwipeMap() {
+      var vec_c = this.getTdLayer('vec_w')
+      var cva_c = this.getTdLayer('cva_w')
+      var img_c = this.getTdLayer('img_w')
+
+      var veclayerGroup = new LayerGroup({
+        layers: [vec_c, cva_c]
+      })
+      var imglayerGroup = new LayerGroup({
+        layers: [img_c, cva_c]
+      })
+
+      var lmap = new Map({
+        target: 'lmap',
+        layers: [imglayerGroup, veclayerGroup],
+        view: new View({
+          projection: 'EPSG:4326',
+          center: [121.495505, 31.21098],
+          zoom: 14
+        })
+      })
+      var swipe = document.getElementById('swipe')
+      vec_c.on('prerender', function(event) {
+        var ctx = event.context
+        var width = ctx.canvas.width * (swipe.value / 100)
+
+        ctx.save()
+        ctx.beginPath()
+        ctx.rect(width, 0, ctx.canvas.width - width, ctx.canvas.height)
+        ctx.clip()
+      })
+      vec_c.on('postrender', function(event) {
+        var ctx = event.context
+        ctx.restore()
+      })
+      swipe.addEventListener(
+        'input',
+        function() {
+          lmap.render()
+        },
+        false
+      )
+    },
+    layerSwipe() {
+      if (this.swipeChecked == true) {
+        this.showView = false
+        this.sharedChecked = false
+        var show = document.getElementById('showmap')
+        show.style.display = 'none'
+        var layerMap = document.getElementById('layerMap')
+        layerMap.style.display = 'block'
+        this.showSwipeMap()
+      }
+      if (this.swipeChecked == false) {
+        var layerMap = document.getElementById('layerMap')
+        layerMap.style.display = 'none'
+
+        this.showView = true
+      }
+    },
     // 更多-历史数据
     onHistoryData() {
       if (this.historyData) {
-        // this.allPointTask(this.historyPoints)
+        this.testarr(this.historyPoints)
       }
+    },
+    testarr(pointLists) {
+      console.log(123123)
+      // for (const item of pointLists) {
+
+      // }
+      var obj = {
+        fenceId: '12',
+        name: '围栏3',
+        center: '',
+        radius: '',
+        type: 'polyline',
+        points: '113.960623,22.546082;113.958197,22.544029;113.956526,22.543245;113.953562,22.544563'
+      }
+      this.showFence(obj)
+    },
+    showFence(obj) {
+      if (obj.type == 'polygon') {
+        this.showPolygon(obj.fenceId, obj.points, obj.name)
+      }
+      if (obj.type == 'circle') {
+        this.showCircle(obj.fenceId, obj.center, obj.radius, obj.name)
+      }
+      if (obj.type == 'polyline') {
+        this.showPolyline(obj.fenceId, obj.points, obj.name)
+      }
+    },
+    // //转换坐标点（多）
+    // transPoints(points) {
+    //     let arr = points.split(';');
+    //     let point = [];
+    //     arr.forEach(item = > {
+    //         let newPoint = item.split(',');
+    //         point.push(newPoint)
+    //     })
+    //     let _points = point.map(item = > {
+    //         item = [parseFloat(item[0]), parseFloat(item[1])]
+    //         item = ol.proj.transform(item, 'EPSG:4326', 'EPSG:3857');
+    //         return item;
+    //     })
+    //     return _points;
+    // },
+    //转换圆的
+    transPoint(point) {
+      let item = point.split(',')
+      item = [parseFloat(item[0]), parseFloat(item[1])]
+      let _point = ol.proj.transform(item, 'EPSG:4326', 'EPSG:3857')
+      return _point
+    },
+    showCircle(fenceId, center, radius, name) {
+      let centerPoint = this.transPoint(center)
+      radius = parseFloat(radius)
+      var circleFeature = new ol.Feature({
+        //路线
+        geometry: new ol.geom.Circle(centerPoint, radius)
+      })
+      circleFeature.setId(fenceId)
+      //将所有矢量图层添加进去
+      this.source.addFeature(circleFeature)
+    },
+    showPolygon(fenceId, points, name) {
+      let _points = this.transPoints(points)
+      _points = [_points]
+      //多边形的数据格式是[[[lng,lat],[lng,lat]……]]外围两个中括号
+      var polygonFeature = new ol.Feature({
+        //路线
+        geometry: new ol.geom.Polygon(_points)
+      })
+      polygonFeature.setId(fenceId)
+      this.source.addFeature(polygonFeature)
+      console.log(this.source.getFeatures())
+    },
+    showPolyline(fenceId, points, name) {
+      let _points = this.transPoints(points)
+      var lineFeature = new ol.Feature({
+        //路线
+        geometry: new ol.geom.LineString(_points, 'XY')
+      })
+      lineFeature.setId(fenceId)
+
+      //将所有矢量图层添加进去
+      this.source.addFeature(lineFeature)
+    },
+    // 添加标注
+    drawAllPoint(latlng, index, id) {
+      let markerTool = new T.Marker(latlng, { title: index, id: id })
+      this.map.addOverLay(markerTool)
+      markerTool.addEventListener('click', this.taskPointClick)
     },
     // 河道显示
     onRiverShow() {
@@ -2748,12 +2969,6 @@ export default {
     taskPointClick(index) {
       console.log(index)
       this.$refs.riskInfo.riskInfo()
-      // for (const item of this.historyPoints) {
-      //   if (index.lnglat.lat === item.latlng.lat && index.lnglat.lng === item.latlng.lng) {
-      //     console.log(index.lnglat.lat, index.lnglat.lng)
-      //     this.$refs.riskInfo.riskInfo()
-      //   }
-      // }
     },
     // 绘制图片
     allImageTask(pointLists) {
@@ -2803,124 +3018,6 @@ export default {
         this.$message.success(`${info.file.name} file uploaded successfully`)
       } else if (info.file.status === 'error') {
         this.$message.error(`${info.file.name} file upload failed.`)
-      }
-    },
-    getTdLayer(lyr) {
-      var url =
-        'http://t{0-7}.tianditu.com/DataServer?T=' + lyr + '&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
-      var layer = new TileLayer({
-        source: new XYZ({
-          url: url
-        })
-      })
-      return layer
-    },
-    showMap() {
-      // this.map.removeLayer(map1);
-      // this.map.removeLayer(map2);
-      var vec_c = this.getTdLayer('vec_w')
-      var cva_c = this.getTdLayer('cva_w')
-      var img_c = this.getTdLayer('img_w')
-
-      let veclayerGroup = new LayerGroup({
-        layers: [vec_c, cva_c]
-      })
-      let imglayerGroup = new LayerGroup({
-        layers: [img_c, cva_c]
-      })
-      var view = new View({
-        projection: 'EPSG:4326',
-        center: [121.495505, 31.21098],
-        zoom: 14
-      })
-      this.olMap1 = new Map({
-        target: 'roadMap',
-        layers: [veclayerGroup],
-        view: view
-      })
-      this.olMap2 = new Map({
-        target: 'aerialMap',
-        layers: [imglayerGroup],
-        view: view
-      })
-    },
-    // 双球
-    sharedView() {
-      if (this.sharedChecked == true) {
-        this.showView = false
-        this.swipeChecked = false
-        var layerMap = document.getElementById('layerMap')
-        layerMap.style.display = 'none'
-        var show = document.getElementById('showmap')
-        show.style.display = 'block'
-        this.showMap()
-      } else if (this.sharedChecked == false) {
-        var show = document.getElementById('showmap')
-        show.style.display = 'none'
-        this.showView = true
-        this.olMap1.removeLayer(this.veclayerGroup)
-        this.olMap2.removeLayer(this.imglayerGroup)
-      }
-    },
-    // 卷帘
-    showSwipeMap() {
-      var vec_c = this.getTdLayer('vec_w')
-      var cva_c = this.getTdLayer('cva_w')
-      var img_c = this.getTdLayer('img_w')
-
-      var veclayerGroup = new LayerGroup({
-        layers: [vec_c, cva_c]
-      })
-      var imglayerGroup = new LayerGroup({
-        layers: [img_c, cva_c]
-      })
-
-      var lmap = new Map({
-        target: 'lmap',
-        layers: [imglayerGroup, veclayerGroup],
-        view: new View({
-          projection: 'EPSG:4326',
-          center: [121.495505, 31.21098],
-          zoom: 14
-        })
-      })
-      var swipe = document.getElementById('swipe')
-      vec_c.on('prerender', function(event) {
-        var ctx = event.context
-        var width = ctx.canvas.width * (swipe.value / 100)
-
-        ctx.save()
-        ctx.beginPath()
-        ctx.rect(width, 0, ctx.canvas.width - width, ctx.canvas.height)
-        ctx.clip()
-      })
-      vec_c.on('postrender', function(event) {
-        var ctx = event.context
-        ctx.restore()
-      })
-      swipe.addEventListener(
-        'input',
-        function() {
-          lmap.render()
-        },
-        false
-      )
-    },
-    layerSwipe() {
-      if (this.swipeChecked == true) {
-        this.showView = false
-        this.sharedChecked = false
-        var show = document.getElementById('showmap')
-        show.style.display = 'none'
-        var layerMap = document.getElementById('layerMap')
-        layerMap.style.display = 'block'
-        this.showSwipeMap()
-      }
-      if (this.swipeChecked == false) {
-        var layerMap = document.getElementById('layerMap')
-        layerMap.style.display = 'none'
-
-        this.showView = true
       }
     }
   }
