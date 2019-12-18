@@ -1027,16 +1027,15 @@ export default {
               this.map.removeOverLay(overlay)
             }
           }
-          this.drawLine(item.lineData, 'red', 3, 0.5, 'red', 0, item.id, item.name)
+          this.drawLine(item.lineData, 'red', 3, 0.5, '', 0, item.id, item.name)
         }
       }
       this.once++
     },
     taskLineMousemove() {
-      // let event = event || window.event //兼容写法
-      // this.alertLeft = event.pageX + 10
-      // this.alertTop = event.pageY - 44
-      // this.alertShow = true
+      let event = event || window.event //兼容写法
+      this.alertLeft = event.pageX + 10
+      this.alertTop = event.pageY - 44
     },
     taskLineMouseout(index) {
       this.once--
