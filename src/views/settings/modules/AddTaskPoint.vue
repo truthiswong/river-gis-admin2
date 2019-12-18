@@ -159,7 +159,6 @@ export default {
       var data = this.list
       data.riverId = this.riverId.join(',')
       taskPointSave(data).then(res => {
-        console.log('1');
         this.$message.success('保存成功')
         this.$parent.getList()
         this.handleCancel()
