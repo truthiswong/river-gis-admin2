@@ -801,7 +801,8 @@ export default {
         type: 'dot',
         id: this.$store.state.id
       }
-      taskList(data).then(res => {
+      taskList(data)
+        .then(res => {
           var arr = res.data.data
           arr.forEach(v => {
             v.name = v.title
@@ -852,7 +853,8 @@ export default {
     //任务点列表
     gettTaskPointList(key) {
       if (key != undefined) {
-        taskSpotPage(key).then(res => {
+        taskSpotPage(key)
+          .then(res => {
             var arr = res.data.data
             for (let a = 0; a < arr.length; a++) {
               // arr[a].latlng = {
@@ -869,9 +871,8 @@ export default {
               }
             }
             this.allPointTask()
-          }) .catch(err => {
-            
           })
+          .catch(err => {})
       }
     },
     //河道列表
