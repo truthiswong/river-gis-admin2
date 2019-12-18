@@ -579,11 +579,10 @@
 </template>
 
 <script>
-// import WorldMap from "../../components/map/WorldMap.vue";
 import Vue from 'vue'
-import AddTaskPoint from './modules/AddTaskPoint.vue'
-import { setUserProjection } from 'ol/proj'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
+import AddTaskPoint from './modules/AddTaskPoint.vue'
+
 import {
   taskList,
   getTaskSave,
@@ -777,9 +776,6 @@ export default {
       this.getRoleList()
       this.riverListGet()
       this.getStructDeviceList()
-    },
-    checkedKeys(val) {
-      console.log('onCheck', val)
     },
     autoDetection() {
       // 自动监测点
