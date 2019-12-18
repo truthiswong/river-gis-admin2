@@ -159,11 +159,12 @@ export default {
       var data = this.list
       data.riverId = this.riverId.join(',')
       taskPointSave(data).then(res => {
-        this.handleCancel()
+        console.log('1');
         this.$message.success('保存成功')
         this.$parent.getList()
+        this.handleCancel()
       }).catch(err => {
-        this.$message.error(err.response.data.message)
+        this.$message.error('保存失败')
       })
     },
     // 标签
@@ -192,7 +193,7 @@ export default {
       })
     },
     handleCancel() {
-      this.$parent.allPointTask()
+      // this.$parent.allPointTask()
       this.visible = false
       this.list.taskId=''
       this.list.id=''
