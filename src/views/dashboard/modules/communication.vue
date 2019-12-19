@@ -17,9 +17,9 @@
             </div>
             <div class="header">{{item.remark}}</div>
             <div class="player">
-                <!-- <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :options="playerOptions" :playsinline="true"></video-player> -->
+                <!-- <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :options="item.playerOptions" :playsinline="true"></video-player> -->
                 <img :src="item.media" alt="" style="width:100%">
-                <!-- <audio src="https://www.w3school.com.cn/i/horse.ogg" controls="controls"></audio> -->
+                <audio :src="item.media" controls="controls"></audio>
             </div>
         </div>
         <!-- <div style="margin-top:20px;border-top:1px solid #e8e8e8;">
@@ -90,6 +90,9 @@ export default {
             }            
             dataManual(data).then(res=>{
                 let arr = res.data.data
+                // arr.forEach(v => {
+                //     v.media = 
+                // });
                 this.list = arr
             })
             

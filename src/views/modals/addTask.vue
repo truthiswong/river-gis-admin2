@@ -3,17 +3,17 @@
     <p class="addTask_title">追加任务</p>
     <a-form :form="addPlan" @submit="submitPlan" class="addTask_from">
       <a-form-item label="名称" :label-col="{span:6}" :wrapper-col="{span:16}">
-        <a-input placeholder="请输入任务名称" v-model="list.name"></a-input>
+        <a-input placeholder="请输入任务名称" v-model="listAppend.name"></a-input>
       </a-form-item>
       <a-form-item label="任务类型" :label-col="{span:6}" :wrapper-col="{span:16}">
-        <a-select v-model="list.template">
+        <a-select v-model="listAppend.template">
           <a-select-option value="uav">无人机</a-select-option>
           <a-select-option value="manual">人工调查</a-select-option>
           <a-select-option value="water">水质调查</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item label="任务内容" :label-col="{ span: 6}" :wrapper-col="{ span: 16}">
-        <a-textarea placeholder="Basic usage" :rows="4" v-model="list.content" />
+        <a-textarea placeholder="Basic usage" :rows="4" v-model="listAppend.content" />
       </a-form-item>
       <a-form-item
         label="位置"
@@ -21,10 +21,7 @@
         :wrapper-col="{ span: 16 }"
         style="text-align:left;"
       >
-        <!-- <span style="cursor: pointer;color: #2fa0ec;font-size:12px;" @click="chooseLocation">
-                    选择位置（地图上选点/画线）
-        </span>-->
-        <a-radio-group v-model="list.locationType">
+        <a-radio-group v-model="listAppend.locationType">
           <a-radio-button value="point" @click="addPoint">点</a-radio-button>
           <a-radio-button value="line" @click="addLineTool">线</a-radio-button>
           <a-radio-button value="surface" @click="addPolygonTool">面</a-radio-button>
@@ -41,7 +38,7 @@
           style="width: 100%"
           @change="handleChange1"
           :filterOption="filterOption"
-          v-model="list.roleId"
+          v-model="listAppend.roleId"
         >
           <a-select-option v-for="item in rolePage" :value="item.id" :key="item.id">{{item.name}}</a-select-option>
         </a-select>
@@ -62,7 +59,7 @@
           type="primary"
           @click="addPlanInfo"
           style="display:inline-block;width:40%;color:#FFFFFF;"
-        >添加{{msg}}</a-button>
+        >添加</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -95,7 +92,7 @@ export default {
       markLnglat: {},
       polygonDate: [],
       rolePage: [],
-      list: {
+      listAppend: {
         planId: '',
         object: '',
         objectId: '',
@@ -109,6 +106,12 @@ export default {
       }
     }
   },
+  watch:{
+      msg(e){
+        console.log(e);
+        
+      },
+  },
   methods: {
     getRoleList() {
       roleList('worker').then(res => {
@@ -117,10 +120,10 @@ export default {
     },
     show(planId, id, name, code) {
       console.log(planId, id, name, code)
-      this.list.planId = planId
-      this.list.object = code
-      this.list.objectId = id
-      this.list.objectName = name
+      this.listAppend.planId = planId
+      this.listAppend.object = code
+      this.listAppend.objectId = id
+      this.listAppend.objectName = name
       this.isShow = true
       this.getRoleList()
     },
@@ -171,7 +174,7 @@ export default {
       console.log(this)
       this.msg.isShow = false
       this.$emit('confirmBtn', "gfgdf")
-      var data = this.list
+      var data = this.listAppend
       if (data.locationType == 'point') {
         data.region = this.markLnglat.lng + ',' + this.markLnglat.lat
       }
@@ -188,16 +191,16 @@ export default {
       data.roleId = data.roleId.join(',')
       inspectTaskSave(data).then(res => {
         this.$message.success('成功')
-        this.list.planId = ''
-        this.list.object = ''
-        this.list.objectId = ''
-        this.list.objectName = ''
-        this.list.name = ''
-        this.list.template = ''
-        this.list.content = ''
-        this.list.locationType = ''
-        this.list.region = ''
-        this.list.roleId = []
+        this.listAppend.planId = ''
+        this.listAppend.object = ''
+        this.listAppend.objectId = ''
+        this.listAppend.objectName = ''
+        this.listAppend.name = ''
+        this.listAppend.template = ''
+        this.listAppend.content = ''
+        this.listAppend.locationType = ''
+        this.listAppend.region = ''
+        this.listAppend.roleId = []
         this.isShow = false
         this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getinspectPointPage()
         this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
@@ -212,11 +215,6 @@ export default {
     },
     cancleBtn() {
       this.isShow = false
-      this.markLnglat = {}
-      this.lineLnglats = []
-      this.polygonDate = []
-      console.log(this.markLnglat)
-      this.$emit('cancleBtn')
     },
     addPoint() {
       if (this.clickPoint) {

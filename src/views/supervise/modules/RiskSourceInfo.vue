@@ -24,7 +24,7 @@
           <p>首次发现时间: {{list.discoveryTime}}</p>
           <p>河道所属: {{list.river}}</p>
           <router-link to="#111">
-            <a-button type="primary" ghost size="small">查看详情</a-button>
+            <a-button type="primary" ghost size="small" @click="riskSee">查看详情</a-button>
           </router-link>
         </a-col>
       </a-row>
@@ -115,6 +115,7 @@ export default {
       list:{
 
       },
+      id:'',
       headers: {
         Authorization: '',
         'X-TENANT-ID': 'jl:jlgis@2019' 
@@ -182,6 +183,7 @@ export default {
   methods: {
     riskInfo(row) {
       console.log(row);
+      this.id = row.target.options.id
       function formatDate(now) { 
           var year=now.getFullYear();  //取得4位数的年份
           var month=now.getMonth()+1;  //取得日期中的月份，其中0表示1月，11表示12月
@@ -214,6 +216,11 @@ export default {
         })
       }
       this.visible = true
+    },
+    riskSee(){
+      // this.visible = false
+      console.log(this);
+      
     },
     handleSubmit() {
       const {

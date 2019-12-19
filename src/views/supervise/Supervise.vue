@@ -1568,6 +1568,7 @@ export default {
         month: picker[1],
         day: picker[2]
       }
+      this.removeOverLays(this.drawPage)
       if (id == '1') {
         mapdrawPage(arr).then(res => {
           let data = res.data
@@ -2067,45 +2068,27 @@ export default {
       daydataList(data).then(res => {
         var arr = res.data.reverse()
         for (const item of res.data) {
-          if (item.uavData != 0) {
+          if (item.uavTask  != 0) {
             item.level = 1
-          } else if (item.manualData != 0) {
+          } else if (item.manualTask != 0) {
             item.level = 0
-          } else if (item.manualLocus != 0) {
-            item.level = 0
-          } else if (item.mapdrawData != 0) {
-            item.level = 2
-          } else if (item.panoramaData != 0) {
-            item.level = 2
-          } else {
+          }  else {
             item.level = 2
           }
           item.title = item.date.substring(item.date.length - 2, item.date.length)
           item.clicked = false
         }
         for (const item of res.data) {
-          if (item.uavData != 0) {
+          if (item.uavTask != 0) {
+             item.clicked = true
+             this.defaultTime =item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+             break
+          } else if (item.manualTask != 0) {
             item.clicked = true
             this.defaultTime =
               item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
             break
-          } else if (item.manualData != 0) {
-            item.clicked = true
-            this.defaultTime =
-              item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
-            break
-          } else if (item.manualLocus != 0) {
-            item.clicked = true
-            this.defaultTime =
-              item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
-            break
-          } else if (item.mapdrawData != 0) {
-            item.clicked = false
-            this.defaultTime = this.endDate
-          } else if (item.panoramaData != 0) {
-            item.clicked = false
-            this.defaultTime = this.endDate
-          } else {
+          }  else {
             item.clicked = false
             this.defaultTime = this.endDate
           }
@@ -2918,6 +2901,12 @@ export default {
       if (code == 'risk') {
         markerTool.addEventListener('click', this.sourceRiskClick)
       }
+      if (code == 'discharge') {
+        markerTool.addEventListener('click', this.dischargeClick)
+      }
+      if (code == 'floatage') {
+        markerTool.addEventListener('click', this.floatageClick)
+      }
     },
     //绘制线
     lineDraw(points, color, weight, opacity, id, name) {
@@ -2933,7 +2922,13 @@ export default {
       //向地图上添加线
       this.map.addOverLay(line)
       if (code == 'risk') {
-        line.addEventListener('click', this.sourceRiskClick)
+        markerTool.addEventListener('click', this.sourceRiskClick)
+      }
+      if (code == 'discharge') {
+        markerTool.addEventListener('click', this.dischargeClick)
+      }
+      if (code == 'floatage') {
+        markerTool.addEventListener('click', this.floatageClick)
       }
     },
     // 绘制面
@@ -2951,13 +2946,25 @@ export default {
       //向地图上添加面
       this.map.addOverLay(polygon)
       if (code == 'risk') {
-        polygon.addEventListener('click', this.sourceRiskClick)
-      } else {
+        markerTool.addEventListener('click', this.sourceRiskClick)
       }
-    },
+      if (code == 'discharge') {
+        markerTool.addEventListener('click', this.dischargeClick)
+      }
+      if (code == 'floatage') {
+        markerTool.addEventListener('click', this.floatageClick)
+      }
+      
+    }, 
     //排口水面漂浮物风险源弹窗
     sourceRiskClick(row) {
       this.$refs.riskInfo.riskInfo(row)
+    },
+    dischargeClick(row) {
+      this.$refs.addOutlet.detailList(row)
+    },
+    floatageClick(row) {
+       this.$refs.AddFloatage.detailList(row)
     },
     // 河岸风险源
     onRiverRisk() {

@@ -474,20 +474,72 @@
                             class="addTask_btn commBtn"
                             icon="plus"
                             @click="addTaskBtn(item.objectId,item.objectName,item.code)"
-                            v-show="cBtn"
+                            v-show="item.isShow == false"
                           >追加任务</a-button>
                         </div>
+                        <div class="addTask_info" v-show="item.isShow">
+                          <p class="addTask_title">追加任务</p>
+                          <a-form  class="addTask_from">
+                            <a-form-item label="名称" :label-col="{span:6}" :wrapper-col="{span:16}">
+                              <a-input placeholder="请输入任务名称" v-model="listAppend.name"></a-input>
+                            </a-form-item>
+                            <a-form-item label="任务类型" :label-col="{span:6}" :wrapper-col="{span:16}">
+                              <a-select v-model="listAppend.template">
+                                <a-select-option value="uav">无人机</a-select-option>
+                                <a-select-option value="manual">人工调查</a-select-option>
+                                <a-select-option value="water">水质调查</a-select-option>
+                              </a-select>
+                            </a-form-item>
+                            <a-form-item label="任务内容" :label-col="{ span: 6}" :wrapper-col="{ span: 16}">
+                              <a-textarea placeholder="Basic usage" :rows="4" v-model="listAppend.content" />
+                            </a-form-item>
+                            <a-form-item
+                              label="位置"
+                              :label-col="{ span: 6}"
+                              :wrapper-col="{ span: 16 }"
+                              style="text-align:left;"
+                            >
+                              <a-radio-group v-model="listAppend.locationType">
+                                <a-radio-button value="point" @click="addPoint">点</a-radio-button>
+                                <a-radio-button value="line" @click="addLineTool">线</a-radio-button>
+                                <a-radio-button value="surface" @click="addPolygonTool">面</a-radio-button>
+                              </a-radio-group>
+                              <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;">查看</a-button> -->
+                            </a-form-item>
+                            <a-form-item label="任务职位" :label-col="{ span: 6}" :wrapper-col="{ span: 16 }">
+                              <a-select
+                                showSearch
+                                mode="multiple"
+                                :allowClear="true"
+                                placeholder="请选择"
+                                optionFilterProp="children"
+                                style="width: 100%"
+                                v-model="listAppend.roleId"
+                              >
+                                <a-select-option v-for="item in rolePage" :value="item.id" :key="item.id">{{item.name}}</a-select-option>
+                              </a-select>
+                            </a-form-item>
+                            <a-form-item :wrapper-col="{span:24}" style="text-align:center;margin-top:10px;">
+                              <a-button @click="cancleBtn(item.objectName)" style="display:inline-block;width:40%;margin-right:10px;">取消</a-button>
+                              <a-button
+                                type="primary"
+                                @click="addPlanInfo"
+                                style="display:inline-block;width:40%;color:#FFFFFF;"
+                              >添加</a-button>
+                            </a-form-item>
+                          </a-form>
+                        </div>
+                         <!-- <add-task
+                          ref="addTask"
+                          :msg="newTaskObj"
+                          @chooseLocation="addLineTool"
+                          @cancleBtn="cancelAddTask"
+                          @confirmBtn="confirmAddTask($event)"
+                          @addPoint="addPoint"
+                          @addLineTool="addLineTool"
+                          @addPolygonTool="addPolygonTool"
+                        ></add-task> -->
                       </div>
-                      <add-task
-                        ref="addTask"
-                        :msg="newTaskObj"
-                        @chooseLocation="addLineTool"
-                        @cancleBtn="cancelAddTask"
-                        @confirmBtn="confirmAddTask($event)"
-                        @addPoint="addPoint"
-                        @addLineTool="addLineTool"
-                        @addPolygonTool="addPolygonTool"
-                      ></add-task>
                     </div>
                     <div v-show="ishidden == 2">
                       <creat-group ref="creatGroup"></creat-group>
@@ -609,22 +661,76 @@
                                         ></a-tree>
                                       </div>
                                     </div>
-                                    <div class="addTaskBtn">
+                                    <div class="addTaskBtn" v-show="hidingJudgment2">
                                       <!-- <a-button class="addTask_btn" icon="plus" @click="addNewTask">追加任务</a-button> -->
                                       <a-button
                                         class="addTask_btn commBtn"
                                         icon="plus"
-                                        @click="addTaskBtnDay(item.plan.id,targetId.target.objectId,targetId.target.objectName,targetId.target.object.code)"
-                                        v-show="cBtn"
+                                        @click="addTaskBtnDay(item.plan.id,targetId.target.objectId,targetId.target.objectName,targetId.target.object.code,index.team.id)"
+                                        v-if="targetId.isShow == false"
                                       >追加任务</a-button>
-                                      <add-task
-                                        ref="addTask"
-                                        @chooseLocation="addLineTool"
-                                        @cancleBtn="cancelAddTask"
-                                        @addPoint="addPoint"
-                                        @addLineTool="addLineTool"
-                                        @addPolygonTool="addPolygonTool"
-                                      ></add-task>
+                                      <div class="addTask_info" v-show="targetId.isShow">
+                                        <p class="addTask_title">追加任务</p>
+                                        <a-form  class="addTask_from">
+                                          <a-form-item label="名称" :label-col="{span:6}" :wrapper-col="{span:16}">
+                                            <a-input placeholder="请输入任务名称" v-model="listAppend.name"></a-input>
+                                          </a-form-item>
+                                          <a-form-item label="任务类型" :label-col="{span:6}" :wrapper-col="{span:16}">
+                                            <a-select v-model="listAppend.template">
+                                              <a-select-option value="uav">无人机</a-select-option>
+                                              <a-select-option value="manual">人工调查</a-select-option>
+                                              <a-select-option value="water">水质调查</a-select-option>
+                                            </a-select>
+                                          </a-form-item>
+                                          <a-form-item label="任务内容" :label-col="{ span: 6}" :wrapper-col="{ span: 16}">
+                                            <a-textarea placeholder="Basic usage" :rows="4" v-model="listAppend.content" />
+                                          </a-form-item>
+                                          <a-form-item
+                                            label="位置"
+                                            :label-col="{ span: 6}"
+                                            :wrapper-col="{ span: 16 }"
+                                            style="text-align:left;"
+                                          >
+                                            <a-radio-group v-model="listAppend.locationType">
+                                              <a-radio-button value="point" @click="addPoint">点</a-radio-button>
+                                              <a-radio-button value="line" @click="addLineTool">线</a-radio-button>
+                                              <a-radio-button value="surface" @click="addPolygonTool">面</a-radio-button>
+                                            </a-radio-group>
+                                            <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;">查看</a-button> -->
+                                          </a-form-item>
+                                          <a-form-item label="任务职位" :label-col="{ span: 6}" :wrapper-col="{ span: 16 }">
+                                            <a-select
+                                              showSearch
+                                              mode="multiple"
+                                              :allowClear="true"
+                                              placeholder="请选择"
+                                              optionFilterProp="children"
+                                              style="width: 100%"
+                                              v-model="listAppend.roleId"
+                                            >
+                                              <a-select-option v-for="item in rolePage" :value="item.id" :key="item.id">{{item.name}}</a-select-option>
+                                            </a-select>
+                                          </a-form-item>
+                                          <!-- <a-form-item label="是否紧急" :label-col="{ span: 6}" :wrapper-col="{ span: 16 }" style="text-align:left;">
+                                                    <a-checkbox>紧急任务</a-checkbox>
+                                          </a-form-item>-->
+                                          <!-- <a-form-item label="图片上传" :label-col="{ span: 6}" :wrapper-col="{ span: 16 }" style="text-align:left;">
+                                                    <a-upload name="file" :multiple="true" action="''">
+                                                        <a-button>
+                                                            <a-icon type="upload" /> Click to Upload
+                                                        </a-button>
+                                                    </a-upload>
+                                          </a-form-item>-->
+                                          <a-form-item :wrapper-col="{span:24}" style="text-align:center;margin-top:10px;">
+                                            <a-button @click="cancleBtn(targetId.target.objectName)" style="display:inline-block;width:40%;margin-right:10px;">取消</a-button>
+                                            <a-button
+                                              type="primary"
+                                              @click="addPlanInfo"
+                                              style="display:inline-block;width:40%;color:#FFFFFF;"
+                                            >添加</a-button>
+                                          </a-form-item>
+                                        </a-form>
+                                      </div>
                                     </div>
                                   </a-collapse-panel>
                                 </a-collapse>
@@ -1006,7 +1112,9 @@ import {
   dataManual,
   locusManual,
   inspectTaskDetail,
-  recommendFangan
+  recommendFangan,
+  roleList,
+  inspectTaskSave
 } from '@/api/login'
 import 'ol/ol.css'
 // import Map from "ol/Map"
@@ -1186,6 +1294,22 @@ export default {
           scopedSlots: { tab: 'customRender' }
         }
       ],
+      rolePage:[],
+      listAppend: {
+        planId: '',
+        object: '',
+        objectId: '',
+        objectName: '',
+        name: '',
+        template: '',
+        content: '',
+        locationType: '',
+        region: '',
+        roleId: []
+      },
+      lineLnglats: [],
+      markLnglat: {},
+      polygonDate: [],
       planList1: {
         id: '',
         name: ''
@@ -1264,6 +1388,7 @@ export default {
       spinning: true,
       defaultLineTask: '',
       hidingJudgment3: false,
+      isShow:false,
       riskMapPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.23493, lng: 121.51566 } },
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24344, lng: 121.49892 } },
@@ -1340,6 +1465,8 @@ export default {
   },
   watch: {
     $route() {
+      console.log('1');
+      
       this.getPicker()
       this.getTask()
       this.getList()
@@ -1535,6 +1662,7 @@ export default {
           if (arr.length > 0) {
             for (let a = 0; a < arr.length; a++) {
               arr[a].taskChoose = []
+              arr[a].isShow = false
               if (arr[a].object.code != 'river') {
                 arr[a].latlng = arr[a].coordinate
               } else {
@@ -1783,6 +1911,9 @@ export default {
         })
         this.spotTaskList = arr
       })
+      roleList('worker').then(res => {
+        this.rolePage = res.data.data
+      })
     },
 
     //--------------------------------------------------------------------------------------------当日计划---------------------------------------
@@ -1844,6 +1975,7 @@ export default {
             for (const a of item.teams) {
               if (a.targets != undefined) {
                 for (const b of a.targets) {
+                  b.isShow = false
                   b.clicked = false
                   b.code = b.target.object.code
                   if (b.target.object.code == 'point') {
@@ -1889,6 +2021,7 @@ export default {
               }
             }
           }
+          this.spinning = false
           this.planListPage = arr
           if (this.planListPage.length == 0 && hidingJudgment == true) {
             this.hidingJudgment = true
@@ -1897,6 +2030,7 @@ export default {
           }
         })
         .catch(err => {
+          this.spinning = false
           // if (err.response != undefined) {
           //   if (err.response.data.success == false && hidingJudgment == true) {
           //     this.hidingJudgment = true
@@ -2463,23 +2597,35 @@ export default {
     //选中巡河方案
     selectPatrol() {},
     addTaskBtn(id, name, code) {
-      this.newTaskObj = {
-        planId: this.planList1.id,
-        objectId: id,
-        objectName: name,
-        isShow: true,
-        object: code
+      for(const item of this.riverMontion){
+        if (item.objectId == id) {
+          item.isShow =true
+        }
       }
-      console.log(this.$refs.addTask)
-      this.$refs.addTask.show(this.planList1.id, id, name, code)
+      this.listAppend.planId = this.planList1.id
+      this.listAppend.object = code
+      this.listAppend.objectId = id
+      this.listAppend.objectName = name
+      this.isShow = true
       this.addTaskCode = '1'
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
-    addTaskBtnDay(planId, id, name, code) {
-      console.log(this.$refs)
-      this.$refs.addTask[0].show(planId, id, name, code)
+    addTaskBtnDay(planId, id, name, code,teaid) {
       this.addTaskCode = '2'
+      for(const item of this.planListPage){
+        for (const a of item.teams) {
+          for (const b of a.targets) {
+            if (b.target.objectName == name) {
+              b.isShow = true
+            }
+          } 
+        }
+      }
+      this.listAppend.planId = planId
+      this.listAppend.object = code
+      this.listAppend.objectId = id
+      this.listAppend.objectName = name
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
@@ -2971,12 +3117,7 @@ export default {
     getLineDate(e) {
       console.log(e)
       console.log(e.currentLnglats)
-      if (this.addTaskCode == '1') {
-        this.$refs.addTask.getLineDate(e.currentLnglats)
-      }
-      if (this.addTaskCode == '2') {
-        this.$refs.addTask[0].getLineDate(e.currentLnglats)
-      }
+      this.lineLnglats = e.currentLnglats
     },
     //取消追加任务
     cancelAddTask() {
@@ -2984,7 +3125,13 @@ export default {
     },
     // 确认追加任务
     confirmAddTask(e) {
-      console.log(e)
+     this.newTaskObj = {
+        planId: this.planList1.id,
+        objectId: id,
+        objectName: name,
+        isShow: false,
+        object: code
+      } 
     },
     //添加调查点
     addSurveyPoint() {
@@ -3052,12 +3199,7 @@ export default {
     },
     addPointDate(e) {
       console.log(e.currentLnglat)
-      if (this.addTaskCode == '1') {
-        this.$refs.addTask.getMarkDate(e.currentLnglat)
-      }
-      if (this.addTaskCode == '2') {
-        this.$refs.addTask[0].getMarkDate(e.currentLnglat)
-      }
+      this.markLnglat = e.currentLnglat
     },
     //画面
     addPolygonTool(clickPolygon) {
@@ -3079,13 +3221,7 @@ export default {
       }
     },
     addPolygonDate(e) {
-      console.log(e.currentLnglats)
-      if (this.addTaskCode == '1') {
-        this.$refs.addTask.getPolygonDate(e.currentLnglats)
-      }
-      if (this.addTaskCode == '2') {
-        this.$refs.addTask[0].getPolygonDate(e.currentLnglats)
-      }
+      this.polygonDate = e.currentLnglats
     },
     //显示地图上调查点内任务点
     addMorePoint() {
@@ -3198,7 +3334,7 @@ export default {
     },
     treeHover() {
       // this.selectedKeys
-    }
+    },
     // mouseOverTask(e) {
     //   var getLng = e.lnglat.getLng()
     //   var getLat = e.lnglat.getLat()
@@ -3227,6 +3363,60 @@ export default {
     //     }
     //   }
     // }
+    //追加任务
+    addPlanInfo() {
+      var data = this.listAppend
+      if (data.locationType == 'point') {
+        data.region = this.markLnglat.lng + ',' + this.markLnglat.lat
+      }
+      if (data.locationType == 'line') {
+        for (const item of this.lineLnglats) {
+          data.region = data.region + item.lng + ',' + item.lat + '|'
+        }
+      }
+      if (data.locationType == 'surface') {
+        for (const item of this.polygonDate) {
+          data.region = data.region + item.lng + ',' + item.lat + '|'
+        }
+      }
+      data.roleId = data.roleId.join(',')
+      inspectTaskSave(data).then(res => {
+        this.$message.success('成功')
+        this.getinspectPointPage()
+        this.getPage()
+        this.cancleBtn(this.listAppend.objectName)
+      })
+    },
+    cancleBtn(name) {
+      if (this.addTaskCode =='1') {
+        for(const item of this.riverMontion){
+          if (item.objectName == name) {
+            item.isShow =false
+          }
+        }
+      }
+      if (this.addTaskCode =='2') {
+        for(const item of this.planListPage){
+          for (const a of item.teams) {
+            for (const b of a.targets) {
+              if (b.target.objectName == name) {
+                b.isShow = false
+              }
+            }
+          }
+        }
+      }
+      this.listAppend.planId = ''
+      this.listAppend.object = ''
+      this.listAppend.objectId = ''
+      this.listAppend.objectName = ''
+      this.listAppend.name = ''
+      this.listAppend.template = ''
+      this.listAppend.content = ''
+      this.listAppend.locationType = ''
+      this.listAppend.region = ''
+      this.listAppend.roleId = []
+    },
   }
 }
 </script>
@@ -3303,5 +3493,26 @@ export default {
   width: 100%;
   height: calc(100vh - 157px);
   overflow: auto;
+}
+.addTask_info {
+  width: 100%;
+  // border-top: 1px solid #e8e8e8;
+}
+.addTask_title {
+  width: 100%;
+  height: 34px;
+  line-height: 34px;
+  border: 1px solid #f5f5f5;
+  text-align: left;
+  padding-left: 15px;
+  background-color: #f5f5f5;
+}
+.ant-form-item {
+  margin-bottom: 3px;
+  // margin-bottom:0;
+}
+.addTask_from {
+  padding-left: 20px;
+  text-align: center;
 }
 </style>
