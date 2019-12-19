@@ -2007,42 +2007,26 @@ export default {
       daydataList(data).then(res => {
         var arr = res.data.reverse()
         for (const item of res.data) {
-          if (item.uavData != 0) {
+          if (item.uavTask  != 0) {
             item.level = 1
-          } else if (item.manualData != 0) {
+          } else if (item.manualTask != 0) {
             item.level = 0
-          } else if (item.manualLocus != 0) {
-            item.level = 0
-          } else if (item.mapdrawData != 0) {
-            item.level = 2
-          } else if (item.panoramaData != 0) {
-            item.level = 2
-          } else {
+          }  else {
             item.level = 2
           }
           item.title = item.date.substring(item.date.length - 2, item.date.length)
           item.clicked = false
         }
         for (const item of res.data) {
-          if (item.uavData != 0) {
+          if (item.uavTask != 0) {
              item.clicked = true
              this.defaultTime =item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
              break
-          } else if (item.manualData != 0) {
+          } else if (item.manualTask != 0) {
             item.clicked = true
             this.defaultTime =item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
             break
-          } else if (item.manualLocus != 0) {
-             item.clicked = true
-             this.defaultTime =item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
-             break
-          } else if (item.mapdrawData != 0) {
-            item.clicked = false
-            this.defaultTime = this.endDate
-          } else if (item.panoramaData != 0) {
-            item.clicked = false
-            this.defaultTime = this.endDate
-          } else {
+          }  else {
             item.clicked = false
             this.defaultTime = this.endDate
           }
