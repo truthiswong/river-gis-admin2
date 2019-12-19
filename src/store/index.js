@@ -17,7 +17,7 @@ export default new Vuex.Store({
     permission
   },
   state: {
-    id:'5de0cbd6a878247bef918dc1'
+    id:'5da7d092ea6c156d792df816'
   },
   mutations: {
     show(state,objid) {   //自定义改变state初始值的方法，这里面的参数除了state之外还可以再传额外的参数(变量或对象);

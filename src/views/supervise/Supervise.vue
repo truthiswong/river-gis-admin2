@@ -2838,6 +2838,12 @@ export default {
       if (code == 'risk') {
         markerTool.addEventListener('click', this.sourceRiskClick)
       }
+      if (code == 'discharge') {
+        markerTool.addEventListener('click', this.dischargeClick)
+      }
+      if (code == 'floatage') {
+        markerTool.addEventListener('click', this.floatageClick)
+      }
     },
     //绘制线
     lineDraw(points, color, weight, opacity, id, name) {
@@ -2853,7 +2859,13 @@ export default {
       //向地图上添加线
       this.map.addOverLay(line)
       if (code == 'risk') {
-        line.addEventListener('click', this.sourceRiskClick)
+        markerTool.addEventListener('click', this.sourceRiskClick)
+      }
+      if (code == 'discharge') {
+        markerTool.addEventListener('click', this.dischargeClick)
+      }
+      if (code == 'floatage') {
+        markerTool.addEventListener('click', this.floatageClick)
       }
     },
     // 绘制面
@@ -2871,15 +2883,25 @@ export default {
       //向地图上添加面
       this.map.addOverLay(polygon)
       if (code == 'risk') {
-         polygon.addEventListener('click', this.sourceRiskClick)
-      }else{
-
+        markerTool.addEventListener('click', this.sourceRiskClick)
+      }
+      if (code == 'discharge') {
+        markerTool.addEventListener('click', this.dischargeClick)
+      }
+      if (code == 'floatage') {
+        markerTool.addEventListener('click', this.floatageClick)
       }
       
-    },
+    }, 
     //排口水面漂浮物风险源弹窗
     sourceRiskClick(row) {
       this.$refs.riskInfo.riskInfo(row)
+    },
+    dischargeClick(row) {
+      this.$refs.addOutlet.detailList(row)
+    },
+    floatageClick(row) {
+       this.$refs.AddFloatage.detailList(row)
     },
     // 河岸风险源
     onRiverRisk() {

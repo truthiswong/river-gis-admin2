@@ -5,7 +5,7 @@
     :visible="visible"
     :confirmLoading="confirmLoading"
     @ok="saveClick"
-    @click="handleCancel"
+    @cancel="handleCancel"
   >
     <a-spin :spinning="confirmLoading">
       <a-form class="from">
@@ -86,7 +86,7 @@
 
 <script>
 import moment from 'moment'
-import { getRiverList,getStreetList,floatageSave} from '@/api/login'
+import { getRiverList,getStreetList,floatageSave,floatageDetails,mapdrawDetail} from '@/api/login'
 export default {
   data() {
     return {
@@ -125,6 +125,25 @@ export default {
       getStreetList(this.$store.state.id).then(res=>{
         this.streetList = res.data.data
       })
+    },
+    detailList(row){
+      this.getList()
+      // mapdrawDetail(row.target.options.id).then(res=>{
+      //   this.list.lng=res.data.point[0]
+      //   this.list.lat=res.data.point[1]
+      // })
+      this.list.drawId=row.target.options.id
+      floatageDetails(row.target.options.id).then(res=>{
+        var arr = res.data
+        this.list.innerName=arr.innerName
+        // this.list.address=
+        this.list.riverId=arr.river.id
+        this.list.streetId=arr.street.id
+        // this.list.currentArea=
+        // this.list.discoveryTime=
+        
+      })
+      this.visible = true
     },
     add(id,currentArea,result) {
       // console.log(id,currentArea,result);

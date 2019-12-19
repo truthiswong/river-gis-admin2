@@ -37,7 +37,7 @@ export default {
           v.label = v.name
           v.code ='1'
           v.children.forEach(a => {
-            if (a.id =='5de0cbd6a878247bef918dc1') {
+            if (a.id =='5da7d092ea6c156d792df816') {
               this.list.push(v.id)
               this.list.push(a.id)
             }

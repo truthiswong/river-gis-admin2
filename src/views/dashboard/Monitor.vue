@@ -474,7 +474,7 @@
                             class="addTask_btn commBtn"
                             icon="plus"
                             @click="addTaskBtn(item.objectId,item.objectName,item.code)"
-                            v-show="cBtn"
+                            v-show="item.isShow == false"
                           >追加任务</a-button>
                         </div>
                         <div class="addTask_info" v-show="item.isShow">
@@ -519,18 +519,8 @@
                                 <a-select-option v-for="item in rolePage" :value="item.id" :key="item.id">{{item.name}}</a-select-option>
                               </a-select>
                             </a-form-item>
-                            <!-- <a-form-item label="是否紧急" :label-col="{ span: 6}" :wrapper-col="{ span: 16 }" style="text-align:left;">
-                                      <a-checkbox>紧急任务</a-checkbox>
-                            </a-form-item>-->
-                            <!-- <a-form-item label="图片上传" :label-col="{ span: 6}" :wrapper-col="{ span: 16 }" style="text-align:left;">
-                                      <a-upload name="file" :multiple="true" action="''">
-                                          <a-button>
-                                              <a-icon type="upload" /> Click to Upload
-                                          </a-button>
-                                      </a-upload>
-                            </a-form-item>-->
                             <a-form-item :wrapper-col="{span:24}" style="text-align:center;margin-top:10px;">
-                              <a-button @click="cancleBtn" style="display:inline-block;width:40%;margin-right:10px;">取消</a-button>
+                              <a-button @click="cancleBtn(item.objectName)" style="display:inline-block;width:40%;margin-right:10px;">取消</a-button>
                               <a-button
                                 type="primary"
                                 @click="addPlanInfo"
@@ -671,7 +661,7 @@
                                         ></a-tree>
                                       </div>
                                     </div>
-                                    <div class="addTaskBtn">
+                                    <div class="addTaskBtn" v-show="hidingJudgment2">
                                       <!-- <a-button class="addTask_btn" icon="plus" @click="addNewTask">追加任务</a-button> -->
                                       <a-button
                                         class="addTask_btn commBtn"
@@ -2607,18 +2597,22 @@ export default {
     //选中巡河方案
     selectPatrol() {},
     addTaskBtn(id, name, code) {
-      // this.listAppend.planId = planId
+      for(const item of this.riverMontion){
+        if (item.objectId == id) {
+          item.isShow =true
+        }
+      }
+      this.listAppend.planId = this.planList1.id
       this.listAppend.object = code
       this.listAppend.objectId = id
       this.listAppend.objectName = name
       this.isShow = true
-      // console.log(this.$refs.addTask)
-      // this.$refs.addTask.show(this.planList1.id, id, name, code)
       this.addTaskCode = '1'
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
     addTaskBtnDay(planId, id, name, code,teaid) {
+      this.addTaskCode = '2'
       for(const item of this.planListPage){
         for (const a of item.teams) {
           for (const b of a.targets) {
@@ -2632,10 +2626,6 @@ export default {
       this.listAppend.object = code
       this.listAppend.objectId = id
       this.listAppend.objectName = name
-      
-      // console.log(this.$refs)
-      // this.$refs.addTask[0].show(planId, id, name, code)
-      // this.addTaskCode = '2'
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
@@ -3392,32 +3382,40 @@ export default {
       data.roleId = data.roleId.join(',')
       inspectTaskSave(data).then(res => {
         this.$message.success('成功')
-        this.listAppend.planId = ''
-        this.listAppend.object = ''
-        this.listAppend.objectId = ''
-        this.listAppend.objectName = ''
-        this.listAppend.name = ''
-        this.listAppend.template = ''
-        this.listAppend.content = ''
-        this.listAppend.locationType = ''
-        this.listAppend.region = ''
-        this.listAppend.roleId = []
-        this.isShow = false
+        this.getinspectPointPage()
+        this.getPage()
+        this.cancleBtn(this.listAppend.objectName)
       })
     },
     cancleBtn(name) {
-      for(const item of this.planListPage){
-        for (const a of item.teams) {
-          for (const b of a.targets) {
-            if (b.target.objectName == name) {
-              b.isShow = false
-            }
+      if (this.addTaskCode =='1') {
+        for(const item of this.riverMontion){
+          if (item.objectName == name) {
+            item.isShow =false
           }
-          // if (a.team.objectId ==teaid) {
-          //   a.team.isShow = true
-          // }
         }
       }
+      if (this.addTaskCode =='2') {
+        for(const item of this.planListPage){
+          for (const a of item.teams) {
+            for (const b of a.targets) {
+              if (b.target.objectName == name) {
+                b.isShow = false
+              }
+            }
+          }
+        }
+      }
+      this.listAppend.planId = ''
+      this.listAppend.object = ''
+      this.listAppend.objectId = ''
+      this.listAppend.objectName = ''
+      this.listAppend.name = ''
+      this.listAppend.template = ''
+      this.listAppend.content = ''
+      this.listAppend.locationType = ''
+      this.listAppend.region = ''
+      this.listAppend.roleId = []
     },
   }
 }

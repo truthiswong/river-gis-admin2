@@ -302,7 +302,7 @@
 import moment from 'moment'
 import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-import { getRiverList,getStreetList,informationStreet,informationRiver,dischargeInner,mapdrawDischargeSave,mediaList} from '@/api/login'
+import { getRiverList,getStreetList,informationStreet,informationRiver,dischargeInner,mapdrawDischargeSave,mediaList,dischargeDetails,mapdrawDetail} from '@/api/login'
 export default {
   data() {
     return {
@@ -348,6 +348,8 @@ export default {
         innerCode:'',
         innerName:'',
         functionName:'',
+        standardCode:'',
+        standardName:'',
       },
       attachmentJpg:[],
       riverList:[],
@@ -384,6 +386,51 @@ export default {
       getStreetList(this.$store.state.id).then(res=>{
         this.streetList = res.data.data
       })
+    },
+    detailList(row){
+      this.getList()
+      mapdrawDetail(row.target.options.id).then(res=>{
+        this.list.lng=res.data.point[0]
+        this.list.lat=res.data.point[1]
+      })
+      this.list.drawId=row.target.options.id
+      dischargeDetails(row.target.options.id).then(res=>{
+        var arr = res.data
+        this.list.riverId=arr.river.id
+        this.list.streetId=arr.street.id
+        this.list.tworiver=arr.tworiver
+        // this.list.supervisoryLevel=arr.
+        // this.list.controller=arr.
+        // this.list.priority=arr.
+        this.list.standardCode=arr.standardCode
+        this.list.standardName=arr.standardName
+        this.list.type=arr.type.code
+        this.list.landmarkLocation=arr.landmarkLocation
+        this.list.accurateLocation=arr.accurateLocation
+        this.list.innerCode=arr.innerCode
+        this.list.innerName=arr.innerName
+        this.list.letway=arr.letway.code
+        this.list.enterRiverWay=arr.enterRiverWay
+        this.list.enterRiverSize=arr.enterRiverSize
+        this.list.yearLetSize=arr.yearLetSize
+        this.list.pollutant=arr.pollutant
+        this.list.settingUnit=arr.settingUnit
+        this.list.unitAddress=arr.unitAddress
+        this.list.linkman=arr.linkman
+        this.list.linktel=arr.linktel
+        this.list.blockoffStatus=arr.blockoffStatus
+        this.list.statement=arr.statement
+        this.list.activateTime=arr.activateTime
+        this.list.registrationState=arr.registrationState
+        this.list.approveState=arr.approveState
+        this.list.approveUnit=arr.approveUnit
+        this.list.dischargeLicense=arr.dischargeLicense
+        this.list.licenseNo=arr.licenseNo
+        this.list.innerCode=arr.innerCode
+        this.list.innerName=arr.innerName
+        this.list.functionName=arr.functionName
+      })
+      this.visible = true
     },
     typeChange(value,option){
       if (this.list.riverId!='') {
