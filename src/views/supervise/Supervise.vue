@@ -1517,6 +1517,7 @@ export default {
         month: picker[1],
         day: picker[2]
       }
+      this.removeOverLays(this.drawPage)
       if (id == '1') {
         mapdrawPage(arr).then(res => {
           let data = res.data

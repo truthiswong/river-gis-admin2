@@ -37,6 +37,10 @@ export default {
           v.label = v.name
           v.code ='1'
           v.children.forEach(a => {
+            if (a.id =='5de0cbd6a878247bef918dc1') {
+              this.list.push(v.id)
+              this.list.push(a.id)
+            }
             if (a.children == null) {
               a.children =[]
             }
@@ -45,15 +49,16 @@ export default {
             a.code ='2'
           })
         })
-        console.log(arr);
-        
         this.options = arr
       })
     },
     onChange(value) {
+      console.log(value);
+      
       if (value.length>1) {
         // console.log(value)
         // console.log(this.$route.path);
+        
         this.$store.commit('show',value[1])
         this.$router.push({
           path: this.$route.path,

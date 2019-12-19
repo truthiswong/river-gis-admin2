@@ -91,7 +91,8 @@ export default {
                 sm:{span:18},
             },
             number:20,
-            editShow:true
+            editShow:true,
+            numvis:true
         }
     },
     created(){
@@ -180,6 +181,9 @@ export default {
                     }
                     memberRiverSave(data).then(res=>{
 
+                    }).catch(err => {
+                       this.numvis =false
+                       
                     })
 
                 }
@@ -201,16 +205,23 @@ export default {
                 }
                 equipmentRiverSave(arr).then(res=>{
 
+                }).catch(err => {
+                    this.numvis =false
                 })
             }
-            planPublish(this.id).then(res=>{
-                this.$message.success('成功');
-                this.spinning=true
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getinspectPointPage()
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
-            })
-            this.visible = false;
+            if (this.numvis ==true) {
+                planPublish(this.id).then(res=>{
+                    this.$message.success('成功');
+                    this.spinning=true
+                    this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
+                    this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getinspectPointPage()
+                    this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+                })
+                this.visible = false;
+            }else{
+                this.$message.error('请全部选择');
+            }
+            
         },
         //人员修改
         numberChange(val){
