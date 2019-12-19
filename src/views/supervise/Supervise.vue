@@ -166,17 +166,77 @@
           v-show="phonePhoto"
           class="custom_list"
         >
-          <a-upload name="file" :multiple="true" action :headers="headers" @change="phoneUpload">
+          <el-upload
+            class="upload-demo"
+            ref="upload"
+            :data="phonePhotoData"
+            name="media"
+            :headers="headers"
+            action="/server/data/admin/regulator/manual/data/save"
+            :on-error="phonePhotoError"
+            :on-success="phonePhotoSuccess"
+            :file-list="fileList"
+            :limit="1"
+          >
             <a-button style="width:198px;" block>
               <a-icon type="upload" />上传照片
             </a-button>
-            <div>
-              <div v-for="item of phonePhotoPoints" :key="item.id">
-                <img src="" alt="">
-                <div>11111</div>
+          </el-upload>
+          <!-- <a-upload
+            name="media"
+            :data="phonePhotoData"
+            action="/server/data/admin/regulator/manual/data/save"
+            :headers="headers"
+            @change="phonePhotoChange"
+          >
+            <a-button style="width:198px;" block>
+              <a-icon type="upload" />上传照片
+            </a-button>
+          </a-upload> -->
+          <ul class="phone_wrap">
+            <li class="phone_list">
+              <img src="../../assets/loginBg.jpg" alt />
+              <a-row style="width:100%" type="flex" justify="space-between" align="middle">
+                <a-col :span="6">坐标点</a-col>
+                <a-col :span="12">
+                  <a-input placeholder="选择坐标点">
+                    <a-icon slot="suffix" type="info-circle" style="color: rgba(0,0,0,.45)" />
+                  </a-input>
+                </a-col>
+                <a-col :span="6">
+                  <a-button>确定</a-button>
+                </a-col>
+              </a-row>
+            </li>
+          </ul>
+          <!-- <a-list size="small">
+            <p style="margin:5px 0;text-align:center;font-size:14px;">无法定位的照片</p>
+            <a-list-item class="phone_list">
+              <img src="../../assets/loginBg.jpg" alt />
+              <br />
+              <a-row style="width:100%" type="flex" justify="space-between" align="middle">
+                <a-col :span="6">坐标点</a-col>
+                <a-col :span="12">
+                  <a-input placeholder="选择坐标点">
+                    <a-icon slot="suffix" type="info-circle" style="color: rgba(0,0,0,.45)" />
+                  </a-input>
+                </a-col>
+                <a-col :span="6">
+                  <a-button block>确定</a-button>
+                </a-col>
+              </a-row>
+            </a-list-item>
+            <a-list-item class="phone_list">
+              <img src="../../assets/loginBg.jpg" alt />
+              <div>
+                <span>坐标点</span>
+                <a-input placeholder="选择坐标点">
+                  <a-icon slot="suffix" type="info-circle" style="color: rgba(0,0,0,.45)" />
+                </a-input>
+                <a-button block>确定</a-button>
               </div>
-            </div>
-          </a-upload>
+            </a-list-item>
+          </a-list>-->
         </a-collapse-panel>
         <a-collapse-panel
           header="河岸风险源"
@@ -201,7 +261,7 @@
           </a-select>
         </a-collapse-panel>
         <a-collapse-panel header="风险地图" :style="customStyle" v-show="riskMap" class="custom_list">
-          <a-card size="small" class="custom_card" style="width: 180px">
+          <a-card size="small" class="custom_card" style="width: 198px">
             <a-row style="width:100%">
               <a-col :span="12">边框颜色</a-col>
               <a-col :span="12" @click="chooseColor(1)">
@@ -319,7 +379,11 @@
               <p style="margin:0;">{{item.name}}</p>
             </a-col>
             <a-col :span="6">
-              <a-switch size="small" v-model="item.clicked" @click="onDrawType(item.id,item.clicked)"/>
+              <a-switch
+                size="small"
+                v-model="item.clicked"
+                @click="onDrawType(item.id,item.clicked)"
+              />
             </a-col>
           </a-row>
         </a-list-item>
@@ -852,8 +916,16 @@ export default {
     return {
       headers: {
         // 文件上传
-        authorization: 'authorization-text'
+        Authorization: Vue.ls.get(ACCESS_TOKEN),
+        'X-TENANT-ID': 'jl:jlgis@2019'
       },
+      phonePhotoData: {
+        projectId: '',
+        year: '',
+        month: '',
+        day: ''
+      },
+      fileList: [], //手机照片
       defaultTime: '', //默认日期
       otherList: [], //其他
       riskSourceList: [], //河岸风险源
@@ -1144,32 +1216,9 @@ export default {
         //   imgUrl: require('./img/phonePhoto2.jpg'),
         //   direction: 0,
         //   latlng: { lat: 31.24344, lng: 121.49892 }
-        // },
-        // {
-        //   id: '222222222222',
-        //   name: '手机照片3',
-        //   clicked: false,
-        //   imgUrl: require('./img/phonePhoto3.jpg'),
-        //   direction: 0,
-        //   latlng: { lat: 31.22649, lng: 121.49712 }
-        // },
-        // {
-        //   id: '33333333333',
-        //   name: '手机照片4',
-        //   clicked: false,
-        //   imgUrl: require('./img/phonePhoto4.jpg'),
-        //   direction: 0,
-        //   latlng: { lat: 31.19482, lng: 121.46819 }
-        // },
-        // {
-        //   id: '4444444444444',
-        //   name: '手机照片5',
-        //   clicked: false,
-        //   imgUrl: require('./img/phonePhoto5.jpg'),
-        //   direction: 0,
-        //   latlng: { lat: 31.19649, lng: 121.45995 }
         // }
       ],
+      phonePhotoPointsList: [], //没有经纬度的手机照片
       UAVPhotoPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.24493, lng: 121.52566 } },
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.25344, lng: 121.50892 } },
@@ -1275,7 +1324,7 @@ export default {
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.23555, lng: 121.50555 } },
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.22333, lng: 121.51333 } }
       ],
-      drawType:false,
+      drawType: false,
       riverRisk: false, // 河岸风险源
       riverRiskPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.20333, lng: 121.49999 } },
@@ -1348,7 +1397,7 @@ export default {
     }
   },
   watch: {
-    $route(){
+    $route() {
       this.getTimeQuantum() // 获取时间段
       this.getRiverStreeList()
 
@@ -1398,7 +1447,7 @@ export default {
     riverRisk() {
       this.watchAllSwitch()
     },
-    drawType(){
+    drawType() {
       this.watchAllSwitch()
     },
     // 水土流失
@@ -1467,30 +1516,32 @@ export default {
       var data = {
         type: 'draw_type'
       }
-      paramList(data).then(res => {
-        this.paramPage = res.data
-        var arr = []
-        for (const item of res.data) {
-          if (
-            item.id != '5da8374dea6c157d2d61007c' &&
-            item.id != '5da8389eea6c157d2d61007f' &&
-            item.id != '5dafe6c8ea6c159999a0549c'
-          ) {
-            arr.push(item)
+      paramList(data)
+        .then(res => {
+          this.paramPage = res.data
+          var arr = []
+          for (const item of res.data) {
+            if (
+              item.id != '5da8374dea6c157d2d61007c' &&
+              item.id != '5da8389eea6c157d2d61007f' &&
+              item.id != '5dafe6c8ea6c159999a0549c'
+            ) {
+              arr.push(item)
+            }
           }
-        }
 
-        this.otherList = arr
-      }).catch(err => {
-        this.$message.warning('绘制类型数据加载失败')
-      })
+          this.otherList = arr
+        })
+        .catch(err => {
+          this.$message.warning('绘制类型数据加载失败')
+        })
       var datarisk = {
         type: 'risk_source_type'
       }
       paramList(datarisk).then(res => {
         res.data.forEach(v => {
           v.clicked = false
-        });
+        })
         this.riskSourceList = res.data
       })
       let ssss = {
@@ -1530,20 +1581,30 @@ export default {
           })
           this.drawPage = ar
         })
+        dataManual(arr).then(res => {
+          console.log(res.data.data)
+          let arr = res.data.data
+          arr.forEach(v => {
+            v.latlng = v.coordinate
+            v.name = v.title
+            v.clicked = false
+            v.imgUrl = v.media
+            v.id = v.id
+          })
+          this.phonePhotoPoints = []
+          this.phonePhotoPointsList = []
+          for (const item of arr) {
+            if (item.coordinate) {
+              this.phonePhotoPoints.push(item)
+            } else {
+              this.phonePhotoPointsList.push(item)
+            }
+          }
+          console.log(this.phonePhotoPoints)
+          console.log(this.phonePhotoPointsList)
+        })
         this.gengduo = '2'
       }
-      dataManual(arr).then(res=>{
-        console.log(res.data.data);
-        let arr = res.data.data 
-        arr.forEach(v => {
-          v.latlng = v.coordinate
-          v.name = v.title
-          v.clicked = false
-          v.imgUrl = v.media
-          v.direction =0
-        });
-        this.phonePhotoPoints = arr
-      })
     },
     mapZoomChange() {
       // console.log(this.map.getZoom())
@@ -2024,17 +2085,20 @@ export default {
         }
         for (const item of res.data) {
           if (item.uavData != 0) {
-             item.clicked = true
-             this.defaultTime =item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
-             break
+            item.clicked = true
+            this.defaultTime =
+              item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+            break
           } else if (item.manualData != 0) {
             item.clicked = true
-            this.defaultTime =item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+            this.defaultTime =
+              item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
             break
           } else if (item.manualLocus != 0) {
-             item.clicked = true
-             this.defaultTime =item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
-             break
+            item.clicked = true
+            this.defaultTime =
+              item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+            break
           } else if (item.mapdrawData != 0) {
             item.clicked = false
             this.defaultTime = this.endDate
@@ -2049,6 +2113,15 @@ export default {
         this.gengduo = '1'
         this.timeData = res.data
         // this.getWeatherList()
+        // 手机照片上传参数
+        let picker = this.defaultTime.split('-')
+        this.phonePhotoData = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2]
+        }
+        console.log(this.phonePhotoData)
       })
     },
     //获取天气
@@ -2506,7 +2579,15 @@ export default {
       if (this.phonePhoto) {
         this.allImageTask(this.phonePhotoPoints)
       } else {
-        this.removeOverLays(this.phonePhotoPoints)
+        // this.removeOverLays(this.phonePhotoPoints)
+        console.log(this.map.getOverlays())
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.phonePhotoPoints) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
       }
     },
     // 无人机照片
@@ -2531,7 +2612,7 @@ export default {
       }
     },
     // 360点点击事件
-    panoramaPointClick(e) {   
+    panoramaPointClick(e) {
       this.$router.push({
         path: '/supervise/Vtour',
         query: {
@@ -2767,11 +2848,11 @@ export default {
             }
           }
         }
-        if (point.length >0) {
+        if (point.length > 0) {
           this.spotDraw(point)
         }
       } else {
-        let data =[]
+        let data = []
         for (const item of this.drawPage) {
           if (item.drawType.name == '水面漂浮物') {
             data.push(item)
@@ -2811,11 +2892,11 @@ export default {
             }
           }
         }
-        if (point.length >0) {
+        if (point.length > 0) {
           this.spotDraw(point)
         }
       } else {
-        let data =[]
+        let data = []
         for (const item of this.drawPage) {
           if (item.drawType.name == '排口') {
             data.push(item)
@@ -2840,7 +2921,7 @@ export default {
     },
     //绘制线
     lineDraw(points, color, weight, opacity, id, name) {
-      console.log(points);
+      console.log(points)
       let line = new T.Polyline(points, {
         color: color, //线颜色
         weight: weight, //线宽
@@ -2870,11 +2951,9 @@ export default {
       //向地图上添加面
       this.map.addOverLay(polygon)
       if (code == 'risk') {
-         polygon.addEventListener('click', this.sourceRiskClick)
-      }else{
-
+        polygon.addEventListener('click', this.sourceRiskClick)
+      } else {
       }
-      
     },
     //排口水面漂浮物风险源弹窗
     sourceRiskClick(row) {
@@ -2886,11 +2965,9 @@ export default {
         // let point = []
         // for (const item of this.drawPage) {
         //   console.log(item);
-          
         //   if (item.drawType.id == '5da8374dea6c157d2d61007c') {
         //     if (item.locationType.code == 'point') {
         //       console.log('1');
-              
         //       item.latlng = {
         //         lng: item.point[0],
         //         lat: item.point[1]
@@ -2918,7 +2995,7 @@ export default {
         // }
         // this.spotDraw(point)
       } else {
-        let data =[]
+        let data = []
         for (const item of this.drawPage) {
           if (item.innerType.name == '风险源') {
             data.push(item)
@@ -2928,46 +3005,45 @@ export default {
       }
     },
     // 河岸风险源
-    onDrawType(id,clicked) {
+    onDrawType(id, clicked) {
       if (clicked) {
         let point = []
         for (const item of this.drawPage) {
           if (item.drawType.id == id) {
-             if (item.locationType.code == 'point') {
-                item.latlng = {
-                  lng: item.point[0],
-                  lat: item.point[1]
-                }
-                point.push(item)
+            if (item.locationType.code == 'point') {
+              item.latlng = {
+                lng: item.point[0],
+                lat: item.point[1]
               }
-              if (item.locationType.code == 'line') {
-                this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
-              }
-              if (item.locationType.code == 'polygon') {
-                this.noodlesDraw(
-                  item.polygon,
-                  item.frameColor,
-                  3,
-                  item.framePellucidity,
-                  item.shapeColor,
-                  item.shapePellucidity,
-                  '',
-                  item.id,
-                  item.innerType.code
-                )
-              }
+              point.push(item)
+            }
+            if (item.locationType.code == 'line') {
+              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+            }
+            if (item.locationType.code == 'polygon') {
+              this.noodlesDraw(
+                item.polygon,
+                item.frameColor,
+                3,
+                item.framePellucidity,
+                item.shapeColor,
+                item.shapePellucidity,
+                '',
+                item.id,
+                item.innerType.code
+              )
+            }
           }
         }
         this.spotDraw(point)
-        
       } else {
         let data = []
         for (const item of this.drawPage) {
-         if (item.drawType.id == id) {
-          data.push(item)
+          if (item.drawType.id == id) {
+            data.push(item)
           }
         }
-        this.removeOverLays(data) 
+        this.removeOverLays(data)
       }
     },
     // 水土流失
@@ -3127,14 +3203,23 @@ export default {
       // }
     },
     // 上传手机照片
-    phoneUpload(info) {
+    phonePhotoSuccess(response, file, fileList) {
+      console.log(response)
+      this.fileList = []
+      this.$message.success('上传成功')
+    },
+    phonePhotoError(err, file, fileList) {
+      console.log(err)
+    },
+    phonePhotoChange(info) {
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList)
       }
       if (info.file.status === 'done') {
-        this.$message.success(`${info.file.name} file uploaded successfully`)
+        // this.fileList = []
+        this.$message.success('上传成功')
       } else if (info.file.status === 'error') {
-        this.$message.error(`${info.file.name} file upload failed.`)
+        this.$message.success('上传失败')
       }
     }
   }
@@ -3542,6 +3627,21 @@ export default {
 }
 .menu_right {
   right: 80px;
+}
+
+.phone_wrap {
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  .phone_list {
+    img {
+      width: 100%;
+    }
+    div {
+      width: 100%;
+    }
+  }
 }
 
 .ant-col-6 {
