@@ -2260,10 +2260,12 @@ export default {
       var img_c = this.getTdLayer('img_w')
 
       let veclayerGroup = new LayerGroup({
-        layers: [vec_c, cva_c]
+        layers: [vec_c]
+        // layers: [vec_c, cva_c]
       })
       let imglayerGroup = new LayerGroup({
-        layers: [img_c, cva_c]
+        layers: [img_c]
+        // layers: [img_c, cva_c]
       })
       var view = new View({
         projection: 'EPSG:4326',
@@ -2307,10 +2309,12 @@ export default {
       var img_c = this.getTdLayer('img_w')
 
       var veclayerGroup = new LayerGroup({
-        layers: [vec_c, cva_c]
+        layers: [vec_c]
+        // layers: [vec_c, cva_c]
       })
       var imglayerGroup = new LayerGroup({
-        layers: [img_c, cva_c]
+        layers: [img_c]
+        // layers: [img_c, cva_c]
       })
 
       var lmap = new Map({
