@@ -735,7 +735,8 @@ export function dataManual(data) {
       month: data.month,
       coordinate: data.coordinate,
       radius: data.radius,
-      day: data.day
+      day: data.day,
+      mediaType: data.mediaType
     }
   })
 }
