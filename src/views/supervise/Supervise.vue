@@ -193,38 +193,14 @@
               <a-icon type="upload" />上传照片
             </a-button>
           </a-upload>-->
-          <!-- <ul class="phone_wrap">
-            <li class="phone_list">
-              <img src="../../assets/loginBg.jpg" alt />
-              <a-row style="width:100%" type="flex" justify="space-between" align="middle">
-                <a-col :span="6">坐标点</a-col>
-                <a-col :span="12">
-                  <a-input placeholder="选择坐标点">
-                    <a-icon slot="suffix" type="info-circle" style="color: rgba(0,0,0,.45)" />
-                  </a-input>
-                </a-col>
-                <a-col :span="6">
-                  <a-button>确定</a-button>
-                </a-col>
-              </a-row>
-            </li>
-          </ul>-->
-          <a-list size="small" class="phone_wrap">
-            <p style="margin:5px 0;text-align:center;font-size:14px;">无法定位的照片</p>
+          <a-list size="small" class="phone_wrap" v-show="phonePhotoPointsList.length > 0">
+            <p style="margin:5px 0 0;text-align:center;font-size:14px;">无法定位的照片</p>
             <a-list-item class="phone_list" v-for="item in phonePhotoPointsList" :key="item.id">
               <img :src="item.imgUrl" alt />
               <a-row style="width:100%" type="flex" justify="space-between" align="middle">
                 <!-- <a-col :span="6">坐标点</a-col> -->
                 <a-col :span="24">
-                  <!-- <a-input placeholder="选择坐标点" v-model="item.latlng">
-                    <a-icon
-                      slot="suffix"
-                      @click="phoneChooseCoordinate(item.id)"
-                      type="environment"
-                      style="color: rgba(0,0,0,.45)"
-                    />
-                  </a-input>-->
-                  <a-input placeholder="选择坐标点" v-model="item.latlng"></a-input>
+                  <a-input placeholder="选择坐标点" read-only v-model="item.latlng"></a-input>
                 </a-col>
                 <a-col :span="12">
                   <a-button block style="padding: 0" @click="phoneChooseCoordinate(item.id)">
@@ -833,6 +809,7 @@ import {
   mapdrawPage,
   daydataList,
   weatherList,
+  phoneLatlngList,
   panoramaList,
   panoramaImgList,
   dataManual
@@ -1206,7 +1183,20 @@ export default {
       alertShow: false, // 名字弹窗
       defaultRiver: '', // 河道街道名字
       once: 0, // 移入次数
-      riverShowList: [], // 河道
+      riverShowList: [
+        {
+          id: 'fdsfdsfdsfdsa',
+          name: '河道测试111',
+          clicked: false,
+          lineData: [[121.38777, 31.17433], [121.37678, 31.14686], [121.42262, 31.16743], [121.40373, 31.19606]]
+        },
+        {
+          id: 'jhgjytgfrf',
+          name: '河道测试2222',
+          clicked: false,
+          lineData: [[121.39777, 31.19433], [121.39678, 31.15686], [121.45262, 31.19743], [121.43373, 31.22606]]
+        }
+      ], // 河道
       streetShowList: [], //街道
       phonePhotoPoints: [
         // {
@@ -1562,18 +1552,19 @@ export default {
     getMapdrawPage(id) {
       var time = this.defaultTime
       var picker = time.split('-')
-      var arr = {
+      var data = {
         projectId: this.$store.state.id,
         year: picker[0],
         month: picker[1],
-        day: picker[2]
+        day: picker[2],
+        mediaType: 'image'
       }
       this.removeOverLays(this.drawPage)
       if (id == '1') {
-        mapdrawPage(arr).then(res => {
-          let data = res.data
+        mapdrawPage(data).then(res => {
+          let arr = res.data
           let ar = []
-          data.forEach(v => {
+          arr.forEach(v => {
             v.shapePellucidity = v.shapePellucidity / 100
             v.framePellucidity = v.framePellucidity / 100
             if (v.innerType != undefined) {
@@ -1582,7 +1573,7 @@ export default {
           })
           this.drawPage = ar
         })
-        dataManual(arr).then(res => {
+        dataManual(data).then(res => {
           console.log(res.data.data)
           let arr = res.data.data
           arr.forEach(v => {
@@ -1625,6 +1616,7 @@ export default {
             v.clicked = false
           })
           this.streetShowList = arr
+          console.log(this.streetShowList)
         })
         .catch(err => {})
       getRiverList(this.$store.state.id)
@@ -1636,12 +1628,20 @@ export default {
             } else {
               v.lineData = v.region
             }
-
             v.clicked = false
           })
           this.riverShowList = arr
+          console.log(this.riverShowList)
         })
         .catch(err => {})
+      // // 二维数据转换
+      // for (const item of this.riverShowList) {
+      //   let points = []
+      //   for (const point of item.lineData) {
+      //     points.push(new T.LngLat(point[0], point[1]))
+      //   }
+      //   item.lineData = points
+      // }
     },
     getWaterQualityPoints() {
       let parameter = { projectId: '', type: '' }
@@ -3219,6 +3219,46 @@ export default {
       console.log(response)
       this.fileList = []
       this.$message.success('上传成功')
+      // 刷新手机照片
+      let picker = this.defaultTime.split('-')
+      let phoneArr = {
+        projectId: this.$store.state.id,
+        year: picker[0],
+        month: picker[1],
+        day: picker[2],
+        mediaType: 'image'
+      }
+      dataManual(phoneArr).then(res => {
+        console.log(res.data.data)
+        let arr = res.data.data
+        arr.forEach(v => {
+          v.latlng = v.coordinate
+          v.name = v.title
+          v.clicked = false
+          v.imgUrl = v.media
+          v.id = v.id
+        })
+        this.phonePhotoPoints = []
+        this.phonePhotoPointsList = []
+        for (const item of arr) {
+          if (item.coordinate) {
+            this.phonePhotoPoints.push(item)
+          } else {
+            this.phonePhotoPointsList.push(item)
+          }
+        }
+        console.log(this.phonePhotoPoints)
+        console.log(this.phonePhotoPointsList)
+        // 获取后重新绘制
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.phonePhotoPoints) {
+            if (item.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
+        this.allImageTask(this.phonePhotoPoints)
+      })
     },
     phonePhotoError(err, file, fileList) {
       console.log(err)
@@ -3238,21 +3278,83 @@ export default {
     phoneChooseCoordinate(id) {
       console.log(id)
       this.phonePhoneId = id
+      if (this.cp) {
+        this.cp.removeEvent()
+      }
       this.cp = new T.CoordinatePickup(this.map, { callback: this.getLngLat })
       this.cp.addEvent()
     },
     getLngLat(lnglat) {
-      console.log(lnglat.lng + ',' + lnglat.lat)
+      console.log(lnglat.lng + ', ' + lnglat.lat)
       for (const item of this.phonePhotoPointsList) {
         if (this.phonePhoneId == item.id) {
-          item.latlng = lnglat.lng + ', ' + lnglat.lat
+          item.latlng = `${lnglat.lng}, ${lnglat.lat}`
         }
       }
     },
     // 手机照片没经纬度保存
-    phoneConfirm() {
-      this.phonePhoneId = ""
-      this.cp.removeEvent()
+    phoneConfirm(id) {
+      for (const item of this.phonePhotoPointsList) {
+        if (id == item.id) {
+          let picker = this.defaultTime.split('-')
+          let data = {
+            projectId: this.$store.state.id,
+            year: picker[0],
+            month: picker[1],
+            day: picker[2],
+            id: id,
+            coordinate: item.latlng
+          }
+          if (item.latlng) {
+            console.log(data)
+            phoneLatlngList(data).then(res => {
+              console.log(111)
+              console.log(res)
+              this.phonePhoneId = ''
+              this.cp.removeEvent()
+              // 刷新手机照片
+              let phoneArr = {
+                projectId: this.$store.state.id,
+                year: picker[0],
+                month: picker[1],
+                day: picker[2],
+                mediaType: 'image'
+              }
+              dataManual(phoneArr).then(res => {
+                console.log(res.data.data)
+                let arr = res.data.data
+                arr.forEach(v => {
+                  v.latlng = v.coordinate
+                  v.name = v.title
+                  v.clicked = false
+                  v.imgUrl = v.media
+                  v.id = v.id
+                })
+                this.phonePhotoPoints = []
+                this.phonePhotoPointsList = []
+                for (const item of arr) {
+                  if (item.coordinate) {
+                    this.phonePhotoPoints.push(item)
+                  } else {
+                    this.phonePhotoPointsList.push(item)
+                  }
+                }
+                console.log(this.phonePhotoPoints)
+                console.log(this.phonePhotoPointsList)
+                // 获取后重新绘制
+                for (const overlay of this.map.getOverlays()) {
+                  for (const item of this.phonePhotoPoints) {
+                    if (item.id == overlay.options.id) {
+                      this.map.removeOverLay(overlay)
+                    }
+                  }
+                }
+                this.allImageTask(this.phonePhotoPoints)
+              })
+            })
+          }
+        }
+      }
     }
   }
 }
