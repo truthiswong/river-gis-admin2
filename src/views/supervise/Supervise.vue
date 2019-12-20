@@ -2603,7 +2603,8 @@ export default {
       this.$router.push({
         path: '/supervise/Vtour',
         query: {
-          id: e.target.options.id
+          id: e.target.options.id,
+          panoramaPoints:this.panoramaPoints
         }
       })
     },
