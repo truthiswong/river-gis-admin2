@@ -192,8 +192,8 @@
             <a-button style="width:198px;" block>
               <a-icon type="upload" />上传照片
             </a-button>
-          </a-upload> -->
-          <ul class="phone_wrap">
+          </a-upload>-->
+          <!-- <ul class="phone_wrap">
             <li class="phone_list">
               <img src="../../assets/loginBg.jpg" alt />
               <a-row style="width:100%" type="flex" justify="space-between" align="middle">
@@ -208,35 +208,35 @@
                 </a-col>
               </a-row>
             </li>
-          </ul>
-          <!-- <a-list size="small">
+          </ul>-->
+          <a-list size="small" class="phone_wrap">
             <p style="margin:5px 0;text-align:center;font-size:14px;">无法定位的照片</p>
-            <a-list-item class="phone_list">
-              <img src="../../assets/loginBg.jpg" alt />
-              <br />
+            <a-list-item class="phone_list" v-for="item in phonePhotoPointsList" :key="item.id">
+              <img :src="item.imgUrl" alt />
               <a-row style="width:100%" type="flex" justify="space-between" align="middle">
-                <a-col :span="6">坐标点</a-col>
-                <a-col :span="12">
-                  <a-input placeholder="选择坐标点">
-                    <a-icon slot="suffix" type="info-circle" style="color: rgba(0,0,0,.45)" />
-                  </a-input>
+                <!-- <a-col :span="6">坐标点</a-col> -->
+                <a-col :span="24">
+                  <!-- <a-input placeholder="选择坐标点" v-model="item.latlng">
+                    <a-icon
+                      slot="suffix"
+                      @click="phoneChooseCoordinate(item.id)"
+                      type="environment"
+                      style="color: rgba(0,0,0,.45)"
+                    />
+                  </a-input>-->
+                  <a-input placeholder="选择坐标点" v-model="item.latlng"></a-input>
                 </a-col>
-                <a-col :span="6">
-                  <a-button block>确定</a-button>
+                <a-col :span="12">
+                  <a-button block style="padding: 0" @click="phoneChooseCoordinate(item.id)">
+                    <a-icon type="environment" />选择坐标
+                  </a-button>
+                </a-col>
+                <a-col :span="12">
+                  <a-button block @click="phoneConfirm(item.id)">确定</a-button>
                 </a-col>
               </a-row>
             </a-list-item>
-            <a-list-item class="phone_list">
-              <img src="../../assets/loginBg.jpg" alt />
-              <div>
-                <span>坐标点</span>
-                <a-input placeholder="选择坐标点">
-                  <a-icon slot="suffix" type="info-circle" style="color: rgba(0,0,0,.45)" />
-                </a-input>
-                <a-button block>确定</a-button>
-              </div>
-            </a-list-item>
-          </a-list>-->
+          </a-list>
         </a-collapse-panel>
         <a-collapse-panel
           header="河岸风险源"
@@ -2068,11 +2068,11 @@ export default {
       daydataList(data).then(res => {
         var arr = res.data.reverse()
         for (const item of res.data) {
-          if (item.uavTask  != 0) {
+          if (item.uavTask != 0) {
             item.level = 1
           } else if (item.manualTask != 0) {
             item.level = 0
-          }  else {
+          } else {
             item.level = 2
           }
           item.title = item.date.substring(item.date.length - 2, item.date.length)
@@ -2080,15 +2080,16 @@ export default {
         }
         for (const item of res.data) {
           if (item.uavTask != 0) {
-             item.clicked = true
-             this.defaultTime =item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
-             break
+            item.clicked = true
+            this.defaultTime =
+              item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+            break
           } else if (item.manualTask != 0) {
             item.clicked = true
             this.defaultTime =
               item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
             break
-          }  else {
+          } else {
             item.clicked = false
             this.defaultTime = this.endDate
           }
@@ -2959,8 +2960,7 @@ export default {
       if (code == 'floatage') {
         markerTool.addEventListener('click', this.floatageClick)
       }
-      
-    }, 
+    },
     //排口水面漂浮物风险源弹窗
     sourceRiskClick(row) {
       this.$refs.riskInfo.riskInfo(row)
@@ -2969,7 +2969,7 @@ export default {
       this.$refs.addOutlet.detailList(row)
     },
     floatageClick(row) {
-       this.$refs.AddFloatage.detailList(row)
+      this.$refs.AddFloatage.detailList(row)
     },
     // 河岸风险源
     onRiverRisk() {
@@ -3233,6 +3233,26 @@ export default {
       } else if (info.file.status === 'error') {
         this.$message.success('上传失败')
       }
+    },
+    // 手机照片选择经纬度
+    phoneChooseCoordinate(id) {
+      console.log(id)
+      this.phonePhoneId = id
+      this.cp = new T.CoordinatePickup(this.map, { callback: this.getLngLat })
+      this.cp.addEvent()
+    },
+    getLngLat(lnglat) {
+      console.log(lnglat.lng + ',' + lnglat.lat)
+      for (const item of this.phonePhotoPointsList) {
+        if (this.phonePhoneId == item.id) {
+          item.latlng = lnglat.lng + ', ' + lnglat.lat
+        }
+      }
+    },
+    // 手机照片没经纬度保存
+    phoneConfirm() {
+      this.phonePhoneId = ""
+      this.cp.removeEvent()
     }
   }
 }
@@ -3547,6 +3567,8 @@ export default {
   right: 10px;
   top: 10px;
   width: 200px;
+  max-height: calc(100vh - 85px);
+  overflow: auto;
   background-color: white;
   z-index: 889;
   border-radius: 4px;
@@ -3648,9 +3670,6 @@ export default {
   list-style-type: none;
   .phone_list {
     img {
-      width: 100%;
-    }
-    div {
       width: 100%;
     }
   }
