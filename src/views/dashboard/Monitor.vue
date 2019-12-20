@@ -570,7 +570,7 @@
                               <span>{{item.plan.name}}</span>
                             </a-col>
                             <a-col :span="16">
-                              <a-progress :percent="70" />
+                              <a-progress :percent="item.plan.percentage" />
                             </a-col>
                           </a-row>
                         </template>
@@ -587,7 +587,7 @@
                                     <span>{{index.team.name}}</span>
                                   </a-col>
                                   <a-col :span="16">
-                                    <a-progress :percent="70" />
+                                    <a-progress :percent="index.team.percentage" />
                                   </a-col>
                                 </a-row>
                               </template>
@@ -1971,10 +1971,18 @@ export default {
           var k = 0
           for (const item of arr) {
             k = k + 1
+            item.plan.completeTaskNum = 0
+            item.plan.totalTaskNum = 0
             item.plan.name = item.plan.name.slice(0, 2) + '-' + k
             for (const a of item.teams) {
+              a.team.completeTaskNum =0
+              a.team.totalTaskNum =0
               if (a.targets != undefined) {
                 for (const b of a.targets) {
+                  a.team.completeTaskNum = a.team.completeTaskNum +b.completeTaskNum
+                  a.team.totalTaskNum =a.team.totalTaskNum +b.totalTaskNum
+                  item.plan.completeTaskNum = item.plan.completeTaskNum +b.completeTaskNum
+                  item.plan.totalTaskNum =item.plan.totalTaskNum +b.totalTaskNum
                   b.isShow = false
                   b.clicked = false
                   b.code = b.target.object.code
@@ -2019,10 +2027,23 @@ export default {
               } else {
                 a.targets = []
               }
+              a.team.percentage =a.team.totalTaskNum / a.team.completeTaskNum
+              if (a.team.percentage == NaN) {
+                a.team.percentage = 0
+              }else{
+                a.team.percentage= a.team.percentage *100
+              }
+            }
+            item.plan.percentage = item.plan.totalTaskNum / item.plan.completeTaskNum
+            if (item.plan.percentage == NaN) {
+              item.plan.percentage = 0
+            }else{
+              item.plan.percentage= item.plan.percentage *100
             }
           }
           this.spinning = false
           this.planListPage = arr
+          console.log(this.planListPage);
           if (this.planListPage.length == 0 && hidingJudgment == true) {
             this.hidingJudgment = true
           } else {
