@@ -1556,7 +1556,8 @@ export default {
         projectId: this.$store.state.id,
         year: picker[0],
         month: picker[1],
-        day: picker[2]
+        day: picker[2],
+        mediaType: 'image'
       }
       this.removeOverLays(this.drawPage)
       if (id == '1') {
@@ -3224,7 +3225,8 @@ export default {
         projectId: this.$store.state.id,
         year: picker[0],
         month: picker[1],
-        day: picker[2]
+        day: picker[2],
+        mediaType: 'image'
       }
       dataManual(phoneArr).then(res => {
         console.log(res.data.data)
@@ -3315,7 +3317,8 @@ export default {
                 projectId: this.$store.state.id,
                 year: picker[0],
                 month: picker[1],
-                day: picker[2]
+                day: picker[2],
+                mediaType: 'image'
               }
               dataManual(phoneArr).then(res => {
                 console.log(res.data.data)
