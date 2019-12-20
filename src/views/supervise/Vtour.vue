@@ -23,31 +23,31 @@ export default {
       // 地图对象
       map: {},
       panoramaPoints: [
-        {
-          id: 0,
-          name: '监测点1',
-          clicked: false,
-          latlng: { lat: 31.21493, lng: 121.49566 },
-          url: require('./img/test36001.jpg')
-        },
-        {
-          id: 1,
-          name: '监测点2',
-          clicked: false,
-          latlng: { lat: 31.22344, lng: 121.47892 },
-          url: require('./img/test3602.jpg')
-        },
-        {
-          id: 2,
-          name: '监测点3',
-          clicked: false,
-          latlng: { lat: 31.20649, lng: 121.47712 },
-          url: require('./img/test36001.jpg')
-        }
+        // {
+        //   id: 0,
+        //   name: '监测点1',
+        //   clicked: false,
+        //   latlng: { lat: 31.21493, lng: 121.49566 },
+        //   url: require('./img/test36001.jpg')
+        // },
+        // {
+        //   id: 1,
+        //   name: '监测点2',
+        //   clicked: false,
+        //   latlng: { lat: 31.22344, lng: 121.47892 },
+        //   url: require('./img/test3602.jpg')
+        // },
+        // {
+        //   id: 2,
+        //   name: '监测点3',
+        //   clicked: false,
+        //   latlng: { lat: 31.20649, lng: 121.47712 },
+        //   url: require('./img/test36001.jpg')
+        // }
       ],
       panoramaLink: '', // 360链接
       panoramaName: '', // 360名字
-      panoramaId: 0, // 360id
+      panoramaId: '', // 360id
     }
   },
   mounted() {
@@ -55,11 +55,23 @@ export default {
   },
   methods: {
     getList(){
+      this.panoramaPoints = this.$route.query.panoramaPoints
+      this.panoramaPoints.forEach(v => {
+        v.url = require('./img/test36001.jpg')
+      })
+      let markerTool
+      for (const item of this.panoramaPoints) {
+        markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+        this.map.addOverLay(markerTool)
+        markerTool.addEventListener('click', this.panoramaPointClick)
+      }
       panoramaImgList(this.$route.query.id).then(res=>{
         this.panoramaLink = res.data.panoramicPic
         this.panoramaName =  res.data.title
+        this.panoramaId = this.$route.query.id
         this.initPhotoSphere()
       })
+      
     },
     initMap() {
       //初始化地图控件
@@ -89,14 +101,21 @@ export default {
     },
     // 360点点击事件
     panoramaPointClick(e) {
+      console.log(e);
       for (const item of this.panoramaPoints) {
         if (e.target.options.id == item.id) {
           if (this.panoramaId != item.id) {
-            this.panoramaLink = item.url
-            this.panoramaName = item.name
-            this.panoramaId = item.id
-            this.PSV.setPanorama(item.url)
-            this.PSV.setCaption(item.name)
+            panoramaImgList(item.id).then(res=>{
+              console.log(res);
+              this.panoramaLink = res.data.panoramicPic
+              this.panoramaName =  res.data.title
+              this.panoramaId = res.data.id
+              this.PSV.setPanorama(res.data.panoramicPic)
+              this.PSV.setCaption(res.data.title)
+              // this.initPhotoSphere()
+            })
+            // this.panoramaLink = item.url
+            // this.panoramaName = item.name
           }
         }
       }
