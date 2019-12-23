@@ -10,9 +10,7 @@
   </div>
 </template>
 <script>
-import {
-  panoramaImgList
-} from '@/api/login'
+import { panoramaImgList } from '@/api/login'
 import PhotoSphereViewer from 'photo-sphere-viewer'
 import 'photo-sphere-viewer/dist/photo-sphere-viewer.css'
 export default {
@@ -47,37 +45,46 @@ export default {
       ],
       panoramaLink: '', // 360链接
       panoramaName: '', // 360名字
-      panoramaId: '', // 360id
+      panoramaId: '' // 360id
     }
   },
   mounted() {
     this.initMap()
   },
   methods: {
-    getList(){
+    getList() {
       this.panoramaPoints = this.$route.query.panoramaPoints
+      console.log(this.panoramaPoints)
       this.panoramaPoints.forEach(v => {
         v.url = require('./img/test36001.jpg')
       })
       let markerTool
       for (const item of this.panoramaPoints) {
-        markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+        if (item.id == this.$route.query.id) {
+          var icon = new T.Icon({
+            iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
+            iconSize: new T.Point(19, 27),
+            iconAnchor: new T.Point(10, 25)
+          })
+          markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id })
+        } else {
+          markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+        }
         this.map.addOverLay(markerTool)
         markerTool.addEventListener('click', this.panoramaPointClick)
       }
-      panoramaImgList(this.$route.query.id).then(res=>{
+      panoramaImgList(this.$route.query.id).then(res => {
         this.panoramaLink = res.data.panoramicPic
-        this.panoramaName =  res.data.title
+        this.panoramaName = res.data.title
         this.panoramaId = this.$route.query.id
         this.initPhotoSphere()
       })
-      
     },
     initMap() {
       //初始化地图控件
       let zoom = 14
       this.map = new T.Map('map')
-      this.map.centerAndZoom(new T.LngLat(121.495505, 31.21098), zoom)
+      this.map.centerAndZoom(new T.LngLat(121.43429, 31.15847), zoom)
       //创建比例尺控件对象
       //添加比例尺控件
       this.map.addControl(new T.Control.Scale())
@@ -101,23 +108,32 @@ export default {
     },
     // 360点点击事件
     panoramaPointClick(e) {
-      console.log(e);
+      console.log(e)
+      this.map.clearOverLays()
+      let markerTool
       for (const item of this.panoramaPoints) {
-        if (e.target.options.id == item.id) {
+        if (item.id == e.target.options.id) {
+          var icon = new T.Icon({
+            iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
+            iconSize: new T.Point(19, 27),
+            iconAnchor: new T.Point(10, 25)
+          })
+          markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id })
           if (this.panoramaId != item.id) {
-            panoramaImgList(item.id).then(res=>{
-              console.log(res);
+            panoramaImgList(item.id).then(res => {
+              console.log(res)
               this.panoramaLink = res.data.panoramicPic
-              this.panoramaName =  res.data.title
+              this.panoramaName = res.data.title
               this.panoramaId = res.data.id
               this.PSV.setPanorama(res.data.panoramicPic)
               this.PSV.setCaption(res.data.title)
-              // this.initPhotoSphere()
             })
-            // this.panoramaLink = item.url
-            // this.panoramaName = item.name
           }
+        } else {
+          markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
         }
+        this.map.addOverLay(markerTool)
+        markerTool.addEventListener('click', this.panoramaPointClick)
       }
     },
     initPhotoSphere() {
