@@ -99,6 +99,30 @@ export default {
   },
   computed: {},
   mounted() {
+    var locale_ru_RU = {
+      // override default English locale to your custom
+      Crop: '裁剪',
+      'Delete-all': '全删'
+      // etc...
+    }
+    var instance = new ImageEditor(document.querySelector('#tui-image-editor'), {
+      includeUI: {
+        loadImage: {
+          path: '../../../assets/loginBg.jpg',
+          name: 'SampleImage'
+        },
+        locale: locale_ru_RU,
+        theme: blackTheme, // or whiteTheme
+        initMenu: 'filter',
+        menuBarPosition: 'bottom'
+      },
+      cssMaxWidth: 700,
+      cssMaxHeight: 500,
+      selectionStyle: {
+        cornerSize: 20,
+        rotatingPointOffset: 70
+      }
+    })
     // this.$refs.tuiImageEditor.invoke('startDrawingMode', 'FREE_DRAWING', {
     //   width: 10,
     //   color: 'rgba(255, 0, 0, 0.5)'
