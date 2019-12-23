@@ -936,8 +936,29 @@ export function recommendFangan(data) {
     }
   })
 }
-
-
+//绘制评论
+export function commentMapdraw(id) {
+  return axios({
+    url: '/server/data/admin/mapdraw/comment/page',
+    method: 'get',
+    params: {
+      drawId: id,
+    }
+  })
+}
+//绘制评论保存
+export function commentMapdrawSave(data) {
+  return axios({
+    url: '/server/data/admin/mapdraw/comment/save',
+    method: 'post',
+    params: {
+      id: data.id,
+      drawId:data.drawId,
+      comment:data.comment,
+      exist:data.exist,
+    }
+  })
+}
 
 export function getSmsCaptcha(parameter) {
   return axios({

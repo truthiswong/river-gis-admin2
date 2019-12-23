@@ -535,6 +535,8 @@ export default {
       this.list.advice=''
       this.list.statement=''
       this.list.drawId=''
+      this.dataSourceId=[]
+      this.dataSource= []
       this.upload.id = ''
       this.attachmentJpg=''
       this.visible = false

@@ -666,7 +666,7 @@
                                       <a-button
                                         class="addTask_btn commBtn"
                                         icon="plus"
-                                        @click="addTaskBtnDay(item.plan.id,targetId.target.objectId,targetId.target.objectName,targetId.target.object.code,index.team.id)"
+                                        @click="addTaskBtnDay(item.plan.id,targetId.target.objectId,targetId.target.objectName,targetId.target.object.code,index.team.id,index.team.id)"
                                         v-if="targetId.isShow == false"
                                       >追加任务</a-button>
                                       <div class="addTask_info" v-show="targetId.isShow">
@@ -969,7 +969,7 @@
                         </a-list-item>
                       </a-list>
                     </template>
-                    <a-button class="groupBtn" @click="getplanPageList" v-show="hidingJudgment">加入计划</a-button>
+                    <a-button class="groupBtn" @click="getplanPageList" v-show="hidingJudgment3">加入计划</a-button>
                   </a-popover>
                 </a-col>
               </a-row>
@@ -1305,6 +1305,7 @@ export default {
         content: '',
         locationType: '',
         region: '',
+        teamId:'',
         roleId: []
       },
       lineLnglats: [],
@@ -2032,6 +2033,7 @@ export default {
                 a.team.percentage = 0
               }else{
                 a.team.percentage= a.team.percentage *100
+                a.team.percentage=Math.ceil(a.team.percentage) 
               }
             }
             item.plan.percentage =   item.plan.completeTaskNum / item.plan.totalTaskNum
@@ -2039,6 +2041,7 @@ export default {
               item.plan.percentage = 0
             }else{
               item.plan.percentage= item.plan.percentage *100
+              item.plan.percentage=Math.ceil(item.plan.percentage) 
             }
           }
           this.spinning = false
@@ -2633,7 +2636,7 @@ export default {
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
-    addTaskBtnDay(planId, id, name, code,teaid) {
+    addTaskBtnDay(planId, id, name, code,teaid,teamid) {
       this.addTaskCode = '2'
       for(const item of this.planListPage){
         for (const a of item.teams) {
@@ -2645,6 +2648,7 @@ export default {
         }
       }
       this.listAppend.planId = planId
+      this.listAppend.teamId = teamid
       this.listAppend.object = code
       this.listAppend.objectId = id
       this.listAppend.objectName = name
@@ -3429,6 +3433,7 @@ export default {
           }
         }
       }
+      this.listAppend.teamId = ''
       this.listAppend.planId = ''
       this.listAppend.object = ''
       this.listAppend.objectId = ''
