@@ -162,6 +162,8 @@ export default {
         this.$message.success('保存成功')
         this.$parent.getList()
         this.handleCancel()
+        this.$emit('cancel')
+        this.$emit('confirm')
       }).catch(err => {
         this.$message.error('保存失败')
       })
@@ -203,6 +205,7 @@ export default {
       this.list.times=''
       this.list.riverId=''
       this.riverId=[]
+      this.$emit('cancel')
     },
     // 选择地址
     onChange(value, selectedOptions) {
