@@ -2027,14 +2027,14 @@ export default {
               } else {
                 a.targets = []
               }
-              a.team.percentage =a.team.totalTaskNum / a.team.completeTaskNum
+              a.team.percentage = a.team.completeTaskNum / a.team.totalTaskNum 
               if (a.team.percentage == NaN) {
                 a.team.percentage = 0
               }else{
                 a.team.percentage= a.team.percentage *100
               }
             }
-            item.plan.percentage = item.plan.totalTaskNum / item.plan.completeTaskNum
+            item.plan.percentage =   item.plan.completeTaskNum / item.plan.totalTaskNum
             if (item.plan.percentage == NaN) {
               item.plan.percentage = 0
             }else{
@@ -2325,8 +2325,9 @@ export default {
           this.planList1.id = res.data.id
           this.planList1.name = res.data.name
           this.getinspectPointPage()
+        }) .catch(err => {
+          this.planList1.id 
         })
-        .catch(err => {})
     },
     //调查点保存
     handleOk() {
@@ -3400,6 +3401,7 @@ export default {
           data.region = data.region + item.lng + ',' + item.lat + '|'
         }
       }
+      data.status = 'incomplete'
       data.roleId = data.roleId.join(',')
       inspectTaskSave(data).then(res => {
         this.$message.success('成功')

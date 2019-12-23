@@ -106,6 +106,7 @@ export default {
   data() {
     return {
       fileList:[],
+      code:'',
       file:false,
       attachmentJpg:'',
       show:true,
@@ -183,6 +184,7 @@ export default {
   methods: {
     riskInfo(row) {
       console.log(row);
+      this.code= row.target.options.code
       this.id = row.target.options.id
       function formatDate(now) { 
           var year=now.getFullYear();  //取得4位数的年份
@@ -218,9 +220,13 @@ export default {
       this.visible = true
     },
     riskSee(){
-      // this.visible = false
-      console.log(this);
-      
+      this.visible = false
+      if (this.code == 'risk') {
+        this.$parent.sourceRiskView(this.id,'risk')
+      }
+      if (this.code == 'discharge') {
+        this.$parent.sourceRiskView(this.id,'discharge')
+      }
     },
     handleSubmit() {
       const {

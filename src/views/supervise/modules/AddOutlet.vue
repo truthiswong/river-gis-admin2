@@ -284,6 +284,46 @@
             </a-form-item>
           </a-col>
         </a-row>
+        <h3 style="margin-top: 10px;">
+          督办单
+          <a-button size="small" style="margin-left:10px;" @click="addSheet()">添加</a-button>
+        </h3>
+        <div v-show="sheet" style="margin-bottom:20px;">
+          <a-select
+            showSearch
+            mode="multiple"
+            :allowClear="true"
+            placeholder="请选择督办单"
+            optionFilterProp="children"
+            style="width: 300px"
+            @change="handleChange"
+            :filterOption="filterOption"
+            v-model="sheetId"
+          >
+            <a-select-option
+              :value="item.id"
+              v-for="(item, index) in sheetList"
+              :key="index"
+            >{{item.name}}</a-select-option>
+          </a-select>
+          <div style="margin-top:10px;">
+            <a-button style="margin-right:20px;">取消</a-button>
+            <a-button type="primary" @click="addSelectSheet">确定</a-button>
+          </div>
+        </div>
+        <a-table bordered size='small' :dataSource="dataSource" :columns="columns">
+          <template slot="operation" slot-scope="text, record">
+            <a-popconfirm
+              @confirm="confirm(record.id)"
+              title="确定删除吗?"
+              @cancel="cancelDelete"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a>删除</a>
+            </a-popconfirm>
+          </template>
+        </a-table>
       </a-form>
       <a-divider orientation="left"></a-divider>
       <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
@@ -302,10 +342,13 @@
 import moment from 'moment'
 import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-import { getRiverList,getStreetList,informationStreet,informationRiver,dischargeInner,mapdrawDischargeSave,mediaList,dischargeDetails,mapdrawDetail} from '@/api/login'
+import { getRiverList,getStreetList,informationStreet,informationRiver,dischargeInner,mapdrawDischargeSave,mediaList,dischargeDetails,mapdrawDetail,SupervisePage} from '@/api/login'
 export default {
   data() {
     return {
+      sheet:false,
+      sheetList:[],
+      sheetId:[],
       fileList:[],
       file:false,
       headers: {
@@ -369,6 +412,29 @@ export default {
       },
       visible: false,
       confirmLoading: false,
+      dataSource: [
+
+      ],
+      dataSourceId:[],
+      columns: [{
+        title: '名称',
+        dataIndex: 'name',
+        // width: '10%',
+        // scopedSlots: { customRender: 'key' },
+      }, {
+        title: '内部编号',
+        dataIndex: 'insideNum',
+      }, {
+        title: '官方编号',
+        dataIndex: 'officialNum',
+      }, {
+        title: '调查日期',
+        dataIndex: 'surveyDate',
+      }, {
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' },
+      }],
 
     }
   },
@@ -380,6 +446,22 @@ export default {
   methods: {
     moment,
     getList(){
+      SupervisePage(this.$store.state.id).then(res=>{
+        function formatDate(now) { 
+          var year=now.getFullYear() //取得4位数的年份
+          var month=now.getMonth()+1  //取得日期中的月份，其中0表示1月，11表示12月
+          var date=now.getDate()      //返回日期月份中的天数（1到31）
+          var hour=now.getHours()     //返回日期中的小时数（0到23）
+          var minute=now.getMinutes() //返回日期中的分钟数（0到59）
+          var second=now.getSeconds() //返回日期中的秒数（0到59）
+          return year+"-"+month+"-"+date
+        }
+        res.data.data.forEach(v => {
+          v.key = v.id
+          v.surveyDate = formatDate(new Date(v.surveyDate))
+        });
+        this.sheetList = res.data.data
+      })
       getRiverList(this.$store.state.id).then(res=>{
         this.riverList = res.data.data
       })
@@ -431,6 +513,52 @@ export default {
         this.list.functionName=arr.functionName
       })
       this.visible = true
+    },
+    detailList1(row){
+      this.getList()
+      this.visible = true
+      mapdrawDetail(row).then(res=>{
+        this.list.lng=res.data.point[0]
+        this.list.lat=res.data.point[1]
+      })
+      this.list.drawId=row
+      dischargeDetails(row).then(res=>{
+        var arr = res.data
+        this.list.riverId=arr.river.id
+        this.list.streetId=arr.street.id
+        this.list.tworiver=arr.tworiver
+        // this.list.supervisoryLevel=arr.
+        // this.list.controller=arr.
+        // this.list.priority=arr.
+        this.list.standardCode=arr.standardCode
+        this.list.standardName=arr.standardName
+        this.list.type=arr.type.code
+        this.list.landmarkLocation=arr.landmarkLocation
+        this.list.accurateLocation=arr.accurateLocation
+        this.list.innerCode=arr.innerCode
+        this.list.innerName=arr.innerName
+        this.list.letway=arr.letway.code
+        this.list.enterRiverWay=arr.enterRiverWay
+        this.list.enterRiverSize=arr.enterRiverSize
+        this.list.yearLetSize=arr.yearLetSize
+        this.list.pollutant=arr.pollutant
+        this.list.settingUnit=arr.settingUnit
+        this.list.unitAddress=arr.unitAddress
+        this.list.linkman=arr.linkman
+        this.list.linktel=arr.linktel
+        this.list.blockoffStatus=arr.blockoffStatus
+        this.list.statement=arr.statement
+        this.list.activateTime=arr.activateTime
+        this.list.registrationState=arr.registrationState
+        this.list.approveState=arr.approveState
+        this.list.approveUnit=arr.approveUnit
+        this.list.dischargeLicense=arr.dischargeLicense
+        this.list.licenseNo=arr.licenseNo
+        this.list.innerCode=arr.innerCode
+        this.list.innerName=arr.innerName
+        this.list.functionName=arr.functionName
+      })
+      
     },
     typeChange(value,option){
       if (this.list.riverId!='') {
@@ -533,6 +661,7 @@ export default {
     },
     saveClick(){
       let data =this.list
+      data.billId=this.dataSourceId.join(',')
       mapdrawDischargeSave(data).then(res=>{
         this.$message.success('保存成功')
         this.$parent.getMapdrawPage('1')
@@ -560,7 +689,53 @@ export default {
     },
     beforeRemove(file, fileList) {
       
-    }
+    },
+    handleChange(index) {
+      this.sheetList.forEach(value => {
+        if (value.name === index) {
+          value.clicked = true
+        } else {
+          value.clicked = false
+        }
+      })
+    },
+    filterOption(input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    },
+    addSheet(){
+      this.sheet = true
+    },
+    addSelectSheet(){
+      this.sheetId.forEach(v => {
+        this.sheetList.forEach(a => {
+          if (v == a.id) {
+            if (this.dataSourceId.indexOf(a.id) == -1) {
+              this.dataSource.push(a)
+              this.dataSourceId.push(a.id)
+            }else{
+              this.$message.warning(a.name +'已存在');
+            }
+          }
+        })
+      })
+      this.sheetId = []
+      this.sheet = false
+    },
+    confirm(id){
+      for (let i = 0; i < this.dataSourceId.length; i++) {
+        if (this.dataSourceId[i] == id) {
+          this.dataSourceId.splice(i,1)
+        }
+        
+      }
+      for (let i = 0; i < this.dataSource.length; i++) {
+        if (this.dataSource[i].id == id) {
+          this.dataSource.splice(i,1)
+        }
+        
+      }
+    },
+    cancelDelete(){},
   }
 }
 </script>
