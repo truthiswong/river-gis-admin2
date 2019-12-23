@@ -69,6 +69,14 @@ var locale_ru_RU = {
 import ImageEditor from '@toast-ui/vue-image-editor/src/ImageEditor.vue'
 
 export default {
+  props: {
+    msg: {
+      isShow: {
+        type: Boolean,
+        default: false
+      }
+    }
+  },
   data() {
     return {
       visible: false,
@@ -77,7 +85,7 @@ export default {
       useDefaultUI: true,
       options: {
         loadImage: {
-          path: '../../../assets/loginBg.jpg',
+          path: require('../../../assets/loginBg.jpg'),
           name: ''
         },
         locale: {
