@@ -164,7 +164,8 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="首次发现">
-              <a-date-picker style="width:100%"  :format="dateFormat" @change="onChange"/>
+              <el-date-picker v-model="list.discoveryTime" type="date" placeholder="选择日期" style="width: 100%"  format="yyyy-MM-dd" @change="onChange"></el-date-picker>
+              <!-- <a-date-picker style="width:100%"  :format="dateFormat" @change="onChange" /> -->
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -207,37 +208,46 @@
         </a-row>
         <h3 style="margin-top: 10px;">
           督办单
-          <a-button size="small" style="margin-left:10px;">添加</a-button>
+          <a-button size="small" style="margin-left:10px;" @click="addSheet()">添加</a-button>
         </h3>
+        <div v-show="sheet" style="margin-bottom:20px;">
+          <a-select
+            showSearch
+            mode="multiple"
+            :allowClear="true"
+            placeholder="请选择督办单"
+            optionFilterProp="children"
+            style="width: 300px"
+            @change="handleChange"
+            :filterOption="filterOption"
+            v-model="sheetId"
+          >
+            <a-select-option
+              :value="item.id"
+              v-for="(item, index) in sheetList"
+              :key="index"
+            >{{item.name}}</a-select-option>
+          </a-select>
+          <div style="margin-top:10px;">
+            <a-button style="margin-right:20px;">取消</a-button>
+            <a-button type="primary" @click="addSelectSheet">确定</a-button>
+          </div>
+        </div>
         <a-table bordered size='small' :dataSource="dataSource" :columns="columns">
-          <template slot="name" slot-scope="text, record">
-            <editable-cell :text="text" @change="onCellChange(record.key, 'name', $event)" />
-          </template>
           <template slot="operation" slot-scope="text, record">
             <a-popconfirm
-              v-if="dataSource.length"
+              @confirm="confirm(record.id)"
               title="确定删除吗?"
+              @cancel="cancelDelete"
+              okText="确定"
+              cancelText="取消"
             >
-              <a href="javascript:;">删除</a>
+              <a>删除</a>
             </a-popconfirm>
           </template>
         </a-table>
       </a-form>
       <a-divider orientation="left"></a-divider>
-      <!-- <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
-        <a-button-group>
-            <a-button>取消</a-button>
-            <a-button>保存</a-button>
-            <a-button>修改河道区域</a-button>
-            <a-button>关闭河道</a-button>
-        </a-button-group>
-        <a-col :span="3">
-          <a-button block @click="">取消</a-button>
-        </a-col>
-        <a-col :span="3">
-          <a-button block @click="">保存</a-button>
-        </a-col>
-      </a-row> -->
     </a-spin>
   </a-modal>
 </template>
@@ -247,10 +257,13 @@ import moment from 'moment'
 const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters']
 import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-import { mapdrawDetail,getRiverList,getStreetList,informationStreet,informationRiver,riskInner,mapdrawRiskSave,paramList} from '@/api/login'
+import { mapdrawDetail,getRiverList,getStreetList,informationStreet,informationRiver,riskInner,mapdrawRiskSave,paramList,SupervisePage,riskDetails} from '@/api/login'
 export default {
   data() {
     return {
+      sheet:false,
+      sheetList:[],
+      sheetId:[],
       fileList:[],
       file:false,
       attachmentJpg:'',
@@ -262,6 +275,8 @@ export default {
         id:'',
       },
       list:{
+        standardCode:'',
+        standardName:'',
         riverId:'',
         streetId:'',
         tworiver:'',
@@ -301,23 +316,16 @@ export default {
       streetList:[],//街道列表
       form: this.$form.createForm(this),
 
-      dataSource: [{
-        key: '0',
-        insideNum: '黄浦江',
-        officialNum: "HPJ1213",
-        date: '2019-12-13',
-      }, {
-        key: '1',
-        insideNum: '长江',
-        officialNum: "CJ1212",
-        date: '2019-12-12',
-      }],
+      dataSource: [
+
+      ],
+      dataSourceId:[],
       count: 2,
       columns: [{
-        title: '序号',
-        dataIndex: 'key',
-        width: '10%',
-        scopedSlots: { customRender: 'key' },
+        title: '名称',
+        dataIndex: 'name',
+        // width: '10%',
+        // scopedSlots: { customRender: 'key' },
       }, {
         title: '内部编号',
         dataIndex: 'insideNum',
@@ -326,7 +334,7 @@ export default {
         dataIndex: 'officialNum',
       }, {
         title: '调查日期',
-        dataIndex: 'date',
+        dataIndex: 'surveyDate',
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -343,6 +351,22 @@ export default {
   methods: {
     moment,
     getList(){
+      SupervisePage(this.$store.state.id).then(res=>{
+        function formatDate(now) { 
+          var year=now.getFullYear() //取得4位数的年份
+          var month=now.getMonth()+1  //取得日期中的月份，其中0表示1月，11表示12月
+          var date=now.getDate()      //返回日期月份中的天数（1到31）
+          var hour=now.getHours()     //返回日期中的小时数（0到23）
+          var minute=now.getMinutes() //返回日期中的分钟数（0到59）
+          var second=now.getSeconds() //返回日期中的秒数（0到59）
+          return year+"-"+month+"-"+date
+        }
+        res.data.data.forEach(v => {
+          v.key = v.id
+          v.surveyDate = formatDate(new Date(v.surveyDate))
+        });
+        this.sheetList = res.data.data
+      })
       getRiverList(this.$store.state.id).then(res=>{
         this.riverList = res.data.data
       })
@@ -353,7 +377,6 @@ export default {
         type:'risk_source_type'
       }
       paramList(data).then(res=>{
-        console.log(res.data.data);
         
         this.typeList = res.data
       })
@@ -405,6 +428,7 @@ export default {
         advice:this.list.advice,
         innerCode:this.list.innerCode,
         innerName:this.list.innerName,
+        billId:this.dataSourceId.join(',')
       }
       mapdrawRiskSave(data).then(res=>{
         this.$message.success('保存成功')
@@ -414,13 +438,49 @@ export default {
           this.$message.error(err.response.data.message);
       })
     },
-    onCellChange (key, dataIndex, value) {
-        const dataSource = [...this.dataSource]
-        const target = dataSource.find(item => item.key === key)
-        if (target) {
-          target[dataIndex] = value
-          this.dataSource = dataSource
-        }
+    addSource(id){
+       this.getList()
+      this.visible = true
+      function formatDate(now) { 
+        var year=now.getFullYear() //取得4位数的年份
+        var month=now.getMonth()+1  //取得日期中的月份，其中0表示1月，11表示12月
+        var date=now.getDate()      //返回日期月份中的天数（1到31）
+        var hour=now.getHours()     //返回日期中的小时数（0到23）
+        var minute=now.getMinutes() //返回日期中的分钟数（0到59）
+        var second=now.getSeconds() //返回日期中的秒数（0到59）
+        return year+"-"+month+"-"+date
+      }
+      riskDetails(id).then(res=>{
+        let arr = res.data
+        arr.bill.forEach(v => {
+          v.key = v.id
+          v.surveyDate = formatDate(new Date(v.surveyDate))
+          this.dataSourceId.push(v.id)
+        });
+        this.dataSource= arr.bill 
+        this.list.riverId=arr.river.id
+        this.list.streetId=arr.street.id
+        this.list.typeId=arr.type.id
+        this.list.level=arr.level.code
+        // this.list.tworiver=arr.
+        // this.list.supervisoryLevel=arr.
+        // this.list.controller=arr.
+        // this.list.priority=arr.
+        // this.list.lat=arr.
+        // this.list.lng=arr.
+        // this.list.drawId=arr.
+        // this.list.currentArea=arr.
+        this.list.landmarkLocation=arr.landmarkLocation
+        this.list.accurateLocation=arr.accurateLocation
+        this.list.innerCode=arr.innerCode
+        this.list.innerName=arr.innerName
+        this.list.discoveryTime=formatDate(new Date(arr.discoveryTime))
+        this.list.advice=arr.advice
+        this.list.statement=arr.statement
+        this.list.standardCode = arr.standardCode
+        this.list.standardName = arr.standardName
+      })
+     
     },
     add(id,currentArea,result) {
       this.headers.Authorization=Vue.ls.get(ACCESS_TOKEN)
@@ -464,7 +524,7 @@ export default {
       this.list.priority=''
       this.list.lat=''
       this.list.lng=''
-      this.list.type=''
+      this.list.typeId=''
       this.list.landmarkLocation=''
       this.list.accurateLocation=''
       this.list.level=''
@@ -479,8 +539,17 @@ export default {
       this.attachmentJpg=''
       this.visible = false
     },
-    onChange(date, dateString) {
-      this.list.discoveryTime = dateString
+    onChange(date){
+      function formatDate(now) { 
+        var year=now.getFullYear() //取得4位数的年份
+        var month=now.getMonth()+1  //取得日期中的月份，其中0表示1月，11表示12月
+        var date=now.getDate()      //返回日期月份中的天数（1到31）
+        var hour=now.getHours()     //返回日期中的小时数（0到23）
+        var minute=now.getMinutes() //返回日期中的分钟数（0到59）
+        var second=now.getSeconds() //返回日期中的秒数（0到59）
+        return year+"-"+month+"-"+date
+      }
+      this.list.discoveryTime=formatDate(date)
     },
     handleSuccess(response, file, fileList){
      this.attachmentJpg = response.data.media
@@ -499,7 +568,53 @@ export default {
     },
     beforeRemove(file, fileList) {
       
-    }
+    },
+    handleChange(index) {
+      this.sheetList.forEach(value => {
+        if (value.name === index) {
+          value.clicked = true
+        } else {
+          value.clicked = false
+        }
+      })
+    },
+    filterOption(input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    },
+    addSheet(){
+      this.sheet = true
+    },
+    addSelectSheet(){
+      this.sheetId.forEach(v => {
+        this.sheetList.forEach(a => {
+          if (v == a.id) {
+            if (this.dataSourceId.indexOf(a.id) == -1) {
+              this.dataSource.push(a)
+              this.dataSourceId.push(a.id)
+            }else{
+              this.$message.warning(a.name +'已存在');
+            }
+          }
+        })
+      })
+      this.sheetId = []
+      this.sheet = false
+    },
+    confirm(id){
+      for (let i = 0; i < this.dataSourceId.length; i++) {
+        if (this.dataSourceId[i] == id) {
+          this.dataSourceId.splice(i,1)
+        }
+        
+      }
+      for (let i = 0; i < this.dataSource.length; i++) {
+        if (this.dataSource[i].id == id) {
+          this.dataSource.splice(i,1)
+        }
+        
+      }
+    },
+    cancelDelete(){},
   }
 }
 </script>

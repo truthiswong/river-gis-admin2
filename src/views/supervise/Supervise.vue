@@ -119,7 +119,7 @@
           <span class="weather_detail">晴(实时)</span>
           <span class="date">9月16日 星期一</span>
         </div>
-        <p class="degree">晴转多云 24～29℃</p>
+        <p class="degree" >晴转多云 24～29℃</p>
       </div>
       <div class="weather_right">
         <a-icon class="right_icon" type="caret-left" />
@@ -1533,21 +1533,7 @@ export default {
           v.clicked = false
         })
         this.riskSourceList = res.data
-      })
-      let ssss = {
-        projectId: this.$store.state.id
-        // year: picker[0],
-        // month: picker[1],
-        // day: picker[2]
-      }
-      panoramaList(ssss).then(res => {
-        let hh = res.data.data
-        hh.forEach(v => {
-          v.name = v.title
-          v.latlng = v.coordinate
-        })
-        this.panoramaPoints = hh
-      })
+      }) 
     },
     getMapdrawPage(id) {
       var time = this.defaultTime
@@ -1561,6 +1547,14 @@ export default {
       }
       this.removeOverLays(this.drawPage)
       if (id == '1') {
+        panoramaList(data).then(res => {
+          let hh = res.data.data
+          hh.forEach(v => {
+            v.name = v.title
+            v.latlng = v.coordinate
+          })
+          this.panoramaPoints = hh
+        })
         mapdrawPage(data).then(res => {
           let arr = res.data
           let ar = []
@@ -1574,7 +1568,6 @@ export default {
           this.drawPage = ar
         })
         dataManual(data).then(res => {
-          console.log(res.data.data)
           let arr = res.data.data
           arr.forEach(v => {
             v.latlng = v.coordinate
@@ -1616,7 +1609,7 @@ export default {
             v.clicked = false
           })
           this.streetShowList = arr
-          console.log(this.streetShowList)
+          // console.log(this.streetShowList)
         })
         .catch(err => {})
       getRiverList(this.$store.state.id)
@@ -1631,7 +1624,7 @@ export default {
             v.clicked = false
           })
           this.riverShowList = arr
-          console.log(this.riverShowList)
+          // console.log(this.riverShowList)
         })
         .catch(err => {})
       // // 二维数据转换
@@ -2908,7 +2901,7 @@ export default {
         markerTool.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
-        markerTool.addEventListener('click', this.dischargeClick)
+        markerTool.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'floatage') {
         markerTool.addEventListener('click', this.floatageClick)
@@ -2931,7 +2924,7 @@ export default {
         markerTool.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
-        markerTool.addEventListener('click', this.dischargeClick)
+        markerTool.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'floatage') {
         markerTool.addEventListener('click', this.floatageClick)
@@ -2955,7 +2948,7 @@ export default {
         markerTool.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
-        markerTool.addEventListener('click', this.dischargeClick)
+        markerTool.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'floatage') {
         markerTool.addEventListener('click', this.floatageClick)
@@ -3355,7 +3348,21 @@ export default {
           }
         }
       }
-    }
+    },
+    sourceRiskView(id,code){
+      console.log(id,code);
+      
+      if (code == 'risk') {
+        console.log('1');
+        this.$refs.addRisk.addSource(id)
+      }
+      if (code == 'discharge') {
+        console.log('2');
+        
+        this.$refs.addOutlet.detailList1(id)
+        // this.$parent.addOutlet.detailList(this.id)
+      }
+    },
   }
 }
 </script>
