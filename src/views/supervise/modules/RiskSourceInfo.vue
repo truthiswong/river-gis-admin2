@@ -40,8 +40,9 @@
           <a-comment :author="item.author" :avatar="item.avatar">
             <div class="comment_level">
               <p
-                :class="{'danger_level0': item.dangerLevel == 0, 'danger_level1': item.dangerLevel == 1,'danger_level2': item.dangerLevel == 2}"
-              >{{item.dangerDescribe}}</p>
+                :class="{'danger_level0': list.level.code == 'three', 'danger_level1': list.level.code == 'two','danger_level2': list.level.code == 'one','danger_level3': list.level.code == 'four'}"
+                v-if="code != 'discharge'"
+              >{{list.dangerDescribe}}</p>
               <span>{{item.dangerContent}}</span>
             </div>
             <p slot="content" style="ma">{{item.comment}}</p>
@@ -209,6 +210,22 @@ export default {
           arr.discoveryTime = formatDate(new Date( arr.discoveryTime))
           arr.type = arr.type.name
           arr.river = arr.river.name
+          if (arr.level.code =='one') {
+            arr.dangerDescribe ='Ⅰ 级'
+            
+          }
+          if (arr.level.code =='two') {
+            arr.dangerDescribe ='Ⅱ 级'
+            
+          }
+          if (arr.level.code =='three') {
+            arr.dangerDescribe ='Ⅲ 级'
+            
+          }
+          if (arr.level.code =='four') {
+            arr.dangerDescribe ='Ⅳ 级'
+            
+          }
           this.list = arr 
         })
       }
@@ -245,6 +262,11 @@ export default {
         res.data.data.forEach(v => {
           v.imgList = Object.values(v.pics)
           v.datetime = formatDate(new Date( v.timeCreated))
+          if (v.exist == true) {
+            v.dangerContent = '存在'
+          }else{
+             v.dangerContent = '不存在'
+          }
           v.avatar ='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
         });
         this.data = res.data.data
@@ -284,6 +306,7 @@ export default {
         this.$refs.upload.submit();
         this.$message.success('保存成功');
         this.show_type = false
+        this.show = true
         this.getCommentMapdraw()
       })
       
@@ -318,6 +341,8 @@ export default {
       
     },
     handleCancel() {
+      this.list = {}
+      this.data =[]
       this.visible = false
     }
   }
@@ -341,13 +366,16 @@ p {
     margin: 0 6px 6px 0;
   }
   .danger_level0 {
-    background-color: #52c41a;
+    background-color: #f5e50b;
   }
   .danger_level1 {
     background-color: #faad14;
   }
   .danger_level2 {
     background-color: #f5222d;
+  }
+  .danger_level3 {
+    background-color: #0e7dfd;
   }
   span {
     font-size: 14px;
