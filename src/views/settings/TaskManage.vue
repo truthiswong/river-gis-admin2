@@ -89,446 +89,446 @@
       <a-divider style="margin: 10px 0 0;" />
       <div style="padding: 0 10px">
         <a-spin :spinning="spinning" :delay="delayTime">
-        <a-tabs defaultActiveKey="1" @change="callback" v-model="actionTab" class="custom_tabs">
-          <a-tab-pane tab="线路任务" key="1">
-            <section class="task_face">
-              <a-list
-                size="small"
-                bordered
-                :dataSource="lineTaskList"
-                style="margin-top: 10px;"
-                v-show="!addLineShow"
-              >
-                <a-list-item
-                  slot="renderItem"
-                  slot-scope="item, index"
-                  :key="index"
-                  @click="chooseLineTask(item.id)"
-                  :class="{active_item: item.clicked}"
+          <a-tabs defaultActiveKey="1" @change="callback" v-model="actionTab" class="custom_tabs">
+            <a-tab-pane tab="线路任务" key="1">
+              <section class="task_face">
+                <a-list
+                  size="small"
+                  bordered
+                  :dataSource="lineTaskList"
+                  style="margin-top: 10px;"
+                  v-show="!addLineShow"
                 >
-                  <a-row style="width:100%">
-                    <a-col :span="20">{{item.name}}</a-col>
-                    <a-col :span="4" style="text-align:right;">
-                      <a-popconfirm
-                        title="确定要删除吗?"
-                        @confirm="confirmLineDelete(item.id)"
-                        @cancel="cancelDelete"
-                        okText="确定"
-                        cancelText="取消"
-                      >
-                        <a href="#">删除</a>
-                      </a-popconfirm>
-                    </a-col>
-                  </a-row>
-                </a-list-item>
-              </a-list>
-              <a-form v-show="addLineShow" style="width: 100%;">
-                <a-form-item
-                  label="任务名称"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入任务名称" v-model="lineList.title" />
-                </a-form-item>
-                <a-form-item
-                  label="任务内容"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入任务内容" v-model="lineList.content" />
-                </a-form-item>
-                <a-form-item
-                  label="月计划次数"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入月计划次数" v-model="lineList.times" />
-                </a-form-item>
-                <a-form-item
-                  label="涉及线路"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <el-upload
-                    class="upload-demo"
-                    ref="upload"
-                    :data="lineList"
-                    name="kmz"
-                    :headers="headers"
-                    action="/server/data/admin/task/save"
-                    :on-preview="handlePreview"
-                    :on-success="handleSuccess"
-                    :on-change="uploadChange"
-                    :on-remove="handleRemove"
-                    :file-list="fileList"
-                    accept=".kmz, .kml"
-                    :limit="1"
-                    :auto-upload="false"
+                  <a-list-item
+                    slot="renderItem"
+                    slot-scope="item, index"
+                    :key="index"
+                    @click="chooseLineTask(item.id)"
+                    :class="{active_item: item.clicked}"
                   >
-                    <a-button type="primary" icon="upload">上传KMZ文件</a-button>
-                  </el-upload>
-                </a-form-item>
-                <a-form-item
-                  label="高度(m)"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入高度" v-model="lineList.altitude" />
-                </a-form-item>
-                <a-form-item
-                  label="长度(m)"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入长度" v-model="lineList.length" />
-                </a-form-item>
-                <a-form-item
-                  label="时长(min)"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入时长" v-model="lineList.duration" />
-                </a-form-item>
-                <a-form-item
-                  label="速度(km/h)"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入速度" v-model="lineList.velocity" />
-                </a-form-item>
-                <a-form-item
-                  label="任务模板"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-select style="width: 100%" v-model="lineList.template">
-                    <a-select-option value="uav">无人机</a-select-option>
-                    <a-select-option value="manual">人工调查</a-select-option>
-                    <a-select-option value="water">水质调查</a-select-option>
-                  </a-select>
-                </a-form-item>
-                <a-form-item
-                  label="关联河道"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-select
-                    showSearch
-                    mode="multiple"
-                    :allowClear="true"
-                    placeholder="请输入河流添加"
-                    optionFilterProp="children"
-                    style="width: 100%"
-                    @change="handleChange"
-                    :filterOption="filterOption"
-                    v-model="riverId"
-                  >
-                    <a-select-option
-                      :value="item.id"
-                      v-for="(item, index) in riverList"
-                      :key="index"
-                    >{{item.name}}</a-select-option>
-                  </a-select>
-                </a-form-item>
-                <a-form-item
-                  label="人员配置"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <el-checkbox-group v-model="roleId">
-                    <div v-for="(city, index)  in personnelList" :key="index" style>
-                      <el-checkbox :label="city.id" style="width: 100px;">{{city.name}}</el-checkbox>
-                      <a-input-number
-                        size="small"
-                        :min="1"
-                        :max="100000"
-                        :defaultValue="1"
-                        v-model="city.num"
-                        style="width: 70px;margin-left:5px"
-                      />
-                    </div>
-                  </el-checkbox-group>
-                </a-form-item>
-                <a-form-item
-                  label="设备配置"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                ></a-form-item>
-                <a-collapse size="small" style="margin-top:10px;" :bordered="false">
-                  <a-collapse-panel
-                    :style="customStyle"
-                    v-for=" item in equipmentList"
-                    :key="item.id"
-                  >
-                    <template slot="header">{{item.name}}</template>
-                    <a-collapse size="small" style="margin-top:10px;" :bordered="false">
-                      <a-collapse-panel
-                        :style="customStyle"
-                        v-for=" option in item.children"
-                        :key="option.id"
-                      >
-                        <template slot="header">{{option.name}}</template>
-                        <a-checkbox-group
-                          style="display:flex;flex-wrap:wrap;"
-                          v-model="deviceTypeId"
-                        >
-                          <a-row
-                            style="width:100%"
-                            v-for="index in option.children"
-                            :key="index.id"
-                          >
-                            <a-col :span="12" offset="4" style="height:30px;">
-                              <a-checkbox :value="index.id" @change="peopleChoose">{{index.name}}</a-checkbox>
-                            </a-col>
-                            <a-col :span="8" style="height:30px;text-align:right;">
-                              <a-input-number
-                                size="small"
-                                :min="1"
-                                :max="100000"
-                                :defaultValue="1"
-                                @change="peopleNum"
-                                v-model="index.num"
-                                style="width: 70px;"
-                              />
-                            </a-col>
-                          </a-row>
-                        </a-checkbox-group>
-                      </a-collapse-panel>
-                    </a-collapse>
-                  </a-collapse-panel>
-                </a-collapse>
-                <a-form-item
-                  label="备注"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入备注" v-model="lineList.remark" />
-                </a-form-item>
-                <a-form-item
-                  label="人员职责"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入人员职责" v-model="lineList.duty" />
-                </a-form-item>
-              </a-form>
-            </section>
-          </a-tab-pane>
-          <a-tab-pane tab="点任务" key="2" forceRender>
-            <section class="task_face">
-              <a-collapse defaultActiveKey="1" accordion style="margin-top:10px;">
-                <!-- -->
-                <a-collapse-panel
-                  v-show="!addPointShow"
-                  v-for="item in pointTaskList"
-                  :key="item.id"
-                  :style="customStyle"
-                  class="custom_list"
-                >
-                  <template slot="header">
                     <a-row style="width:100%">
-                      <a-col :span="9">{{item.name}}</a-col>
-                      <a-col :span="14" style="text-align:right;" :pull="1">
-                        <a-button
-                          size="small"
-                          type="primary"
-                          style="margin-right:10px;"
-                          @click="choosePointEdit(item.id)"
-                        >编辑</a-button>
-                        <a-button size="small" type="primary" @click="chooseTask(item.id)">添加点</a-button>
+                      <a-col :span="20">{{item.name}}</a-col>
+                      <a-col :span="4" style="text-align:right;">
+                        <a-popconfirm
+                          title="确定要删除吗?"
+                          @confirm="confirmLineDelete(item.id)"
+                          @cancel="cancelDelete"
+                          okText="确定"
+                          cancelText="取消"
+                        >
+                          <a href="#">删除</a>
+                        </a-popconfirm>
                       </a-col>
                     </a-row>
-                  </template>
-                  <a-list
-                    size="small"
-                    :bordered="false"
-                    :dataSource="item.pointList"
-                    v-show="!addLineShow"
+                  </a-list-item>
+                </a-list>
+                <a-form v-show="addLineShow" style="width: 100%;">
+                  <a-form-item
+                    label="任务名称"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
                   >
-                    <a-list-item
-                      slot="renderItem"
-                      slot-scope="point, index"
-                      :key="index"
-                      @click="choosePointTask(item.id, point.name)"
-                      :class="{active_item: point.clicked}"
-                      style="padding: 10px 16px;"
-                    >
-                      <a-row style="width:100%">
-                        <a-col :span="17">{{point.name}}</a-col>
-                        <a-col :span="6" style="text-align:right;">
-                          <a-popconfirm
-                            title="确定要删除吗?"
-                            @confirm="confirmPiontDelete(point.id, point.name)"
-                            @cancel="cancelDelete"
-                            okText="确定"
-                            cancelText="取消"
-                          >
-                            <a href="#">删除</a>
-                          </a-popconfirm>
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                  </a-list>
-                </a-collapse-panel>
-              </a-collapse>
-              <a-form v-show="addPointShow" style="width: 100%;">
-                <a-form-item
-                  label="任务名称"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入任务名称" v-model="spotList.title" />
-                </a-form-item>
-                <a-form-item
-                  label="任务内容"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-textarea :autosize="{ minRows: 2, maxRows: 6 }" v-model="spotList.content" />
-                </a-form-item>
-                <a-form-item
-                  label="任务高度"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入任务高度" v-model="spotList.altitude" />
-                </a-form-item>
-                <a-form-item
-                  label="任务时长(min)"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入任务时长" v-model="spotList.duration" />
-                </a-form-item>
-                <a-form-item
-                  label="备注"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-textarea
-                    placeholder="请输入备注信息"
-                    :autosize="{ minRows: 2, maxRows: 6 }"
-                    v-model="spotList.remark"
-                  />
-                </a-form-item>
-                <a-form-item
-                  label="任务职责"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-input placeholder="请输入任务职责" v-model="spotList.duty" />
-                </a-form-item>
-                <a-form-item
-                  label="任务模板"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <a-select placeholder="请选择" style="width: 100%" v-model="spotList.template">
-                    <a-select-option value="uav">无人机</a-select-option>
-                    <a-select-option value="manual">人工调查</a-select-option>
-                    <a-select-option value="water">水质调查</a-select-option>
-                  </a-select>
-                </a-form-item>
-                <a-form-item
-                  label="任务图标"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <div style="display:flex">
-                    <viewer>
-                      <img :src="attachmentJpg" alt style="height:30px;margin-right:10px" />
-                    </viewer>
+                    <a-input placeholder="请输入任务名称" v-model="lineList.title" />
+                  </a-form-item>
+                  <a-form-item
+                    label="任务内容"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-input placeholder="请输入任务内容" v-model="lineList.content" />
+                  </a-form-item>
+                  <a-form-item
+                    label="月计划次数"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-input placeholder="请输入月计划次数" v-model="lineList.times" />
+                  </a-form-item>
+                  <a-form-item
+                    label="涉及线路"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
                     <el-upload
                       class="upload-demo"
-                      ref="upload1"
-                      :data="spotList"
-                      name="pic"
+                      ref="upload"
+                      :data="lineList"
+                      name="kmz"
                       :headers="headers"
                       action="/server/data/admin/task/save"
                       :on-preview="handlePreview"
-                      :on-success="handleSuccess1"
-                      :on-change="uploadChange1"
-                      :show-file-list="false"
+                      :on-success="handleSuccess"
+                      :on-change="uploadChange"
                       :on-remove="handleRemove"
                       :file-list="fileList"
+                      accept=".kmz, .kml"
                       :limit="1"
                       :auto-upload="false"
                     >
-                      <a-button type="primary" icon="upload">上传</a-button>
+                      <a-button type="primary" icon="upload">上传KMZ文件</a-button>
                     </el-upload>
-                  </div>
-                </a-form-item>
-                <a-form-item
-                  label="人员配置"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                >
-                  <el-checkbox-group v-model="spotList.roleId">
-                    <div v-for="(city, index)  in personnelList" :key="index" style>
-                      <el-checkbox :label="city.id" style="width: 100px;">{{city.name}}</el-checkbox>
-                      <a-input-number
-                        size="small"
-                        :min="1"
-                        :max="100000"
-                        :defaultValue="1"
-                        v-model="city.num"
-                        style="width: 50px;margin-left:5px"
-                      />
-                    </div>
-                  </el-checkbox-group>
-                </a-form-item>
-                <a-form-item
-                  label="设备配置"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                ></a-form-item>
-                <a-collapse size="small" style="margin-top:10px;" :bordered="false">
-                  <a-collapse-panel
-                    :style="customStyle"
-                    v-for=" item in equipmentList"
-                    :key="item.id"
+                  </a-form-item>
+                  <a-form-item
+                    label="高度(m)"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
                   >
-                    <template slot="header">{{item.name}}</template>
-                    <a-collapse size="small" style="margin-top:10px;" :bordered="false">
-                      <a-collapse-panel
-                        :style="customStyle"
-                        v-for=" option in item.children"
-                        :key="option.id"
-                      >
-                        <template slot="header">{{option.name}}</template>
-                        <a-checkbox-group
-                          style="display:flex;flex-wrap:wrap;"
-                          v-model="deviceTypeId"
+                    <a-input placeholder="请输入高度" v-model="lineList.altitude" />
+                  </a-form-item>
+                  <a-form-item
+                    label="长度(m)"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-input placeholder="请输入长度" v-model="lineList.length" />
+                  </a-form-item>
+                  <a-form-item
+                    label="时长(min)"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-input placeholder="请输入时长" v-model="lineList.duration" />
+                  </a-form-item>
+                  <a-form-item
+                    label="速度(km/h)"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-input placeholder="请输入速度" v-model="lineList.velocity" />
+                  </a-form-item>
+                  <a-form-item
+                    label="任务模板"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-select style="width: 100%" v-model="lineList.template">
+                      <a-select-option value="uav">无人机</a-select-option>
+                      <a-select-option value="manual">人工调查</a-select-option>
+                      <a-select-option value="water">水质调查</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                  <a-form-item
+                    label="关联河道"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-select
+                      showSearch
+                      mode="multiple"
+                      :allowClear="true"
+                      placeholder="请输入河流添加"
+                      optionFilterProp="children"
+                      style="width: 100%"
+                      @change="handleChange"
+                      :filterOption="filterOption"
+                      v-model="riverId"
+                    >
+                      <a-select-option
+                        :value="item.id"
+                        v-for="(item, index) in riverList"
+                        :key="index"
+                      >{{item.name}}</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                  <a-form-item
+                    label="人员配置"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <el-checkbox-group v-model="roleId">
+                      <div v-for="(city, index)  in personnelList" :key="index" style>
+                        <el-checkbox :label="city.id" style="width: 100px;">{{city.name}}</el-checkbox>
+                        <a-input-number
+                          size="small"
+                          :min="1"
+                          :max="100000"
+                          :defaultValue="1"
+                          v-model="city.num"
+                          style="width: 70px;margin-left:5px"
+                        />
+                      </div>
+                    </el-checkbox-group>
+                  </a-form-item>
+                  <a-form-item
+                    label="设备配置"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  ></a-form-item>
+                  <a-collapse size="small" style="margin-top:10px;" :bordered="false">
+                    <a-collapse-panel
+                      :style="customStyle"
+                      v-for=" item in equipmentList"
+                      :key="item.id"
+                    >
+                      <template slot="header">{{item.name}}</template>
+                      <a-collapse size="small" style="margin-top:10px;" :bordered="false">
+                        <a-collapse-panel
+                          :style="customStyle"
+                          v-for=" option in item.children"
+                          :key="option.id"
                         >
-                          <a-row
-                            style="width:100%"
-                            v-for="index in option.children"
-                            :key="index.id"
+                          <template slot="header">{{option.name}}</template>
+                          <a-checkbox-group
+                            style="display:flex;flex-wrap:wrap;"
+                            v-model="deviceTypeId"
                           >
-                            <a-col :span="12" offset="4" style="height:30px;">
-                              <a-checkbox :value="index.id" @change="peopleChoose">{{index.name}}</a-checkbox>
-                            </a-col>
-                            <a-col :span="8" style="height:30px;text-align:right;">
-                              <a-input-number
-                                size="small"
-                                :min="1"
-                                :max="100000"
-                                :defaultValue="1"
-                                @change="peopleNum"
-                                v-model="index.num"
-                                style="width: 70px;"
-                              />
-                            </a-col>
-                          </a-row>
-                        </a-checkbox-group>
-                      </a-collapse-panel>
-                    </a-collapse>
+                            <a-row
+                              style="width:100%"
+                              v-for="index in option.children"
+                              :key="index.id"
+                            >
+                              <a-col :span="12" offset="4" style="height:30px;">
+                                <a-checkbox :value="index.id" @change="peopleChoose">{{index.name}}</a-checkbox>
+                              </a-col>
+                              <a-col :span="8" style="height:30px;text-align:right;">
+                                <a-input-number
+                                  size="small"
+                                  :min="1"
+                                  :max="100000"
+                                  :defaultValue="1"
+                                  @change="peopleNum"
+                                  v-model="index.num"
+                                  style="width: 70px;"
+                                />
+                              </a-col>
+                            </a-row>
+                          </a-checkbox-group>
+                        </a-collapse-panel>
+                      </a-collapse>
+                    </a-collapse-panel>
+                  </a-collapse>
+                  <a-form-item
+                    label="备注"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-input placeholder="请输入备注" v-model="lineList.remark" />
+                  </a-form-item>
+                  <a-form-item
+                    label="人员职责"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-input placeholder="请输入人员职责" v-model="lineList.duty" />
+                  </a-form-item>
+                </a-form>
+              </section>
+            </a-tab-pane>
+            <a-tab-pane tab="点任务" key="2" forceRender>
+              <section class="task_face">
+                <a-collapse defaultActiveKey="1" accordion style="margin-top:10px;">
+                  <!-- -->
+                  <a-collapse-panel
+                    v-show="!addPointShow"
+                    v-for="item in pointTaskList"
+                    :key="item.id"
+                    :style="customStyle"
+                    class="custom_list"
+                  >
+                    <template slot="header">
+                      <a-row style="width:100%">
+                        <a-col :span="9">{{item.name}}</a-col>
+                        <a-col :span="14" style="text-align:right;" :pull="1">
+                          <a-button
+                            size="small"
+                            type="primary"
+                            style="margin-right:10px;"
+                            @click="choosePointEdit(item.id)"
+                          >编辑</a-button>
+                          <a-button size="small" type="primary" @click="chooseTask(item.id)">添加点</a-button>
+                        </a-col>
+                      </a-row>
+                    </template>
+                    <a-list
+                      size="small"
+                      :bordered="false"
+                      :dataSource="item.pointList"
+                      v-show="!addLineShow"
+                    >
+                      <a-list-item
+                        slot="renderItem"
+                        slot-scope="point, index"
+                        :key="index"
+                        @click="choosePointTask(item.id, point.name)"
+                        :class="{active_item: point.clicked}"
+                        style="padding: 10px 16px;"
+                      >
+                        <a-row style="width:100%">
+                          <a-col :span="17">{{point.name}}</a-col>
+                          <a-col :span="6" style="text-align:right;">
+                            <a-popconfirm
+                              title="确定要删除吗?"
+                              @confirm="confirmPiontDelete(point.id, point.name)"
+                              @cancel="cancelDelete"
+                              okText="确定"
+                              cancelText="取消"
+                            >
+                              <a href="#">删除</a>
+                            </a-popconfirm>
+                          </a-col>
+                        </a-row>
+                      </a-list-item>
+                    </a-list>
                   </a-collapse-panel>
                 </a-collapse>
-              </a-form>
-            </section>
-          </a-tab-pane>
-        </a-tabs>
+                <a-form v-show="addPointShow" style="width: 100%;">
+                  <a-form-item
+                    label="任务名称"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-input placeholder="请输入任务名称" v-model="spotList.title" />
+                  </a-form-item>
+                  <a-form-item
+                    label="任务内容"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-textarea :autosize="{ minRows: 2, maxRows: 6 }" v-model="spotList.content" />
+                  </a-form-item>
+                  <a-form-item
+                    label="任务高度"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-input placeholder="请输入任务高度" v-model="spotList.altitude" />
+                  </a-form-item>
+                  <a-form-item
+                    label="任务时长(min)"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-input placeholder="请输入任务时长" v-model="spotList.duration" />
+                  </a-form-item>
+                  <a-form-item
+                    label="备注"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-textarea
+                      placeholder="请输入备注信息"
+                      :autosize="{ minRows: 2, maxRows: 6 }"
+                      v-model="spotList.remark"
+                    />
+                  </a-form-item>
+                  <a-form-item
+                    label="任务职责"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-input placeholder="请输入任务职责" v-model="spotList.duty" />
+                  </a-form-item>
+                  <a-form-item
+                    label="任务模板"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <a-select placeholder="请选择" style="width: 100%" v-model="spotList.template">
+                      <a-select-option value="uav">无人机</a-select-option>
+                      <a-select-option value="manual">人工调查</a-select-option>
+                      <a-select-option value="water">水质调查</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                  <a-form-item
+                    label="任务图标"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <div style="display:flex">
+                      <viewer>
+                        <img :src="attachmentJpg" alt style="height:30px;margin-right:10px" />
+                      </viewer>
+                      <el-upload
+                        class="upload-demo"
+                        ref="upload1"
+                        :data="spotList"
+                        name="pic"
+                        :headers="headers"
+                        action="/server/data/admin/task/save"
+                        :on-preview="handlePreview"
+                        :on-success="handleSuccess1"
+                        :on-change="uploadChange1"
+                        :show-file-list="false"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        :limit="1"
+                        :auto-upload="false"
+                      >
+                        <a-button type="primary" icon="upload">上传</a-button>
+                      </el-upload>
+                    </div>
+                  </a-form-item>
+                  <a-form-item
+                    label="人员配置"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  >
+                    <el-checkbox-group v-model="spotList.roleId">
+                      <div v-for="(city, index)  in personnelList" :key="index" style>
+                        <el-checkbox :label="city.id" style="width: 100px;">{{city.name}}</el-checkbox>
+                        <a-input-number
+                          size="small"
+                          :min="1"
+                          :max="100000"
+                          :defaultValue="1"
+                          v-model="city.num"
+                          style="width: 50px;margin-left:5px"
+                        />
+                      </div>
+                    </el-checkbox-group>
+                  </a-form-item>
+                  <a-form-item
+                    label="设备配置"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+                  ></a-form-item>
+                  <a-collapse size="small" style="margin-top:10px;" :bordered="false">
+                    <a-collapse-panel
+                      :style="customStyle"
+                      v-for=" item in equipmentList"
+                      :key="item.id"
+                    >
+                      <template slot="header">{{item.name}}</template>
+                      <a-collapse size="small" style="margin-top:10px;" :bordered="false">
+                        <a-collapse-panel
+                          :style="customStyle"
+                          v-for=" option in item.children"
+                          :key="option.id"
+                        >
+                          <template slot="header">{{option.name}}</template>
+                          <a-checkbox-group
+                            style="display:flex;flex-wrap:wrap;"
+                            v-model="deviceTypeId"
+                          >
+                            <a-row
+                              style="width:100%"
+                              v-for="index in option.children"
+                              :key="index.id"
+                            >
+                              <a-col :span="12" offset="4" style="height:30px;">
+                                <a-checkbox :value="index.id" @change="peopleChoose">{{index.name}}</a-checkbox>
+                              </a-col>
+                              <a-col :span="8" style="height:30px;text-align:right;">
+                                <a-input-number
+                                  size="small"
+                                  :min="1"
+                                  :max="100000"
+                                  :defaultValue="1"
+                                  @change="peopleNum"
+                                  v-model="index.num"
+                                  style="width: 70px;"
+                                />
+                              </a-col>
+                            </a-row>
+                          </a-checkbox-group>
+                        </a-collapse-panel>
+                      </a-collapse>
+                    </a-collapse-panel>
+                  </a-collapse>
+                </a-form>
+              </section>
+            </a-tab-pane>
+          </a-tabs>
         </a-spin>
         <a-button
           type="primary"
@@ -575,7 +575,7 @@
       <span>{{defaultLineTask}}</span>
     </div>
     <!-- 添加河流 -->
-    <add-task-point ref="addTaskPoint"></add-task-point>
+    <add-task-point ref="addTaskPoint" @cancel="cancelClick" @confirm="confirmClick"></add-task-point>
   </div>
 </template>
 
@@ -762,7 +762,8 @@ export default {
     this.map.addControl(scale)
     // this.scale.setColor({color: '#f00'})
 
-    this.getLineList()
+    this.getLineList() // 获取线路任务
+    this.getList() // 获取点列表
     this.getRiverStreeList() //获取街道河道
     this.getRoleList()
     this.riverListGet()
@@ -797,7 +798,7 @@ export default {
     }
   },
   methods: {
-    //点线列表
+    //点列表
     getList() {
       var data = {
         type: 'dot',
@@ -815,6 +816,29 @@ export default {
         })
         .catch(err => {})
     },
+    //任务点列表
+    gettTaskPointList(key) {
+      if (key != undefined) {
+        taskSpotPage(key)
+          .then(res => {
+            var arr = res.data.data
+            for (let a = 0; a < arr.length; a++) {
+              arr[a].clicked = false
+              arr[a].latlng = arr[a].coordinate
+            }
+            for (let i = 0; i < this.pointTaskList.length; i++) {
+              if (this.pointTaskList[i].id == key) {
+                this.pointTaskList[i].pointList = arr
+              }
+            }
+            if (this.actionTab == 2) {
+              this.allPointTask()
+            }
+          })
+          .catch(err => {})
+      }
+    },
+    // 线列表
     getLineList() {
       var data = {
         type: 'line',
@@ -836,9 +860,10 @@ export default {
           this.lineTaskList = arr
           this.spinning = false
           this.drawAllLine()
-        }).catch(err => {
+        })
+        .catch(err => {
           this.spinning = false
-          this.$message.error('数据加载失败');
+          this.$message.error('数据加载失败')
         })
     },
     //人员配置列表
@@ -855,31 +880,6 @@ export default {
         var arr = res.data
         this.equipmentList = arr
       })
-    },
-    //任务点列表
-    gettTaskPointList(key) {
-      if (key != undefined) {
-        taskSpotPage(key)
-          .then(res => {
-            var arr = res.data.data
-            for (let a = 0; a < arr.length; a++) {
-              // arr[a].latlng = {
-              //   lat: '',
-              //   lng: ''
-              // }
-              arr[a].clicked = false
-              arr[a].latlng = arr[a].coordinate
-              // arr[a].latlng.lng = arr[a].coordinate[0]
-            }
-            for (let i = 0; i < this.pointTaskList.length; i++) {
-              if (this.pointTaskList[i].id == key) {
-                this.pointTaskList[i].pointList = arr
-              }
-            }
-            this.allPointTask()
-          })
-          .catch(err => {})
-      }
     },
     //河道列表
     riverListGet() {
@@ -1059,6 +1059,11 @@ export default {
       // this.map.clearOverLays()
       for (const item of this.pointTaskList) {
         for (const point of item.pointList) {
+          for (const overlay of this.map.getOverlays()) {
+            if (point.id == overlay.options.id) {
+              this.map.removeOverLay(overlay)
+            }
+          }
           this.drawAllPoint(point.latlng, point.id, point.name, item.pic)
         }
       }
@@ -1113,20 +1118,19 @@ export default {
     addTaskPoint(index) {
       for (const item of this.pointTaskList) {
         if (item.id == index) {
+          if (this.markerTool) {
+            this.markerTool.close()
+          }
           let icon = new T.Icon({
             iconUrl: item.pic,
             iconSize: new T.Point(41, 40),
             iconAnchor: new T.Point(21, 40)
           })
-          let markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
-          // this.markerTool.setIcon({icon: icon})
-          markerTool.open()
-          markerTool.addEventListener('mouseup', this.addTaskPointed)
+          this.markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
+          this.markerTool.open()
+          this.markerTool.addEventListener('mouseup', this.addTaskPointed)
         }
       }
-
-      // let marker = new T.Marker(latlng, { icon: icon, id: id, name: name })
-      // this.map.addOverLay(marker)
     },
     // 返回标注点的坐标
     addTaskPointed(e) {
@@ -1135,6 +1139,22 @@ export default {
       let geocode = new T.Geocoder()
       geocode.getLocation(e.currentLnglat, this.searchResult)
       // console.log(e)
+    },
+    // 点击取消弹窗
+    cancelClick() {
+      console.log(666)
+      if (this.markerTool) {
+        console.log(7777)
+        var markers = this.markerTool.getMarkers()
+        console.log(markers)
+        for (const item of markers) {
+          this.map.removeOverLay(item)
+        }
+      }
+    },
+    // 点击确定弹窗
+    confirmClick() {
+      this.getList()
     },
     searchResult(result) {
       this.$refs.addTaskPoint.add(result.formatted_address, result.location, this.taskId)
@@ -1206,11 +1226,10 @@ export default {
           for (const point of item.pointList) {
             if (index === point.name) {
               point.clicked = true
-              console.log(point.latlng)
               let arr = []
               arr.push(point.latlng)
               this.map.setViewport(arr)
-              // this.map.zoomOut()
+              this.map.setZoom(18)
             } else {
               point.clicked = false
             }
@@ -1223,6 +1242,23 @@ export default {
       taskPointDel(id)
         .then(res => {
           this.$message.success('保存成功')
+          console.log(this.map.getOverlays())
+          // for (const overlay of this.map.getOverlays()) {
+          //   for (const item of this.lineTaskList) {
+          //     if (item.id == id) {
+          //       this.map.removeOverLay(overlay)
+          //     }
+          //   }
+          // }
+          for (const overlay of this.map.getOverlays()) {
+            for (const item of this.pointTaskList) {
+              for (const point of item.pointList) {
+                if (point.id == overlay.options.id) {
+                  this.map.removeOverLay(overlay)
+                }
+              }
+            }
+          }
           this.getList()
         })
         .catch(err => {
@@ -1232,7 +1268,6 @@ export default {
     // 添加任务点
     addTaskPointAlert() {
       console.log('1')
-
       this.$refs.addTaskPoint.add()
     },
     // tab切换
@@ -1256,7 +1291,8 @@ export default {
             }
           }
         }
-        this.getList()
+        this.allPointTask()
+        // this.getList()
       }
     },
     // 树形图
