@@ -335,7 +335,7 @@
                             style="margin-right:10px;"
                             @click="choosePointEdit(item.id)"
                           >编辑</a-button>
-                          <a-button size="small" type="primary" @click="chooseTask(item.id)">添加点</a-button>
+                          <a-button size="small" type="primary" @click="chooseTask(item.id)">{{item.pointListName}}</a-button>
                         </a-col>
                       </a-row>
                     </template>
@@ -809,6 +809,8 @@ export default {
           var arr = res.data.data
           arr.forEach(v => {
             v.name = v.title
+            v.clicked = false
+            v.pointListName = '添加点'
             v.pointList = []
             this.gettTaskPointList(v.id)
           })
@@ -1114,42 +1116,17 @@ export default {
     taskPointMouseout(index) {
       console.log(index)
     },
-    // 注册添加点击事件
-    addTaskPoint(index) {
-      for (const item of this.pointTaskList) {
-        if (item.id == index) {
-          if (this.markerTool) {
-            this.markerTool.close()
-          }
-          let icon = new T.Icon({
-            iconUrl: item.pic,
-            iconSize: new T.Point(41, 40),
-            iconAnchor: new T.Point(21, 40)
-          })
-          this.markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
-          this.markerTool.open()
-          this.markerTool.addEventListener('mouseup', this.addTaskPointed)
-        }
-      }
-    },
-    // 返回标注点的坐标
-    addTaskPointed(e) {
-      // console.log(e.currentLnglat.lng)
-      // console.log(e.currentLnglat.lat)
-      let geocode = new T.Geocoder()
-      geocode.getLocation(e.currentLnglat, this.searchResult)
-      // console.log(e)
-    },
     // 点击取消弹窗
     cancelClick() {
-      console.log(666)
       if (this.markerTool) {
-        console.log(7777)
         var markers = this.markerTool.getMarkers()
-        console.log(markers)
         for (const item of markers) {
           this.map.removeOverLay(item)
         }
+      }
+      for (const item of this.pointTaskList) {
+        item.pointListName = '添加点'
+        item.clicked = false
       }
     },
     // 点击确定弹窗
@@ -1170,9 +1147,46 @@ export default {
 
     // 点任务选择
     chooseTask(key) {
-      console.log(key)
       this.taskId = key
       this.addTaskPoint(key)
+    },
+    // 注册添加点击事件
+    addTaskPoint(index) {
+      for (const item of this.pointTaskList) {
+        if (item.id == index) {
+          item.clicked = !item.clicked
+          if (item.clicked) {
+            item.pointListName = '取消点'
+            if (this.markerTool) {
+              this.markerTool.close()
+            }
+            let icon = new T.Icon({
+              iconUrl: item.pic,
+              iconSize: new T.Point(41, 40),
+              iconAnchor: new T.Point(21, 40)
+            })
+            this.markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
+            this.markerTool.open()
+            this.markerTool.addEventListener('mouseup', this.addTaskPointed)
+          } else {
+            item.pointListName = '添加点'
+            if (this.markerTool) {
+              this.markerTool.close()
+            }
+          }
+        } else {
+          item.clicked = false
+          item.pointListName = '添加点'
+        }
+      }
+    },
+    // 返回标注点的坐标
+    addTaskPointed(e) {
+      // console.log(e.currentLnglat.lng)
+      // console.log(e.currentLnglat.lat)
+      let geocode = new T.Geocoder()
+      geocode.getLocation(e.currentLnglat, this.searchResult)
+      // console.log(e)
     },
     // 编辑
     choosePointEdit(id) {
@@ -1242,7 +1256,6 @@ export default {
       taskPointDel(id)
         .then(res => {
           this.$message.success('保存成功')
-          console.log(this.map.getOverlays())
           // for (const overlay of this.map.getOverlays()) {
           //   for (const item of this.lineTaskList) {
           //     if (item.id == id) {
