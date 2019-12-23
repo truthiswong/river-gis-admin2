@@ -29,23 +29,25 @@
         </a-col>
       </a-row>
       <a-list
-        class="comment-list custom_comment"
+        class="comment-list custom_comment a-list"
         :header="`${data.length} 条评论`"
         itemLayout="horizontal"
         :dataSource="data"
         size="small"
+        style=""
       >
         <a-list-item slot="renderItem" slot-scope="item" class="comment_list">
           <a-comment :author="item.author" :avatar="item.avatar">
             <div class="comment_level">
               <p
-                :class="{'danger_level0': item.dangerLevel == 0, 'danger_level1': item.dangerLevel == 1,'danger_level2': item.dangerLevel == 2}"
-              >{{item.dangerDescribe}}</p>
+                :class="{'danger_level0': list.level.code == 'three', 'danger_level1': list.level.code == 'two','danger_level2': list.level.code == 'one','danger_level3': list.level.code == 'four'}"
+                v-if="code != 'discharge'"
+              >{{list.dangerDescribe}}</p>
               <span>{{item.dangerContent}}</span>
             </div>
-            <p slot="content" style="ma">{{item.content}}</p>
+            <p slot="content" style="ma">{{item.comment}}</p>
             <div class="comment_img">
-              <img v-for="img in item.imgList" :key="img.id" :src="img.url" :alt="img.alt" />
+              <img v-for="img in item.imgList" :key="img" :src="img" :alt="img" />
             </div>
             <a-tooltip slot="datetime" :title="item.datetime">
               <span>{{item.datetime}}</span>
@@ -58,39 +60,38 @@
     <div v-show="show_type">
       <a-form >
         <a-form-item label="是否存在" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-           <a-select defaultValue="true"  >
-            <a-select-option value="true">是</a-select-option>
-            <a-select-option value="false">否</a-select-option>
+           <a-select defaultValue="yes" v-model="drawList.exist" >
+            <a-select-option value="yes">是</a-select-option>
+            <a-select-option value="no">否</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="管理建议" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-textarea placeholder="请输入" :rows="4" />
+          <a-textarea placeholder="请输入" :rows="4" v-model="drawList.comment"/>
         </a-form-item>
         <a-form-item :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" label="图片">
           <el-upload
             class="upload-demo"
             ref="upload"
-            :data="list"
-            name="icon"
+            :data="drawList"
+            name="pic"
             :headers="headers"
-            action="/server/data/admin/param/save"
+            action="/server/data/admin/mapdraw/comment/save"
             :on-preview="handlePreview"
             :on-success="handleSuccess"
             :on-change="handleChange"
             :on-remove="handleRemove"
             :file-list="fileList"
-            :limit='1'
             :auto-upload="false">
             <a-button type="primary" icon="plus" >添加</a-button>
           </el-upload>
-          <!-- <viewer >
-            <img  :src="attachmentJpg" alt="" style="height:70px;">
-          </viewer > -->
+          <viewer >
+            <img v-for="index in attachmentJpg" :key="index" :src="index" alt="" style="height:70px;">
+          </viewer >
         </a-form-item>
         <a-form-item :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" label="操作">
           <div>
             <a-button @click="renewClick('2')" style="margin-right:20px">取消</a-button>
-            <a-button type="primary">保存</a-button>
+            <a-button type="primary" @click="saveClick">保存</a-button>
           </div>
         </a-form-item>
       </a-form>
@@ -101,14 +102,14 @@
 <script>
 import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-import { riskDetails, dischargeDetails, floatageDetails, } from '@/api/login'
+import { riskDetails, dischargeDetails, floatageDetails,commentMapdraw,commentMapdrawSave } from '@/api/login'
 export default {
   data() {
     return {
       fileList:[],
       code:'',
       file:false,
-      attachmentJpg:'',
+      attachmentJpg:[],
       show:true,
       show_type:false,
       visible: false,
@@ -116,64 +117,70 @@ export default {
       list:{
 
       },
+      drawList:{
+        id:'',
+        drawId:'',
+        comment:'',
+        exist:'',
+      },
       id:'',
       headers: {
         Authorization: '',
         'X-TENANT-ID': 'jl:jlgis@2019' 
       },
       data: [
-        {
-          author: '李白',
-          avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-          content: '管理建议: 持续监督.',
-          dangerLevel: 2,
-          dangerDescribe: 'II 级',
-          dangerContent: '存在',
-          datetime: '2019-10-29',
-          imgList: [
-            {
-              id: 0,
-              url: require('../../../../public/avatar2.jpg'),
-              alt: '风险图片'
-            },
-            {
-              id: 1,
-              url: require('../../../../public/avatar2.jpg'),
-              alt: '风险图片'
-            },
-            {
-              id: 2,
-              url: require('../../../../public/avatar2.jpg'),
-              alt: '风险图片'
-            },
-            {
-              id: 3,
-              url: require('../../../../public/avatar2.jpg'),
-              alt: '风险图片'
-            }
-          ]
-        },
-        {
-          author: '王昭君',
-          avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-          content: '管理建议: 暂无风险.',
-          dangerLevel: 0,
-          dangerDescribe: '0 级',
-          dangerContent: '不存在',
-          datetime: '2019-10-01',
-          imgList: [
-            {
-              id: 0,
-              url: require('../../../../public/avatar2.jpg'),
-              alt: '风险图片'
-            },
-            {
-              id: 1,
-              url: require('../../../../public/avatar2.jpg'),
-              alt: '风险图片'
-            }
-          ]
-        }
+        // {
+        //   author: '李白',
+        //   avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+        //   content: '管理建议: 持续监督.',
+        //   dangerLevel: 2,
+        //   dangerDescribe: 'II 级',
+        //   dangerContent: '存在',
+        //   datetime: '2019-10-29',
+        //   imgList: [
+        //     {
+        //       id: 0,
+        //       url: require('../../../../public/avatar2.jpg'),
+        //       alt: '风险图片'
+        //     },
+        //     {
+        //       id: 1,
+        //       url: require('../../../../public/avatar2.jpg'),
+        //       alt: '风险图片'
+        //     },
+        //     {
+        //       id: 2,
+        //       url: require('../../../../public/avatar2.jpg'),
+        //       alt: '风险图片'
+        //     },
+        //     {
+        //       id: 3,
+        //       url: require('../../../../public/avatar2.jpg'),
+        //       alt: '风险图片'
+        //     }
+        //   ]
+        // },
+        // {
+        //   author: '王昭君',
+        //   avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+        //   content: '管理建议: 暂无风险.',
+        //   dangerLevel: 0,
+        //   dangerDescribe: '0 级',
+        //   dangerContent: '不存在',
+        //   datetime: '2019-10-01',
+        //   imgList: [
+        //     {
+        //       id: 0,
+        //       url: require('../../../../public/avatar2.jpg'),
+        //       alt: '风险图片'
+        //     },
+        //     {
+        //       id: 1,
+        //       url: require('../../../../public/avatar2.jpg'),
+        //       alt: '风险图片'
+        //     }
+        //   ]
+        // }
       ]
     }
   },
@@ -183,18 +190,19 @@ export default {
   computed: {},
   methods: {
     riskInfo(row) {
-      console.log(row);
+      
       this.code= row.target.options.code
       this.id = row.target.options.id
+      this.drawList.drawId = row.target.options.id
       function formatDate(now) { 
-          var year=now.getFullYear();  //取得4位数的年份
-          var month=now.getMonth()+1;  //取得日期中的月份，其中0表示1月，11表示12月
-          var date=now.getDate();      //返回日期月份中的天数（1到31）
-          var hour=now.getHours();     //返回日期中的小时数（0到23）
-          var minute=now.getMinutes(); //返回日期中的分钟数（0到59）
-          var second=now.getSeconds(); //返回日期中的秒数（0到59）
-          return year+"-"+month+"-"+date
-        }  
+        var year=now.getFullYear();  //取得4位数的年份
+        var month=now.getMonth()+1;  //取得日期中的月份，其中0表示1月，11表示12月
+        var date=now.getDate();      //返回日期月份中的天数（1到31）
+        var hour=now.getHours();     //返回日期中的小时数（0到23）
+        var minute=now.getMinutes(); //返回日期中的分钟数（0到59）
+        var second=now.getSeconds(); //返回日期中的秒数（0到59）
+        return year+"-"+month+"-"+date
+      }  
       if (row.target.options.code == "risk") {
         riskDetails(row.target.options.id).then(res=>{
            
@@ -202,12 +210,32 @@ export default {
           arr.discoveryTime = formatDate(new Date( arr.discoveryTime))
           arr.type = arr.type.name
           arr.river = arr.river.name
+          if (arr.level.code =='one') {
+            arr.dangerDescribe ='Ⅰ 级'
+            
+          }
+          if (arr.level.code =='two') {
+            arr.dangerDescribe ='Ⅱ 级'
+            
+          }
+          if (arr.level.code =='three') {
+            arr.dangerDescribe ='Ⅲ 级'
+            
+          }
+          if (arr.level.code =='four') {
+            arr.dangerDescribe ='Ⅳ 级'
+            
+          }
           this.list = arr 
         })
       }
       if (row.target.options.code == "discharge") {
         dischargeDetails(row.target.options.id).then(res=>{
           let arr = res.data
+          arr.discoveryTime = arr.activateTime
+          arr.type = arr.type.name
+          arr.river = arr.river.name
+          this.list = arr 
           
         })
       }
@@ -218,6 +246,31 @@ export default {
         })
       }
       this.visible = true
+      this.getCommentMapdraw()
+    },
+    getCommentMapdraw(){
+      function formatDate(now) { 
+        var year=now.getFullYear();  //取得4位数的年份
+        var month=now.getMonth()+1;  //取得日期中的月份，其中0表示1月，11表示12月
+        var date=now.getDate();      //返回日期月份中的天数（1到31）
+        var hour=now.getHours();     //返回日期中的小时数（0到23）
+        var minute=now.getMinutes(); //返回日期中的分钟数（0到59）
+        var second=now.getSeconds(); //返回日期中的秒数（0到59）
+        return year+"-"+month+"-"+date
+      }  
+      commentMapdraw(this.id).then(res=>{
+        res.data.data.forEach(v => {
+          v.imgList = Object.values(v.pics)
+          v.datetime = formatDate(new Date( v.timeCreated))
+          if (v.exist == true) {
+            v.dangerContent = '存在'
+          }else{
+             v.dangerContent = '不存在'
+          }
+          v.avatar ='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
+        });
+        this.data = res.data.data
+      })
     },
     riskSee(){
       this.visible = false
@@ -246,17 +299,27 @@ export default {
         }
       })
     },
+    saveClick(){
+
+      commentMapdrawSave(this.drawList).then(res=>{
+        this.drawList.id = res.data.id
+        this.$refs.upload.submit();
+        this.$message.success('保存成功');
+        this.show_type = false
+        this.show = true
+        this.getCommentMapdraw()
+      })
+      
+    },
     handleSuccess(response, file, fileList){
-      this.attachmentJpg=''
-      this.$message.success('保存成功');
+      this.attachmentJpg=[]
+      this.drawList.comment=''
+      this.drawList.exist=''
+      this.fileList=[]
     },
     handleChange(file, fileList){
-      if(this.fileList.length==0){
-        this.fileList=fileList
-      }else{
-        this.fileList=[]
-      }
-      this.attachmentJpg=URL.createObjectURL(file.raw)
+      this.fileList=fileList
+      this.attachmentJpg.push(URL.createObjectURL(file.raw))
     },
     handleRemove(file, fileList) {
       
@@ -264,6 +327,10 @@ export default {
     handlePreview(file) {
     },
     renewClick(row){
+      this.attachmentJpg=[]
+      this.drawList.comment=''
+      this.drawList.exist=''
+      this.fileList=[]
       if (row == '1') {
         this.show=false
         this.show_type=true
@@ -274,6 +341,8 @@ export default {
       
     },
     handleCancel() {
+      this.list = {}
+      this.data =[]
       this.visible = false
     }
   }
@@ -297,13 +366,16 @@ p {
     margin: 0 6px 6px 0;
   }
   .danger_level0 {
-    background-color: #52c41a;
+    background-color: #f5e50b;
   }
   .danger_level1 {
     background-color: #faad14;
   }
   .danger_level2 {
     background-color: #f5222d;
+  }
+  .danger_level3 {
+    background-color: #0e7dfd;
   }
   span {
     font-size: 14px;
@@ -316,6 +388,8 @@ p {
   justify-content: space-between;
   -webkit-justify-content: space-between;
   flex-wrap: wrap;
+  height:100px;
+  overflow-y: scroll;
   img {
     width: 80px;
     height: 80px;
@@ -324,5 +398,15 @@ p {
   img:nth-last-child(1) {
     margin: 0;
   }
+}
+.a-list{
+  max-height:400px;
+  overflow-y: scroll;
+}
+.a-list::-webkit-scrollbar{
+  display: none;
+}
+.comment_img::-webkit-scrollbar {
+    display: none;
 }
 </style>
