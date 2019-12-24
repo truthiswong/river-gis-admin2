@@ -557,6 +557,14 @@ export function inspectPointPage(id) {
     method: 'get',
   })
 }
+//巡河调查点列表
+export function inspectPointPageRiver(data) {
+  return axios({
+    url: '/server/data/admin/inspect/point/page',
+    method: 'get',
+    params:data
+  })
+}
 //调查点保存
 export function inspectPointSave(data) {
   return axios({
@@ -729,15 +737,7 @@ export function dataManual(data) {
   return axios({
     url: '/server/data/admin/regulator/manual/data/page',
     method: 'get',
-    params: {
-      projectId: data.projectId,
-      year: data.year,
-      month: data.month,
-      coordinate: data.coordinate,
-      radius: data.radius,
-      day: data.day,
-      mediaType: data.mediaType
-    }
+    params: data
   })
 }
 //人工数据详情
@@ -870,12 +870,7 @@ export function panoramaList(data) {
   return axios({
     url: '/server/data/admin/regulator/panorama/data/points',
     method: 'get',
-    params: {
-      projectId: data.projectId,
-      year: data.year,
-      month: data.month,
-      day: data.day
-    }
+    params:data
   })
 }
 //360数据
