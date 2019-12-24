@@ -253,7 +253,7 @@ export default {
       SuperviseDel(id).then(res => {
           this.$message.success('删除成功')
           this.id=''
-          this.getList()
+          this.getPage()
         }).catch(err => {})
     },
     cancelDelete(){},
