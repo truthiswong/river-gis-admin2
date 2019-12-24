@@ -439,7 +439,7 @@
                     <p style="margin:0;">查看历史数据</p>
                   </a-col>
                   <a-col :span="6">
-                    <a-switch size="small" v-model="historyData" @click="onHistoryData"/>
+                    <a-switch size="small" v-model="historyData" @click="onHistoryData" />
                   </a-col>
                 </a-row>
               </a-list-item>
@@ -596,7 +596,7 @@
                           <p style="margin:0;">专项调查点</p>
                         </a-col>
                         <a-col :span="6">
-                          <a-switch size="small" v-model="surveyPoint"  />
+                          <a-switch size="small" v-model="surveyPoint" />
                         </a-col>
                       </a-row>
                     </a-list-item>
@@ -1406,9 +1406,9 @@ export default {
       this.getWaterQualityPoints()
     },
     // 历史数据
-    // historyData() {
-    //   this.watchAllSwitch()
-    // },
+    historyData() {
+      // this.watchAllSwitch()
+    },
     // 河道显示
     riverShow() {
       this.watchAllSwitch()
@@ -1551,11 +1551,11 @@ export default {
       if (this.historyData == true) {
         var data = {
           projectId: this.$store.state.id,
-          startDate:this.startDate,
-          endDate:this.endDate,
+          startDate: this.startDate,
+          endDate: this.endDate,
           mediaType: 'image'
         }
-      }else{
+      } else {
         var time = this.defaultTime
         var picker = time.split('-')
         var data = {
@@ -1590,6 +1590,8 @@ export default {
             }
           })
           this.drawPage = ar
+          // console.log(ar)
+          // console.log(this.drawPage)
         })
         dataManual(data).then(res => {
           let arr = res.data.data
@@ -1612,17 +1614,17 @@ export default {
           // console.log(this.phonePhotoPoints)
           // console.log(this.phonePhotoPointsList)
         })
-        inspectPointPageRiver(data).then(res=>{
+        this.removeOverLays(this.surveyPointPoints)
+        inspectPointPageRiver(data).then(res => {
           let arr = res.data.data
           arr.forEach(v => {
-            v.clicked=false
-          });
+            v.clicked = false
+          })
           this.surveyPointPoints = arr
           // console.log( this.surveyPointPoints,'1');
-          // this.watchAllSwitch()
+          this.watchAllSwitch()
         })
         this.gengduo = '2'
-        
       }
     },
     mapZoomChange() {
@@ -1644,8 +1646,10 @@ export default {
           })
           this.streetShowList = arr
           // console.log(this.streetShowList)
-        }).catch(err => {})
-      getRiverList(this.$store.state.id).then(res => {
+        })
+        .catch(err => {})
+      getRiverList(this.$store.state.id)
+        .then(res => {
           let arr = res.data.data
           arr.forEach(v => {
             if (v.region == null) {
@@ -1657,7 +1661,8 @@ export default {
           })
           this.riverShowList = arr
           // console.log(this.riverShowList)
-        }) .catch(err => {})
+        })
+        .catch(err => {})
       // // 二维数据转换
       // for (const item of this.riverShowList) {
       //   let points = []
@@ -2392,21 +2397,20 @@ export default {
     },
     // 更多-历史数据
     onHistoryData() {
-      this.riskMap= false,
-      this.waterQuality= false,
-      this.waterFlotage= false,
-      this.outlet= false,
-      this.riverRisk= false,
-      this.waterLandLoss= false,
-      this.waterRatio= false,
-      this.bottomMud= false,
-      this.surveyPoint= false,
-      this.riverLink= false,
-      this.landAndWater= false,
+      // this.riskMap = false
+      // this.waterQuality = false
+      // this.waterFlotage = false
+      // this.outlet = false
+      // this.riverRisk = false
+      // this.waterLandLoss = false
+      // this.waterRatio = false
+      // this.bottomMud = false
+      // this.surveyPoint = false
+      // this.riverLink = false
+      // this.landAndWater = false
       this.getMapdrawPage('1')
       if (this.historyData) {
         // this.testarr(this.historyPoints)
-       
       }
     },
     testarr(pointLists) {
@@ -3121,7 +3125,7 @@ export default {
           }
         }
         this.riskSourceList.forEach(v => {
-          v.clicked =false
+          v.clicked = false
         })
         this.removeOverLays(data)
       }
@@ -3227,7 +3231,6 @@ export default {
     },
     // 监听所有的开关属性
     watchAllSwitch() {
-      
       // this.map.clearOverLays()
       // 绘制工具画的点
       // this.toolDrawPoint()
