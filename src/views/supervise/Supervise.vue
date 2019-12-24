@@ -794,7 +794,12 @@
     <!-- 水面漂浮物 -->
     <add-floatage ref="AddFloatage"></add-floatage>
     <!-- 360全景图 -->
-    <look-panorama ref="panorama" v-if="panoramaAlertShow" :msg="panoramaData" @exitPanorama="closePanorma"></look-panorama>
+    <look-panorama
+      ref="panorama"
+      v-if="panoramaAlertShow"
+      :msg="panoramaData"
+      @exitPanorama="closePanorma"
+    ></look-panorama>
   </div>
 </template>
 
@@ -2371,7 +2376,7 @@ export default {
     // 更多-历史数据
     onHistoryData() {
       if (this.historyData) {
-        this.testarr(this.historyPoints)
+        // this.testarr(this.historyPoints)
       }
     },
     testarr(pointLists) {
@@ -2733,6 +2738,7 @@ export default {
       this.isRiskSaveShow = false
       this.colorAlertShow = false
       console.log(this.isRiskEdit)
+      console.log(this.riskIndexId)
       this.polygonTool.clear()
       let result = this.riskPolygonData.findIndex(item => {
         return this.riskIndexId == item.id
@@ -2743,19 +2749,80 @@ export default {
       this.riskPolygonData[result].fullColor = this.fullColor
       this.riskPolygonData[result].borderOpacity = this.borderOpacity / 100
       this.riskPolygonData[result].fullOpacity = this.fullOpacity / 100
+
+      let picker = this.defaultTime.split('-')
+      let polygon = ''
+      for (const index of this.riskPolygonData[result].lineData) {
+        polygon = polygon + index.lng + ',' + index.lat + '|'
+      }
+      polygon = polygon.substring(0, polygon.length - 1)
+      // 上面是编辑, 下面是保存
       if (this.isRiskEdit) {
+        let riskEditData = {
+          id: this.riskPolygonData[result].id,
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          locationType: 'polygon',
+          polygon: polygon,
+          frameColor: this.borderColor,
+          framePellucidity: this.borderOpacity,
+          shapeColor: this.fullColor,
+          shapePellucidity: this.fullOpacity,
+          innerType: 'riskMap'
+        }
+        console.log(riskEditData)
+        mapdrawSave(riskEditData)
+          .then(res => {
+            this.$message.success('保存成功')
+            console.log(res.data)
+            console.log(res.data.id)
+            // this.riskPolygonData[result].id = res.data.id
+            // this.riskIndexId = res.data.id
+          })
+          .catch(err => {
+            this.$message.error(err.response.data.message)
+          })
         this.watchAllSwitch()
         return
       }
-      this.polygon = new T.Polygon(this.riskPolygonData[result].lineData, {
-        id: this.riskIndexId
-      })
-      this.map.addOverLay(this.polygon)
-      this.polygon.setColor(this.borderColor)
-      this.polygon.setFillColor(this.fullColor)
-      this.polygon.setOpacity(this.borderOpacity / 100)
-      this.polygon.setFillOpacity(this.fullOpacity / 100)
-      this.polygon.addEventListener('click', this.riskPolygonClick)
+      let riskSaveData = {
+        id: '',
+        projectId: this.$store.state.id,
+        year: picker[0],
+        month: picker[1],
+        day: picker[2],
+        locationType: 'polygon',
+        polygon: polygon,
+        frameColor: this.borderColor,
+        framePellucidity: this.borderOpacity,
+        shapeColor: this.fullColor,
+        shapePellucidity: this.fullOpacity,
+        innerType: 'riskMap'
+      }
+      console.log(riskSaveData)
+      mapdrawSave(riskSaveData)
+        .then(res => {
+          this.$message.success('保存成功')
+          console.log(res.data)
+          console.log(res.data.id)
+          this.riskPolygonData[result].id = res.data.id
+          this.riskIndexId = res.data.id
+
+          this.polygon = new T.Polygon(this.riskPolygonData[result].lineData, {
+            id: this.riskIndexId
+          })
+          this.map.addOverLay(this.polygon)
+          this.polygon.setColor(this.borderColor)
+          this.polygon.setFillColor(this.fullColor)
+          this.polygon.setOpacity(this.borderOpacity / 100)
+          this.polygon.setFillOpacity(this.fullOpacity / 100)
+          this.polygon.addEventListener('click', this.riskPolygonClick)
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
     },
     // 风险地图绘制取消
     riskCradCancel() {
@@ -2770,6 +2837,7 @@ export default {
     // 风险地图编辑颜色
     riskPolygonClick(e) {
       this.riskIndexId = e.target.options.id
+      console.log(this.riskIndexId)
       this.isRiskEdit = true
       this.isRiskSaveShow = true
     },
@@ -3693,7 +3761,7 @@ export default {
   top: 10px;
   width: 200px;
   max-height: calc(100vh - 85px);
-  overflow: auto;
+  // overflow: auto;
   background-color: white;
   z-index: 889;
   border-radius: 4px;
@@ -3731,7 +3799,7 @@ export default {
 
 .color_wrap {
   position: absolute;
-  right: 190px;
+  right: 210px;
   top: 2px;
 }
 .time_quantum {
