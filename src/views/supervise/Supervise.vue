@@ -1660,6 +1660,7 @@ export default {
           ar.push(v)
         }
         this.riskPolygonData = ar
+        this.watchAllSwitch()
       })
     },
     getRiverStreeList() {
@@ -2846,13 +2847,11 @@ export default {
             console.log(res.data)
             console.log(res.data.id)
             this.getRiskMapList()
-            // this.riskPolygonData[result].id = res.data.id
-            // this.riskIndexId = res.data.id
           })
           .catch(err => {
             this.$message.error(err.response.data.message)
           })
-        this.watchAllSwitch()
+        // this.watchAllSwitch()
         return
       }
       let riskSaveData = {
@@ -2875,18 +2874,19 @@ export default {
           this.$message.success('保存成功')
           console.log(res.data)
           console.log(res.data.id)
-          this.riskPolygonData[result].id = res.data.id
-          this.riskIndexId = res.data.id
+          // this.riskPolygonData[result].id = res.data.id
+          // this.riskIndexId = res.data.id
 
-          this.polygon = new T.Polygon(this.riskPolygonData[result].lineData, {
-            id: this.riskIndexId
-          })
-          this.map.addOverLay(this.polygon)
-          this.polygon.setColor(this.borderColor)
-          this.polygon.setFillColor(this.fullColor)
-          this.polygon.setOpacity(this.borderOpacity / 100)
-          this.polygon.setFillOpacity(this.fullOpacity / 100)
-          this.polygon.addEventListener('click', this.riskPolygonClick)
+          // this.polygon = new T.Polygon(this.riskPolygonData[result].lineData, {
+          //   id: this.riskIndexId
+          // })
+          // this.map.addOverLay(this.polygon)
+          // this.polygon.setColor(this.borderColor)
+          // this.polygon.setFillColor(this.fullColor)
+          // this.polygon.setOpacity(this.borderOpacity / 100)
+          // this.polygon.setFillOpacity(this.fullOpacity / 100)
+          // this.polygon.addEventListener('click', this.riskPolygonClick)
+          this.getRiskMapList()
         })
         .catch(err => {
           this.$message.error(err.response.data.message)
