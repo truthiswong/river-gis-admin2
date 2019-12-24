@@ -203,9 +203,8 @@ export default {
         var second=now.getSeconds(); //返回日期中的秒数（0到59）
         return year+"-"+month+"-"+date
       }  
-      if (row.target.options.code == "risk") {
-        riskDetails(row.target.options.id).then(res=>{
-           
+      if (row.target.options.code == "riskSource") {
+         riskDetails(row.target.options.id).then(res=>{
           let arr = res.data
           arr.discoveryTime = formatDate(new Date( arr.discoveryTime))
           arr.type = arr.type.name

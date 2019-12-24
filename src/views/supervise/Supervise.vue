@@ -2943,7 +2943,7 @@ export default {
     drawAllPoint1(latlng, index, id, code) {
       let markerTool = new T.Marker(latlng, { title: index, id: id, code: code })
       this.map.addOverLay(markerTool)
-      if (code == 'riskMap') {
+      if (code == 'riskSource') {
         markerTool.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
@@ -2966,7 +2966,7 @@ export default {
       })
       //向地图上添加线
       this.map.addOverLay(line)
-      if (code == 'riskMap') {
+      if (code == 'riskSource') {
         line.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
@@ -2990,7 +2990,7 @@ export default {
       })
       //向地图上添加面
       this.map.addOverLay(polygon)
-      if (code == 'riskMap') {
+      if (code == 'riskSource') {
         polygon.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
