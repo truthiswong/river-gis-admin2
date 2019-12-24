@@ -207,6 +207,16 @@ export default {
           text = '流速'
           this.main14=true
         }
+        let aa = []
+        array.forEach(v => {
+          
+          if (v.id == id) {
+            if (v.aa = aa) {
+              aa.push(v.aa)
+            }
+            
+          }
+        });
         // 绘制图表
         myChart.setOption({
           title: {

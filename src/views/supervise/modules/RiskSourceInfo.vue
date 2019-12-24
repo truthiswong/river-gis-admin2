@@ -208,22 +208,21 @@ export default {
           let arr = res.data
           arr.discoveryTime = formatDate(new Date( arr.discoveryTime))
           arr.type = arr.type.name
-          arr.river = arr.river.name
+          if (arr.river != undefined) {
+            arr.river = arr.river.name
+          }
+          
           if (arr.level.code =='one') {
             arr.dangerDescribe ='Ⅰ 级'
-            
           }
           if (arr.level.code =='two') {
             arr.dangerDescribe ='Ⅱ 级'
-            
           }
           if (arr.level.code =='three') {
-            arr.dangerDescribe ='Ⅲ 级'
-            
+            arr.dangerDescribe ='Ⅲ 级' 
           }
           if (arr.level.code =='four') {
             arr.dangerDescribe ='Ⅳ 级'
-            
           }
           this.list = arr 
         })

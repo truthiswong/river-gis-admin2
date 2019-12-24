@@ -1580,6 +1580,12 @@ export default {
           arr.forEach(v => {
             v.shapePellucidity = v.shapePellucidity / 100
             v.framePellucidity = v.framePellucidity / 100
+            if (v.drawType ==undefined) {
+              v.drawType ={
+                code:'',
+                id:'',
+              }
+            }
             if (v.innerType != undefined) {
               ar.push(v)
             }
@@ -3169,6 +3175,7 @@ export default {
       if (clicked) {
         let point = []
         for (const item of this.drawPage) {
+
           if (item.drawType.id == id) {
             if (item.locationType.code == 'point') {
               item.latlng = {
