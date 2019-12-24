@@ -439,7 +439,7 @@
                     <p style="margin:0;">查看历史数据</p>
                   </a-col>
                   <a-col :span="6">
-                    <a-switch size="small" v-model="historyData" @click="onHistoryData"/>
+                    <a-switch size="small" v-model="historyData" @click="onHistoryData" />
                   </a-col>
                 </a-row>
               </a-list-item>
@@ -596,7 +596,7 @@
                           <p style="margin:0;">专项调查点</p>
                         </a-col>
                         <a-col :span="6">
-                          <a-switch size="small" v-model="surveyPoint"  />
+                          <a-switch size="small" v-model="surveyPoint" />
                         </a-col>
                       </a-row>
                     </a-list-item>
@@ -794,7 +794,12 @@
     <!-- 水面漂浮物 -->
     <add-floatage ref="AddFloatage"></add-floatage>
     <!-- 360全景图 -->
-    <look-panorama ref="panorama" v-if="panoramaAlertShow" :msg="panoramaData" @exitPanorama="closePanorma"></look-panorama>
+    <look-panorama
+      ref="panorama"
+      v-if="panoramaAlertShow"
+      :msg="panoramaData"
+      @exitPanorama="closePanorma"
+    ></look-panorama>
   </div>
 </template>
 
@@ -1112,7 +1117,7 @@ export default {
       borderOpacity: 80, // 边框透明度
       fullOpacity: 50, //填充透明度
 
-      riskPolygonData: [], // 工具面数据
+      riskPolygonData: [], // 风险地图数据
       riskIndexId: null, // 当前绘制id
       isRiskEdit: false, // 是否是编辑状态
       isRiskSaveShow: false, // 是否显示保存取消
@@ -1180,11 +1185,6 @@ export default {
         id: '',
         panoramaPoints: []
       }, // 360页面传值数据
-      historyPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.21493, lng: 121.49566 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.22344, lng: 121.47892 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.20649, lng: 121.47712 } }
-      ],
       alertLeft: -1000,
       alertTop: -1000,
       alertShow: false, // 名字弹窗
@@ -1401,9 +1401,9 @@ export default {
       this.getWaterQualityPoints()
     },
     // 历史数据
-    // historyData() {
-    //   this.watchAllSwitch()
-    // },
+    historyData() {
+      // this.watchAllSwitch()
+    },
     // 河道显示
     riverShow() {
       this.watchAllSwitch()
@@ -1546,11 +1546,11 @@ export default {
       if (this.historyData == true) {
         var data = {
           projectId: this.$store.state.id,
-          startDate:this.startDate,
-          endDate:this.endDate,
+          startDate: this.startDate,
+          endDate: this.endDate,
           mediaType: 'image'
         }
-      }else{
+      } else {
         var time = this.defaultTime
         var picker = time.split('-')
         var data = {
@@ -1585,6 +1585,8 @@ export default {
             }
           })
           this.drawPage = ar
+          // console.log(ar)
+          // console.log(this.drawPage)
         })
         dataManual(data).then(res => {
           let arr = res.data.data
@@ -1607,23 +1609,59 @@ export default {
           // console.log(this.phonePhotoPoints)
           // console.log(this.phonePhotoPointsList)
         })
-        inspectPointPageRiver(data).then(res=>{
+        this.removeOverLays(this.surveyPointPoints)
+        inspectPointPageRiver(data).then(res => {
           let arr = res.data.data
           arr.forEach(v => {
-            v.clicked=false
-          });
+            v.clicked = false
+          })
           this.surveyPointPoints = arr
           // console.log( this.surveyPointPoints,'1');
-          // this.watchAllSwitch()
+          this.watchAllSwitch()
         })
+        this.getRiskMapList() // 获取风险地图
         this.gengduo = '2'
-        
       }
     },
     mapZoomChange() {
       // console.log(this.map.getZoom())
       if (this.map.getZoom() > 18) {
       }
+    },
+    // 获取风险地图
+    getRiskMapList() {
+      // this.removeOverLays(this.riskPolygonData)
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2]
+        }
+      }
+      mapdrawPage(data).then(res => {
+        let arr = res.data
+        let ar = []
+        for (const v of arr) {
+          v.borderColor = v.frameColor
+          v.borderOpacity = v.framePellucidity / 100
+          v.fullColor = v.shapeColor
+          v.fullOpacity = v.shapePellucidity / 100
+          v.id = v.id
+          v.lineData = v.polygon
+          ar.push(v)
+        }
+        this.riskPolygonData = ar
+        this.watchAllSwitch()
+      })
     },
     getRiverStreeList() {
       getStreetList(this.$store.state.id)
@@ -1639,8 +1677,10 @@ export default {
           })
           this.streetShowList = arr
           // console.log(this.streetShowList)
-        }).catch(err => {})
-      getRiverList(this.$store.state.id).then(res => {
+        })
+        .catch(err => {})
+      getRiverList(this.$store.state.id)
+        .then(res => {
           let arr = res.data.data
           arr.forEach(v => {
             if (v.region == null) {
@@ -1652,7 +1692,8 @@ export default {
           })
           this.riverShowList = arr
           // console.log(this.riverShowList)
-        }) .catch(err => {})
+        })
+        .catch(err => {})
       // // 二维数据转换
       // for (const item of this.riverShowList) {
       //   let points = []
@@ -2387,21 +2428,20 @@ export default {
     },
     // 更多-历史数据
     onHistoryData() {
-      this.riskMap= false,
-      this.waterQuality= false,
-      this.waterFlotage= false,
-      this.outlet= false,
-      this.riverRisk= false,
-      this.waterLandLoss= false,
-      this.waterRatio= false,
-      this.bottomMud= false,
-      this.surveyPoint= false,
-      this.riverLink= false,
-      this.landAndWater= false,
+      // this.riskMap = false
+      // this.waterQuality = false
+      // this.waterFlotage = false
+      // this.outlet = false
+      // this.riverRisk = false
+      // this.waterLandLoss = false
+      // this.waterRatio = false
+      // this.bottomMud = false
+      // this.surveyPoint = false
+      // this.riverLink = false
+      // this.landAndWater = false
       this.getMapdrawPage('1')
       if (this.historyData) {
         // this.testarr(this.historyPoints)
-       
       }
     },
     testarr(pointLists) {
@@ -2760,10 +2800,14 @@ export default {
     },
     // 风险地图绘制保存
     riskCradSave() {
+      this.removeOverLays(this.riskPolygonData)
       this.isRiskSaveShow = false
       this.colorAlertShow = false
       console.log(this.isRiskEdit)
-      this.polygonTool.clear()
+      console.log(this.riskIndexId)
+      if (this.polygonTool) {
+        this.polygonTool.clear()
+      }
       let result = this.riskPolygonData.findIndex(item => {
         return this.riskIndexId == item.id
       })
@@ -2773,19 +2817,80 @@ export default {
       this.riskPolygonData[result].fullColor = this.fullColor
       this.riskPolygonData[result].borderOpacity = this.borderOpacity / 100
       this.riskPolygonData[result].fullOpacity = this.fullOpacity / 100
+
+      let picker = this.defaultTime.split('-')
+      let polygon = ''
+      for (const index of this.riskPolygonData[result].lineData) {
+        polygon = polygon + index.lng + ',' + index.lat + '|'
+      }
+      polygon = polygon.substring(0, polygon.length - 1)
+      // 上面是编辑, 下面是保存
       if (this.isRiskEdit) {
-        this.watchAllSwitch()
+        let riskEditData = {
+          id: this.riskPolygonData[result].id,
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          locationType: 'polygon',
+          polygon: polygon,
+          frameColor: this.borderColor,
+          framePellucidity: this.borderOpacity,
+          shapeColor: this.fullColor,
+          shapePellucidity: this.fullOpacity,
+          innerType: 'riskMap'
+        }
+        console.log(riskEditData)
+        mapdrawSave(riskEditData)
+          .then(res => {
+            this.$message.success('保存成功')
+            console.log(res.data)
+            console.log(res.data.id)
+            this.getRiskMapList()
+          })
+          .catch(err => {
+            this.$message.error(err.response.data.message)
+          })
+        // this.watchAllSwitch()
         return
       }
-      this.polygon = new T.Polygon(this.riskPolygonData[result].lineData, {
-        id: this.riskIndexId
-      })
-      this.map.addOverLay(this.polygon)
-      this.polygon.setColor(this.borderColor)
-      this.polygon.setFillColor(this.fullColor)
-      this.polygon.setOpacity(this.borderOpacity / 100)
-      this.polygon.setFillOpacity(this.fullOpacity / 100)
-      this.polygon.addEventListener('click', this.riskPolygonClick)
+      let riskSaveData = {
+        id: '',
+        projectId: this.$store.state.id,
+        year: picker[0],
+        month: picker[1],
+        day: picker[2],
+        locationType: 'polygon',
+        polygon: polygon,
+        frameColor: this.borderColor,
+        framePellucidity: this.borderOpacity,
+        shapeColor: this.fullColor,
+        shapePellucidity: this.fullOpacity,
+        innerType: 'riskMap'
+      }
+      console.log(riskSaveData)
+      mapdrawSave(riskSaveData)
+        .then(res => {
+          this.$message.success('保存成功')
+          console.log(res.data)
+          console.log(res.data.id)
+          // this.riskPolygonData[result].id = res.data.id
+          // this.riskIndexId = res.data.id
+
+          // this.polygon = new T.Polygon(this.riskPolygonData[result].lineData, {
+          //   id: this.riskIndexId
+          // })
+          // this.map.addOverLay(this.polygon)
+          // this.polygon.setColor(this.borderColor)
+          // this.polygon.setFillColor(this.fullColor)
+          // this.polygon.setOpacity(this.borderOpacity / 100)
+          // this.polygon.setFillOpacity(this.fullOpacity / 100)
+          // this.polygon.addEventListener('click', this.riskPolygonClick)
+          this.getRiskMapList()
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
     },
     // 风险地图绘制取消
     riskCradCancel() {
@@ -2800,6 +2905,7 @@ export default {
     // 风险地图编辑颜色
     riskPolygonClick(e) {
       this.riskIndexId = e.target.options.id
+      console.log(this.riskIndexId)
       this.isRiskEdit = true
       this.isRiskSaveShow = true
     },
@@ -3053,7 +3159,7 @@ export default {
           }
         }
         this.riskSourceList.forEach(v => {
-          v.clicked =false
+          v.clicked = false
         })
         this.removeOverLays(data)
       }
@@ -3159,7 +3265,6 @@ export default {
     },
     // 监听所有的开关属性
     watchAllSwitch() {
-      
       // this.map.clearOverLays()
       // 绘制工具画的点
       // this.toolDrawPoint()
@@ -3727,7 +3832,7 @@ export default {
   top: 10px;
   width: 200px;
   max-height: calc(100vh - 85px);
-  overflow: auto;
+  // overflow: auto;
   background-color: white;
   z-index: 889;
   border-radius: 4px;
@@ -3765,7 +3870,7 @@ export default {
 
 .color_wrap {
   position: absolute;
-  right: 190px;
+  right: 210px;
   top: 2px;
 }
 .time_quantum {
