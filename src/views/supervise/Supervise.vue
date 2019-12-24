@@ -1551,6 +1551,9 @@ export default {
         day: picker[2],
         mediaType: 'image'
       }
+      // let panData = {
+      //   projectId: this.$store.state.id
+      // }
       this.removeOverLays(this.drawPage)
       if (id == '1') {
         panoramaList(data).then(res => {
