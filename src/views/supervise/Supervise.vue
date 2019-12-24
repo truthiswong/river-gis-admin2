@@ -439,7 +439,7 @@
                     <p style="margin:0;">查看历史数据</p>
                   </a-col>
                   <a-col :span="6">
-                    <a-switch size="small" v-model="historyData" />
+                    <a-switch size="small" v-model="historyData" @click="onHistoryData"/>
                   </a-col>
                 </a-row>
               </a-list-item>
@@ -596,7 +596,7 @@
                           <p style="margin:0;">专项调查点</p>
                         </a-col>
                         <a-col :span="6">
-                          <a-switch size="small" v-model="surveyPoint" @click="onSurveyPoint" />
+                          <a-switch size="small" v-model="surveyPoint"  />
                         </a-col>
                       </a-row>
                     </a-list-item>
@@ -816,7 +816,8 @@ import {
   phoneLatlngList,
   panoramaList,
   panoramaImgList,
-  dataManual
+  dataManual,
+  inspectPointPageRiver
 } from '@/api/login'
 import RiskSourceInfo from './modules/RiskSourceInfo'
 import AddRiskSource from './modules/AddRiskSource'
@@ -921,79 +922,79 @@ export default {
       timeSetShow: false, // 时间弹窗显隐
       timeSetShowRight: false, // 右侧时间弹窗显隐
       timeData: [
-        {
-          id: 0,
-          title: '2019.09',
-          month: [
-            { id: '30', title: '30', level: 0, clicked: false },
-            { id: '29', title: '29', level: 1, clicked: false },
-            { id: '28', title: '28', level: 2, clicked: false },
-            { id: '27', title: '27', level: 2, clicked: false },
-            { id: '26', title: '26', level: 1, clicked: false },
-            { id: '25', title: '25', level: 1, clicked: false },
-            { id: '24', title: '24', level: 1, clicked: false },
-            { id: '23', title: '23', level: 0, clicked: false },
-            { id: '22', title: '22', level: 0, clicked: false },
-            { id: '21', title: '21', level: 2, clicked: false },
-            { id: '20', title: '20', level: 2, clicked: false },
-            { id: '19', title: '19', level: 1, clicked: false },
-            { id: '18', title: '18', level: 0, clicked: false },
-            { id: '17', title: '17', level: 2, clicked: false },
-            { id: '16', title: '16', level: 2, clicked: false },
-            { id: '15', title: '15', level: 0, clicked: false },
-            { id: '14', title: '14', level: 1, clicked: false },
-            { id: '13', title: '13', level: 0, clicked: false },
-            { id: '12', title: '12', level: 1, clicked: false },
-            { id: '11', title: '11', level: 1, clicked: false },
-            { id: '10', title: '10', level: 0, clicked: false },
-            { id: '09', title: '09', level: 1, clicked: false },
-            { id: '08', title: '08', level: 0, clicked: false },
-            { id: '07', title: '07', level: 2, clicked: false },
-            { id: '06', title: '06', level: 0, clicked: false },
-            { id: '05', title: '05', level: 2, clicked: false },
-            { id: '04', title: '04', level: 2, clicked: false },
-            { id: '03', title: '03', level: 0, clicked: false },
-            { id: '02', title: '02', level: 1, clicked: false },
-            { id: '01', title: '01', level: 1, clicked: false }
-          ]
-        },
-        {
-          id: 1,
-          title: '2019.08',
-          month: [
-            { id: '31', title: '31', level: 0, clicked: false },
-            { id: '30', title: '30', level: 0, clicked: false },
-            { id: '29', title: '29', level: 1, clicked: false },
-            { id: '28', title: '28', level: 2, clicked: false },
-            { id: '27', title: '27', level: 2, clicked: false },
-            { id: '26', title: '26', level: 1, clicked: false },
-            { id: '25', title: '25', level: 1, clicked: false },
-            { id: '24', title: '24', level: 1, clicked: false },
-            { id: '23', title: '23', level: 0, clicked: false },
-            { id: '22', title: '22', level: 0, clicked: false },
-            { id: '21', title: '21', level: 2, clicked: false },
-            { id: '20', title: '20', level: 2, clicked: false },
-            { id: '19', title: '19', level: 1, clicked: false },
-            { id: '18', title: '18', level: 0, clicked: false },
-            { id: '17', title: '17', level: 2, clicked: false },
-            { id: '16', title: '16', level: 2, clicked: false },
-            { id: '15', title: '15', level: 0, clicked: false },
-            { id: '14', title: '14', level: 1, clicked: false },
-            { id: '13', title: '13', level: 0, clicked: false },
-            { id: '12', title: '12', level: 1, clicked: false },
-            { id: '11', title: '11', level: 1, clicked: false },
-            { id: '10', title: '10', level: 0, clicked: false },
-            { id: '09', title: '09', level: 1, clicked: false },
-            { id: '08', title: '08', level: 0, clicked: false },
-            { id: '07', title: '07', level: 2, clicked: false },
-            { id: '06', title: '06', level: 0, clicked: false },
-            { id: '05', title: '05', level: 2, clicked: false },
-            { id: '04', title: '04', level: 2, clicked: false },
-            { id: '03', title: '03', level: 0, clicked: false },
-            { id: '02', title: '02', level: 1, clicked: false },
-            { id: '01', title: '01', level: 1, clicked: false }
-          ]
-        }
+        // {
+        //   id: 0,
+        //   title: '2019.09',
+        //   month: [
+        //     { id: '30', title: '30', level: 0, clicked: false },
+        //     { id: '29', title: '29', level: 1, clicked: false },
+        //     { id: '28', title: '28', level: 2, clicked: false },
+        //     { id: '27', title: '27', level: 2, clicked: false },
+        //     { id: '26', title: '26', level: 1, clicked: false },
+        //     { id: '25', title: '25', level: 1, clicked: false },
+        //     { id: '24', title: '24', level: 1, clicked: false },
+        //     { id: '23', title: '23', level: 0, clicked: false },
+        //     { id: '22', title: '22', level: 0, clicked: false },
+        //     { id: '21', title: '21', level: 2, clicked: false },
+        //     { id: '20', title: '20', level: 2, clicked: false },
+        //     { id: '19', title: '19', level: 1, clicked: false },
+        //     { id: '18', title: '18', level: 0, clicked: false },
+        //     { id: '17', title: '17', level: 2, clicked: false },
+        //     { id: '16', title: '16', level: 2, clicked: false },
+        //     { id: '15', title: '15', level: 0, clicked: false },
+        //     { id: '14', title: '14', level: 1, clicked: false },
+        //     { id: '13', title: '13', level: 0, clicked: false },
+        //     { id: '12', title: '12', level: 1, clicked: false },
+        //     { id: '11', title: '11', level: 1, clicked: false },
+        //     { id: '10', title: '10', level: 0, clicked: false },
+        //     { id: '09', title: '09', level: 1, clicked: false },
+        //     { id: '08', title: '08', level: 0, clicked: false },
+        //     { id: '07', title: '07', level: 2, clicked: false },
+        //     { id: '06', title: '06', level: 0, clicked: false },
+        //     { id: '05', title: '05', level: 2, clicked: false },
+        //     { id: '04', title: '04', level: 2, clicked: false },
+        //     { id: '03', title: '03', level: 0, clicked: false },
+        //     { id: '02', title: '02', level: 1, clicked: false },
+        //     { id: '01', title: '01', level: 1, clicked: false }
+        //   ]
+        // },
+        // {
+        //   id: 1,
+        //   title: '2019.08',
+        //   month: [
+        //     { id: '31', title: '31', level: 0, clicked: false },
+        //     { id: '30', title: '30', level: 0, clicked: false },
+        //     { id: '29', title: '29', level: 1, clicked: false },
+        //     { id: '28', title: '28', level: 2, clicked: false },
+        //     { id: '27', title: '27', level: 2, clicked: false },
+        //     { id: '26', title: '26', level: 1, clicked: false },
+        //     { id: '25', title: '25', level: 1, clicked: false },
+        //     { id: '24', title: '24', level: 1, clicked: false },
+        //     { id: '23', title: '23', level: 0, clicked: false },
+        //     { id: '22', title: '22', level: 0, clicked: false },
+        //     { id: '21', title: '21', level: 2, clicked: false },
+        //     { id: '20', title: '20', level: 2, clicked: false },
+        //     { id: '19', title: '19', level: 1, clicked: false },
+        //     { id: '18', title: '18', level: 0, clicked: false },
+        //     { id: '17', title: '17', level: 2, clicked: false },
+        //     { id: '16', title: '16', level: 2, clicked: false },
+        //     { id: '15', title: '15', level: 0, clicked: false },
+        //     { id: '14', title: '14', level: 1, clicked: false },
+        //     { id: '13', title: '13', level: 0, clicked: false },
+        //     { id: '12', title: '12', level: 1, clicked: false },
+        //     { id: '11', title: '11', level: 1, clicked: false },
+        //     { id: '10', title: '10', level: 0, clicked: false },
+        //     { id: '09', title: '09', level: 1, clicked: false },
+        //     { id: '08', title: '08', level: 0, clicked: false },
+        //     { id: '07', title: '07', level: 2, clicked: false },
+        //     { id: '06', title: '06', level: 0, clicked: false },
+        //     { id: '05', title: '05', level: 2, clicked: false },
+        //     { id: '04', title: '04', level: 2, clicked: false },
+        //     { id: '03', title: '03', level: 0, clicked: false },
+        //     { id: '02', title: '02', level: 1, clicked: false },
+        //     { id: '01', title: '01', level: 1, clicked: false }
+        //   ]
+        // }
       ],
       timeQuantum: '', // 时间段
       dateFormat: 'YYYY-MM-DD',
@@ -1352,34 +1353,34 @@ export default {
       ],
       surveyPoint: false, // 专项调查点
       surveyPointPoints: [
-        {
-          id: 0,
-          name: '专项调查点1',
-          clicked: false,
-          imgUrl: require('./img/surveyPointIcon.png'),
-          latlng: { lat: 31.22041, lng: 121.50384 }
-        },
-        {
-          id: 1,
-          name: '专项调查点2',
-          clicked: false,
-          imgUrl: require('./img/surveyPointIcon.png'),
-          latlng: { lat: 31.21682, lng: 121.48964 }
-        },
-        {
-          id: 2,
-          name: '专项调查点3',
-          clicked: false,
-          imgUrl: require('./img/surveyPointIcon.png'),
-          latlng: { lat: 31.21564, lng: 121.48648 }
-        },
-        {
-          id: 3,
-          name: '专项调查点4',
-          clicked: false,
-          imgUrl: require('./img/surveyPointIcon.png'),
-          latlng: { lat: 31.22664, lng: 121.49048 }
-        }
+        // {
+        //   id: 0,
+        //   name: '专项调查点1',
+        //   clicked: false,
+        //   imgUrl: require('./img/surveyPointIcon.png'),
+        //   latlng: { lat: 31.22041, lng: 121.50384 }
+        // },
+        // {
+        //   id: 1,
+        //   name: '专项调查点2',
+        //   clicked: false,
+        //   imgUrl: require('./img/surveyPointIcon.png'),
+        //   latlng: { lat: 31.21682, lng: 121.48964 }
+        // },
+        // {
+        //   id: 2,
+        //   name: '专项调查点3',
+        //   clicked: false,
+        //   imgUrl: require('./img/surveyPointIcon.png'),
+        //   latlng: { lat: 31.21564, lng: 121.48648 }
+        // },
+        // {
+        //   id: 3,
+        //   name: '专项调查点4',
+        //   clicked: false,
+        //   imgUrl: require('./img/surveyPointIcon.png'),
+        //   latlng: { lat: 31.22664, lng: 121.49048 }
+        // }
       ],
       gengduo: '1',
       riverLink: false, // 河道连通性
@@ -1405,9 +1406,9 @@ export default {
       this.getWaterQualityPoints()
     },
     // 历史数据
-    historyData() {
-      this.watchAllSwitch()
-    },
+    // historyData() {
+    //   this.watchAllSwitch()
+    // },
     // 河道显示
     riverShow() {
       this.watchAllSwitch()
@@ -1547,14 +1548,23 @@ export default {
       })
     },
     getMapdrawPage(id) {
-      var time = this.defaultTime
-      var picker = time.split('-')
-      var data = {
-        projectId: this.$store.state.id,
-        year: picker[0],
-        month: picker[1],
-        day: picker[2],
-        mediaType: 'image'
+      if (this.historyData == true) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate:this.startDate,
+          endDate:this.endDate,
+          mediaType: 'image'
+        }
+      }else{
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          mediaType: 'image'
+        }
       }
       // let panData = {
       //   projectId: this.$store.state.id
@@ -1599,10 +1609,20 @@ export default {
               this.phonePhotoPointsList.push(item)
             }
           }
-          console.log(this.phonePhotoPoints)
-          console.log(this.phonePhotoPointsList)
+          // console.log(this.phonePhotoPoints)
+          // console.log(this.phonePhotoPointsList)
+        })
+        inspectPointPageRiver(data).then(res=>{
+          let arr = res.data.data
+          arr.forEach(v => {
+            v.clicked=false
+          });
+          this.surveyPointPoints = arr
+          // console.log( this.surveyPointPoints,'1');
+          // this.watchAllSwitch()
         })
         this.gengduo = '2'
+        
       }
     },
     mapZoomChange() {
@@ -1624,10 +1644,8 @@ export default {
           })
           this.streetShowList = arr
           // console.log(this.streetShowList)
-        })
-        .catch(err => {})
-      getRiverList(this.$store.state.id)
-        .then(res => {
+        }).catch(err => {})
+      getRiverList(this.$store.state.id).then(res => {
           let arr = res.data.data
           arr.forEach(v => {
             if (v.region == null) {
@@ -1639,8 +1657,7 @@ export default {
           })
           this.riverShowList = arr
           // console.log(this.riverShowList)
-        })
-        .catch(err => {})
+        }) .catch(err => {})
       // // 二维数据转换
       // for (const item of this.riverShowList) {
       //   let points = []
@@ -2112,7 +2129,7 @@ export default {
           month: picker[1],
           day: picker[2]
         }
-        console.log(this.phonePhotoData)
+        // console.log(this.phonePhotoData)
       })
     },
     //获取天气
@@ -2375,8 +2392,21 @@ export default {
     },
     // 更多-历史数据
     onHistoryData() {
+      this.riskMap= false,
+      this.waterQuality= false,
+      this.waterFlotage= false,
+      this.outlet= false,
+      this.riverRisk= false,
+      this.waterLandLoss= false,
+      this.waterRatio= false,
+      this.bottomMud= false,
+      this.surveyPoint= false,
+      this.riverLink= false,
+      this.landAndWater= false,
+      this.getMapdrawPage('1')
       if (this.historyData) {
         // this.testarr(this.historyPoints)
+       
       }
     },
     testarr(pointLists) {
@@ -2575,7 +2605,7 @@ export default {
         this.allImageTask(this.phonePhotoPoints)
       } else {
         // this.removeOverLays(this.phonePhotoPoints)
-        console.log(this.map.getOverlays())
+        // console.log(this.map.getOverlays())
         for (const overlay of this.map.getOverlays()) {
           for (const item of this.phonePhotoPoints) {
             if (item.id == overlay.options.id) {
@@ -2981,7 +3011,7 @@ export default {
     drawAllPoint1(latlng, index, id, code) {
       let markerTool = new T.Marker(latlng, { title: index, id: id, code: code })
       this.map.addOverLay(markerTool)
-      if (code == 'risk') {
+      if (code == 'riskMap') {
         markerTool.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
@@ -3004,14 +3034,14 @@ export default {
       })
       //向地图上添加线
       this.map.addOverLay(line)
-      if (code == 'risk') {
-        markerTool.addEventListener('click', this.sourceRiskClick)
+      if (code == 'riskMap') {
+        line.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
-        markerTool.addEventListener('click', this.sourceRiskClick)
+        line.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'floatage') {
-        markerTool.addEventListener('click', this.floatageClick)
+        line.addEventListener('click', this.floatageClick)
       }
     },
     // 绘制面
@@ -3028,14 +3058,14 @@ export default {
       })
       //向地图上添加面
       this.map.addOverLay(polygon)
-      if (code == 'risk') {
-        markerTool.addEventListener('click', this.sourceRiskClick)
+      if (code == 'riskMap') {
+        polygon.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
-        markerTool.addEventListener('click', this.sourceRiskClick)
+        polygon.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'floatage') {
-        markerTool.addEventListener('click', this.floatageClick)
+        polygon.addEventListener('click', this.floatageClick)
       }
     },
     //排口水面漂浮物风险源弹窗
@@ -3090,6 +3120,9 @@ export default {
             data.push(item)
           }
         }
+        this.riskSourceList.forEach(v => {
+          v.clicked =false
+        })
         this.removeOverLays(data)
       }
     },
@@ -3164,11 +3197,11 @@ export default {
       if (this.surveyPoint) {
         for (const item of this.surveyPointPoints) {
           let icon = new T.Icon({
-            iconUrl: item.imgUrl,
+            iconUrl: require('./img/surveyPointIcon.png'),
             iconSize: new T.Point(41, 40),
             iconAnchor: new T.Point(21, 40)
           })
-          let marker = new T.Marker(item.latlng, { icon: icon, id: item.id, title: item.name })
+          let marker = new T.Marker(item.coordinate, { icon: icon, id: item.id, title: item.name })
           this.map.addOverLay(marker)
           marker.addEventListener('click', this.taskPointClick)
         }
@@ -3194,6 +3227,7 @@ export default {
     },
     // 监听所有的开关属性
     watchAllSwitch() {
+      
       // this.map.clearOverLays()
       // 绘制工具画的点
       // this.toolDrawPoint()
@@ -3202,7 +3236,7 @@ export default {
       // // 绘制工具画的面
       // this.toolDrawPolygon()
       // 历史数据
-      this.onHistoryData()
+      // this.onHistoryData()
       // 街道显示
       this.onStreetShow()
       // 河道显示
