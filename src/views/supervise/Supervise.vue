@@ -2026,7 +2026,7 @@ export default {
       this.timeQuantum = `${dateString[0]} ~ ${dateString[1]}`
       var start = dateString[0].split('-')
       var end = dateString[1].split('-')
-      this.getdaydataList(start[0] + start[1] + start[2], end[0] + end[1] + end[2])
+      this.getdaydataList(this.startDate, this.endDate)
     },
     getTimeQuantum() {
       let myDate = new Date()
@@ -2041,22 +2041,22 @@ export default {
         starty = endy
         startm = endm - 3
       }
-      if (startm < 10) {
-        var startm1 = '0' + startm
-        var start = starty + '' + startm1 + '' + endd
-      } else {
-        var start = starty + '' + startm + '' + endd
-      }
-      if (endm < 10) {
-        var endm1 = '0' + endm
-        var end = endy + '' + endm1 + '' + endd
-      } else {
-        var end = endy + '' + endm + '' + endd
-      }
+      // if (startm < 10) {
+      //   var startm1 = '0' + startm
+      //   var start = starty + '' + startm1 + '' + endd
+      // } else {
+      //   var start = starty + '' + startm + '' + endd
+      // }
+      // if (endm < 10) {
+      //   var endm1 = '0' + endm
+      //   var end = endy + '' + endm1 + '' + endd
+      // } else {
+      //   var end = endy + '' + endm + '' + endd
+      // }
       this.startDate = `${starty}-${startm}-${endd}`
       this.endDate = `${endy}-${endm}-${endd}`
       this.timeQuantum = `${this.startDate} ~ ${this.endDate}`
-      this.getdaydataList(start, end)
+      this.getdaydataList(this.startDate, this.endDate)
     },
     getdaydataList(start, end) {
       let data = {

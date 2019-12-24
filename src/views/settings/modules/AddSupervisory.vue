@@ -290,7 +290,7 @@ export default {
     handleSuccess(response, file, fileList){
       this.$message.success('保存成功');
       this.handleCancel();
-      this.$parent.getPage();
+      this.$parent.$parent.getPage();
     },
     uploadChange(file, fileList){
       if(this.fileList.length==0){
