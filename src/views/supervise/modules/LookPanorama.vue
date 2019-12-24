@@ -1,67 +1,149 @@
 <template>
-  <a-modal
-    title="360全景图"
-    class="panorama"
-    width="90vw"
-    style="top: 20px;"
-    :visible="visible"
-    :confirmLoading="confirmLoading"
-    @ok="handleSubmit"
-    @cancel="handleCancel"
-    :mask="true"
-    :maskClosable="false"
-    :centered="true"
-    :footer="null"
-  >
-    <a-spin :spinning="confirmLoading">
-      <a-card class="content">
-        <div id="pano"></div>
-      </a-card>
-      <a-divider orientation="left"></a-divider>
-      <a-row style="width:100%;" type="flex" justify="space-around">
-        <a-col :span="3">
-          <a-button block @click="handleCancel">取消</a-button>
-        </a-col>
-        <a-col :span="3">
-          <a-button block>保存</a-button>
-        </a-col>
-      </a-row>
-    </a-spin>
-  </a-modal>
+  <div id="wrapper">
+    <div class="left">
+      <div id="pano"></div>
+      <a-button class="log_out" @click="logOut">退出360</a-button>
+    </div>
+    <div class="right">
+      <div id="panorama_map"></div>
+    </div>
+  </div>
 </template>
-
 <script>
+import { panoramaImgList } from '@/api/login'
 import PhotoSphereViewer from 'photo-sphere-viewer'
 import 'photo-sphere-viewer/dist/photo-sphere-viewer.css'
 export default {
-  components: {
+  name: 'vtour',
+  components: {},
+  props: {
+    msg: {
+      id: '',
+      panoramaPoints: []
+    }
   },
   data() {
     return {
-      visible: false,
-      confirmLoading: false,
-      PSV: '',
-      factoryLink: require('../img/test36001.jpg'),
+      // 地图对象
+      panoramaMap: {},
+      panoramaPoints: [
+        // {
+        //   id: 0,
+        //   name: '监测点1',
+        //   clicked: false,
+        //   latlng: { lat: 31.21493, lng: 121.49566 },
+        //   url: require('./img/test36001.jpg')
+        // },
+        // {
+        //   id: 1,
+        //   name: '监测点2',
+        //   clicked: false,
+        //   latlng: { lat: 31.22344, lng: 121.47892 },
+        //   url: require('./img/test3602.jpg')
+        // },
+        // {
+        //   id: 2,
+        //   name: '监测点3',
+        //   clicked: false,
+        //   latlng: { lat: 31.20649, lng: 121.47712 },
+        //   url: require('./img/test36001.jpg')
+        // }
+      ],
+      panoramaLink: require('../img/test36001.jpg'), // 360链接
+      panoramaName: 'test', // 360名字
+      panoramaId: '12356' // 360id
     }
   },
-  computed: {},
-  mounted: function() {
-    // this.initPhotoSphere()
+  mounted() {
+    //初始化地图控件
+    let zoom = 14
+    this.panoramaMap = new T.Map('panorama_map')
+    this.panoramaMap.centerAndZoom(new T.LngLat(121.43429, 31.15847), zoom)
+    //创建比例尺控件对象
+    //添加比例尺控件
+    this.panoramaMap.addControl(new T.Control.Scale())
+    this.panoramaMap.setMinZoom(4)
+    this.panoramaMap.setMaxZoom(18)
+    this.getList()
   },
   methods: {
-    add() {
-      this.visible = true
+    getList() {
+      this.msg.panoramaPoints.forEach(v => {
+        v.url = require('../img/test36001.jpg')
+      })
+      let markerTool
+      for (const item of this.msg.panoramaPoints) {
+        if (item.id == this.msg.id) {
+          var icon = new T.Icon({
+            iconUrl: require('../img/panAddress.png'),
+            iconSize: new T.Point(39, 40),
+            iconAnchor: new T.Point(20, 40)
+          })
+          markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id })
+        } else {
+          markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+        }
+        this.panoramaMap.addOverLay(markerTool)
+        markerTool.addEventListener('click', this.panoramaPointClick)
+      }
+      panoramaImgList(this.msg.id).then(res => {
+        this.panoramaLink = res.data.panoramicPic
+        this.panoramaName = res.data.title
+        this.panoramaId = this.msg.id
+        this.initPhotoSphere()
+      })
+    },
+    // 360全景图
+    onPanorama() {
+      let markerTool
+      for (const item of this.panoramaPoints) {
+        markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+        this.panoramaMap.addOverLay(markerTool)
+        markerTool.addEventListener('click', this.panoramaPointClick)
+        if (this.panoramaId == item.id) {
+          this.panoramaLink = item.url
+          this.panoramaName = item.name
+        }
+      }
+      this.initPhotoSphere()
+    },
+    // 360点点击事件
+    panoramaPointClick(e) {
+      this.panoramaMap.clearOverLays()
+      let markerTool
+      for (const item of this.msg.panoramaPoints) {
+        if (item.id == e.target.options.id) {
+          var icon = new T.Icon({
+            iconUrl: require('../img/panAddress.png'),
+            iconSize: new T.Point(39, 40),
+            iconAnchor: new T.Point(20, 40)
+          })
+          markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id })
+          if (this.panoramaId != item.id) {
+            panoramaImgList(item.id).then(res => {
+              this.panoramaLink = res.data.panoramicPic
+              this.panoramaName = res.data.title
+              this.panoramaId = res.data.id
+              this.PSV.setPanorama(this.panoramaLink)
+              this.PSV.setCaption(res.data.title)
+            })
+          }
+        } else {
+          markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+        }
+        this.panoramaMap.addOverLay(markerTool)
+        markerTool.addEventListener('click', this.panoramaPointClick)
+      }
     },
     initPhotoSphere() {
       this.PSV = PhotoSphereViewer({
-        container: 'pano',
-        // panorama: this.testLink,
-        panorama: this.factoryLink,
+        container: document.getElementById('pano'),
+        panorama: this.panoramaLink,
+        caption: this.panoramaName,
         size: {
           width: '100%',
           height: '100%'
         },
-        caption: '黄浦江支流',
         time_anim: false,
         default_long: 1.4441088145446443,
         default_lat: 0.0800613513013615,
@@ -74,28 +156,56 @@ export default {
         // latitude_range: [0,0],//禁止上下滑动
         // mousewheel: false,    // 禁止鼠标滚轮缩放
         // navbar: false,
-        navbar: ['autorotate', 'zoom', 'markers', 'caption', 'fullscreen'],
+        // navbar: ['autorotate', 'zoom', 'markers', 'caption', 'fullscreen'],
+        navbar: ['autorotate', 'zoom', 'caption', 'download', 'fullscreen'],
         theta_offset: 1000 // 旋转速度
         // markers: this.markersData
       })
     },
-    handleSubmit() {},
-    handleCancel() {
-      this.visible = false
+    logOut() {
+      this.$emit('exitPanorama')
+      // this.$router.go(-1)
     }
   }
 }
 </script>
 <style lang="less" scoped>
-.panorama {
-  top: 50px;
-  .content {
-    width: 100%;
-    height: 60vh;
-    #pano {
-      width: 100%;
-      height: 100%;
-    }
+#wrapper {
+  position: absolute;
+  top: 0;
+  z-index: 1001;
+  height: calc(100vh - 64px);
+  width: 100vw;
+}
+.left {
+  position: relative;
+  width: calc(100% - 300px);
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
+  .log_out {
+    position: absolute;
+    right: 10px;
+    bottom: 50px;
+    z-index: 888;
   }
 }
+.right {
+  position: relative;
+  width: 300px;
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
+  background-color: white;
+}
+#pano {
+  height: 100%;
+  width: 100%;
+}
+#panorama_map {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
 </style>
+
