@@ -1117,7 +1117,7 @@ export default {
       borderOpacity: 80, // 边框透明度
       fullOpacity: 50, //填充透明度
 
-      riskPolygonData: [], // 工具面数据
+      riskPolygonData: [], // 风险地图数据
       riskIndexId: null, // 当前绘制id
       isRiskEdit: false, // 是否是编辑状态
       isRiskSaveShow: false, // 是否显示保存取消
@@ -1185,11 +1185,6 @@ export default {
         id: '',
         panoramaPoints: []
       }, // 360页面传值数据
-      historyPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.21493, lng: 121.49566 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.22344, lng: 121.47892 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.20649, lng: 121.47712 } }
-      ],
       alertLeft: -1000,
       alertTop: -1000,
       alertShow: false, // 名字弹窗
@@ -1624,6 +1619,7 @@ export default {
           // console.log( this.surveyPointPoints,'1');
           this.watchAllSwitch()
         })
+        this.getRiskMapList() // 获取风险地图
         this.gengduo = '2'
       }
     },
@@ -1631,6 +1627,40 @@ export default {
       // console.log(this.map.getZoom())
       if (this.map.getZoom() > 18) {
       }
+    },
+    // 获取风险地图
+    getRiskMapList() {
+      // this.removeOverLays(this.riskPolygonData)
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2]
+        }
+      }
+      mapdrawPage(data).then(res => {
+        let arr = res.data
+        let ar = []
+        for (const v of arr) {
+          v.borderColor = v.frameColor
+          v.borderOpacity = v.framePellucidity / 100
+          v.fullColor = v.shapeColor
+          v.fullOpacity = v.shapePellucidity / 100
+          v.id = v.id
+          v.lineData = v.polygon
+          ar.push(v)
+        }
+        this.riskPolygonData = ar
+      })
     },
     getRiverStreeList() {
       getStreetList(this.$store.state.id)
@@ -2769,11 +2799,14 @@ export default {
     },
     // 风险地图绘制保存
     riskCradSave() {
+      this.removeOverLays(this.riskPolygonData)
       this.isRiskSaveShow = false
       this.colorAlertShow = false
       console.log(this.isRiskEdit)
       console.log(this.riskIndexId)
-      this.polygonTool.clear()
+      if (this.polygonTool) {
+        this.polygonTool.clear()
+      }
       let result = this.riskPolygonData.findIndex(item => {
         return this.riskIndexId == item.id
       })
@@ -2812,6 +2845,7 @@ export default {
             this.$message.success('保存成功')
             console.log(res.data)
             console.log(res.data.id)
+            this.getRiskMapList()
             // this.riskPolygonData[result].id = res.data.id
             // this.riskIndexId = res.data.id
           })
