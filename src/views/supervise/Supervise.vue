@@ -119,7 +119,7 @@
           <span class="weather_detail">晴(实时)</span>
           <span class="date">9月16日 星期一</span>
         </div>
-        <p class="degree" >晴转多云 24～29℃</p>
+        <p class="degree">晴转多云 24～29℃</p>
       </div>
       <div class="weather_right">
         <a-icon class="right_icon" type="caret-left" />
@@ -381,7 +381,6 @@
       </div>
       <input id="swipe" class="swipe" type="range" />
     </div>
-
     <ul class="menu" :class="{menu_right:(sharedChecked || swipeChecked)}">
       <li @click="setCenter">
         <img src="../../assets/img/restoration.png" alt="复位" title="复位" />
@@ -795,7 +794,7 @@
     <!-- 水面漂浮物 -->
     <add-floatage ref="AddFloatage"></add-floatage>
     <!-- 360全景图 -->
-    <look-panorama ref="panorama"></look-panorama>
+    <look-panorama ref="panorama" v-if="panoramaAlertShow" :msg="panoramaData" @exitPanorama="closePanorma"></look-panorama>
   </div>
 </template>
 
@@ -821,6 +820,7 @@ import PhotoEdit from './modules/PhotoEdit'
 import AddOutlet from './modules/AddOutlet'
 import LookPanorama from './modules/LookPanorama'
 import WaterQuality from './modules/waterQualityData'
+import Vtour from './Vtour'
 
 import moment from 'moment' // 时间格式
 
@@ -887,7 +887,8 @@ export default {
     'add-outlet': AddOutlet,
     'look-panorama': LookPanorama,
     'chrome-picker': Chrome,
-    'add-floatage': AddFloatage
+    'add-floatage': AddFloatage,
+    'v-tour': Vtour
   },
   data() {
     return {
@@ -1168,11 +1169,16 @@ export default {
       UAVPhoto: false, // 无人机照片
       UAVPhotoTool: '', // 无人机照片工具
       panorama: false, // 360照片
+      panoramaAlertShow: false,
       panoramaPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.21493, lng: 121.49566 } },
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.22344, lng: 121.47892 } },
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.20649, lng: 121.47712 } }
       ],
+      panoramaData: {
+        id: '',
+        panoramaPoints: []
+      }, // 360页面传值数据
       historyPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.21493, lng: 121.49566 } },
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.22344, lng: 121.47892 } },
@@ -1533,7 +1539,7 @@ export default {
           v.clicked = false
         })
         this.riskSourceList = res.data
-      }) 
+      })
     },
     getMapdrawPage(id) {
       var time = this.defaultTime
@@ -2594,13 +2600,20 @@ export default {
     },
     // 360点点击事件
     panoramaPointClick(e) {
-      this.$router.push({
-        path: '/supervise/Vtour',
-        query: {
-          id: e.target.options.id,
-          panoramaPoints:this.panoramaPoints
-        }
-      })
+      this.panoramaAlertShow = true
+      this.panoramaData.id = e.target.options.id
+      this.panoramaData.panoramaPoints = this.panoramaPoints
+      // this.$router.push({
+      //   path: '/supervise/Vtour',
+      //   query: {
+      //     id: e.target.options.id,
+      //     panoramaPoints: this.panoramaPoints
+      //   }
+      // })
+    },
+    // 关闭360弹窗
+    closePanorma() {
+      this.panoramaAlertShow = false
     },
     // 风险地图
     onRiskMap() {
@@ -3349,20 +3362,20 @@ export default {
         }
       }
     },
-    sourceRiskView(id,code){
-      console.log(id,code);
-      
+    sourceRiskView(id, code) {
+      console.log(id, code)
+
       if (code == 'risk') {
-        console.log('1');
+        console.log('1')
         this.$refs.addRisk.addSource(id)
       }
       if (code == 'discharge') {
-        console.log('2');
-        
+        console.log('2')
+
         this.$refs.addOutlet.detailList1(id)
         // this.$parent.addOutlet.detailList(this.id)
       }
-    },
+    }
   }
 }
 </script>
