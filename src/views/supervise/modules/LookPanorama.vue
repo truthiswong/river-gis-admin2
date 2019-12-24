@@ -65,14 +65,9 @@ export default {
     this.panoramaMap.setMinZoom(4)
     this.panoramaMap.setMaxZoom(18)
     this.getList()
-    // this.initPhotoSphere()
-    // console.log(this.panoramaData.panoramaPoints)
-    console.log(this.msg)
   },
   methods: {
     getList() {
-      // this.panoramaPoints = this.$route.query.panoramaPoints
-      console.log(this.msg.panoramaPoints)
       this.msg.panoramaPoints.forEach(v => {
         v.url = require('../img/test36001.jpg')
       })
@@ -80,9 +75,9 @@ export default {
       for (const item of this.msg.panoramaPoints) {
         if (item.id == this.msg.id) {
           var icon = new T.Icon({
-            iconUrl: 'http://api.tianditu.gov.cn/img/panoramaMap/markerA.png',
-            iconSize: new T.Point(19, 27),
-            iconAnchor: new T.Point(10, 25)
+            iconUrl: require('../img/panAddress.png'),
+            iconSize: new T.Point(39, 40),
+            iconAnchor: new T.Point(20, 40)
           })
           markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id })
         } else {
@@ -114,24 +109,22 @@ export default {
     },
     // 360点点击事件
     panoramaPointClick(e) {
-      console.log(e)
       this.panoramaMap.clearOverLays()
       let markerTool
       for (const item of this.msg.panoramaPoints) {
         if (item.id == e.target.options.id) {
           var icon = new T.Icon({
-            iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
-            iconSize: new T.Point(19, 27),
-            iconAnchor: new T.Point(10, 25)
+            iconUrl: require('../img/panAddress.png'),
+            iconSize: new T.Point(39, 40),
+            iconAnchor: new T.Point(20, 40)
           })
           markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id })
           if (this.panoramaId != item.id) {
             panoramaImgList(item.id).then(res => {
-              console.log(res)
               this.panoramaLink = res.data.panoramicPic
               this.panoramaName = res.data.title
               this.panoramaId = res.data.id
-              this.PSV.setPanorama(res.data.panoramicPic)
+              this.PSV.setPanorama(this.panoramaLink)
               this.PSV.setCaption(res.data.title)
             })
           }
