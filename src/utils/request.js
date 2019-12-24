@@ -14,7 +14,7 @@ const service = axios.create({
     'X-TENANT-ID':'jl:jlgis@2019',
     lang:'zh_CN'
   },
-  timeout: 6000 ,// 请求超时时间
+  timeout: 30000 ,// 请求超时时间
   transformRequest: [function (data, headers) {
     // 可以对data做任何操作
     data = qs.stringify(data)
@@ -43,7 +43,7 @@ const err = (error) => {
         store.dispatch('Logout').then(() => {
           setTimeout(() => {
             window.location.reload()
-          }, 1500)
+          }, 500)
         })
       }
     }
