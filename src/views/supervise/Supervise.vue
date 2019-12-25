@@ -680,7 +680,7 @@
           <template slot="title">
             <span>更多</span>
           </template>
-          <img src="../../assets/img/more.png" alt="更多" title="更多" @click="getMapdrawPage(gengduo)" />
+          <img src="../../assets/img/more.png" alt="更多" title="更多" @click="getMapdrawPage()" />
         </a-popover>
       </li>
     </ul>
@@ -1196,12 +1196,6 @@ export default {
           name: '河道测试111',
           clicked: false,
           lineData: [[121.38777, 31.17433], [121.37678, 31.14686], [121.42262, 31.16743], [121.40373, 31.19606]]
-        },
-        {
-          id: 'jhgjytgfrf',
-          name: '河道测试2222',
-          clicked: false,
-          lineData: [[121.39777, 31.19433], [121.39678, 31.15686], [121.45262, 31.19743], [121.43373, 31.22606]]
         }
       ], // 河道
       streetShowList: [], //街道
@@ -1211,7 +1205,6 @@ export default {
         //   name: '手机照片2',
         //   clicked: false,
         //   imgUrl: require('./img/phonePhoto2.jpg'),
-        //   direction: 0,
         //   latlng: { lat: 31.24344, lng: 121.49892 }
         // }
       ],
@@ -1232,70 +1225,7 @@ export default {
             { lat: 31.21882, lng: 121.50364 },
             { lat: 31.21265, lng: 121.50227 },
             { lat: 31.20583, lng: 121.49703 },
-            { lat: 31.19915, lng: 121.49197 },
-            { lat: 31.19702, lng: 121.49591 },
-            { lat: 31.2164, lng: 121.50757 },
-            { lat: 31.21948, lng: 121.50758 }
-          ]
-        },
-        {
-          id: 1,
-          name: '大治河',
-          clicked: false,
-          lineData: [
-            { lat: 31.25153, lng: 121.52409 },
-            { lat: 31.25355, lng: 121.53085 },
-            { lat: 31.25858, lng: 121.53934 },
-            { lat: 31.25535, lng: 121.54334 },
-            { lat: 31.2499, lng: 121.53353 },
-            { lat: 31.24786, lng: 121.52737 },
-            { lat: 31.24682, lng: 121.51709 },
-            { lat: 31.25111, lng: 121.51711 }
-          ]
-        },
-        {
-          id: 2,
-          name: '川杨河',
-          clicked: false,
-          lineData: [
-            { lat: 31.24539, lng: 121.48686 },
-            { lat: 31.24616, lng: 121.48411 },
-            { lat: 31.2466, lng: 121.4824 },
-            { lat: 31.24612, lng: 121.48051 },
-            { lat: 31.24484, lng: 121.47901 },
-            { lat: 31.24462, lng: 121.47939 },
-            { lat: 31.24543, lng: 121.48089 },
-            { lat: 31.2459, lng: 121.48261 },
-            { lat: 31.2448, lng: 121.4857 },
-            { lat: 31.2444, lng: 121.4872 }
-          ]
-        },
-        {
-          id: 3,
-          name: '蕰藻浜',
-          clicked: false,
-          lineData: [
-            { lat: 31.21717, lng: 121.51336 },
-            { lat: 31.21691, lng: 121.51454 },
-            { lat: 31.21768, lng: 121.51566 },
-            { lat: 31.21768, lng: 121.51763 },
-            { lat: 31.21733, lng: 121.51748 },
-            { lat: 31.21739, lng: 121.51568 },
-            { lat: 31.21664, lng: 121.51456 },
-            { lat: 31.21669, lng: 121.51387 },
-            { lat: 31.21699, lng: 121.51323 }
-          ]
-        },
-        {
-          id: 4,
-          name: '龙华港',
-          clicked: false,
-          lineData: [
-            { lat: 31.21493, lng: 121.49566 },
-            { lat: 31.22344, lng: 121.47892 },
-            { lat: 31.20649, lng: 121.47712 },
-            { lat: 31.20469, lng: 121.47482 },
-            { lat: 31.21469, lng: 121.51482 }
+            { lat: 31.19915, lng: 121.49197 }
           ]
         }
       ],
@@ -1354,30 +1284,9 @@ export default {
         //   clicked: false,
         //   imgUrl: require('./img/surveyPointIcon.png'),
         //   latlng: { lat: 31.22041, lng: 121.50384 }
-        // },
-        // {
-        //   id: 1,
-        //   name: '专项调查点2',
-        //   clicked: false,
-        //   imgUrl: require('./img/surveyPointIcon.png'),
-        //   latlng: { lat: 31.21682, lng: 121.48964 }
-        // },
-        // {
-        //   id: 2,
-        //   name: '专项调查点3',
-        //   clicked: false,
-        //   imgUrl: require('./img/surveyPointIcon.png'),
-        //   latlng: { lat: 31.21564, lng: 121.48648 }
-        // },
-        // {
-        //   id: 3,
-        //   name: '专项调查点4',
-        //   clicked: false,
-        //   imgUrl: require('./img/surveyPointIcon.png'),
-        //   latlng: { lat: 31.22664, lng: 121.49048 }
         // }
       ],
-      gengduo: '1',
+      moreLoadOnce: '1', // 加载次数
       riverLink: false, // 河道连通性
       riverLinkPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.23841, lng: 121.516833 } },
@@ -1397,7 +1306,6 @@ export default {
     $route() {
       this.getTimeQuantum() // 获取时间段
       this.getRiverStreeList()
-
       this.getWaterQualityPoints()
     },
     // 历史数据
@@ -1542,8 +1450,9 @@ export default {
         this.riskSourceList = res.data
       })
     },
-    getMapdrawPage(id) {
-      if (this.historyData == true) {
+    // 获取当前页面数据
+    getMapdrawPage() {
+      if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
@@ -1564,16 +1473,15 @@ export default {
       // let panData = {
       //   projectId: this.$store.state.id
       // }
-      this.removeOverLays(this.drawPage)
-      if (id == '1') {
-        panoramaList(data).then(res => {
-          let hh = res.data.data
-          hh.forEach(v => {
-            v.name = v.title
-            v.latlng = v.coordinate
-          })
-          this.panoramaPoints = hh
-        })
+      if (this.moreLoadOnce == '1') {
+        // 获取手机照片
+        this.removeOverLays(this.phonePhotoPoints)
+        this.getPhonePhotoPoints()
+        // 360点
+        this.removeOverLays(this.panoramaPoints)
+        this.getPanoramaPoints()
+
+        this.removeOverLays(this.drawPage)
         mapdrawPage(data).then(res => {
           let arr = res.data
           let ar = []
@@ -1588,39 +1496,13 @@ export default {
           // console.log(ar)
           // console.log(this.drawPage)
         })
-        dataManual(data).then(res => {
-          let arr = res.data.data
-          arr.forEach(v => {
-            v.latlng = v.coordinate
-            v.name = v.title
-            v.clicked = false
-            v.imgUrl = v.media
-            v.id = v.id
-          })
-          this.phonePhotoPoints = []
-          this.phonePhotoPointsList = []
-          for (const item of arr) {
-            if (item.coordinate) {
-              this.phonePhotoPoints.push(item)
-            } else {
-              this.phonePhotoPointsList.push(item)
-            }
-          }
-          // console.log(this.phonePhotoPoints)
-          // console.log(this.phonePhotoPointsList)
-        })
+        // 获取专项调查点
         this.removeOverLays(this.surveyPointPoints)
-        inspectPointPageRiver(data).then(res => {
-          let arr = res.data.data
-          arr.forEach(v => {
-            v.clicked = false
-          })
-          this.surveyPointPoints = arr
-          // console.log( this.surveyPointPoints,'1');
-          this.watchAllSwitch()
-        })
-        this.getRiskMapList() // 获取风险地图
-        this.gengduo = '2'
+        this.getSurveyPointPoints()
+        // 获取风险地图
+        this.removeOverLays(this.riskPolygonData)
+        this.getRiskMapList()
+        this.moreLoadOnce = '2'
       }
     },
     mapZoomChange() {
@@ -1628,14 +1510,14 @@ export default {
       if (this.map.getZoom() > 18) {
       }
     },
-    // 获取风险地图
-    getRiskMapList() {
-      // this.removeOverLays(this.riskPolygonData)
+    // 获取手机照片
+    getPhonePhotoPoints() {
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
-          endDate: this.endDate
+          endDate: this.endDate,
+          mediaType: 'image'
         }
       } else {
         var time = this.defaultTime
@@ -1644,23 +1526,127 @@ export default {
           projectId: this.$store.state.id,
           year: picker[0],
           month: picker[1],
-          day: picker[2]
+          day: picker[2],
+          mediaType: 'image'
+        }
+      }
+      dataManual(data).then(res => {
+        let arr = res.data.data
+        arr.forEach(v => {
+          v.latlng = v.coordinate
+          v.name = v.title
+          v.clicked = false
+          v.imgUrl = v.media
+          v.id = v.id
+        })
+        this.phonePhotoPoints = []
+        this.phonePhotoPointsList = []
+        for (const item of arr) {
+          if (item.coordinate) {
+            this.phonePhotoPoints.push(item)
+          } else {
+            this.phonePhotoPointsList.push(item)
+          }
+        }
+        this.onPhonePhoto()
+      })
+    },
+    // 获取360点
+    getPanoramaPoints() {
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          mediaType: 'image'
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          mediaType: 'image'
+        }
+      }
+      panoramaList(data).then(res => {
+        let hh = res.data.data
+        hh.forEach(v => {
+          v.name = v.title
+          v.latlng = v.coordinate
+        })
+        this.panoramaPoints = hh
+        this.onPanorama()
+      })
+    },
+    // 获取专项调查点
+    getSurveyPointPoints() {
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          mediaType: 'image'
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          mediaType: 'image'
+        }
+      }
+      inspectPointPageRiver(data).then(res => {
+        let arr = res.data.data
+        arr.forEach(v => {
+          v.clicked = false
+        })
+        this.surveyPointPoints = arr
+        console.log(this.surveyPointPoints)
+        this.onSurveyPoint()
+      })
+    },
+    // 获取风险地图
+    getRiskMapList() {
+      // this.removeOverLays(this.riskPolygonData)
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType: 'riskMap'
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType: 'riskMap'
         }
       }
       mapdrawPage(data).then(res => {
         let arr = res.data
         let ar = []
-        for (const v of arr) {
-          v.borderColor = v.frameColor
-          v.borderOpacity = v.framePellucidity / 100
-          v.fullColor = v.shapeColor
-          v.fullOpacity = v.shapePellucidity / 100
-          v.id = v.id
-          v.lineData = v.polygon
-          ar.push(v)
+        for (const item of arr) {
+          item.borderColor = item.frameColor
+          item.borderOpacity = item.framePellucidity / 100
+          item.fullColor = item.shapeColor
+          item.fullOpacity = item.shapePellucidity / 100
+          item.id = item.id
+          item.lineData = item.polygon
+          ar.push(item)
         }
+        this.riskPolygonData = []
         this.riskPolygonData = ar
-        this.watchAllSwitch()
+        this.onRiskMap()
       })
     },
     getRiverStreeList() {
@@ -1703,6 +1689,7 @@ export default {
       //   item.lineData = points
       // }
     },
+    // 获取水质数据
     getWaterQualityPoints() {
       let parameter = { projectId: '', type: '' }
       parameter.projectId = this.$store.state.id
@@ -2154,7 +2141,7 @@ export default {
             this.defaultTime = this.endDate
           }
         }
-        this.gengduo = '1'
+        this.moreLoadOnce = '1'
         this.timeData = res.data
         // this.getWeatherList()
         // 手机照片上传参数
@@ -2187,7 +2174,7 @@ export default {
           if (item.level != 2) {
             if (item.date == mouth) {
               this.defaultTime = mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8)
-              this.getMapdrawPage('1')
+              this.moreLoadOnce = 1
               this.mapYear = mouth.substring(0, 4)
               this.mapMonth = mouth.substring(4, 6)
               this.mapDay = mouth.substring(6, 8)
@@ -2200,6 +2187,7 @@ export default {
               this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
               this.map.addLayer(this.mapLayerImage)
               item.clicked = true
+              this.timeLineChange() //时间轴切换
             } else {
               item.clicked = false
             }
@@ -2208,6 +2196,13 @@ export default {
           item.clicked = false
         }
       }
+    },
+    // 时间轴切换操作
+    timeLineChange() {
+      this.map.clearOverLays()
+      // this.getRiverStreeList()
+      this.getWaterQualityPoints()
+      this.getMapdrawPage()
     },
     //获取天气
 
@@ -2439,10 +2434,26 @@ export default {
       // this.surveyPoint = false
       // this.riverLink = false
       // this.landAndWater = false
-      this.getMapdrawPage('1')
-      if (this.historyData) {
-        // this.testarr(this.historyPoints)
-      }
+      this.moreLoadOnce = 1
+      this.getMapdrawPage()
+      // if (this.phonePhoto) {
+      //   this.getPhonePhotoPoints() //手机照片
+      // }
+      // if (this.panorama) {
+      //   this.getPanoramaPoints() //360点
+      // }
+      // if (this.riskMap) {
+      //   this.removeOverLays(this.riskPolygonData)
+      //   this.getRiskMapList() //风险地图
+      // }
+      
+      // if (this.surveyPoint) {
+      //   this.removeOverLays(this.surveyPointPoints)
+      //   this.getSurveyPointPoints() //专项调查点
+      // }
+      // if (this.historyData) {
+      //   // this.testarr(this.historyPoints)
+      // }
     },
     testarr(pointLists) {
       console.log(123123)
@@ -2522,7 +2533,6 @@ export default {
         geometry: new ol.geom.LineString(_points, 'XY')
       })
       lineFeature.setId(fenceId)
-
       //将所有矢量图层添加进去
       this.source.addFeature(lineFeature)
     },
@@ -2636,18 +2646,17 @@ export default {
     },
     // 手机照片
     onPhonePhoto() {
+      this.removeOverLays(this.phonePhotoPoints)
       if (this.phonePhoto) {
         this.allImageTask(this.phonePhotoPoints)
       } else {
-        // this.removeOverLays(this.phonePhotoPoints)
-        // console.log(this.map.getOverlays())
-        for (const overlay of this.map.getOverlays()) {
-          for (const item of this.phonePhotoPoints) {
-            if (item.id == overlay.options.id) {
-              this.map.removeOverLay(overlay)
-            }
-          }
-        }
+        // for (const overlay of this.map.getOverlays()) {
+        //   for (const item of this.phonePhotoPoints) {
+        //     if (item.id == overlay.options.id) {
+        //       this.map.removeOverLay(overlay)
+        //     }
+        //   }
+        // }
       }
     },
     // 无人机照片
@@ -2660,6 +2669,7 @@ export default {
     },
     // 360全景图
     onPanorama() {
+      this.removeOverLays(this.panoramaPoints)
       if (this.panorama) {
         let markerTool
         for (const item of this.panoramaPoints) {
@@ -2667,8 +2677,6 @@ export default {
           this.map.addOverLay(markerTool)
           markerTool.addEventListener('click', this.panoramaPointClick)
         }
-      } else {
-        this.removeOverLays(this.panoramaPoints)
       }
     },
     // 360点点击事件
@@ -2690,20 +2698,8 @@ export default {
     },
     // 风险地图
     onRiskMap() {
+      this.removeOverLays(this.riskPolygonData)
       if (this.riskMap) {
-        for (const item of this.riskMapRiver) {
-          let polygon = new T.Polygon(item.lineData, {
-            color: 'blue', //线颜色
-            weight: 3, //线宽
-            opacity: 0.5, //透明度
-            fillColor: '#FFFFFF', //填充颜色
-            fillOpacity: 0, // 填充透明度
-            title: item.name, // 名字
-            id: item.id // id
-          })
-          //向地图上添加面
-          this.map.addOverLay(polygon)
-        }
         // 风险地图绘制的面
         if (this.riskPolygonData.length != 0) {
           for (const item of this.riskPolygonData) {
@@ -2719,9 +2715,6 @@ export default {
             )
           }
         }
-      } else {
-        this.removeOverLays(this.riskMapRiver)
-        this.removeOverLays(this.riskPolygonData)
       }
     },
     // 绘制线
@@ -2851,7 +2844,6 @@ export default {
           .catch(err => {
             this.$message.error(err.response.data.message)
           })
-        // this.watchAllSwitch()
         return
       }
       let riskSaveData = {
@@ -2874,18 +2866,6 @@ export default {
           this.$message.success('保存成功')
           console.log(res.data)
           console.log(res.data.id)
-          // this.riskPolygonData[result].id = res.data.id
-          // this.riskIndexId = res.data.id
-
-          // this.polygon = new T.Polygon(this.riskPolygonData[result].lineData, {
-          //   id: this.riskIndexId
-          // })
-          // this.map.addOverLay(this.polygon)
-          // this.polygon.setColor(this.borderColor)
-          // this.polygon.setFillColor(this.fullColor)
-          // this.polygon.setOpacity(this.borderOpacity / 100)
-          // this.polygon.setFillOpacity(this.fullOpacity / 100)
-          // this.polygon.addEventListener('click', this.riskPolygonClick)
           this.getRiskMapList()
         })
         .catch(err => {
@@ -3232,6 +3212,7 @@ export default {
     },
     // 专项调查点
     onSurveyPoint() {
+      this.removeOverLays(this.surveyPointPoints)
       if (this.surveyPoint) {
         for (const item of this.surveyPointPoints) {
           let icon = new T.Icon({
@@ -3243,8 +3224,6 @@ export default {
           this.map.addOverLay(marker)
           marker.addEventListener('click', this.taskPointClick)
         }
-      } else {
-        this.removeOverLays(this.surveyPointPoints)
       }
     },
     // 河道连通性
@@ -3265,7 +3244,7 @@ export default {
     },
     // 监听所有的开关属性
     watchAllSwitch() {
-      // this.map.clearOverLays()
+      this.map.clearOverLays()
       // 绘制工具画的点
       // this.toolDrawPoint()
       // // 绘制工具画的线
