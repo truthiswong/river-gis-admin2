@@ -193,8 +193,11 @@
               <a-icon type="upload" />上传照片
             </a-button>
           </a-upload>-->
+          <p
+            style="margin:5px 0;text-align:center;font-size:14px;"
+            v-show="phonePhotoPointsList.length > 0"
+          >无法定位的照片</p>
           <a-list size="small" class="phone_wrap" v-show="phonePhotoPointsList.length > 0">
-            <p style="margin:5px 0 0;text-align:center;font-size:14px;">无法定位的照片</p>
             <a-list-item class="phone_list" v-for="item in phonePhotoPointsList" :key="item.id">
               <img :src="item.imgUrl" alt />
               <a-row style="width:100%" type="flex" justify="space-between" align="middle">
@@ -1488,10 +1491,10 @@ export default {
           arr.forEach(v => {
             v.shapePellucidity = v.shapePellucidity / 100
             v.framePellucidity = v.framePellucidity / 100
-            if (v.drawType ==undefined) {
-              v.drawType ={
-                code:'',
-                id:'',
+            if (v.drawType == undefined) {
+              v.drawType = {
+                code: '',
+                id: ''
               }
             }
             if (v.innerType != undefined) {
@@ -2452,7 +2455,7 @@ export default {
       //   this.removeOverLays(this.riskPolygonData)
       //   this.getRiskMapList() //风险地图
       // }
-      
+
       // if (this.surveyPoint) {
       //   this.removeOverLays(this.surveyPointPoints)
       //   this.getSurveyPointPoints() //专项调查点
@@ -2652,7 +2655,9 @@ export default {
     },
     // 手机照片
     onPhonePhoto() {
-      this.removeOverLays(this.phonePhotoPoints)
+      if (this.MarkerClusterer) {
+        this.MarkerClusterer.removeMarkers(this.MarkerClusterer.options.markers)
+      }
       if (this.phonePhoto) {
         this.allImageTask(this.phonePhotoPoints)
       } else {
@@ -2664,6 +2669,17 @@ export default {
         //   }
         // }
       }
+    },
+    // 移除markers
+    removeMarkers() {
+      this.map.removeMarkers(this.markers)
+      // for (const iterator of this.phonePhotoPoints) {
+      //   for (const overlay of this.map.getOverlays()) {
+      //     if (item.id == overlay.options.id) {
+
+      //     }
+      //   }
+      // }
     },
     // 无人机照片
     onUAVPhoto() {
@@ -3155,7 +3171,6 @@ export default {
       if (clicked) {
         let point = []
         for (const item of this.drawPage) {
-
           if (item.drawType.id == id) {
             if (item.locationType.code == 'point') {
               item.latlng = {
@@ -3334,7 +3349,7 @@ export default {
         arrayObj.push(marker)
         marker.addEventListener('click', this.taskImageClick)
       }
-      var markers = new T.MarkerClusterer(this.map, { markers: arrayObj, styles: styles })
+      this.MarkerClusterer = new T.MarkerClusterer(this.map, { markers: arrayObj, styles: styles })
     },
     // 任务照片点击
     taskImageClick(index) {
@@ -3439,11 +3454,10 @@ export default {
             id: id,
             coordinate: item.latlng
           }
-          if (item.latlng) {
-            console.log(data)
+          if (!item.latlng) {
+            this.$message.error('坐标不能为空')
+          } else {
             phoneLatlngList(data).then(res => {
-              console.log(111)
-              console.log(res)
               this.phonePhoneId = ''
               this.cp.removeEvent()
               // 刷新手机照片
@@ -3455,7 +3469,6 @@ export default {
                 mediaType: 'image'
               }
               dataManual(phoneArr).then(res => {
-                console.log(res.data.data)
                 let arr = res.data.data
                 arr.forEach(v => {
                   v.latlng = v.coordinate
@@ -3473,8 +3486,6 @@ export default {
                     this.phonePhotoPointsList.push(item)
                   }
                 }
-                console.log(this.phonePhotoPoints)
-                console.log(this.phonePhotoPointsList)
                 // 获取后重新绘制
                 for (const overlay of this.map.getOverlays()) {
                   for (const item of this.phonePhotoPoints) {
@@ -3915,10 +3926,12 @@ export default {
 
 .phone_wrap {
   overflow: auto;
+  max-height: calc(100vh - 180px);
   margin: 0;
   padding: 0;
   list-style-type: none;
   .phone_list {
+    padding: 0;
     img {
       width: 100%;
     }
