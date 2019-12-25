@@ -87,6 +87,9 @@
             <a-button type="primary" icon="plus" >添加</a-button>
           </el-upload>
         </a-form-item>
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="已上传文件名" has-feedback>
+            <a-textarea placeholder="无"  v-model="attachment"  :rows="3" disabled/>
+        </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="调查日期" has-feedback>
           <!-- <a-date-picker   :value="list.surveyDate" :defaultValue="moment('2015-01-01', 'YYYY-MM-DD')"/> -->
           <el-date-picker v-model="list.surveyDate" type="date" placeholder="选择日期" style="width: 100%"  format="yyyy-MM-dd" @change="onChange"></el-date-picker>
@@ -115,6 +118,7 @@ export default {
   },
   data() {
     return {
+      attachment:'',
       fileList:[],
       file:false,
       list:{
@@ -198,6 +202,7 @@ export default {
         this.riverId =arr.rivers1
         this.list.streetId =arr.street.id
         this.list.tags =arr.tags1
+        this.attachment = arr.attachment
         console.log(arr);
       }).catch(err => {
         
@@ -258,6 +263,7 @@ export default {
       this.list.surveyDate=''
       this.list.remark=''
       this.list. tags=''
+      this.attachment = ''
     },
     onChange(date){
       function formatDate(now) { 

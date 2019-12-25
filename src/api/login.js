@@ -954,6 +954,14 @@ export function commentMapdrawSave(data) {
     }
   })
 }
+//绘制评论保存
+export function waterPage(data) {
+  return axios({
+    url: '/server/data/admin/regulator/water/page',
+    method: 'get',
+    params: data
+  })
+}
 
 export function getSmsCaptcha(parameter) {
   return axios({

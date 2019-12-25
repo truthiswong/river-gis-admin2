@@ -1488,6 +1488,12 @@ export default {
           arr.forEach(v => {
             v.shapePellucidity = v.shapePellucidity / 100
             v.framePellucidity = v.framePellucidity / 100
+            if (v.drawType ==undefined) {
+              v.drawType ={
+                code:'',
+                id:'',
+              }
+            }
             if (v.innerType != undefined) {
               ar.push(v)
             }
@@ -3029,7 +3035,7 @@ export default {
     drawAllPoint1(latlng, index, id, code) {
       let markerTool = new T.Marker(latlng, { title: index, id: id, code: code })
       this.map.addOverLay(markerTool)
-      if (code == 'riskMap') {
+      if (code == 'riskSource') {
         markerTool.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
@@ -3052,7 +3058,7 @@ export default {
       })
       //向地图上添加线
       this.map.addOverLay(line)
-      if (code == 'riskMap') {
+      if (code == 'riskSource') {
         line.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
@@ -3076,7 +3082,7 @@ export default {
       })
       //向地图上添加面
       this.map.addOverLay(polygon)
-      if (code == 'riskMap') {
+      if (code == 'riskSource') {
         polygon.addEventListener('click', this.sourceRiskClick)
       }
       if (code == 'discharge') {
@@ -3149,6 +3155,7 @@ export default {
       if (clicked) {
         let point = []
         for (const item of this.drawPage) {
+
           if (item.drawType.id == id) {
             if (item.locationType.code == 'point') {
               item.latlng = {
