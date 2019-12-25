@@ -3067,6 +3067,8 @@ export default {
             }
           }
         }
+        console.log(point);
+        
         if (point.length > 0) {
           this.spotDraw(point)
         }
@@ -3128,10 +3130,11 @@ export default {
     spotDraw(pointLists) {
       console.log(pointLists)
       for (const item of pointLists) {
-        this.drawAllPoint1(item.latlng, item.innerCode, item.id, item.innerType.code)
+        this.mapDrawPoint(item.latlng, item.innerName, item.id, item.innerType.code)
       }
     },
-    drawAllPoint1(latlng, index, id, code) {
+    mapDrawPoint(latlng, index, id, code) {
+      console.log(latlng, index, id, code)
       let markerTool = new T.Marker(latlng, { title: index, id: id, code: code })
       this.map.addOverLay(markerTool)
       if (code == 'riskSource') {

@@ -60,7 +60,7 @@
                     <p>任务结束后数据</p>
                     <a-row type="flex" justify="center" align="middle">
                         <a-col :span="8">河道水体水色:</a-col>
-                        <a-col :span="8">{{manualDetail.waterColor}}</a-col> 
+                        <a-col :span="8">{{manualDetail.color.name}}</a-col> 
                     </a-row>
                     <a-row type="flex" justify="center" align="middle">
                         <a-col :span="8">河道水体流动性:</a-col>
@@ -80,7 +80,7 @@
                     </a-row>
                     <a-row type="flex" justify="center" align="middle">
                         <a-col :span="8">河道及其河岸的风险源:</a-col>
-                        <a-col :span="8">{{manualDetail.riskSource}}</a-col> 
+                        <a-col :span="8">{{manualDetail.riskSource.name}}</a-col> 
                     </a-row>
                     <a-row type="flex" justify="center" align="middle">
                         <a-col :span="8">河道其他水质风险:</a-col>
