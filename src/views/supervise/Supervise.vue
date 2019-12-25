@@ -159,12 +159,13 @@
       class="accordion_alert"
       v-show="phonePhoto || riskMap || waterQuality || riverRisk || outlet"
     >
-      <a-collapse accordion class="custom_collapse">
+      <a-collapse accordion class="custom_collapse" v-model="accordionAlertKey">
         <a-collapse-panel
           header="手机照片"
           :style="customStyle"
           v-show="phonePhoto"
           class="custom_list"
+          key="phonePhoto"
         >
           <el-upload
             class="upload-demo"
@@ -222,6 +223,7 @@
           :style="customStyle"
           v-show="riverRisk"
           class="custom_list"
+          key="riverRisk"
         >
           <a-select
             showSearch
@@ -239,7 +241,7 @@
             <a-select-option value="4">Ⅳ级</a-select-option>
           </a-select>
         </a-collapse-panel>
-        <a-collapse-panel header="风险地图" :style="customStyle" v-show="riskMap" class="custom_list">
+        <a-collapse-panel header="风险地图" :style="customStyle" v-show="riskMap" class="custom_list" key="riskMap">
           <a-card size="small" class="custom_card" style="width: 198px">
             <a-row style="width:100%">
               <a-col :span="12">边框颜色</a-col>
@@ -309,22 +311,24 @@
           :style="customStyle"
           v-show="waterQuality"
           class="custom_list"
+          key="waterQuality"
         >
           <el-upload
             class="upload-demo"
             action="/server/data/admin/regulator/water/save"
             multiple
-            name='file'
+            name="file"
             :headers="headers"
             :on-success="waterQualitySuccess"
             :on-error="waterQualityError"
             :data="waterQualityData"
             :limit="1"
-            :file-list="fileList">
+            :file-list="fileList"
+          >
             <a-button style="width:198px;">导入最新水质数据</a-button>
           </el-upload>
         </a-collapse-panel>
-        <a-collapse-panel header="排口" :style="customStyle" v-show="outlet" class="custom_list">
+        <a-collapse-panel header="排口" :style="customStyle" v-show="outlet" class="custom_list" key="outlet">
           <a-select
             showSearch
             mode="tags"
@@ -895,9 +899,10 @@ export default {
   },
   data() {
     return {
+      accordionAlertKey: ['phonePhoto'], // 手风琴
       //水质数据上传参数
-      waterQualityData:{
-        projectId:this.$store.state.id
+      waterQualityData: {
+        projectId: this.$store.state.id
       },
       headers: {
         // 文件上传
@@ -1308,6 +1313,9 @@ export default {
       this.getTimeQuantum() // 获取时间段
       this.getRiverStreeList()
     },
+    accordionAlertKey(key) {
+      console.log(key)
+    },
     // 历史数据
     historyData() {
       // this.watchAllSwitch()
@@ -1698,7 +1706,7 @@ export default {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
-          endDate: this.endDate,
+          endDate: this.endDate
         }
       } else {
         var time = this.defaultTime
@@ -1707,17 +1715,19 @@ export default {
           projectId: this.$store.state.id,
           year: picker[0],
           month: picker[1],
-          day: picker[2],
+          day: picker[2]
           // year: '2019',
           // month: '12',
           // day: '25',
         }
       }
-      getWaterQualityList(data).then(res => {
-        let arr = res.data.data 
-        this.waterQualityPoints = arr
-        this.onWaterQuality()
-      }).catch(err => {})
+      getWaterQualityList(data)
+        .then(res => {
+          let arr = res.data.data
+          this.waterQualityPoints = arr
+          this.onWaterQuality()
+        })
+        .catch(err => {})
     },
     initMap() {
       // this.map = new Map({
@@ -2665,17 +2675,6 @@ export default {
         // }
       }
     },
-    // 移除markers
-    removeMarkers() {
-      this.map.removeMarkers(this.markers)
-      // for (const iterator of this.phonePhotoPoints) {
-      //   for (const overlay of this.map.getOverlays()) {
-      //     if (item.id == overlay.options.id) {
-
-      //     }
-      //   }
-      // }
-    },
     // 无人机照片
     onUAVPhoto() {
       if (this.UAVPhoto) {
@@ -2932,100 +2931,182 @@ export default {
       this.removeOverLays(this.waterQualityPoints)
       if (this.waterQuality) {
         for (const item of this.waterQualityPoints) {
-          let markerTool = new T.Marker(item.coordinate, { item: item,id:item.id })
+          let markerTool = new T.Marker(item.coordinate, { item: item, id: item.id })
           this.map.addOverLay(markerTool)
           if (this.historyData) {
             markerTool.addEventListener('click', this.waterQualityClick)
-          }else{
+          } else {
             markerTool.addEventListener('click', function() {
               var html =
                 "<div style='margin:0px;height: 300px;overflow-y: scroll;'>" +
-                  "<div style='line-height:30px;font-size:14px;margin-bottom:5px; '>" +
-                    "<span style='font-weight:400'>水体名称:" +item.name +"</span>"+
-                    "<span style='margin-left:50px'>" +item.date +"</span>"+
-                    "<div style='border-bottom:1px #c3c3c3 solid'>断面名称:"+item.sectionName +"</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>PH值:" +item.ph +"</span>"+
-                      "<span style='width:150px'>溶解氧:" +item.do +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>氨氮:" +item.nh3N +"mg/L</span>"+
-                      "<span style='width:150px'>总磷:" +item.tp +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>高锰酸盐指数:" +item.kmnO +"mg/L</span>"+
-                      "<span style='width:150px'>透明度:" +item.opacity +"cm</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>氧化还原电位:" +item.orp +"mv</span>"+
-                      "<span style='width:150px'>铜:" +item.cu +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>化学需氧量:" +item.cod +"mg/L</span>"+
-                      "<span style='width:150px'>锌:" +item.zn +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>五日生化需氧量:" +item.bod +"mg/L</span>"+
-                      "<span style='width:150px'>硒:" +item.se +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>总氮:" +item.tn +"mg/L</span>"+
-                      "<span style='width:150px'>氟化物:" +item.pmsf +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>砷:" +item.as +"mg/L</span>"+
-                      "<span style='width:150px'>汞:" +item.hg +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>镉:" +item.cd +"mg/L</span>"+
-                      "<span style='width:150px'>六价铬:" +item.cr +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>铅:" +item.pb +"mg/L</span>"+
-                      "<span style='width:150px'>总氰化物:" +item.cyanide +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>挥发酚:" +item.phenol +"mg/L</span>"+
-                      "<span style='width:150px'>石油类:" +item.petroleum +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>阴离子表面活性剂:" +item.las +"mg/L</span>"+
-                      "<span style='width:150px'>铁:" +item.fe +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>硫化物:" +item.sox +"mg/L</span>"+
-                      "<span style='width:150px'>硫酸盐:" +item.sulfate +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>粪大肠菌群:" +item.coliform +"个/L</span>"+
-                      "<span style='width:150px'>锰:" +item.mn +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>氯化物:" +item.ci +"mg/L</span>"+
-                      "<span style='width:150px'>硝酸盐氮:" +item.nitrate +"mg/L</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>亚硝酸盐氮:" +item.nitrite +"mg/L</span>"+
-                      "<span style='width:150px'>浊度:" +item.turbidity +"NTO</span>"+
-                    "</div>"+
-                    "<div style='display: flex;justify-content:space-around'>"+ 
-                      "<span style='width:180px'>盐度:" +item.salinity +"%</span>"+
-                      "<span style='width:150px'>水温:" +item.temperature +"℃</span>"+
-                    "</div>"+
-                    "<div'>"+ 
-                      "<span style='width:180px'>流速:" +item.velocity +"m/s</span>"+
-                    "</div>"+
-                    "<div>"+ 
-                      "<span style='width:300px'>水质评价:" +item.quality+"</span>"+
-                    "</div>"+
-                    "<div>"+ 
-                      "<span style='width:300px'>黑臭评价:" +item.suncus +"</span>"+
-                    "</div>"+
-                    "<div>"+ 
-                      "<span style='width:300px'>备注:" +item.remark +"</span>"+
-                    "</div>"+
-                  "</div>" +
-                "</div>"
+                "<div style='line-height:30px;font-size:14px;margin-bottom:5px; '>" +
+                "<span style='font-weight:400'>水体名称:" +
+                item.name +
+                '</span>' +
+                "<span style='margin-left:50px'>" +
+                item.date +
+                '</span>' +
+                "<div style='border-bottom:1px #c3c3c3 solid'>断面名称:" +
+                item.sectionName +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>PH值:" +
+                item.ph +
+                '</span>' +
+                "<span style='width:150px'>溶解氧:" +
+                item.do +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>氨氮:" +
+                item.nh3N +
+                'mg/L</span>' +
+                "<span style='width:150px'>总磷:" +
+                item.tp +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>高锰酸盐指数:" +
+                item.kmnO +
+                'mg/L</span>' +
+                "<span style='width:150px'>透明度:" +
+                item.opacity +
+                'cm</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>氧化还原电位:" +
+                item.orp +
+                'mv</span>' +
+                "<span style='width:150px'>铜:" +
+                item.cu +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>化学需氧量:" +
+                item.cod +
+                'mg/L</span>' +
+                "<span style='width:150px'>锌:" +
+                item.zn +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>五日生化需氧量:" +
+                item.bod +
+                'mg/L</span>' +
+                "<span style='width:150px'>硒:" +
+                item.se +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>总氮:" +
+                item.tn +
+                'mg/L</span>' +
+                "<span style='width:150px'>氟化物:" +
+                item.pmsf +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>砷:" +
+                item.as +
+                'mg/L</span>' +
+                "<span style='width:150px'>汞:" +
+                item.hg +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>镉:" +
+                item.cd +
+                'mg/L</span>' +
+                "<span style='width:150px'>六价铬:" +
+                item.cr +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>铅:" +
+                item.pb +
+                'mg/L</span>' +
+                "<span style='width:150px'>总氰化物:" +
+                item.cyanide +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>挥发酚:" +
+                item.phenol +
+                'mg/L</span>' +
+                "<span style='width:150px'>石油类:" +
+                item.petroleum +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>阴离子表面活性剂:" +
+                item.las +
+                'mg/L</span>' +
+                "<span style='width:150px'>铁:" +
+                item.fe +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>硫化物:" +
+                item.sox +
+                'mg/L</span>' +
+                "<span style='width:150px'>硫酸盐:" +
+                item.sulfate +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>粪大肠菌群:" +
+                item.coliform +
+                '个/L</span>' +
+                "<span style='width:150px'>锰:" +
+                item.mn +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>氯化物:" +
+                item.ci +
+                'mg/L</span>' +
+                "<span style='width:150px'>硝酸盐氮:" +
+                item.nitrate +
+                'mg/L</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>亚硝酸盐氮:" +
+                item.nitrite +
+                'mg/L</span>' +
+                "<span style='width:150px'>浊度:" +
+                item.turbidity +
+                'NTO</span>' +
+                '</div>' +
+                "<div style='display: flex;justify-content:space-around'>" +
+                "<span style='width:180px'>盐度:" +
+                item.salinity +
+                '%</span>' +
+                "<span style='width:150px'>水温:" +
+                item.temperature +
+                '℃</span>' +
+                '</div>' +
+                "<div'>" +
+                "<span style='width:180px'>流速:" +
+                item.velocity +
+                'm/s</span>' +
+                '</div>' +
+                '<div>' +
+                "<span style='width:300px'>水质评价:" +
+                item.quality +
+                '</span>' +
+                '</div>' +
+                '<div>' +
+                "<span style='width:300px'>黑臭评价:" +
+                item.suncus +
+                '</span>' +
+                '</div>' +
+                '<div>' +
+                "<span style='width:300px'>备注:" +
+                item.remark +
+                '</span>' +
+                '</div>' +
+                '</div>' +
+                '</div>'
               var infoWin = new T.InfoWindow(html)
               markerTool.openInfoWindow(infoWin)
             })
@@ -3041,14 +3122,21 @@ export default {
     onWaterFlotage() {
       if (this.waterFlotage) {
         let point = []
+        this.waterFlotagePoint = []
         for (const item of this.drawPage) {
           if (item.drawType.name == '水面漂浮物') {
             if (item.locationType.code == 'point') {
-              item.latlng = {
-                lng: item.point[0],
-                lat: item.point[1]
-              }
-              point.push(item)
+              // item.latlng = {
+              //   lat: item.point[1],
+              //   lng: item.point[0]
+              // }
+              item.latlng = {}
+              item.latlng.lat = item.point[1]
+              item.latlng.lng = item.point[0]
+              console.log(item)
+              console.log(item.latlng)
+              this.waterFlotagePoint.push(item)
+              console.log(this.waterFlotagePoint)
             }
             if (item.locationType.code == 'line') {
               this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
@@ -3068,11 +3156,25 @@ export default {
             }
           }
         }
-        console.log(point);
-        
-        if (point.length > 0) {
-          this.spotDraw(point)
+        console.log(point)
+
+        let markerTool
+        for (const item of this.waterFlotagePoint) {
+          console.log(item.latlng, item.innerName, item.id)
+          markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id })
+          this.map.addOverLay(markerTool)
+          // if (item.innerType.code == 'riskSource') {
+          //   markerTool.addEventListener('click', this.sourceRiskClick)
+          // } else if (item.innerType.code == 'discharge') {
+          //   markerTool.addEventListener('click', this.sourceRiskClick)
+          // } else if (item.innerType.code == 'floatage') {
+          //   markerTool.addEventListener('click', this.floatageClick)
+          // }
         }
+
+        // if (point.length > 0) {
+        //   this.spotDraw(point)
+        // }
       } else {
         let data = []
         for (const item of this.drawPage) {
@@ -3130,9 +3232,22 @@ export default {
     //绘制点
     spotDraw(pointLists) {
       console.log(pointLists)
+      let markerTool
       for (const item of pointLists) {
-        this.mapDrawPoint(item.latlng, item.innerName, item.id, item.innerType.code)
+        console.log(item.latlng, item.innerName, item.id)
+        markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id })
+        this.map.addOverLay(markerTool)
+        // if (item.innerType.code == 'riskSource') {
+        //   markerTool.addEventListener('click', this.sourceRiskClick)
+        // } else if (item.innerType.code == 'discharge') {
+        //   markerTool.addEventListener('click', this.sourceRiskClick)
+        // } else if (item.innerType.code == 'floatage') {
+        //   markerTool.addEventListener('click', this.floatageClick)
+        // }
       }
+      // for (const item of pointLists) {
+      //   this.mapDrawPoint(item.latlng, item.innerName, item.id, item.innerType.code)
+      // }
     },
     mapDrawPoint(latlng, index, id, code) {
       console.log(latlng, index, id, code)
@@ -3140,11 +3255,9 @@ export default {
       this.map.addOverLay(markerTool)
       if (code == 'riskSource') {
         markerTool.addEventListener('click', this.sourceRiskClick)
-      }
-      if (code == 'discharge') {
+      } else if (code == 'discharge') {
         markerTool.addEventListener('click', this.sourceRiskClick)
-      }
-      if (code == 'floatage') {
+      } else if (code == 'floatage') {
         markerTool.addEventListener('click', this.floatageClick)
       }
     },
@@ -3353,7 +3466,7 @@ export default {
     },
     // 监听所有的开关属性
     watchAllSwitch() {
-      this.map.clearOverLays()
+      // this.map.clearOverLays()
       // 绘制工具画的点
       // this.toolDrawPoint()
       // // 绘制工具画的线
@@ -3377,11 +3490,11 @@ export default {
       // 水质数据
       this.onWaterQuality()
       // 水质漂浮物
-      // this.onWaterFlotage()
+      this.onWaterFlotage()
       // 排口
-      // this.onOutlet()
+      this.onOutlet()
       // 河岸风险源
-      // this.onRiverRisk()
+      this.onRiverRisk()
       // 水土流失
       this.onWaterLandLoss()
       // 水面率
@@ -3605,15 +3718,15 @@ export default {
       }
     },
     //水质数据上传成功
-    waterQualitySuccess(response, file, fileList){
-      this.$message.success('导入成功,'+response.data);
+    waterQualitySuccess(response, file, fileList) {
+      this.$message.success('导入成功,' + response.data)
       this.getWaterQualityPoints()
-      this.fileList =[]
+      this.fileList = []
     },
     //水质数据上传失败
-    waterQualityError(err, file, fileList){
-      this.$message.error('导入失败,数据相同');
-    },
+    waterQualityError(err, file, fileList) {
+      this.$message.error('导入失败,数据相同')
+    }
   }
 }
 </script>
@@ -4005,13 +4118,13 @@ export default {
   z-index: 888;
   margin: 0;
   padding: 0;
-  
+
   list-style-type: none;
   li {
     width: 100%;
     background: white;
     border-radius: 50%;
-    
+
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
     margin-top: 10px;
     img {
