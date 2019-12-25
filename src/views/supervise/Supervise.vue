@@ -2209,8 +2209,6 @@ export default {
     // 时间轴切换操作
     timeLineChange() {
       this.map.clearOverLays()
-      // this.getRiverStreeList()
-      this.getWaterQualityPoints()
       this.getMapdrawPage()
     },
     //获取天气
