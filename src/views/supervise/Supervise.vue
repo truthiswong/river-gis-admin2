@@ -1339,7 +1339,7 @@ export default {
     riskMap() {
       this.watchAllSwitch()
     },
-    // 水质
+    // 水质数据
     waterQuality() {
       this.watchAllSwitch()
     },
@@ -2943,7 +2943,7 @@ export default {
         this.fullColor = index.hex
       }
     }, 300),
-    // 水质
+    // 水质数据
     onWaterQuality() {
       this.removeOverLays(this.waterQualityPoints)
       if (this.waterQuality) {
@@ -3387,7 +3387,7 @@ export default {
       this.onPanorama()
       // 风险地图
       this.onRiskMap()
-      // 水质
+      // 水质数据
       this.onWaterQuality()
       // 水质漂浮物
       // this.onWaterFlotage()
