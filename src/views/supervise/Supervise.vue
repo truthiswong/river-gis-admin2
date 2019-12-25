@@ -310,25 +310,19 @@
           v-show="waterQuality"
           class="custom_list"
         >
-          <a-select
-            showSearch
-            mode="tags"
-            :allowClear="true"
-            placeholder="请选择水质数据等级"
-            optionFilterProp="children"
-            style="width: 100%"
-            @change="waterQualityChange"
-            :filterOption="waterQualityFilterOption"
-          >
-            <a-select-option value="1">Ⅰ-蓝色</a-select-option>
-            <a-select-option value="2">Ⅱ-蓝色</a-select-option>
-            <a-select-option value="3">Ⅲ-蓝色</a-select-option>
-            <a-select-option value="4">Ⅳ-黄色</a-select-option>
-            <a-select-option value="5">Ⅴ-橙色</a-select-option>
-            <a-select-option value="6">Ⅵ-红色</a-select-option>
-            <a-select-option value="7">Ⅶ-红色</a-select-option>
-            <a-select-option value="8">Ⅷ-红色</a-select-option>
-          </a-select>
+          <el-upload
+            class="upload-demo"
+            action="/server/data/admin/regulator/water/save"
+            multiple
+            name='file'
+            :headers="headers"
+            :on-success="waterQualitySuccess"
+            :on-error="waterQualityError"
+            :data="waterQualityData"
+            :limit="1"
+            :file-list="fileList">
+            <a-button style="width:198px;">导入最新水质数据</a-button>
+          </el-upload>
         </a-collapse-panel>
         <a-collapse-panel header="排口" :style="customStyle" v-show="outlet" class="custom_list">
           <a-select
@@ -901,6 +895,10 @@ export default {
   },
   data() {
     return {
+      //水质数据上传参数
+      waterQualityData:{
+        projectId:this.$store.state.id
+      },
       headers: {
         // 文件上传
         Authorization: Vue.ls.get(ACCESS_TOKEN),
@@ -1309,7 +1307,6 @@ export default {
     $route() {
       this.getTimeQuantum() // 获取时间段
       this.getRiverStreeList()
-      this.getWaterQualityPoints()
     },
     // 历史数据
     historyData() {
@@ -1414,7 +1411,6 @@ export default {
     this.getRiverStreeList()
 
     this.getParamList()
-    // this.getMapdrawPage()
     // console.log(this.$store.state.id, 'ssasasa')
   },
   methods: {
@@ -1472,9 +1468,6 @@ export default {
           mediaType: 'image'
         }
       }
-      // let panData = {
-      //   projectId: this.$store.state.id
-      // }
       if (this.moreLoadOnce == '1') {
         // 获取手机照片
         this.removeOverLays(this.phonePhotoPoints)
@@ -2113,18 +2106,6 @@ export default {
         starty = endy
         startm = endm - 3
       }
-      // if (startm < 10) {
-      //   var startm1 = '0' + startm
-      //   var start = starty + '' + startm1 + '' + endd
-      // } else {
-      //   var start = starty + '' + startm + '' + endd
-      // }
-      // if (endm < 10) {
-      //   var endm1 = '0' + endm
-      //   var end = endy + '' + endm1 + '' + endd
-      // } else {
-      //   var end = endy + '' + endm + '' + endd
-      // }
       this.startDate = `${starty}-${startm}-${endd}`
       this.endDate = `${endy}-${endm}-${endd}`
       this.timeQuantum = `${this.startDate} ~ ${this.endDate}`
@@ -2168,6 +2149,8 @@ export default {
         this.timeData = res.data
         // this.getWeatherList()
         // 手机照片上传参数
+        this.moreLoadOnce = 1
+        this.getMapdrawPage()
         let picker = this.defaultTime.split('-')
         this.phonePhotoData = {
           projectId: this.$store.state.id,
@@ -2949,7 +2932,7 @@ export default {
       this.removeOverLays(this.waterQualityPoints)
       if (this.waterQuality) {
         for (const item of this.waterQualityPoints) {
-          let markerTool = new T.Marker(item.coordinate, { item: item })
+          let markerTool = new T.Marker(item.coordinate, { item: item,id:item.id })
           this.map.addOverLay(markerTool)
           if (this.historyData) {
             markerTool.addEventListener('click', this.waterQualityClick)
@@ -3085,6 +3068,8 @@ export default {
             }
           }
         }
+        console.log(point);
+        
         if (point.length > 0) {
           this.spotDraw(point)
         }
@@ -3146,10 +3131,11 @@ export default {
     spotDraw(pointLists) {
       console.log(pointLists)
       for (const item of pointLists) {
-        this.drawAllPoint1(item.latlng, item.innerCode, item.id, item.innerType.code)
+        this.mapDrawPoint(item.latlng, item.innerName, item.id, item.innerType.code)
       }
     },
-    drawAllPoint1(latlng, index, id, code) {
+    mapDrawPoint(latlng, index, id, code) {
+      console.log(latlng, index, id, code)
       let markerTool = new T.Marker(latlng, { title: index, id: id, code: code })
       this.map.addOverLay(markerTool)
       if (code == 'riskSource') {
@@ -3617,7 +3603,17 @@ export default {
         this.$refs.addOutlet.detailList1(id)
         // this.$parent.addOutlet.detailList(this.id)
       }
-    }
+    },
+    //水质数据上传成功
+    waterQualitySuccess(response, file, fileList){
+      this.$message.success('导入成功,'+response.data);
+      this.getWaterQualityPoints()
+      this.fileList =[]
+    },
+    //水质数据上传失败
+    waterQualityError(err, file, fileList){
+      this.$message.error('导入失败,数据相同');
+    },
   }
 }
 </script>

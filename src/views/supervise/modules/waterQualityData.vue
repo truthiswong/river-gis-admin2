@@ -151,7 +151,7 @@ export default {
     moment,
     add(item) {
       this.name = item.target.options.item.name
-      this.list.number = item.target.options.item.sectionName
+      this.list.number = item.target.options.item.sectionCode
       this.list.lat = item.target.options.item.coordinate.lat
       this.list.lng = item.target.options.item.coordinate.lng
       this.visible = true
