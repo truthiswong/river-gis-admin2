@@ -86,7 +86,7 @@ import Vue from 'vue'
 // token
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import moment from 'moment';
-import {waterPage} from '@/api/login'
+import {getWaterQualityList} from '@/api/login'
 // 基于准备好的dom，初始化echarts实例
 // 引入 ECharts 主模块
 var echarts = require('echarts/lib/echarts');
@@ -149,7 +149,11 @@ export default {
   },
   methods: {
     moment,
-    add() {
+    add(item) {
+      this.name = item.target.options.item.name
+      this.list.number = item.target.options.item.sectionName
+      this.list.lat = item.target.options.item.coordinate.lat
+      this.list.lng = item.target.options.item.coordinate.lng
       this.visible = true
     },
     handleSubmit() {
@@ -167,12 +171,12 @@ export default {
     getList(){
       let data = {
         projectId:this.$store.state.id,
-        coordinate:'121.438,31.145',
-        sectionCode:'XZ徐闵10150-1',
+        coordinate:this.list.lng+','+this.list.lat,
+        sectionCode:this.list.number,
         startDate:this.startDate,
         endDate:this.endDate
       }
-      waterPage(data).then(res=>{
+      getWaterQualityList(data).then(res=>{
         let arr = res.data.data
         this.listMain = arr
         this.changeCheckbox()

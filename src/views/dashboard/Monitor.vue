@@ -2124,7 +2124,6 @@ export default {
     showPosition(marker, riverData) {
       inspectTaskDetail(riverData.id).then(res => {
         console.log(res.data);
-        
         marker.addEventListener('click', function() {
           var html =
             "<div style='margin:0px;'>" +
