@@ -1413,7 +1413,6 @@ export default {
     this.getTimeQuantum() // 获取时间段
     this.getRiverStreeList()
 
-    this.getWaterQualityPoints()
     this.getParamList()
     // this.getMapdrawPage()
     // console.log(this.$store.state.id, 'ssasasa')
@@ -1526,7 +1525,8 @@ export default {
           projectId: this.$store.state.id,
           startDate: this.startDate,
           endDate: this.endDate,
-          mediaType: 'image'
+          mediaType: 'image',
+          from: 'admin'
         }
       } else {
         var time = this.defaultTime
@@ -1536,7 +1536,8 @@ export default {
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          mediaType: 'image'
+          mediaType: 'image',
+          from: 'admin'
         }
       }
       dataManual(data).then(res => {
@@ -3475,7 +3476,8 @@ export default {
         year: picker[0],
         month: picker[1],
         day: picker[2],
-        mediaType: 'image'
+        mediaType: 'image',
+        from: 'admin'
       }
       dataManual(phoneArr).then(res => {
         console.log(res.data.data)
@@ -3566,7 +3568,8 @@ export default {
                 year: picker[0],
                 month: picker[1],
                 day: picker[2],
-                mediaType: 'image'
+                mediaType: 'image',
+                from: 'admin'
               }
               dataManual(phoneArr).then(res => {
                 let arr = res.data.data
