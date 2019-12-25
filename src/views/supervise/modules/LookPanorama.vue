@@ -74,12 +74,16 @@ export default {
       let markerTool
       for (const item of this.msg.panoramaPoints) {
         if (item.id == this.msg.id) {
-          var icon = new T.Icon({
+          let icon = new T.Icon({
             iconUrl: require('../img/panAddress.png'),
             iconSize: new T.Point(39, 40),
             iconAnchor: new T.Point(20, 40)
           })
-          markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id })
+          markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id, zIndexOffset: 66 })
+          let arr = []
+          arr.push(item.latlng)
+          this.panoramaMap.setViewport(arr)
+          this.panoramaMap.setZoom(14)
         } else {
           markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
         }
@@ -118,7 +122,11 @@ export default {
             iconSize: new T.Point(39, 40),
             iconAnchor: new T.Point(20, 40)
           })
-          markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id })
+          markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id, zIndexOffset: 66 })
+          let arr = []
+          arr.push(item.latlng)
+          this.panoramaMap.setViewport(arr)
+          this.panoramaMap.setZoom(14)
           if (this.panoramaId != item.id) {
             panoramaImgList(item.id).then(res => {
               this.panoramaLink = res.data.panoramicPic
