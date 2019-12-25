@@ -64,11 +64,11 @@
                     </a-row>
                     <a-row type="flex" justify="center" align="middle">
                         <a-col :span="8">河道水体流动性:</a-col>
-                        <a-col :span="8">{{manualDetail.waterFlow}}</a-col> 
+                        <a-col :span="8">{{manualDetail.flow.name}}</a-col> 
                     </a-row>
                     <a-row type="flex" justify="center" align="middle">
                         <a-col :span="8">河道刺鼻性气味:</a-col>
-                        <a-col :span="8">{{manualDetail.noseSmell}}%</a-col> 
+                        <a-col :span="8">{{manualDetail.smell.name}}%</a-col> 
                     </a-row>
                     <a-row type="flex" justify="center" align="middle">
                         <a-col :span="8">打捞人员作业:</a-col>
