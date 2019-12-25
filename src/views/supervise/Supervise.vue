@@ -2183,7 +2183,6 @@ export default {
           if (item.level != 2) {
             if (item.date == mouth) {
               this.defaultTime = mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8)
-              this.moreLoadOnce = 1
               this.mapYear = mouth.substring(0, 4)
               this.mapMonth = mouth.substring(4, 6)
               this.mapDay = mouth.substring(6, 8)
@@ -2209,6 +2208,7 @@ export default {
     // 时间轴切换操作
     timeLineChange() {
       this.map.clearOverLays()
+      this.moreLoadOnce = 1
       this.getMapdrawPage()
     },
     //获取天气
