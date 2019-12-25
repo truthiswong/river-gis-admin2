@@ -1307,7 +1307,6 @@ export default {
     $route() {
       this.getTimeQuantum() // 获取时间段
       this.getRiverStreeList()
-      this.getWaterQualityPoints()
     },
     // 历史数据
     historyData() {
