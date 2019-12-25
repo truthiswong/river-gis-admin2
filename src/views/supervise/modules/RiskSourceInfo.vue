@@ -84,8 +84,8 @@
             :auto-upload="false">
             <a-button type="primary" icon="plus" >添加</a-button>
           </el-upload>
-          <viewer >
-            <img v-for="index in attachmentJpg" :key="index" :src="index" alt="" style="height:70px;">
+          <viewer v-for="index in attachmentJpg" :key="index">
+            <img   :src="index" alt="" style="height:70px;">
           </viewer >
         </a-form-item>
         <a-form-item :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" label="操作">
@@ -272,8 +272,8 @@ export default {
     },
     riskSee(){
       this.visible = false
-      if (this.code == 'risk') {
-        this.$parent.sourceRiskView(this.id,'risk')
+      if (this.code == 'riskSource') {
+        this.$parent.sourceRiskView(this.id,'riskSource')
       }
       if (this.code == 'discharge') {
         this.$parent.sourceRiskView(this.id,'discharge')
@@ -305,15 +305,17 @@ export default {
         this.$message.success('保存成功');
         this.show_type = false
         this.show = true
-        this.getCommentMapdraw()
+        
       })
       
     },
     handleSuccess(response, file, fileList){
       this.attachmentJpg=[]
       this.drawList.comment=''
+      this.drawList.id = ''
       this.drawList.exist=''
       this.fileList=[]
+      this.getCommentMapdraw()
     },
     handleChange(file, fileList){
       this.fileList=fileList

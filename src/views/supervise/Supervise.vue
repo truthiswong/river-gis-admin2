@@ -1476,7 +1476,6 @@ export default {
         // 360点
         this.removeOverLays(this.panoramaPoints)
         this.getPanoramaPoints()
-
         this.removeOverLays(this.drawPage)
         mapdrawPage(data).then(res => {
           let arr = res.data
@@ -3073,6 +3072,7 @@ export default {
           this.spotDraw(point)
         }
       } else {
+        console.log('1');
         let data = []
         for (const item of this.drawPage) {
           if (item.drawType.name == '水面漂浮物') {
@@ -3117,6 +3117,7 @@ export default {
           this.spotDraw(point)
         }
       } else {
+        console.log('1');
         let data = []
         for (const item of this.drawPage) {
           if (item.drawType.name == '排口') {
@@ -3128,13 +3129,11 @@ export default {
     },
     //绘制点
     spotDraw(pointLists) {
-      console.log(pointLists)
       for (const item of pointLists) {
         this.mapDrawPoint(item.latlng, item.innerName, item.id, item.innerType.code)
       }
     },
     mapDrawPoint(latlng, index, id, code) {
-      console.log(latlng, index, id, code)
       let markerTool = new T.Marker(latlng, { title: index, id: id, code: code })
       this.map.addOverLay(markerTool)
       if (code == 'riskSource') {
@@ -3148,8 +3147,7 @@ export default {
       }
     },
     //绘制线
-    lineDraw(points, color, weight, opacity, id, name) {
-      console.log(points)
+    lineDraw(points, color, weight, opacity, id, name,code) {
       let line = new T.Polyline(points, {
         color: color, //线颜色
         weight: weight, //线宽
@@ -3240,6 +3238,8 @@ export default {
         // }
         // this.spotDraw(point)
       } else {
+        console.log('1');
+        
         let data = []
         for (const item of this.drawPage) {
           if (item.innerType.name == '风险源') {
@@ -3285,6 +3285,7 @@ export default {
         }
         this.spotDraw(point)
       } else {
+        console.log('1');
         let data = []
         for (const item of this.drawPage) {
           if (item.drawType.id == id) {
@@ -3376,11 +3377,11 @@ export default {
       // 水质数据
       this.onWaterQuality()
       // 水质漂浮物
-      // this.onWaterFlotage()
+      this.onWaterFlotage()
       // 排口
-      // this.onOutlet()
+      this.onOutlet()
       // 河岸风险源
-      // this.onRiverRisk()
+      this.onRiverRisk()
       // 水土流失
       this.onWaterLandLoss()
       // 水面率
@@ -3590,7 +3591,7 @@ export default {
     sourceRiskView(id, code) {
       console.log(id, code)
 
-      if (code == 'risk') {
+      if (code == 'riskSource') {
         console.log('1')
         this.$refs.addRisk.addSource(id)
       }
