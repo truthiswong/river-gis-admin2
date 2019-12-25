@@ -248,7 +248,7 @@
               <a-col :span="12" @click="chooseColor(1)">
                 <p
                   style="height:20px;margin:0;border: 2px solid rgba(198, 198, 198, 0.8); background-clip: padding-box;"
-                  :style="{background: borderColor}"
+                  :style="{background: borderColor, Opacity: borderOpacity / 100}"
                 ></p>
               </a-col>
             </a-row>
@@ -257,7 +257,7 @@
               <a-col :span="12" @click="chooseColor(2)">
                 <p
                   style="height:20px;margin:0;border: 2px solid rgba(198, 198, 198, 0.8); background-clip: padding-box;"
-                  :style="{background: fullColor}"
+                  :style="{background: fullColor, Opacity: fullOpacity / 100}"
                 ></p>
               </a-col>
             </a-row>
@@ -300,6 +300,7 @@
               <a-col :span="10">
                 <a-button @click="riskCradSave" block>保存</a-button>
               </a-col>
+              <a-button style="margin-top:10px;" @click="riskCradDelete" block>删除</a-button>
             </a-row>
           </a-card>
           <div class="color_wrap" v-show="colorAlertShow">
@@ -2868,12 +2869,26 @@ export default {
       this.polygonTool.clear()
       this.riskPolygonData.splice(this.riskPolygonData.findIndex(item => item.id === this.riskIndexId), 1)
     },
+    // 风险地图绘制删除
+    riskCradDelete() {
+      // this.isRiskSaveShow = false
+      // this.colorAlertShow = false
+    },
     // 风险地图编辑颜色
     riskPolygonClick(e) {
       this.riskIndexId = e.target.options.id
       console.log(this.riskIndexId)
       this.isRiskEdit = true
       this.isRiskSaveShow = true
+      console.log(this.riskPolygonData)
+      for (const item of this.riskPolygonData) {
+        if (this.riskIndexId == item.id) {
+          this.borderColor = item.borderColor
+          this.fullColor = item.fullColor
+          this.borderOpacity = item.framePellucidity
+          this.fullOpacity = item.shapePellucidity
+        }
+      }
     },
     // 点击选择颜色
     chooseColor(index) {
