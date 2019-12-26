@@ -780,6 +780,13 @@ export function mapdrawDetail(id) {
     method: 'get',
   })
 }
+//基础绘制数据删除
+export function mapdrawDelete(id) {
+  return axios({
+    url: '/server/data/admin/mapdraw/data/remove/' + id,
+    method: 'post',
+  })
+}
 //风险源内部编码
 export function riskInner(data) {
   return axios({
