@@ -300,7 +300,7 @@
               <a-col :span="10">
                 <a-button @click="riskCradSave" block>保存</a-button>
               </a-col>
-              <a-button style="margin-top:10px;" @click="riskCradDelete" block>删除</a-button>
+              <a-button v-show="isRiskEdit" style="margin-top:10px;" @click="riskCradDelete" block>删除</a-button>
             </a-row>
           </a-card>
           <div class="color_wrap" v-show="colorAlertShow">
@@ -812,6 +812,7 @@ import {
   getWaterQualityList,
   paramList,
   mapdrawSave,
+  mapdrawDelete,
   mapdrawPage,
   daydataList,
   weatherList,
@@ -2871,16 +2872,23 @@ export default {
     },
     // 风险地图绘制删除
     riskCradDelete() {
-      // this.isRiskSaveShow = false
-      // this.colorAlertShow = false
+      this.isRiskSaveShow = false
+      this.colorAlertShow = false
+      mapdrawDelete(this.riskIndexId)
+        .then(res => {
+          this.$message.success('删除成功')
+          this.removeOverLays(this.riskPolygonData)
+          this.getRiskMapList()
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
     },
     // 风险地图编辑颜色
     riskPolygonClick(e) {
       this.riskIndexId = e.target.options.id
-      console.log(this.riskIndexId)
       this.isRiskEdit = true
       this.isRiskSaveShow = true
-      console.log(this.riskPolygonData)
       for (const item of this.riskPolygonData) {
         if (this.riskIndexId == item.id) {
           this.borderColor = item.borderColor
