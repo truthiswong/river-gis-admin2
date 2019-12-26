@@ -432,7 +432,7 @@ export default {
       }
       mapdrawRiskSave(data).then(res=>{
         this.$message.success('保存成功')
-        this.$parent.getMapdrawPage('1')
+        this.$parent.drawSaveRefresh()
         this.handleCancel()
       }).catch(err => {
           this.$message.error(err.response.data.message);
