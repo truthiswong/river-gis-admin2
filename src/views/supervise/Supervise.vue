@@ -639,8 +639,8 @@
                         <a-col :span="6">
                           <a-switch
                             size="small"
-                            v-model="waterLandLoss"
-                            @click="onWaterLandLoss(item.id)"
+                            v-model="item.clicked"
+                            @click="onWaterLandLoss(item.id,item.clicked)"
                           />
                         </a-col>
                       </a-row>
@@ -1383,9 +1383,9 @@ export default {
       this.watchAllSwitch()
     },
     // 水土流失
-    waterLandLoss() {
-      this.watchAllSwitch()
-    },
+    // waterLandLoss() {
+    //   this.watchAllSwitch()
+    // },
     // 水面率
     waterRatio() {
       this.watchAllSwitch()
@@ -1446,20 +1446,16 @@ export default {
       var data = {
         type: 'draw_type'
       }
-      paramList(data)
-        .then(res => {
+      paramList(data).then(res => {
           this.paramPage = res.data
           var arr = []
           for (const item of res.data) {
-            if (
-              item.id != '5da8374dea6c157d2d61007c' &&
-              item.id != '5da8389eea6c157d2d61007f' &&
-              item.id != '5dafe6c8ea6c159999a0549c'
-            ) {
+            item.clicked = false
+            if (item.id != '5da8374dea6c157d2d61007c' &&item.id != '5da8389eea6c157d2d61007f' &&item.id != '5dafe6c8ea6c159999a0549c') {
               arr.push(item)
             }
           }
-
+          console.log(arr);
           this.otherList = arr
         })
         .catch(err => {
@@ -1477,24 +1473,6 @@ export default {
     },
     // 获取当前页面数据
     getMapdrawPage() {
-      if (this.historyData) {
-        var data = {
-          projectId: this.$store.state.id,
-          startDate: this.startDate,
-          endDate: this.endDate,
-          mediaType: 'image'
-        }
-      } else {
-        var time = this.defaultTime
-        var picker = time.split('-')
-        var data = {
-          projectId: this.$store.state.id,
-          year: picker[0],
-          month: picker[1],
-          day: picker[2],
-          mediaType: 'image'
-        }
-      }
       if (this.moreLoadOnce == '1') {
         // 获取手机照片
         this.removeOverLays(this.phonePhotoPoints)
@@ -1502,25 +1480,9 @@ export default {
         // 360点
         this.removeOverLays(this.panoramaPoints)
         this.getPanoramaPoints()
+        //获取 基础绘制
         this.removeOverLays(this.drawPage)
-        mapdrawPage(data).then(res => {
-          let arr = res.data
-          let ar = []
-          arr.forEach(v => {
-            v.shapePellucidity = v.shapePellucidity / 100
-            v.framePellucidity = v.framePellucidity / 100
-            if (v.drawType == undefined) {
-              v.drawType = {
-                code: '',
-                id: ''
-              }
-            }
-            if (v.innerType != undefined) {
-              ar.push(v)
-            }
-          })
-          this.drawPage = ar
-        })
+        this.getMapDrawPage()
         // 获取专项调查点
         this.removeOverLays(this.surveyPointPoints)
         this.getSurveyPointPoints()
@@ -1746,6 +1708,51 @@ export default {
           this.onWaterQuality()
         })
         .catch(err => {})
+    },
+    //获取基础绘制数据
+    getMapDrawPage(){
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          mediaType: 'image'
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          mediaType: 'image'
+        }
+      }
+      mapdrawPage(data).then(res => {
+        let arr = res.data
+        let ar = []
+        arr.forEach(v => {
+          v.shapePellucidity = v.shapePellucidity / 100
+          v.framePellucidity = v.framePellucidity / 100
+          if (v.drawType == undefined) {
+            v.drawType = {
+              code: '',
+              id: ''
+            }
+          }
+          if (v.innerType != undefined) {
+            ar.push(v)
+          }
+        })
+        this.drawPage = ar
+      })
+    },
+    //基础绘制保存刷新基础绘制列表
+    drawSaveRefresh(){
+      this.removeOverLays(this.drawPage)
+      this.getMapDrawPage()
+      
     },
     initMap() {
       // this.map = new Map({
@@ -3303,7 +3310,7 @@ export default {
         this.removeOverLays(data)
       }
     },
-    // 河岸风险源
+    // 河岸风险源子栏
     onDrawType(id, clicked) {
       if (clicked) {
         let point = []
@@ -3346,11 +3353,46 @@ export default {
       }
     },
     // 水土流失
-    onWaterLandLoss() {
-      if (this.waterLandLoss) {
-        this.allPointTask(this.waterLandLossPoints)
+    onWaterLandLoss(id,clicked) {
+      console.log(id,clicked)
+       if (clicked) {
+        let point = []
+        for (const item of this.drawPage) {
+          if (item.drawType.id == id) {
+            if (item.locationType.code == 'point') {
+              item.latlng = {
+                lng: item.point[0],
+                lat: item.point[1]
+              }
+              point.push(item)
+            }
+            if (item.locationType.code == 'line') {
+              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+            }
+            if (item.locationType.code == 'polygon') {
+              this.noodlesDraw(
+                item.polygon,
+                item.frameColor,
+                3,
+                item.framePellucidity,
+                item.shapeColor,
+                item.shapePellucidity,
+                '',
+                item.id,
+                item.innerType.code
+              )
+            }
+          }
+        }
+        this.spotDraw(point)
       } else {
-        this.removeOverLays(this.waterLandLossPoints)
+        let data = []
+        for (const item of this.drawPage) {
+          if (item.drawType.id == id) {
+            data.push(item)
+          }
+        }
+        this.removeOverLays(data)
       }
     },
     // 水面率
@@ -3433,7 +3475,7 @@ export default {
       // 河岸风险源
       this.onRiverRisk()
       // 水土流失
-      this.onWaterLandLoss()
+      // this.onWaterLandLoss()
       // 水面率
       this.onWaterRatio()
       // 底泥
