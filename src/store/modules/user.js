@@ -14,6 +14,7 @@ import {
 const user = {
   state: {
     token: '',
+    projectId: '',
     name: '',
     welcome: '',
     avatar: '',
@@ -22,6 +23,9 @@ const user = {
   },
 
   mutations: {
+    SET_PROJECT_ID: (state, id) => {
+      state.projectId = id
+    },
     SET_TOKEN: (state, token) => {
       state.token = token
     },
@@ -60,6 +64,8 @@ const user = {
             for (let i = 0; i < arr.length; i++) {
               if (arr[i].children.length > 0) {
                 console.log('获取项目id')
+                commit('SET_PROJECT_ID', arr[i].children[0].id)
+                // Vue.ls.set('SET_PROJECT_ID', arr[i].children[0].id)
                 window.localStorage.setItem('projectId', JSON.stringify(arr[i].children[0].id))
                 break
               }
