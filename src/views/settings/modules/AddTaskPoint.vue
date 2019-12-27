@@ -8,6 +8,7 @@
     :mask="true"
     :centered="true"
     :footer="null"
+    :maskClosable="false"
   >
     <a-spin :spinning="confirmLoading">
       <a-row style="width:100%" type="flex" justify="space-between" align="middle">
