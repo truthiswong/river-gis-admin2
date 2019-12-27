@@ -10,7 +10,6 @@
     :mask="true"
     :centered="true"
     :footer="null"
-    :maskClosable="false"
   >
     <a-spin :spinning="confirmLoading">
       <a-form class="from">

@@ -9,8 +9,7 @@
     @cancel="handleCancel"
     :mask="true"
     :centered="true"
-    :footer=null
-    :maskClosable="false"
+    :footer='null'
   >
     <a-spin :spinning="confirmLoading">
       <a-form class="from">
