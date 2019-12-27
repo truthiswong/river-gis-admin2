@@ -11,6 +11,7 @@
     class="comment_model"
     :bodyStyle="{margin: 0, left:0}"
     :footer="null"
+    :maskClosable="false"
   > 
     <div v-show="show">
       <a-row>
