@@ -1443,7 +1443,7 @@ export default {
   },
   watch: {
     $route() {
-      console.log('1');
+      console.log('12');
       
       this.getPicker()
       this.getTask()
@@ -1485,6 +1485,7 @@ export default {
     }
   },
   mounted() {
+    console.log('1');
     let token = Vue.ls.get(ACCESS_TOKEN)
     let zoom = 14
     let twoDimensionURL =

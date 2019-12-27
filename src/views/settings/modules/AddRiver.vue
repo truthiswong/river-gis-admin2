@@ -4,6 +4,7 @@
     :width="980"
     :visible="visible"
     :confirmLoading="confirmLoading"
+    :maskClosable="false"
     @ok="handleSubmit"
     @cancel="handleCancel"
     :mask="true"
@@ -352,7 +353,7 @@ export default {
       }
       if (this.save == '1') {
         getSaveRiver(data).then(res => {
-          this.$message.success('保存成功')
+          this.$message.success('保存成功')  
           this.$parent.getList();
           this.handleCancel()
         }).catch(err => {
@@ -525,6 +526,7 @@ export default {
       this.list.areaList1=[],
       this.coordinate=[],
       this.visible = false
+      this.$parent.del1();
     },
     // 选择地址
     onChange(value, selectedOptions) {

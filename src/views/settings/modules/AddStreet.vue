@@ -4,6 +4,7 @@
     :width="400"
     :visible="visible"
     :confirmLoading="confirmLoading"
+    :maskClosable="false"
     @ok="handleSubmit"
     @cancel="handleCancel"
     :mask="true"
@@ -120,7 +121,7 @@ export default {
       })
     },
     //河道保存
-    SaveStreet(){
+    SaveStreet(){   
       var data = {
         id:this.list.id,
         projectId:this.$store.state.id,
@@ -142,7 +143,7 @@ export default {
         getSaveStreet(data).then(res => {
           this.$message.success('保存成功')
           this.handleCancel()
-          this.$parent.getList();
+          this.$parent.getStreetShowList();
           
         }).catch(err => {
           this.$message.error(err.response.data.message)

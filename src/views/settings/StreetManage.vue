@@ -122,7 +122,7 @@
               <a-button block style="margin-top: 10px;">上传KMZ</a-button>
             </el-upload>
           </template>
-          <a-button type="primary" block>添加街道</a-button>
+          <a-button type="primary" block @click="del1">添加街道</a-button>
         </a-popover>
       </div>
     </div>
@@ -414,8 +414,9 @@ export default {
       // console.log(index)
       delStreet(index)
         .then(res => {
+          this.map.clearOverLays()
           this.$message.success('删除成功')
-          this.getList()
+          this.getStreetShowList()
         })
         .catch(err => {
           this.$message.error(err.response.data.message)
@@ -540,10 +541,11 @@ export default {
       this.$refs.upload.submit()
     },
     del1() {
+      this.upload = '0'
       this.fileList = []
     },
     handleSuccess(response, file, fileList) {
-      this.getList()
+      this.getStreetShowList()
       console.log('111')
 
       this.$message.success('保存成功')

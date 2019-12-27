@@ -113,7 +113,6 @@
               :on-success="handleSuccess"
               :on-change="uploadChange"
               :show-file-list="false"
-              :on-remove="handleRemove"
               :file-list="fileList"
               accept=".kmz, .kml"
               :limit="1"
@@ -123,7 +122,7 @@
             </el-upload>
             <!-- <a-button block @click="addUploadRiver" style="margin-top: 10px;">上传KMZ</a-button> -->
           </template>
-          <a-button type="primary" block>添加河道</a-button>
+          <a-button type="primary" block @click="del1">添加河道</a-button>
         </a-popover>
       </div>
     </div>
@@ -439,6 +438,7 @@ export default {
       console.log(index)
       delRiver(index)
         .then(res => {
+          this.map.clearOverLays()
           this.$message.success('删除成功')
           this.getList()
         })
@@ -558,40 +558,42 @@ export default {
       }
     },
     uploadSave(data) {
-      ;(this.spotList.id = data.id),
-        (this.spotList.projectId = data.projectId),
-        (this.spotList.code = data.code),
-        (this.spotList.name = data.name),
-        (this.spotList.length = data.length),
-        (this.spotList.dimension = data.dimension),
-        (this.spotList.priority = data.priority),
-        (this.spotList.controller = data.controller),
-        (this.spotList.inspectTimes = data.inspectTimes),
-        (this.spotList.startAddress = data.startAddress),
-        (this.spotList.destAddress = data.destAddress),
-        (this.spotList.normalWaterLevel = data.normalWaterLevel),
-        (this.spotList.highWaterLevel = data.highWaterLevel),
-        (this.spotList.minMouthWidth = data.minMouthWidth),
-        (this.spotList.maxMouthWidth = data.maxMouthWidth),
-        (this.spotList.mouthDimension = data.mouthDimension),
-        (this.spotList.averageDepth = data.averageDepth),
-        (this.spotList.maxDepth = data.maxDepth),
-        (this.spotList.supervisoryLevel = data.supervisoryLevel),
-        (this.spotList.startCoordinate = data.startCoordinate),
-        (this.spotList.destCoordinate = data.destCoordinate),
-        (this.spotList.startZoneId = data.startZoneId),
-        (this.spotList.destZoneId = data.destZoneId),
-        this.$refs.upload.submit()
+      this.spotList.id = data.id
+      this.spotList.projectId = data.projectId
+      this.spotList.code = data.code
+      this.spotList.name = data.name
+      this.spotList.length = data.length
+      this.spotList.dimension = data.dimension
+      this.spotList.priority = data.priority
+      this.spotList.controller = data.controller
+      this.spotList.inspectTimes = data.inspectTimes
+      this.spotList.startAddress = data.startAddress
+      this.spotList.destAddress = data.destAddress
+      this.spotList.normalWaterLevel = data.normalWaterLevel
+      this.spotList.highWaterLevel = data.highWaterLevel
+      this.spotList.minMouthWidth = data.minMouthWidth
+      this.spotList.maxMouthWidth = data.maxMouthWidth
+      this.spotList.mouthDimension = data.mouthDimension
+      this.spotList.averageDepth = data.averageDepth
+      this.spotList.maxDepth = data.maxDepth
+      this.spotList.supervisoryLevel = data.supervisoryLevel
+      this.spotList.startCoordinate = data.startCoordinate
+      this.spotList.destCoordinate = data.destCoordinate
+      this.spotList.startZoneId = data.startZoneId
+      this.spotList.destZoneId = data.destZoneId
+      this.$refs.upload.submit()
     },
     del1() {
+      this.upload = '0'
       this.fileList = []
+      console.log('1');
+      
     },
     handleSuccess(response, file, fileList) {
       this.getList()
       this.$message.success('保存成功')
       this.fileList = []
     },
-    handleRemove(file, fileList) {},
     handlePreview(file) {}
   }
 }

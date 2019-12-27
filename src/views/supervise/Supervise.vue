@@ -1346,9 +1346,14 @@ export default {
     }
   },
   watch: {
-    $route() {
-      this.getTimeQuantum() // 获取时间段
-      this.getRiverStreeList()
+    $route(row) {
+      if (row.hash == '#111') {
+        
+      }else{
+        this.getTimeQuantum() // 获取时间段
+        this.getRiverStreeList()
+      }
+      
     },
     accordionAlertKey(key) {
       console.log(key)
@@ -1993,6 +1998,7 @@ export default {
         this.polygon.setFillOpacity(this.fullOpacity / 100)
         this.polygon.addEventListener('click', this.polygonClick)
       }
+      
       // this.getDrawId()
     },
     //风险源，排口弹窗
@@ -2010,6 +2016,7 @@ export default {
       } else if (this.drawTypeId == '5dafe6c8ea6c159999a0549c') {
         this.$refs.AddFloatage.add(this.mapdrawId, this.currentArea, result)
       }
+      this.drawTypeId =''
     },
     // 绘制取消
     toolCradCancel() {

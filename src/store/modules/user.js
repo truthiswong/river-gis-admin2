@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { login, logout } from '@/api/login'
+import { login, logout,projectMinesTructure } from '@/api/login'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
 
@@ -39,7 +39,16 @@ const user = {
       
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          console.log(response);
+          projectMinesTructure().then(res=>{
+            var arr = res.data
+            for (let i = 0; i < arr.length; i++) {
+              if (arr[i].children.length>0) {
+                window.localStorage.setItem('projectId', JSON.stringify(arr[i].children[0].id))
+                break
+              }
+              
+            }
+          })
           
           const result = response.data
           Vue.ls.set(ACCESS_TOKEN,'Bearer '+ result.token, 7 * 24 * 60 * 60 * 1000)
