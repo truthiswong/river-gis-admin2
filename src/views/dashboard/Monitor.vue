@@ -19,45 +19,43 @@
             </div>
             <!-- 天气 -->
             <div class="weather">
-              <img src="../../assets/sun.png" alt="天气" />
-              <h3>30</h3>
+              <img :src="weatherData.img" alt="天气" />
+              <h3>{{weatherData.temperature}}</h3>
               <div class="text">
                 <div class="top">
                   <span class="degree_logo">℃</span>
-                  <span class="weather_detail">晴(实时)</span>
-                  <span class="date">9月16日 星期一</span>
+                  <span class="weather_detail">{{weatherData.text}}(实时)</span>
+                  <span class="date">{{picker}}</span>
                 </div>
-                <p class="degree">晴转多云 24～29℃</p>
+                <div style="display:flex;justify-content:space-between">
+                  <div class="weather_basic_content">
+                    <img src="../supervise/img/wind.png" alt style="margin-right:5px;height:12px;width:12px" />
+                    <span>{{weatherData.wind_direction}}风 {{weatherData.wind_scale}}级</span>
+                  </div>
+                  <div class="weather_basic_content">
+                    <img src="../supervise/img/cloudiness.png" alt style="margin-right:5px;height:12px;width:12px" />
+                    <span>{{weatherData.clouds}}%</span>
+                  </div>
+                </div>
+                
               </div>
               <div class="weather_right">
-                <a-icon class="right_icon" type="caret-left" />
+                <!-- <a-icon class="right_icon" type="caret-left" /> -->
                 <!-- 天气弹窗 -->
-                <div class="weather_alert">
+                <div class="weather_alert" v-show="false">
                   <div class="weather_content">
                     <div class="weather_basic">
                       <div class="weather_basic_content">
-                        <img
-                          src="../supervise/img/water.png"
-                          alt
-                          style="margin-right:5px;height:12px;width:12px"
-                        />
-                        <span>未来2小时无雨</span>
+                        <img src="../supervise/img/water.png" alt style="margin-right:5px;height:12px;width:12px" />
+                        <span></span>
                       </div>
                       <div class="weather_basic_content">
-                        <img
-                          src="../supervise/img/wind.png"
-                          alt
-                          style="margin-right:5px;height:12px;width:12px"
-                        />
-                        <span>东北风 3级</span>
+                        <img src="../supervise/img/wind.png" alt style="margin-right:5px;height:12px;width:12px" />
+                        <span>{{weatherData.wind_direction}}风 {{weatherData.wind_scale}}级</span>
                       </div>
                       <div class="weather_basic_content">
-                        <img
-                          src="../supervise/img/cloudiness.png"
-                          alt
-                          style="margin-right:5px;height:12px;width:12px"
-                        />
-                        <span>云量数据</span>
+                        <img src="../supervise/img/cloudiness.png" alt style="margin-right:5px;height:12px;width:12px" />
+                        <span>{{weatherData.clouds}}</span>
                       </div>
                     </div>
                     <div class="weather24">
@@ -65,15 +63,11 @@
                         <div>{{item.temperature}}</div>
 
                       </div>-->
-                      <div class="time24" v-for="item in weatherList" :key="item.id">
+                      <!-- <div class="time24" v-for="item in weatherList" :key="item.id">
                         <div style="text-align:center;">{{item.temperature}}</div>
-                        <img
-                          src="../supervise/img/fine.png"
-                          alt
-                          style="margin:12px 5px;height:19px;width:19px"
-                        />
+                        <img src="../supervise/img/fine.png" alt style="margin:12px 5px;height:19px;width:19px" />
                         <div style="text-align:center;">{{item.time}}</div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -1093,6 +1087,7 @@
 
 <script>
 import {
+  weatherList,
   planPage,
   planSave,
   inspectPointPage,
@@ -1308,6 +1303,14 @@ export default {
         teamId:'',
         roleId: []
       },
+      weatherData:{
+        text:'',
+        img:'',
+        temperature:'',
+        wind_direction:'',
+        wind_scale:'',
+        clouds:'',
+      },//天气
       lineLnglats: [],
       markLnglat: {},
       polygonDate: [],
@@ -1432,32 +1435,6 @@ export default {
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.23668, lng: 121.49656 } }
       ],
       addTaskCode: '1',
-      weatherList: [
-        {
-          temperature: '26°',
-          time: '10:00'
-        },
-        {
-          temperature: '27°',
-          time: '12:00'
-        },
-        {
-          temperature: '24°',
-          time: '14:00'
-        },
-        {
-          temperature: '20°',
-          time: '16:00'
-        },
-        {
-          temperature: '16°',
-          time: '18:00'
-        },
-        {
-          temperature: '15°',
-          time: '20:00'
-        }
-      ],
       patrolPlanInfo: [],
       riverList: [],
       asasd: {},
@@ -1897,6 +1874,7 @@ export default {
         return year + '-' + month + '-' + date
       }
       this.picker = formatDate(new Date())
+      this.getWeatherList()
       this.getPlanSave()
     },
     //任务点列表
@@ -1916,7 +1894,113 @@ export default {
         this.rolePage = res.data.data
       })
     },
-
+    //获取天气
+    getWeatherList(){
+      this.weatherData.text = ''
+      this.weatherData.temperature = ''
+      this.weatherData.wind_direction = ''
+      this.weatherData.wind_scale = ''
+      this.weatherData.img = ''
+      this.weatherData.clouds = ''
+      var date =  this.picker.split('-')
+      let data = {
+        date:date[0]+date[1]+date[2],
+        coor:'31.15847:121.43429',
+      }
+      weatherList(data).then(res=>{
+        let arr = res.data
+        console.log(arr);
+        if (arr.code ==0) {
+          this.weatherData.img =  require('../supervise/img/weather/0.png')
+        }else if(arr.code ==1){
+           this.weatherData.img =  require('../supervise/img/weather/1.png')
+        }else if(arr.code ==2){
+           this.weatherData.img =  require('../supervise/img/weather/0.png')
+        }else if(arr.code ==3){
+           this.weatherData.img =  require('../supervise/img/weather/1.png')
+        }else if(arr.code ==4){
+           this.weatherData.img =  require('../supervise/img/weather/4.png')
+        }else if(arr.code ==5){
+           this.weatherData.img =  require('../supervise/img/weather/5.png')
+        }else if(arr.code ==6){
+           this.weatherData.img =  require('../supervise/img/weather/6.png')
+        }else if(arr.code ==7){
+           this.weatherData.img =  require('../supervise/img/weather/5.png')
+        }else if(arr.code ==8){
+           this.weatherData.img =  require('../supervise/img/weather/6.png')
+        }else if(arr.code ==9){
+           this.weatherData.img =  require('../supervise/img/weather/9.png')
+        }else if(arr.code ==10){
+           this.weatherData.img =  require('../supervise/img/weather/10.png')
+        }else if(arr.code ==11){
+           this.weatherData.img =  require('../supervise/img/weather/11.png')
+        }else if(arr.code ==12){
+           this.weatherData.img =  require('../supervise/img/weather/12.png')
+        }else if(arr.code ==13){
+           this.weatherData.img =  require('../supervise/img/weather/13.png')
+        }else if(arr.code ==14){
+           this.weatherData.img =  require('../supervise/img/weather/14.png')
+        }else if(arr.code ==15){
+           this.weatherData.img =  require('../supervise/img/weather/15.png')
+        }else if(arr.code ==16){
+           this.weatherData.img =  require('../supervise/img/weather/16.png')
+        }else if(arr.code ==17){
+           this.weatherData.img =  require('../supervise/img/weather/17.png')
+        }else if(arr.code ==18){
+           this.weatherData.img =  require('../supervise/img/weather/17.png')
+        }else if(arr.code ==19){
+           this.weatherData.img =  require('../supervise/img/weather/19.png')
+        }else if(arr.code ==20){
+           this.weatherData.img =  require('../supervise/img/weather/20.png')
+        }else if(arr.code ==21){
+           this.weatherData.img =  require('../supervise/img/weather/21.png')
+        }else if(arr.code ==22){
+           this.weatherData.img =  require('../supervise/img/weather/22.png')
+        }else if(arr.code ==23){
+           this.weatherData.img =  require('../supervise/img/weather/23.png')
+        }else if(arr.code ==24){
+           this.weatherData.img =  require('../supervise/img/weather/24.png')
+        }else if(arr.code ==25){
+           this.weatherData.img =  require('../supervise/img/weather/25.png')
+        }else if(arr.code ==26){
+           this.weatherData.img =  require('../supervise/img/weather/26.png')
+        }else if(arr.code ==27){
+           this.weatherData.img =  require('../supervise/img/weather/26.png')
+        }else if(arr.code ==28){
+           this.weatherData.img =  require('../supervise/img/weather/28.png')
+        }else if(arr.code ==29){
+           this.weatherData.img =  require('../supervise/img/weather/28.png')
+        }else if(arr.code ==30){
+           this.weatherData.img =  require('../supervise/img/weather/30.png')
+        }else if(arr.code ==31){
+           this.weatherData.img =  require('../supervise/img/weather/31.png')
+        }else if(arr.code ==32){
+           this.weatherData.img =  require('../supervise/img/weather/32.png')
+        }else if(arr.code ==33){
+           this.weatherData.img =  require('../supervise/img/weather/32.png')
+        }else if(arr.code ==34){
+           this.weatherData.img =  require('../supervise/img/weather/34.png')
+        }else if(arr.code ==35){
+           this.weatherData.img =  require('../supervise/img/weather/34.png')
+        }else if(arr.code ==36){
+           this.weatherData.img =  require('../supervise/img/weather/36.png')
+        }else if(arr.code ==37){
+           this.weatherData.img =  require('../supervise/img/weather/37.png')
+        }else if(arr.code ==38){
+           this.weatherData.img =  require('../supervise/img/weather/38.png')
+        }else{
+           this.weatherData.img =  require('../supervise/img/weather/99.png')
+        }
+        this.weatherData.text = arr.text
+        this.weatherData.temperature = arr.temperature
+        this.weatherData.wind_direction = arr.wind_direction
+        this.weatherData.wind_scale = arr.wind_scale
+        this.weatherData.clouds = arr.clouds
+      }).catch(err => {
+        this.$message.error('天气数据不存在');
+      })
+      
+    },
     //--------------------------------------------------------------------------------------------当日计划---------------------------------------
     //计划列表
     getPage() {
@@ -2617,6 +2701,7 @@ export default {
       } else {
         this.loadPoint()
       }
+      this.getWeatherList()
     },
     //选中巡河方案
     selectPatrol() {},
