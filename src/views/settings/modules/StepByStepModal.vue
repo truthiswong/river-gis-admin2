@@ -5,6 +5,7 @@
     :visible="visible"
     :confirmLoading="confirmLoading"
     @cancel="handleCancel"
+    :maskClosable="false"
   >
     <a-spin :spinning="confirmLoading">
       <a-steps :current="currentStep" :style="{ marginBottom: '28px' }" size="small">

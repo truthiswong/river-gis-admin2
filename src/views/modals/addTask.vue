@@ -106,11 +106,10 @@ export default {
       }
     }
   },
-  watch:{
-      msg(e){
-        console.log(e);
-        
-      },
+  watch: {
+    msg(e) {
+      console.log(e)
+    }
   },
   methods: {
     getRoleList() {
@@ -173,7 +172,7 @@ export default {
     addPlanInfo() {
       console.log(this)
       this.msg.isShow = false
-      this.$emit('confirmBtn', "gfgdf")
+      this.$emit('confirmBtn', 'gfgdf')
       var data = this.listAppend
       if (data.locationType == 'point') {
         data.region = this.markLnglat.lng + ',' + this.markLnglat.lat

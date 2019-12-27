@@ -7,6 +7,7 @@
     @ok="saveClick"
     @cancel="handleCancel"
     :forceRender="true"
+    :maskClosable="false"
   >
     <a-spin :spinning="confirmLoading">
       <a-form class="from" :form="form">
