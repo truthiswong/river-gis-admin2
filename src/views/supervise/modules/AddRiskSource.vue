@@ -424,6 +424,8 @@ export default {
         streetId:this.list.streetId,
         typeId:this.list.typeId,
         level:this.list.level,
+        address:this.list.address,
+        polygonSize:this.list.currentArea,
         statement:this.list.statement,
         discoveryTime:this.list.discoveryTime,
         advice:this.list.advice,
@@ -440,7 +442,8 @@ export default {
       })
     },
     addSource(id){
-       this.getList()
+      this.list.drawId = id
+      this.getList()
       this.visible = true
       function formatDate(now) { 
         var year=now.getFullYear() //取得4位数的年份
@@ -458,19 +461,29 @@ export default {
           v.surveyDate = formatDate(new Date(v.surveyDate))
           this.dataSourceId.push(v.id)
         });
+        this.list.code = arr.river.code
+        this.list.controller = arr.river.controller
+        this.list.supervisoryLevel = arr.river.supervisoryLevel.name
+        if (arr.river.priority == true) {
+          this.list.priority='重点'
+        }else if(arr.river.priority == false){
+          this.list.priority='非重点'
+        }
+        this.list.tworiver=arr.street.controller
+        this.list.address=arr.address
         this.dataSource= arr.bill 
         this.list.riverId=arr.river.id
         this.list.streetId=arr.street.id
         this.list.typeId=arr.type.id
         this.list.level=arr.level.code
-        // this.list.tworiver=arr.
+        
         // this.list.supervisoryLevel=arr.
         // this.list.controller=arr.
         // this.list.priority=arr.
         // this.list.lat=arr.
         // this.list.lng=arr.
-        // this.list.drawId=arr.
-        // this.list.currentArea=arr.
+        
+        this.list.currentArea=arr.polygonSize
         this.list.landmarkLocation=arr.landmarkLocation
         this.list.accurateLocation=arr.accurateLocation
         this.list.innerCode=arr.innerCode

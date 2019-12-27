@@ -472,16 +472,25 @@ export default {
     },
     detailList(row){
       this.getList()
-      mapdrawDetail(row.target.options.id).then(res=>{
-        this.list.lng=res.data.point[0]
-        this.list.lat=res.data.point[1]
-      })
+      // mapdrawDetail(row.target.options.id).then(res=>{
+      //   this.list.lng=res.data.point[0]
+      //   this.list.lat=res.data.point[1]
+      // })
       this.list.drawId=row.target.options.id
       dischargeDetails(row.target.options.id).then(res=>{
         var arr = res.data
         this.list.riverId=arr.river.id
         this.list.streetId=arr.street.id
-        this.list.tworiver=arr.tworiver
+        this.list.code = arr.river.code
+        this.list.controller = arr.river.controller
+        this.list.supervisoryLevel = arr.river.supervisoryLevel.name
+        if (arr.river.priority == true) {
+          this.list.priority='重点'
+        }else if(arr.river.priority == false){
+          this.list.priority='非重点'
+        }
+        this.list.tworiver=arr.street.controller
+        this.list.address=arr.address
         // this.list.supervisoryLevel=arr.
         // this.list.controller=arr.
         // this.list.priority=arr.
@@ -518,10 +527,10 @@ export default {
     detailList1(row){
       this.getList()
       this.visible = true
-      mapdrawDetail(row).then(res=>{
-        this.list.lng=res.data.point[0]
-        this.list.lat=res.data.point[1]
-      })
+      // mapdrawDetail(row).then(res=>{
+      //   this.list.lng=res.data.point[0]
+      //   this.list.lat=res.data.point[1]
+      // })
       this.list.drawId=row
       function formatDate(now) { 
         var year=now.getFullYear() //取得4位数的年份
@@ -543,9 +552,16 @@ export default {
         this.list.riverId=arr.river.id
         this.list.streetId=arr.street.id
         this.list.tworiver=arr.tworiver
-        // this.list.supervisoryLevel=arr.
-        // this.list.controller=arr.
-        // this.list.priority=arr.
+        this.list.code = arr.river.code
+        this.list.controller = arr.river.controller
+        this.list.supervisoryLevel = arr.river.supervisoryLevel.name
+        if (arr.river.priority == true) {
+          this.list.priority='重点'
+        }else if(arr.river.priority == false){
+          this.list.priority='非重点'
+        }
+        this.list.tworiver=arr.street.controller
+        this.list.address=arr.address
         this.list.standardCode=arr.standardCode
         this.list.standardName=arr.standardName
         this.list.type=arr.type.code

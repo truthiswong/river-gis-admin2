@@ -37,10 +37,6 @@ export default {
           v.label = v.name
           v.code ='1'
           v.children.forEach(a => {
-            if (a.id =='5da7d092ea6c156d792df816') {
-              this.list.push(v.id)
-              this.list.push(a.id)
-            }
             if (a.children == null) {
               a.children =[]
             }
@@ -49,19 +45,33 @@ export default {
             a.code ='2'
           })
         })
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i].children.length>0) {
+            this.list.push(arr[i].id)
+            this.list.push(arr[i].children[0].id)
+            break
+          }
+          
+        }
         this.options = arr
       })
     },
     onChange(value) {
-      console.log(value);
       if (value.length>1) {
         // console.log(value)
-        // console.log(this.$route.path);
+        console.log(this.$route.path);
+        console.log(this.$route.query);
+        let id = ''
+        if (value[1] == this.$route.query.id) {
+          id = value[1] +'1'
+        }else{
+          id=value[1]
+        }
         this.$store.commit('show',value[1])
         this.$router.push({
           path: this.$route.path,
           query: {
-            id: value[1]
+            id: id
           }
         })
       }else{

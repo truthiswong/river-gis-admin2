@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="风险源信息"
+    :title="name +'信息'"
     :width="450"
     :visible="visible"
     :confirmLoading="confirmLoading"
@@ -18,7 +18,7 @@
         <a-col :span="12">
           <p>内部编码: {{list.innerCode}}</p>
           <p>准确位置: {{list.accurateLocation}}</p>
-          <p>面积: </p>
+          <p v-show="code == 'riskSource'">面积:{{list.polygonSize}} </p>
         </a-col>
         <a-col :span="12">
           <p>风险源类别: {{list.type}}</p>
@@ -31,7 +31,7 @@
       </a-row>
       <a-list
         class="comment-list custom_comment a-list"
-        :header="`${data.length} 条评论`"
+        :header="`${data.length} 条状态`"
         itemLayout="horizontal"
         :dataSource="data"
         size="small"
@@ -40,10 +40,7 @@
         <a-list-item slot="renderItem" slot-scope="item" class="comment_list">
           <a-comment :author="item.author" :avatar="item.avatar">
             <div class="comment_level">
-              <p
-                :class="{'danger_level0': list.level.code == 'three', 'danger_level1': list.level.code == 'two','danger_level2': list.level.code == 'one','danger_level3': list.level.code == 'four'}"
-                v-if="code != 'discharge'"
-              >{{list.dangerDescribe}}</p>
+              <p v-show="code == 'riskSource'" :class="{'danger_level0': item.level == 'three', 'danger_level1': item.level == 'two','danger_level2': item.level == 'one','danger_level3': item.level == 'four'}">{{item.dangerDescribe}}</p>
               <span>{{item.dangerContent}}</span>
             </div>
             <p slot="content" style="ma">{{item.comment}}</p>
@@ -64,6 +61,14 @@
            <a-select defaultValue="yes" v-model="drawList.exist" >
             <a-select-option value="yes">是</a-select-option>
             <a-select-option value="no">否</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="等级" v-show="code == 'riskSource'" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+           <a-select defaultValue="yes" v-model="drawList.level" >
+            <a-select-option value="one">一级 </a-select-option>
+            <a-select-option value="two">二级</a-select-option>
+            <a-select-option value="three">三级</a-select-option>
+            <a-select-option value="four">四级</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="管理建议" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
@@ -107,6 +112,7 @@ import { riskDetails, dischargeDetails, floatageDetails,commentMapdraw,commentMa
 export default {
   data() {
     return {
+      name:'',
       fileList:[],
       code:'',
       file:false,
@@ -123,6 +129,7 @@ export default {
         drawId:'',
         comment:'',
         exist:'',
+        level:'',
       },
       id:'',
       headers: {
@@ -191,7 +198,6 @@ export default {
   computed: {},
   methods: {
     riskInfo(row) {
-      
       this.code= row.target.options.code
       this.id = row.target.options.id
       this.drawList.drawId = row.target.options.id
@@ -205,6 +211,7 @@ export default {
         return year+"-"+month+"-"+date
       }  
       if (row.target.options.code == "riskSource") {
+        this.name = '风险源'
          riskDetails(row.target.options.id).then(res=>{
           let arr = res.data
           arr.discoveryTime = formatDate(new Date( arr.discoveryTime))
@@ -212,23 +219,23 @@ export default {
           if (arr.river != undefined) {
             arr.river = arr.river.name
           }
-          
-          if (arr.level.code =='one') {
-            arr.dangerDescribe ='Ⅰ 级'
-          }
-          if (arr.level.code =='two') {
-            arr.dangerDescribe ='Ⅱ 级'
-          }
-          if (arr.level.code =='three') {
-            arr.dangerDescribe ='Ⅲ 级' 
-          }
-          if (arr.level.code =='four') {
-            arr.dangerDescribe ='Ⅳ 级'
-          }
+          // if (arr.level.code =='one') {
+          //   arr.dangerDescribe ='Ⅰ 级'
+          // }
+          // if (arr.level.code =='two') {
+          //   arr.dangerDescribe ='Ⅱ 级'
+          // }
+          // if (arr.level.code =='three') {
+          //   arr.dangerDescribe ='Ⅲ 级' 
+          // }
+          // if (arr.level.code =='four') {
+          //   arr.dangerDescribe ='Ⅳ 级'
+          // }
           this.list = arr 
         })
       }
       if (row.target.options.code == "discharge") {
+        this.name = '排口'
         dischargeDetails(row.target.options.id).then(res=>{
           let arr = res.data
           arr.discoveryTime = arr.activateTime
@@ -261,10 +268,26 @@ export default {
         res.data.data.forEach(v => {
           v.imgList = Object.values(v.pics)
           v.datetime = formatDate(new Date( v.timeCreated))
+          if (v.level != undefined) {
+            if (v.level.code =='one') {
+              v.dangerDescribe ='Ⅰ 级'
+            }
+            if (v.level.code =='two') {
+              v.dangerDescribe ='Ⅱ 级'
+            }
+            if (v.level.code =='three') {
+              v.dangerDescribe ='Ⅲ 级' 
+            }
+            if (v.level.code =='four') {
+              v.dangerDescribe ='Ⅳ 级'
+            }
+            v.level = v.level.code
+          }
+          
           if (v.exist == true) {
             v.dangerContent = '存在'
           }else{
-             v.dangerContent = '不存在'
+            v.dangerContent = '不存在'
           }
           v.avatar ='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
         });
@@ -315,6 +338,7 @@ export default {
       this.drawList.comment=''
       this.drawList.id = ''
       this.drawList.exist=''
+      this.drawList.level=''
       this.fileList=[]
       this.getCommentMapdraw()
     },
@@ -331,6 +355,7 @@ export default {
       this.attachmentJpg=[]
       this.drawList.comment=''
       this.drawList.exist=''
+      this.drawList.level=''
       this.fileList=[]
       if (row == '1') {
         this.show=false
@@ -342,8 +367,16 @@ export default {
       
     },
     handleCancel() {
+      this.show=true
+      this.show_type=false
+      this.drawList.comment=''
+      this.drawList.id = ''
+      this.drawList.exist=''
+      this.drawList.level=''
       this.list = {}
       this.data =[]
+      this.fileList=[]
+      this.attachmentJpg=[]
       this.visible = false
     }
   }
