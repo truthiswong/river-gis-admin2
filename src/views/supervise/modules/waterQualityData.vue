@@ -7,6 +7,7 @@
     @cancel="handleCancel"
     :forceRender="true"
     :width="1000"
+    :centered="true"
   >
     <el-form :inline="true"  class="demo-form-inline">
       <el-form-item label="断面编号:">

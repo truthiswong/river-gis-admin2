@@ -251,7 +251,13 @@
             <a-select-option value="4">Ⅳ级</a-select-option>
           </a-select>
         </a-collapse-panel>
-        <a-collapse-panel header="风险地图" :style="customStyle" v-show="riskMap" class="custom_list" key="riskMap">
+        <a-collapse-panel
+          header="风险地图"
+          :style="customStyle"
+          v-show="riskMap"
+          class="custom_list"
+          key="riskMap"
+        >
           <a-card size="small" class="custom_card" style="width: 198px">
             <a-row style="width:100%">
               <a-col :span="12">边框颜色</a-col>
@@ -310,7 +316,12 @@
               <a-col :span="10">
                 <a-button @click="riskCradSave" block>保存</a-button>
               </a-col>
-              <a-button v-show="isRiskEdit" style="margin-top:10px;" @click="riskCradDelete" block>删除</a-button>
+              <a-button
+                v-show="isRiskEdit"
+                style="margin-top:10px;"
+                @click="riskCradDelete"
+                block
+              >删除</a-button>
             </a-row>
           </a-card>
           <div class="color_wrap" v-show="colorAlertShow">
@@ -339,7 +350,13 @@
             <a-button style="width:198px;">导入最新水质数据</a-button>
           </el-upload>
         </a-collapse-panel>
-        <a-collapse-panel header="排口" :style="customStyle" v-show="outlet" class="custom_list" key="outlet">
+        <a-collapse-panel
+          header="排口"
+          :style="customStyle"
+          v-show="outlet"
+          class="custom_list"
+          key="outlet"
+        >
           <a-select
             showSearch
             mode="tags"
@@ -3325,7 +3342,7 @@ export default {
     spotDraw(pointLists) {
       let markerTool
       for (const item of pointLists) {
-        markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id,code:item.innerType.code })
+        markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
         this.map.addOverLay(markerTool)
         if (item.innerType.code == 'riskSource') {
           markerTool.addEventListener('click', this.sourceRiskClick)
@@ -3337,7 +3354,7 @@ export default {
       }
     },
     //绘制线
-    lineDraw(points, color, weight, opacity, id, name,code) {
+    lineDraw(points, color, weight, opacity, id, name, code) {
       let line = new T.Polyline(points, {
         color: color, //线颜色
         weight: weight, //线宽
@@ -3395,7 +3412,6 @@ export default {
     // 河岸风险源
     onRiverRisk() {
       if (this.riverRisk) {
-
       } else {
         let data = []
         for (const item of this.drawPage) {
@@ -3620,7 +3636,15 @@ export default {
             offset: new T.Point(35, 45), //显示图片的偏移量
             textColor: '#000000', //显示数字的颜色
             textSize: 8, //显示文字的大小
-            range: [0, 50]
+            range: [0, 2]
+          },
+          {
+            url: item.imgUrl,
+            size: [70, 45], //图片大小
+            offset: new T.Point(35, 45), //显示图片的偏移量
+            textColor: '#ffffff', //显示数字的颜色
+            textSize: 8, //显示文字的大小
+            range: [2, 400]
           }
         ]
         let marker = new T.Marker(item.latlng, { icon: icon, id: item.id, title: item.name })
@@ -3678,12 +3702,8 @@ export default {
         console.log(this.phonePhotoPoints)
         console.log(this.phonePhotoPointsList)
         // 获取后重新绘制
-        for (const overlay of this.map.getOverlays()) {
-          for (const item of this.phonePhotoPoints) {
-            if (item.id == overlay.options.id) {
-              this.map.removeOverLay(overlay)
-            }
-          }
+        if (this.MarkerClusterer) {
+          this.MarkerClusterer.removeMarkers(this.MarkerClusterer.options.markers)
         }
         this.allImageTask(this.phonePhotoPoints)
       })
@@ -3767,12 +3787,8 @@ export default {
                   }
                 }
                 // 获取后重新绘制
-                for (const overlay of this.map.getOverlays()) {
-                  for (const item of this.phonePhotoPoints) {
-                    if (item.id == overlay.options.id) {
-                      this.map.removeOverLay(overlay)
-                    }
-                  }
+                if (this.MarkerClusterer) {
+                  this.MarkerClusterer.removeMarkers(this.MarkerClusterer.options.markers)
                 }
                 this.allImageTask(this.phonePhotoPoints)
               })
