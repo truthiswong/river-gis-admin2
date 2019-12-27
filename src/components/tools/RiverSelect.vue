@@ -54,11 +54,9 @@ export default {
     },
     onChange(value) {
       console.log(value);
-      
       if (value.length>1) {
         // console.log(value)
         // console.log(this.$route.path);
-        
         this.$store.commit('show',value[1])
         this.$router.push({
           path: this.$route.path,
