@@ -1324,7 +1324,8 @@ export default {
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24304, lng: 121.49392 } },
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.2645, lng: 121.49356 } }
       ],
-      drawPage: []
+      drawPage: [],
+      screenshotdataUrl: ''
     }
   },
   watch: {
@@ -1446,16 +1447,21 @@ export default {
       var data = {
         type: 'draw_type'
       }
-      paramList(data).then(res => {
+      paramList(data)
+        .then(res => {
           this.paramPage = res.data
           var arr = []
           for (const item of res.data) {
             item.clicked = false
-            if (item.id != '5da8374dea6c157d2d61007c' &&item.id != '5da8389eea6c157d2d61007f' &&item.id != '5dafe6c8ea6c159999a0549c') {
+            if (
+              item.id != '5da8374dea6c157d2d61007c' &&
+              item.id != '5da8389eea6c157d2d61007f' &&
+              item.id != '5dafe6c8ea6c159999a0549c'
+            ) {
               arr.push(item)
             }
           }
-          console.log(arr);
+          console.log(arr)
           this.otherList = arr
         })
         .catch(err => {
@@ -1710,7 +1716,7 @@ export default {
         .catch(err => {})
     },
     //获取基础绘制数据
-    getMapDrawPage(){
+    getMapDrawPage() {
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
@@ -1749,10 +1755,9 @@ export default {
       })
     },
     //基础绘制保存刷新基础绘制列表
-    drawSaveRefresh(){
+    drawSaveRefresh() {
       this.removeOverLays(this.drawPage)
       this.getMapDrawPage()
-      
     },
     initMap() {
       // this.map = new Map({
@@ -2288,11 +2293,7 @@ export default {
       htmlToImage
         .toPng(node, { width: mapWidth, height: mapHeight })
         .then(dataUrl => {
-          var link = document.createElement('a')
-          link.download = 'map' + this.getNowTime() + '.png'
-          link.href = dataUrl
-          link.click()
-          link.remove()
+          this.downloadFile('map' + this.getNowTime() + '.png', dataUrl)
           setTimeout(() => {
             this.canDownload = true
           }, 1500)
@@ -2300,6 +2301,27 @@ export default {
         .catch(function(error) {
           console.error('oops, something went wrong!', error)
         })
+    },
+    downloadFile(fileName, content) {
+      let aLink = document.createElement('a')
+      let blob = this.base64ToBlob(content) //new Blob([content]);
+      let evt = document.createEvent('HTMLEvents')
+      evt.initEvent('click', true, true) //initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为
+      aLink.download = fileName
+      aLink.href = URL.createObjectURL(blob)
+      aLink.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window })) //兼容火狐
+    },
+    //base64转blob
+    base64ToBlob(code) {
+      let parts = code.split(';base64,')
+      let contentType = parts[0].split(':')[1]
+      let raw = window.atob(parts[1])
+      let rawLength = raw.length
+      let uInt8Array = new Uint8Array(rawLength)
+      for (let i = 0; i < rawLength; ++i) {
+        uInt8Array[i] = raw.charCodeAt(i)
+      }
+      return new Blob([uInt8Array], { type: contentType })
     },
     // 获取当前时间
     getNowTime() {
@@ -3353,9 +3375,9 @@ export default {
       }
     },
     // 水土流失
-    onWaterLandLoss(id,clicked) {
-      console.log(id,clicked)
-       if (clicked) {
+    onWaterLandLoss(id, clicked) {
+      console.log(id, clicked)
+      if (clicked) {
         let point = []
         for (const item of this.drawPage) {
           if (item.drawType.id == id) {
