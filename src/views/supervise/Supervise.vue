@@ -129,7 +129,6 @@
             <span>{{weatherData.clouds}}%</span>
           </div>
         </div>
-        
       </div>
       <div class="weather_right">
         <!-- <a-icon class="right_icon" type="caret-left" /> -->
@@ -944,14 +943,14 @@ export default {
         month: '',
         day: ''
       },
-      weatherData:{
-        text:'',
-        img:'',
-        temperature:'',
-        wind_direction:'',
-        wind_scale:'',
-        clouds:'',
-      },//天气
+      weatherData: {
+        text: '',
+        img: '',
+        temperature: '',
+        wind_direction: '',
+        wind_scale: '',
+        clouds: ''
+      }, //天气
       fileList: [], //手机照片
       defaultTime: '', //默认日期
       otherList: [], //其他
@@ -2220,111 +2219,112 @@ export default {
       })
     },
     //获取天气
-    getWeatherList(){
+    getWeatherList() {
       this.weatherData.text = ''
       this.weatherData.temperature = ''
       this.weatherData.wind_direction = ''
       this.weatherData.wind_scale = ''
       this.weatherData.img = ''
       this.weatherData.clouds = ''
-      var date =  this.defaultTime.split('-')
+      var date = this.defaultTime.split('-')
       let data = {
-        date:date[0]+date[1]+date[2],
-        coor:'31.15847:121.43429',
+        date: date[0] + date[1] + date[2],
+        coor: '31.15847:121.43429'
       }
-      weatherList(data).then(res=>{
-        let arr = res.data
-        console.log(arr);
-        if (arr.code ==0) {
-          this.weatherData.img =  require('./img/weather/0.png')
-        }else if(arr.code ==1){
-           this.weatherData.img =  require('./img/weather/1.png')
-        }else if(arr.code ==2){
-           this.weatherData.img =  require('./img/weather/0.png')
-        }else if(arr.code ==3){
-           this.weatherData.img =  require('./img/weather/1.png')
-        }else if(arr.code ==4){
-           this.weatherData.img =  require('./img/weather/4.png')
-        }else if(arr.code ==5){
-           this.weatherData.img =  require('./img/weather/5.png')
-        }else if(arr.code ==6){
-           this.weatherData.img =  require('./img/weather/6.png')
-        }else if(arr.code ==7){
-           this.weatherData.img =  require('./img/weather/5.png')
-        }else if(arr.code ==8){
-           this.weatherData.img =  require('./img/weather/6.png')
-        }else if(arr.code ==9){
-           this.weatherData.img =  require('./img/weather/9.png')
-        }else if(arr.code ==10){
-           this.weatherData.img =  require('./img/weather/10.png')
-        }else if(arr.code ==11){
-           this.weatherData.img =  require('./img/weather/11.png')
-        }else if(arr.code ==12){
-           this.weatherData.img =  require('./img/weather/12.png')
-        }else if(arr.code ==13){
-           this.weatherData.img =  require('./img/weather/13.png')
-        }else if(arr.code ==14){
-           this.weatherData.img =  require('./img/weather/14.png')
-        }else if(arr.code ==15){
-           this.weatherData.img =  require('./img/weather/15.png')
-        }else if(arr.code ==16){
-           this.weatherData.img =  require('./img/weather/16.png')
-        }else if(arr.code ==17){
-           this.weatherData.img =  require('./img/weather/17.png')
-        }else if(arr.code ==18){
-           this.weatherData.img =  require('./img/weather/17.png')
-        }else if(arr.code ==19){
-           this.weatherData.img =  require('./img/weather/19.png')
-        }else if(arr.code ==20){
-           this.weatherData.img =  require('./img/weather/20.png')
-        }else if(arr.code ==21){
-           this.weatherData.img =  require('./img/weather/21.png')
-        }else if(arr.code ==22){
-           this.weatherData.img =  require('./img/weather/22.png')
-        }else if(arr.code ==23){
-           this.weatherData.img =  require('./img/weather/23.png')
-        }else if(arr.code ==24){
-           this.weatherData.img =  require('./img/weather/24.png')
-        }else if(arr.code ==25){
-           this.weatherData.img =  require('./img/weather/25.png')
-        }else if(arr.code ==26){
-           this.weatherData.img =  require('./img/weather/26.png')
-        }else if(arr.code ==27){
-           this.weatherData.img =  require('./img/weather/26.png')
-        }else if(arr.code ==28){
-           this.weatherData.img =  require('./img/weather/28.png')
-        }else if(arr.code ==29){
-           this.weatherData.img =  require('./img/weather/28.png')
-        }else if(arr.code ==30){
-           this.weatherData.img =  require('./img/weather/30.png')
-        }else if(arr.code ==31){
-           this.weatherData.img =  require('./img/weather/31.png')
-        }else if(arr.code ==32){
-           this.weatherData.img =  require('./img/weather/32.png')
-        }else if(arr.code ==33){
-           this.weatherData.img =  require('./img/weather/32.png')
-        }else if(arr.code ==34){
-           this.weatherData.img =  require('./img/weather/34.png')
-        }else if(arr.code ==35){
-           this.weatherData.img =  require('./img/weather/34.png')
-        }else if(arr.code ==36){
-           this.weatherData.img =  require('./img/weather/36.png')
-        }else if(arr.code ==37){
-           this.weatherData.img =  require('./img/weather/37.png')
-        }else if(arr.code ==38){
-           this.weatherData.img =  require('./img/weather/38.png')
-        }else{
-           this.weatherData.img =  require('./img/weather/99.png')
-        }
-        this.weatherData.text = arr.text
-        this.weatherData.temperature = arr.temperature
-        this.weatherData.wind_direction = arr.wind_direction
-        this.weatherData.wind_scale = arr.wind_scale
-        this.weatherData.clouds = arr.clouds
-      }).catch(err => {
-        this.$message.error('天气数据不存在');
-      })
-      
+      weatherList(data)
+        .then(res => {
+          let arr = res.data
+          console.log(arr)
+          if (arr.code == 0) {
+            this.weatherData.img = require('./img/weather/0.png')
+          } else if (arr.code == 1) {
+            this.weatherData.img = require('./img/weather/1.png')
+          } else if (arr.code == 2) {
+            this.weatherData.img = require('./img/weather/0.png')
+          } else if (arr.code == 3) {
+            this.weatherData.img = require('./img/weather/1.png')
+          } else if (arr.code == 4) {
+            this.weatherData.img = require('./img/weather/4.png')
+          } else if (arr.code == 5) {
+            this.weatherData.img = require('./img/weather/5.png')
+          } else if (arr.code == 6) {
+            this.weatherData.img = require('./img/weather/6.png')
+          } else if (arr.code == 7) {
+            this.weatherData.img = require('./img/weather/5.png')
+          } else if (arr.code == 8) {
+            this.weatherData.img = require('./img/weather/6.png')
+          } else if (arr.code == 9) {
+            this.weatherData.img = require('./img/weather/9.png')
+          } else if (arr.code == 10) {
+            this.weatherData.img = require('./img/weather/10.png')
+          } else if (arr.code == 11) {
+            this.weatherData.img = require('./img/weather/11.png')
+          } else if (arr.code == 12) {
+            this.weatherData.img = require('./img/weather/12.png')
+          } else if (arr.code == 13) {
+            this.weatherData.img = require('./img/weather/13.png')
+          } else if (arr.code == 14) {
+            this.weatherData.img = require('./img/weather/14.png')
+          } else if (arr.code == 15) {
+            this.weatherData.img = require('./img/weather/15.png')
+          } else if (arr.code == 16) {
+            this.weatherData.img = require('./img/weather/16.png')
+          } else if (arr.code == 17) {
+            this.weatherData.img = require('./img/weather/17.png')
+          } else if (arr.code == 18) {
+            this.weatherData.img = require('./img/weather/17.png')
+          } else if (arr.code == 19) {
+            this.weatherData.img = require('./img/weather/19.png')
+          } else if (arr.code == 20) {
+            this.weatherData.img = require('./img/weather/20.png')
+          } else if (arr.code == 21) {
+            this.weatherData.img = require('./img/weather/21.png')
+          } else if (arr.code == 22) {
+            this.weatherData.img = require('./img/weather/22.png')
+          } else if (arr.code == 23) {
+            this.weatherData.img = require('./img/weather/23.png')
+          } else if (arr.code == 24) {
+            this.weatherData.img = require('./img/weather/24.png')
+          } else if (arr.code == 25) {
+            this.weatherData.img = require('./img/weather/25.png')
+          } else if (arr.code == 26) {
+            this.weatherData.img = require('./img/weather/26.png')
+          } else if (arr.code == 27) {
+            this.weatherData.img = require('./img/weather/26.png')
+          } else if (arr.code == 28) {
+            this.weatherData.img = require('./img/weather/28.png')
+          } else if (arr.code == 29) {
+            this.weatherData.img = require('./img/weather/28.png')
+          } else if (arr.code == 30) {
+            this.weatherData.img = require('./img/weather/30.png')
+          } else if (arr.code == 31) {
+            this.weatherData.img = require('./img/weather/31.png')
+          } else if (arr.code == 32) {
+            this.weatherData.img = require('./img/weather/32.png')
+          } else if (arr.code == 33) {
+            this.weatherData.img = require('./img/weather/32.png')
+          } else if (arr.code == 34) {
+            this.weatherData.img = require('./img/weather/34.png')
+          } else if (arr.code == 35) {
+            this.weatherData.img = require('./img/weather/34.png')
+          } else if (arr.code == 36) {
+            this.weatherData.img = require('./img/weather/36.png')
+          } else if (arr.code == 37) {
+            this.weatherData.img = require('./img/weather/37.png')
+          } else if (arr.code == 38) {
+            this.weatherData.img = require('./img/weather/38.png')
+          } else {
+            this.weatherData.img = require('./img/weather/99.png')
+          }
+          this.weatherData.text = arr.text
+          this.weatherData.temperature = arr.temperature
+          this.weatherData.wind_direction = arr.wind_direction
+          this.weatherData.wind_scale = arr.wind_scale
+          this.weatherData.clouds = arr.clouds
+        })
+        .catch(err => {
+          this.$message.error('天气数据不存在')
+        })
     },
     // 时间轴
     timeLineItem(mouth) {
@@ -3091,176 +3091,95 @@ export default {
             markerTool.addEventListener('click', this.waterQualityClick)
           } else {
             markerTool.addEventListener('click', function() {
-              var html =
-                "<div style='margin:0px;height: 300px;overflow-y: scroll;'>" +
-                "<div style='line-height:30px;font-size:14px;margin-bottom:5px; '>" +
-                "<span style='font-weight:400'>水体名称:" +
-                item.name +
-                '</span>' +
-                "<span style='margin-left:50px'>" +
-                item.date +
-                '</span>' +
-                "<div style='border-bottom:1px #c3c3c3 solid'>断面名称:" +
-                item.sectionName +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>PH值:" +
-                item.ph +
-                '</span>' +
-                "<span style='width:150px'>溶解氧:" +
-                item.do +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>氨氮:" +
-                item.nh3N +
-                'mg/L</span>' +
-                "<span style='width:150px'>总磷:" +
-                item.tp +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>高锰酸盐指数:" +
-                item.kmnO +
-                'mg/L</span>' +
-                "<span style='width:150px'>透明度:" +
-                item.opacity +
-                'cm</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>氧化还原电位:" +
-                item.orp +
-                'mv</span>' +
-                "<span style='width:150px'>铜:" +
-                item.cu +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>化学需氧量:" +
-                item.cod +
-                'mg/L</span>' +
-                "<span style='width:150px'>锌:" +
-                item.zn +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>五日生化需氧量:" +
-                item.bod +
-                'mg/L</span>' +
-                "<span style='width:150px'>硒:" +
-                item.se +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>总氮:" +
-                item.tn +
-                'mg/L</span>' +
-                "<span style='width:150px'>氟化物:" +
-                item.pmsf +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>砷:" +
-                item.as +
-                'mg/L</span>' +
-                "<span style='width:150px'>汞:" +
-                item.hg +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>镉:" +
-                item.cd +
-                'mg/L</span>' +
-                "<span style='width:150px'>六价铬:" +
-                item.cr +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>铅:" +
-                item.pb +
-                'mg/L</span>' +
-                "<span style='width:150px'>总氰化物:" +
-                item.cyanide +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>挥发酚:" +
-                item.phenol +
-                'mg/L</span>' +
-                "<span style='width:150px'>石油类:" +
-                item.petroleum +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>阴离子表面活性剂:" +
-                item.las +
-                'mg/L</span>' +
-                "<span style='width:150px'>铁:" +
-                item.fe +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>硫化物:" +
-                item.sox +
-                'mg/L</span>' +
-                "<span style='width:150px'>硫酸盐:" +
-                item.sulfate +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>粪大肠菌群:" +
-                item.coliform +
-                '个/L</span>' +
-                "<span style='width:150px'>锰:" +
-                item.mn +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>氯化物:" +
-                item.ci +
-                'mg/L</span>' +
-                "<span style='width:150px'>硝酸盐氮:" +
-                item.nitrate +
-                'mg/L</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>亚硝酸盐氮:" +
-                item.nitrite +
-                'mg/L</span>' +
-                "<span style='width:150px'>浊度:" +
-                item.turbidity +
-                'NTO</span>' +
-                '</div>' +
-                "<div style='display: flex;justify-content:space-around'>" +
-                "<span style='width:180px'>盐度:" +
-                item.salinity +
-                '%</span>' +
-                "<span style='width:150px'>水温:" +
-                item.temperature +
-                '℃</span>' +
-                '</div>' +
-                "<div'>" +
-                "<span style='width:180px'>流速:" +
-                item.velocity +
-                'm/s</span>' +
-                '</div>' +
-                '<div>' +
-                "<span style='width:300px'>水质评价:" +
-                item.quality +
-                '</span>' +
-                '</div>' +
-                '<div>' +
-                "<span style='width:300px'>黑臭评价:" +
-                item.suncus +
-                '</span>' +
-                '</div>' +
-                '<div>' +
-                "<span style='width:300px'>备注:" +
-                item.remark +
-                '</span>' +
-                '</div>' +
-                '</div>' +
-                '</div>'
+              var html = `
+                <div style='margin:0px;height: 300px;overflow-y: scroll;'>
+                  <div style='line-height:30px;font-size:14px;margin-bottom:5px; '>
+                    <span style='font-weight:400'>水体名称: ${item.name}</span>
+                    <span style='margin-left:50px'>${item.date}</span>
+                    <div style='border-bottom:1px #c3c3c3 solid'>断面名称: ${item.sectionName}</div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>PH值: ${item.ph}</span>
+                      <span style='width:150px'>溶解氧: ${item.do}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>氨氮: ${item.nh3N}mg/L</span>
+                      <span style='width:150px'>总磷: ${item.tp}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>高锰酸盐指数: ${item.kmnO}mg/L</span>
+                      <span style='width:150px'>透明度: ${item.opacity}cm</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>氧化还原电位: ${item.orp}mv</span>
+                      <span style='width:150px'>铜: ${item.cu}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>化学需氧量: ${item.cod}mg/L</span>
+                      <span style='width:150px'>锌: ${item.zn}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>五日生化需氧量: ${item.bod}mg/L</span>
+                      <span style='width:150px'>硒: ${item.se}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>总氮: ${item.tn}mg/L</span>
+                      <span style='width:150px'>氟化物: ${item.pmsf}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>砷: ${item.as}mg/L</span>
+                      <span style='width:150px'>汞: ${item.hg}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>镉: ${item.cd}mg/L</span>
+                      <span style='width:150px'>六价铬: ${item.cr}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>铅: ${item.pb}mg/L</span>
+                      <span style='width:150px'>总氰化物: ${item.cyanide}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>挥发酚: ${item.phenol}mg/L</span>
+                      <span style='width:150px'>石油类: ${item.petroleum}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>阴离子表面活性剂: ${item.las}mg/L</span>
+                      <span style='width:150px'>铁: ${item.fe}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>硫化物: ${item.sox}mg/L</span>
+                      <span style='width:150px'>硫酸盐: ${item.sulfate}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>粪大肠菌群: ${item.coliform}个/L</span>
+                      <span style='width:150px'>锰: ${item.mn}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>氯化物: ${item.ci}mg/L</span>
+                      <span style='width:150px'>硝酸盐氮: ${item.nitrate}mg/L</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>亚硝酸盐氮: ${item.nitrite}mg/L</span>
+                      <span style='width:150px'>浊度: ${item.turbidity}NTO</span>
+                    </div>
+                    <div style='display: flex;justify-content:space-around'>
+                      <span style='width:180px'>盐度: ${item.salinity}%</span>
+                      <span style='width:150px'>水温: ${item.temperature}℃</span>
+                    </div>
+                    <div>
+                      <span style='width:180px'>流速: ${item.velocity}m/s</span>
+                    </div>
+                    <div>
+                      <span style='width:300px'>水质评价: ${item.quality}</span>
+                    </div>
+                    <div>
+                      <span style='width:300px'>黑臭评价: ${item.suncus}</span>
+                    </div>
+                    <div>
+                      <span style='width:300px'>备注: ${item.remark}</span>
+                    </div>
+                  </div>
+                </div>
+              `
               var infoWin = new T.InfoWindow(html)
               markerTool.openInfoWindow(infoWin)
             })
