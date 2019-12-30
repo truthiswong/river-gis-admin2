@@ -135,7 +135,7 @@
       <span>{{defaultRiver}}</span>
     </div>
     <!-- 添加河流 -->
-    <add-river ref="addRiver" :inputName="addList"></add-river>
+    <add-river ref="addRiver" :inputName="addList" @cancel="cancelClick" @confirm="confirmClick"></add-river>
   </div>
 </template>
 
@@ -222,7 +222,7 @@ export default {
     }
   },
   watch: {
-    $route(){
+    $route() {
       this.getList()
       this.getStreetShowList()
     },
@@ -296,7 +296,6 @@ export default {
     },
     // 街道列表
     getStreetShowList() {
-      console.log('66666')
       getStreetList(this.$store.state.id)
         .then(res => {
           let arr = res.data.data
@@ -451,39 +450,41 @@ export default {
     // 绘制按钮
     addDrawRiver() {
       //创建标注工具对象
+      if (this.polygonTool) this.polygonTool.close()
       this.polygonTool = new T.PolygonTool(this.map, {
         showLabel: true,
         color: 'blue',
         weight: 3,
         opacity: 0.5,
         fillColor: '#FFFFFF',
-        fillOpacity: 0.3
+        fillOpacity: 0.3,
+        showLabel: false
       })
-      if (this.polylineHandler) this.polylineHandler.close()
-      this.polylineHandler = new T.PolylineTool(this.map)
-      this.polylineHandler.open()
-      this.polylineHandler.setTips(`<p style="padding:0px;">单击确认起点, 双击结束绘制</p>`)
+      this.polygonTool.open()
+      this.polygonTool.setTips(`<p style="padding:0px;">单击确认起点, 双击结束绘制</p>`)
       this.$notification.warning({
         message: '提示',
         description: '请在地图上将河道绘制出来'
       })
       this.addRiverShow = false
-      this.polylineHandler.addEventListener('draw', this.addDrawRivered)
-      this.polylineHandler.addEventListener('addpoint', this.addDrawRivering)
-    },
-    addDrawRivering(e) {
-      console.log(e)
+      this.polygonTool.addEventListener('draw', this.addDrawRivered)
     },
     // 绘制完成
     addDrawRivered(e) {
-      console.log(e)
       console.log(e.currentLnglats)
       //创建面对象
-      // this.map.clearOverLays() //将之前绘制的清除
-      this.polylineHandler.clear() //清除之前绘制的多边形
-      this.setPolylineFn(e.currentLnglats, 'blue', 3, 0.5, 0)
       this.$refs.addRiver.add(e.currentLnglats)
     },
+    // 绘制取消
+    cancelClick() {
+      if (this.polygonTool) {
+        for (const item of this.polygonTool.getPolygons()) {
+          this.map.removeOverLay(item)
+        }
+      }
+    },
+    // 绘制确定
+    confirmClick() {},
     // 设置绘制的多边形
     setPolylineFn(lineData, color, weight, opacity, fillOpacity, title, id) {
       this.polygon = new T.Polygon(lineData, {
@@ -586,8 +587,6 @@ export default {
     del1() {
       this.upload = '0'
       this.fileList = []
-      console.log('1');
-      
     },
     handleSuccess(response, file, fileList) {
       this.getList()
