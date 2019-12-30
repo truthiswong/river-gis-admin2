@@ -7,16 +7,17 @@ import qs from 'qs'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 let baseUrl
+console.log('地址url')
 console.log(process.env.VUE_APP_TITLE)
 switch (process.env.VUE_APP_TITLE) {
   case 'test':
-      baseUrl = "http://jleco.jl-shgroup.com"  //这里是测试环境中的url
-      break
+    baseUrl = "http://jleco.jl-shgroup.com" //这里是测试环境中的url
+    break
   case 'prod':
-      baseUrl = "http://jleco-river.jl-shgroup.com"   //生产环境url
-      break
+    baseUrl = "http://jleco-river.jl-shgroup.com" //生产环境url
+    break
   default:
-      baseUrl = "/"  //这里是本地的请求url
+    baseUrl = "/" //这里是本地的请求url
 }
 
 // 创建 axios 实例
@@ -25,10 +26,10 @@ const service = axios.create({
   baseURL: baseUrl, // api base_url
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
-    'X-TENANT-ID':'jl:jlgis@2019',
-    lang:'zh_CN'
+    'X-TENANT-ID': 'jl:jlgis@2019',
+    lang: 'zh_CN'
   },
-  timeout: 30000 ,// 请求超时时间
+  timeout: 30000, // 请求超时时间
   transformRequest: [function (data, headers) {
     // 可以对data做任何操作
     data = qs.stringify(data)
@@ -81,7 +82,7 @@ service.interceptors.response.use((response) => {
 
 const installer = {
   vm: {},
-  install (Vue) {
+  install(Vue) {
     Vue.use(VueAxios, service)
   }
 }
