@@ -295,6 +295,7 @@ export default {
       this.list.originalCode = ''
       this.list.remark = ''
       this.list.address = ''
+      this.$emit('cancel')
     },
     filter(inputValue, path) {
       return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1)

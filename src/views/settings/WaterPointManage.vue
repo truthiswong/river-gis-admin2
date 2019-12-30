@@ -141,7 +141,7 @@
       <span>{{defaultRiver}}</span>
     </div>
     <!-- 添加 -->
-    <add-water-point ref="addWaterPoint" :pointInfo="pointInfo"></add-water-point>
+    <add-water-point ref="addWaterPoint" :pointInfo="pointInfo" @cancel="cancelClick" @confirm="confirmClick"></add-water-point>
   </div>
 </template>
 
@@ -355,10 +355,10 @@ export default {
         iconSize: new T.Point(41, 40),
         iconAnchor: new T.Point(21, 40)
       })
-      let markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
-      markerTool.open()
-      markerTool.getMarkers()
-      markerTool.addEventListener('mouseup', this.addTaskFixedPointed)
+      this.markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
+      this.markerTool.open()
+      this.markerTool.getMarkers()
+      this.markerTool.addEventListener('mouseup', this.addTaskFixedPointed)
     },
     addTaskFixedPointed(e) {
       this.$refs.addWaterPoint.add(e.currentLnglat, this.type)
@@ -371,17 +371,26 @@ export default {
         iconSize: new T.Point(41, 40),
         iconAnchor: new T.Point(21, 40)
       })
-      let markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
-      markerTool.open()
-      markerTool.getMarkers()
-      markerTool.addEventListener('mouseup', this.addTaskPeoplePointed)
+      this.markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
+      this.markerTool.open()
+      this.markerTool.getMarkers()
+      this.markerTool.addEventListener('mouseup', this.addTaskPeoplePointed)
     },
     // 返回标注点的坐标
     addTaskPeoplePointed(e) {
       this.$refs.addWaterPoint.add(e.currentLnglat, this.type)
       console.log(e)
     },
-
+    // 绘制取消
+    cancelClick() {
+      if (this.markerTool) {
+        for (const item of this.markerTool.getMarkers()) {
+          this.map.removeOverLay(item)
+        }
+      }
+    },
+    // 绘制确定
+    confirmClick() {},
     // tab切换
     callback(key) {
       let arr = []
