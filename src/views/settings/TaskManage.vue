@@ -79,7 +79,7 @@
             <template slot="title">
               <span>更多</span>
             </template>
-            <img src="../../assets/img/more.png" alt="更多" title="更多" />
+            <img src="../../assets/img/more.png" alt="更多" title="更多" @click="onMoreLoad" />
           </a-popover>
         </li>
       </ul>
@@ -335,7 +335,11 @@
                             style="margin-right:10px;"
                             @click="choosePointEdit(item.id)"
                           >编辑</a-button>
-                          <a-button size="small" type="primary" @click="chooseTask(item.id)">{{item.pointListName}}</a-button>
+                          <a-button
+                            size="small"
+                            type="primary"
+                            @click="chooseTask(item.id)"
+                          >{{item.pointListName}}</a-button>
                         </a-col>
                       </a-row>
                     </template>
@@ -614,6 +618,7 @@ export default {
   },
   data() {
     return {
+      moreLoadOnce: 0, // 更多加载一次
       mapType: 'b', // 地图类型
       roadWordChange: true, // 道路标注
       mapLayerWord: '', // 道路层级
@@ -680,7 +685,7 @@ export default {
         roleNum: ''
       },
       headers: {
-        Authorization: '',
+        Authorization: Vue.ls.get(ACCESS_TOKEN),
         'X-TENANT-ID': 'jl:jlgis@2019'
       },
       addRiverShow: false, // 气泡卡片
@@ -764,13 +769,9 @@ export default {
 
     this.getLineList() // 获取线路任务
     this.getList() // 获取点列表
-    this.getRiverStreeList() //获取街道河道
     this.getRoleList()
     this.riverListGet()
     this.getStructDeviceList()
-    this.headers.Authorization = Vue.ls.get(ACCESS_TOKEN)
-    this.getFixedList() // 获取固定监测点
-    this.getManualList() // 获取人工监测点
   },
   watch: {
     $route() {
@@ -882,6 +883,15 @@ export default {
         var arr = res.data
         this.equipmentList = arr
       })
+    },
+    // 点击更多
+    onMoreLoad() {
+      if (!this.moreLoadOnce) {
+        this.getRiverStreeList() //获取街道河道
+        this.getFixedList() // 获取固定监测点
+        this.getManualList() // 获取人工监测点
+        this.moreLoadOnce++
+      }
     },
     //河道列表
     riverListGet() {
