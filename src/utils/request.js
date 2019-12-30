@@ -7,12 +7,13 @@ import qs from 'qs'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 let baseUrl
+console.log(process.env.VUE_APP_TITLE)
 switch (process.env.VUE_APP_TITLE) {
   case 'test':
-      baseUrl = "http://jleco.jl-shgroup.com/server/"  //这里是测试环境中的url
+      baseUrl = "http://jleco.jl-shgroup.com"  //这里是测试环境中的url
       break
   case 'prod':
-      baseUrl = "http://jleco-river.jl-shgroup.com/server/"   //生产环境url
+      baseUrl = "http://jleco-river.jl-shgroup.com"   //生产环境url
       break
   default:
       baseUrl = "/"  //这里是本地的请求url
