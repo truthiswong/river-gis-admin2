@@ -95,36 +95,6 @@ export default {
         //   id: 0,
         //   name: '黄浦江',
         //   clicked: true
-        // },
-        // {
-        //   id: 1,
-        //   name: '大治河',
-        //   clicked: false
-        // },
-        // {
-        //   id: 2,
-        //   name: '川杨河',
-        //   clicked: false
-        // },
-        // {
-        //   id: 3,
-        //   name: '蕰藻浜',
-        //   clicked: false
-        // },
-        // {
-        //   id: 4,
-        //   name: '龙华港',
-        //   clicked: false
-        // },
-        // {
-        //   id: 5,
-        //   name: '太浦河',
-        //   clicked: false
-        // },
-        // {
-        //   id: 6,
-        //   name: '太湖',
-        //   clicked: false
         // }
       ],
       visible: false,
