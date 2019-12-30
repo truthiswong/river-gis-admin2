@@ -13,10 +13,10 @@
           <a-input
             size="large"
             type="text"
-            placeholder="账户: admin"
+            placeholder="请输入帐户名"
             v-decorator="[
               'username',
-              {rules: [{ required: true, message: '请输入帐户名或邮箱地址' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
+              {rules: [{ required: true, message: '请输入帐户名' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
             ]"
           >
             <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }" />
@@ -28,7 +28,7 @@
             size="large"
             type="password"
             autocomplete="false"
-            placeholder="密码: admin"
+            placeholder="请输入密码"
             v-decorator="[
               'password',
               {rules: [{ required: true, message: '请输入密码' }], validateTrigger: 'blur'}
