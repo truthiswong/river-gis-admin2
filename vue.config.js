@@ -33,7 +33,7 @@ const prodExternals = {
   vuex: 'Vuex',
   axios: 'axios'
 }
-
+// let host = ''
 // vue.config.js
 const vueConfig = {
   configureWebpack: {
@@ -49,8 +49,10 @@ const vueConfig = {
   chainWebpack: (config) => {
     // if (process.env.NODE_ENV === 'production') {
     //   // 测试生产环境, 不压缩js代码
-    //   if (process.env.VUE_APP_TITLE === 'alpha') {
-    //     config.optimization.minimize(false)
+    //   if (process.env.VUE_APP_TITLE === 'test') {
+    //     host = 'http://jleco.jl-shgroup.com'
+    //   } else if (process.env.VUE_APP_TITLE === 'prod') {
+    //     host = 'http://jleco-river.jl-shgroup.com'
     //   }
     // }
     config.resolve.alias
@@ -104,6 +106,7 @@ const vueConfig = {
     proxy: {
       '/server':{            //这里的key就是axios的baseURL
         target: 'http://jleco.jl-shgroup.com/server/',    //访问域名http://www.qfii.club
+        // target: host,    //访问域名http://www.qfii.club
         changeOrigin: true,            //开启跨域
         pathRewrite:{  // 路径重写，
             '^/server': ''  // 替换target中的请求地址
