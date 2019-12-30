@@ -7,8 +7,6 @@ import qs from 'qs'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 let baseUrl
-console.log('地址url')
-console.log(process.env.VUE_APP_TITLE)
 switch (process.env.VUE_APP_TITLE) {
   case 'test':
     baseUrl = "http://jleco.jl-shgroup.com" //这里是测试环境中的url
