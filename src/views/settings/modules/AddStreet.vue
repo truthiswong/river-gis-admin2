@@ -163,6 +163,7 @@ export default {
       this.list.job=''
       this.list.tel=''
       this.region=[]
+      this.$emit('cancel')
     },
     // 添加河流
     addRiver(value) {
