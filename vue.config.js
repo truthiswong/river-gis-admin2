@@ -10,8 +10,9 @@ function resolve (dir) {
  * check production or preview(pro.loacg.com only)
  * @returns {boolean}
  */
+let host = ''
 function isProd () {
-  return process.env.NODE_ENV === 'production'
+  return host = process.env.NODE_ENV === 'production' ? 'http://jleco-river.jl-shgroup.com/server/':'http://jleco.jl-shgroup.com/server/'
   // return process.env.NODE_ENV === 'http://jleco.jl-shgroup.com'
 }
 
@@ -97,7 +98,7 @@ const vueConfig = {
     // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
     proxy: {
       '/server':{            //这里的key就是axios的baseURL
-        target: 'http://jleco.jl-shgroup.com/server/',    //访问域名http://www.qfii.club
+        target: host,    //访问域名http://www.qfii.club
         changeOrigin: true,            //开启跨域
         pathRewrite:{  // 路径重写，
             '^/server': ''  // 替换target中的请求地址
