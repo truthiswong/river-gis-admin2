@@ -1348,12 +1348,10 @@ export default {
   watch: {
     $route(row) {
       if (row.hash == '#111') {
-        
-      }else{
+      } else {
         this.getTimeQuantum() // 获取时间段
         this.getRiverStreeList()
       }
-      
     },
     accordionAlertKey(key) {
       console.log(key)
@@ -2002,7 +2000,7 @@ export default {
         this.polygon.setFillOpacity(this.fullOpacity / 100)
         this.polygon.addEventListener('click', this.polygonClick)
       }
-      
+
       // this.getDrawId()
     },
     //风险源，排口弹窗
@@ -2020,7 +2018,7 @@ export default {
       } else if (this.drawTypeId == '5dafe6c8ea6c159999a0549c') {
         this.$refs.AddFloatage.add(this.mapdrawId, this.currentArea, result)
       }
-      this.drawTypeId =''
+      this.drawTypeId = ''
     },
     // 绘制取消
     toolCradCancel() {
@@ -2170,7 +2168,22 @@ export default {
         starty = endy
         startm = endm - 3
       }
-      this.startDate = `${starty}-${startm}-${endd}`
+      startd = endd
+      if ((starty % 4 == 0 && starty % 100 != 0) || starty % 400 == 0) {
+        if (startm == 2 && startd >= 29) {
+          startd = 29
+        }
+      } else {
+        if (startm == 2 && startd >= 28) {
+          startd = 28
+        }
+      }
+      if (startm == 4 || startm == 6 || startm == 9 || startm == 11) {
+        if (startd >= 30) {
+          startd = 30
+        }
+      }
+      this.startDate = `${starty}-${startm}-${startd}`
       this.endDate = `${endy}-${endm}-${endd}`
       this.timeQuantum = `${this.startDate} ~ ${this.endDate}`
       this.getdaydataList(this.startDate, this.endDate)
@@ -2491,6 +2504,7 @@ export default {
       })
       return layer
     },
+    // 双球
     showMap() {
       // this.map.removeLayer(map1);
       // this.map.removeLayer(map2);
@@ -2523,7 +2537,7 @@ export default {
         view: view
       })
     },
-    // 双球
+    // 双球开关
     sharedView() {
       if (this.sharedChecked == true) {
         this.showView = false
@@ -2587,6 +2601,7 @@ export default {
         false
       )
     },
+    // 卷帘开关
     layerSwipe() {
       if (this.swipeChecked == true) {
         this.showView = false
@@ -2608,6 +2623,7 @@ export default {
     onHistoryData() {
       this.moreLoadOnce = 1
       this.getMapdrawPage()
+      this.testarr()
     },
     testarr(pointLists) {
       console.log(123123)
@@ -2690,6 +2706,7 @@ export default {
       //将所有矢量图层添加进去
       this.source.addFeature(lineFeature)
     },
+
     // 添加标注
     drawAllPoint(latlng, index, id) {
       let markerTool = new T.Marker(latlng, { title: index, id: id })
