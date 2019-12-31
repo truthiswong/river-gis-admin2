@@ -17,12 +17,16 @@ export default new Vuex.Store({
     permission
   },
   state: {
-    id:JSON.parse(window.localStorage.getItem('projectId'))
+    id: '', //默认当前项目id
+    defautProject: [], // 默认项目选择
   },
   mutations: {
-    show(state,objid) {   //自定义改变state初始值的方法，这里面的参数除了state之外还可以再传额外的参数(变量或对象);
+    show(state,objid) {
       state.id = objid
-    }
+    },
+    SET_DEFAUT_PROJECT: (state, index) => {
+      state.defautProject = index
+    },
   },
   actions: {
 
