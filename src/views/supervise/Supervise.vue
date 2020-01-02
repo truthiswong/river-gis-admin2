@@ -812,15 +812,15 @@
     <!-- 风险源信息 -->
     <risk-source-info ref="riskInfo"></risk-source-info>
     <!-- 添加风险源 -->
-    <add-risk-source ref="addRisk"></add-risk-source>
+    <add-risk-source ref="addRisk" cancel="riskSourceCancel" confirm="riskSourceComfirm"></add-risk-source>
     <!-- 水质监测点 -->
     <water-quality ref="waterQualityAlert"></water-quality>
     <!-- 照片编辑 -->
     <photo-edit ref="photoEdit"></photo-edit>
     <!-- 排口 -->
-    <add-outlet ref="addOutlet"></add-outlet>
+    <add-outlet ref="addOutlet" cancel="riskSourceCancel" confirm="riskSourceComfirm"></add-outlet>
     <!-- 水面漂浮物 -->
-    <add-floatage ref="AddFloatage"></add-floatage>
+    <add-floatage ref="AddFloatage" cancel="riskSourceCancel" confirm="riskSourceComfirm"></add-floatage>
     <!-- 360全景图 -->
     <look-panorama
       ref="panorama"
@@ -1440,6 +1440,12 @@ export default {
     let that = this
     let token = Vue.ls.get(ACCESS_TOKEN)
     // console.log(token)
+    let host
+    if (true) {
+      host = this.$store.state.testServerUrl
+    } else {
+      host = this.$store.state.prodServerUrl
+    }
     // 初始化地图控件
     let zoom = 14
     let twoDimensionURL =
@@ -1451,7 +1457,7 @@ export default {
     let wordLabel = 'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
     this.mapLayerWord = new T.TileLayer(wordLabel, { minZoom: 4, maxZoom: 18, zIndex: 15 })
     // 正射影像
-    this.mapImage = `http://jleco.jl-shgroup.com/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
+    this.mapImage = `${host}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
     this.mapLayerImage = new T.TileLayer(this.mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
     this.map = new T.Map('map', {
       minZoom: 4,
@@ -2205,8 +2211,6 @@ export default {
       }
       this.startDate = `${starty}-${startm}-${startd}`
       this.endDate = `${endy}-${endm}-${endd}`
-      console.log(this.startDate)
-      console.log(this.endDate)
       this.timeQuantum = `${this.startDate} ~ ${this.endDate}`
       this.getdaydataList(this.startDate, this.endDate)
     },
@@ -2262,8 +2266,6 @@ export default {
     },
     //获取天气
     getWeatherList() {
-      console.log(this.endDate);
-      
       this.weatherData.text = ''
       this.weatherData.temperature = ''
       this.weatherData.wind_direction = ''
@@ -2271,17 +2273,6 @@ export default {
       this.weatherData.img = ''
       this.weatherData.clouds = ''
       var date = this.defaultTime.split('-')
-      console.log(this.defaultTime)
-      // let weatherYear, weatherMonth, weatherDay
-      // weatherYear = date[0]
-      // weatherMonth = date[1]
-      // weatherDay = date[2]
-      // if (weatherMonth < 10) {
-      //   weatherMonth = '0' + weatherMonth
-      // }
-      // if (weatherDay < 10) {
-      //   weatherDay = '0' + weatherDay
-      // }
       let data = {
         date: date[0] + date[1] + date[2],
         coor: '31.15847:121.43429'
