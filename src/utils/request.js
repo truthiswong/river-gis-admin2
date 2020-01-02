@@ -18,7 +18,7 @@ switch (process.env.VUE_APP_TITLE) {
     break
   default:
     baseUrl = "/" //这里是本地的请求url
-    tenantId = "jl:jlgis@2019" //这里是测试环境中的url
+    tenantId = "test:jlgis@2019" //这里是测试环境中的url
 }
 
 // 创建 axios 实例
