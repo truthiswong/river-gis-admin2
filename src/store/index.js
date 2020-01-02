@@ -19,6 +19,8 @@ export default new Vuex.Store({
   state: {
     id: '', //默认当前项目id
     defautProject: [], // 默认项目选择
+    testServerUrl: 'http://demo-jleco-river.jl-shgroup.com',
+    prodServerUrl: 'http://jleco-river.jl-shgroup.com'
   },
   mutations: {
     show(state,objid) {
