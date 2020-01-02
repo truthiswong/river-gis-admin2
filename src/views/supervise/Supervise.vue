@@ -2191,8 +2191,22 @@ export default {
           startd = 30
         }
       }
+      if (startm < 10) {
+        startm = '0' + startm
+      }
+      if (startd < 10) {
+        startd = '0' + startd
+      }
+      if (endm < 10) {
+        endm = '0' + endm
+      }
+      if (endd < 10) {
+        endd = '0' + endd
+      }
       this.startDate = `${starty}-${startm}-${startd}`
       this.endDate = `${endy}-${endm}-${endd}`
+      console.log(this.startDate)
+      console.log(this.endDate)
       this.timeQuantum = `${this.startDate} ~ ${this.endDate}`
       this.getdaydataList(this.startDate, this.endDate)
     },
@@ -2248,6 +2262,8 @@ export default {
     },
     //获取天气
     getWeatherList() {
+      console.log(this.endDate);
+      
       this.weatherData.text = ''
       this.weatherData.temperature = ''
       this.weatherData.wind_direction = ''
@@ -2255,18 +2271,19 @@ export default {
       this.weatherData.img = ''
       this.weatherData.clouds = ''
       var date = this.defaultTime.split('-')
-      let weatherYear, weatherMonth, weatherDay
-      weatherYear = date[0]
-      weatherMonth = date[1]
-      weatherDay = date[2]
-      if (weatherMonth < 10) {
-        weatherMonth = '0' + weatherMonth
-      }
-      if (weatherDay < 10) {
-        weatherDay = '0' + weatherDay
-      }
+      console.log(this.defaultTime)
+      // let weatherYear, weatherMonth, weatherDay
+      // weatherYear = date[0]
+      // weatherMonth = date[1]
+      // weatherDay = date[2]
+      // if (weatherMonth < 10) {
+      //   weatherMonth = '0' + weatherMonth
+      // }
+      // if (weatherDay < 10) {
+      //   weatherDay = '0' + weatherDay
+      // }
       let data = {
-        date: weatherYear + weatherMonth + weatherDay,
+        date: date[0] + date[1] + date[2],
         coor: '31.15847:121.43429'
       }
       weatherList(data)

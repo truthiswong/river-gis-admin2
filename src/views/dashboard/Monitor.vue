@@ -1871,8 +1871,14 @@ export default {
       function formatDate(now) {
         var year = now.getFullYear() //取得4位数的年份
         var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
-        var date = now.getDate() //返回日期月份中的天数（1到31）
-        return year + '-' + month + '-' + date
+        var day = now.getDate() //返回日期月份中的天数（1到31）
+        if (month < 10) {
+          month = '0' + month
+        }
+        if (day < 10) {
+          day = '0' + day
+        }
+        return year + '-' + month + '-' + day
       }
       this.picker = formatDate(new Date())
       this.getWeatherList()
@@ -1904,19 +1910,9 @@ export default {
       this.weatherData.img = ''
       this.weatherData.clouds = ''
       var date =  this.picker.split('-')
-      let weatherYear, weatherMonth, weatherDay
-      weatherYear = date[0]
-      weatherMonth = date[1]
-      weatherDay = date[2]
-      if (weatherMonth < 10) {
-        weatherMonth = '0' + weatherMonth
-      }
-      if (weatherDay < 10) {
-        weatherDay = '0' + weatherDay
-      }
       let data = {
-        date: weatherYear + weatherMonth + weatherDay,
-        coor: '31.15847:121.43429'
+        date:date[0]+date[1]+date[2],
+        coor:'31.15847:121.43429',
       }
       weatherList(data).then(res=>{
         let arr = res.data
