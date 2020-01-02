@@ -18,7 +18,8 @@ export default new Vuex.Store({
   },
   state: {
     id: '', //默认当前项目id
-    defautProject: [], // 默认项目选择
+    defautProject: [], //默认项目选择
+    isTestUrl: true, //默认使用测试服
     testServerUrl: 'http://demo-jleco-river.jl-shgroup.com',
     prodServerUrl: 'http://jleco-river.jl-shgroup.com'
   },
@@ -29,6 +30,10 @@ export default new Vuex.Store({
     SET_DEFAUT_PROJECT: (state, index) => {
       state.defautProject = index
     },
+    IS_TEST_URL: (state, index) => {
+      console.log(index)
+      state.isTestUrl = index
+    }
   },
   actions: {
 
