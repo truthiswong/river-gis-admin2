@@ -1904,9 +1904,19 @@ export default {
       this.weatherData.img = ''
       this.weatherData.clouds = ''
       var date =  this.picker.split('-')
+      let weatherYear, weatherMonth, weatherDay
+      weatherYear = date[0]
+      weatherMonth = date[1]
+      weatherDay = date[2]
+      if (weatherMonth < 10) {
+        weatherMonth = '0' + weatherMonth
+      }
+      if (weatherDay < 10) {
+        weatherDay = '0' + weatherDay
+      }
       let data = {
-        date:date[0]+date[1]+date[2],
-        coor:'31.15847:121.43429',
+        date: weatherYear + weatherMonth + weatherDay,
+        coor: '31.15847:121.43429'
       }
       weatherList(data).then(res=>{
         let arr = res.data

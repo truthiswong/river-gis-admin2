@@ -867,13 +867,21 @@ import LayerGroup from 'ol/layer/Group'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
-import { Style, Icon } from 'ol/style'
+// import { Style, Icon } from 'ol/style'
 import Text from 'ol/style/Text'
 // import { Point } from 'ol/geom'
 
-import Point from 'ol/geom/Point'
+import Point from 'ol/geom/Point' //点
+import Circle from 'ol/geom/Circle'; //圆
+import Polygon from 'ol/geom/Polygon'; //面
 import { fromLonLat } from 'ol/proj'
 import TileJSON from 'ol/source/TileJSON'
+
+import GeoJSON from 'ol/format/GeoJSON';
+import MultiPoint from 'ol/geom/MultiPoint';
+import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style';
+
+
 
 // 拖拽缩放
 // import { defaults as defaultInteractions, DragRotateAndZoom } from 'ol/interaction'
@@ -2247,8 +2255,18 @@ export default {
       this.weatherData.img = ''
       this.weatherData.clouds = ''
       var date = this.defaultTime.split('-')
+      let weatherYear, weatherMonth, weatherDay
+      weatherYear = date[0]
+      weatherMonth = date[1]
+      weatherDay = date[2]
+      if (weatherMonth < 10) {
+        weatherMonth = '0' + weatherMonth
+      }
+      if (weatherDay < 10) {
+        weatherDay = '0' + weatherDay
+      }
       let data = {
-        date: date[0] + date[1] + date[2],
+        date: weatherYear + weatherMonth + weatherDay,
         coor: '31.15847:121.43429'
       }
       weatherList(data)
@@ -2623,13 +2641,99 @@ export default {
     onHistoryData() {
       this.moreLoadOnce = 1
       this.getMapdrawPage()
-      this.testarr()
+      this.testdate()
     },
-    testarr(pointLists) {
-      console.log(123123)
-      // for (const item of pointLists) {
+    testdate() {
+      var styles = [
+        /* We are using two different styles for the polygons:
+         *  - The first style is for the polygons themselves.
+         *  - The second style is to draw the vertices of the polygons.
+         *    In a custom `geometry` function the vertices of a polygon are
+         *    returned as `MultiPoint` geometry, which will be used to render
+         *    the style.
+         */
+        new Style({
+          stroke: new Stroke({
+            color: 'blue',
+            width: 3
+          }),
+          fill: new Fill({
+            color: 'rgba(0, 0, 255, 0.1)'
+          })
+        }),
+        new Style({
+          image: new CircleStyle({
+            radius: 5,
+            fill: new Fill({
+              color: 'orange'
+            })
+          }),
+          geometry: function(feature) {
+            // return the coordinates of the first ring of the polygon
+            var coordinates = feature.getGeometry().getCoordinates()[0]
+            return new MultiPoint(coordinates)
+          }
+        })
+      ]
 
-      // }
+      var geojsonObject = {
+        type: 'FeatureCollection',
+        crs: {
+          type: 'name',
+          properties: {
+            name: 'EPSG:3857'
+          }
+        },
+        features: [
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [[[-5e6, 6e6], [-5e6, 8e6], [-3e6, 8e6], [-3e6, 6e6], [-5e6, 6e6]]]
+            }
+          },
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [[[-2e6, 6e6], [-2e6, 8e6], [0, 8e6], [0, 6e6], [-2e6, 6e6]]]
+            }
+          },
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [[[1e6, 6e6], [1e6, 8e6], [3e6, 8e6], [3e6, 6e6], [1e6, 6e6]]]
+            }
+          },
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [[[-2e6, -1e6], [-1e6, 1e6], [0, -1e6], [-2e6, -1e6]]]
+            }
+          }
+        ]
+      }
+
+      var source = new VectorSource({
+        features: new GeoJSON().readFeatures(geojsonObject)
+      })
+
+      var layer = new VectorLayer({
+        source: source,
+        style: styles
+      })
+      var map = new Map({
+        layers: [layer],
+        target: 'showmap',
+        view: new View({
+          center: [121.495505, 31.21098],
+          zoom: 2
+        })
+      })
+    },
+    testarr() {
       var obj = {
         fenceId: '12',
         name: '围栏3',
@@ -2652,25 +2756,25 @@ export default {
       }
     },
     // //转换坐标点（多）
-    // transPoints(points) {
-    //     let arr = points.split(';');
-    //     let point = [];
-    //     arr.forEach(item = > {
-    //         let newPoint = item.split(',');
-    //         point.push(newPoint)
-    //     })
-    //     let _points = point.map(item = > {
-    //         item = [parseFloat(item[0]), parseFloat(item[1])]
-    //         item = ol.proj.transform(item, 'EPSG:4326', 'EPSG:3857');
-    //         return item;
-    //     })
-    //     return _points;
-    // },
+    transPoints(points) {
+      let arr = points.split(';')
+      let point = []
+      arr.forEach(item => {
+        let newPoint = item.split(',')
+        point.push(newPoint)
+      })
+      let _points = point.map(item => {
+        item = [parseFloat(item[0]), parseFloat(item[1])]
+        item = new ol.proj.transform(item, 'EPSG:4326', 'EPSG:3857')
+        return item
+      })
+      return _points
+    },
     //转换圆的
     transPoint(point) {
       let item = point.split(',')
       item = [parseFloat(item[0]), parseFloat(item[1])]
-      let _point = ol.proj.transform(item, 'EPSG:4326', 'EPSG:3857')
+      let _point = new ol.proj.transform(item, 'EPSG:4326', 'EPSG:3857')
       return _point
     },
     showCircle(fenceId, center, radius, name) {
