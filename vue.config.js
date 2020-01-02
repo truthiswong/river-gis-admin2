@@ -33,7 +33,7 @@ const prodExternals = {
   vuex: 'Vuex',
   axios: 'axios'
 }
-// let host = ''
+let host = 'http://demo-jleco-river.jl-shgroup.com'
 // vue.config.js
 const vueConfig = {
   configureWebpack: {
@@ -47,14 +47,22 @@ const vueConfig = {
   },
 
   chainWebpack: (config) => {
-    // if (process.env.NODE_ENV === 'production') {
-    //   // 测试生产环境, 不压缩js代码
-    //   if (process.env.VUE_APP_TITLE === 'test') {
-    //     host = 'http://jleco.jl-shgroup.com'
-    //   } else if (process.env.VUE_APP_TITLE === 'prod') {
-    //     host = 'http://jleco-river.jl-shgroup.com'
-    //   }
-    // }
+    console.log(config)
+    if (process.env.NODE_ENV === 'production') {
+      if (process.env.VUE_APP_TITLE === 'test') {
+        host = process.env.VUE_APP_SERVER_URL
+        console.log(111)
+        console.log(host)
+      } else if (process.env.VUE_APP_TITLE === 'prod') {
+        host = process.env.VUE_APP_SERVER_URL
+        console.log(222)
+        console.log(host)
+      } else {
+        host = process.env.VUE_APP_SERVER_URL
+        console.log(333)
+        console.log(host)
+      }
+    }
     config.resolve.alias
       .set('@$', resolve('src'))
 
@@ -105,8 +113,8 @@ const vueConfig = {
     // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
     proxy: {
       '/server':{            //这里的key就是axios的baseURL
-        target: 'http://jleco.jl-shgroup.com/server/',    //访问域名http://www.qfii.club
-        // target: host,    //访问域名http://www.qfii.club
+        // target: 'http://demo-jleco-river.jl-shgroup.com/server/',    //访问域名http://www.qfii.club
+        target: host + '/server/',    //访问域名http://www.qfii.club
         changeOrigin: true,            //开启跨域
         pathRewrite:{  // 路径重写，
             '^/server': ''  // 替换target中的请求地址
