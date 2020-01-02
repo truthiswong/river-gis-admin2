@@ -6,16 +6,19 @@ import { VueAxios } from './axios'
 import qs from 'qs'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
-let baseUrl
+let baseUrl, tenantId
 switch (process.env.VUE_APP_TITLE) {
   case 'test':
-    baseUrl = "http://jleco.jl-shgroup.com" //这里是测试环境中的url
+    baseUrl = "http://demo-jleco-river.jl-shgroup.com" //这里是测试环境中的url
+    tenantId = "test:jlgis@2019" //这里是测试环境中的url
     break
   case 'prod':
     baseUrl = "http://jleco-river.jl-shgroup.com" //生产环境url
+    tenantId = "jl:jlgis@2019" //这里是测试环境中的url
     break
   default:
     baseUrl = "/" //这里是本地的请求url
+    tenantId = "jl:jlgis@2019" //这里是测试环境中的url
 }
 
 // 创建 axios 实例
@@ -24,7 +27,7 @@ const service = axios.create({
   baseURL: baseUrl, // api base_url
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
-    'X-TENANT-ID': 'jl:jlgis@2019',
+    'X-TENANT-ID': tenantId,
     lang: 'zh_CN'
   },
   timeout: 30000, // 请求超时时间
