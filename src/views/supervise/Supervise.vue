@@ -1439,9 +1439,8 @@ export default {
   mounted() {
     let that = this
     let token = Vue.ls.get(ACCESS_TOKEN)
-    // console.log(token)
     let host
-    if (true) {
+    if (this.$store.state.isTestUrl) {
       host = this.$store.state.testServerUrl
     } else {
       host = this.$store.state.prodServerUrl

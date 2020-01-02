@@ -213,7 +213,7 @@ export default {
   },
   mounted() {
     let host
-    if (true) {
+    if (this.$store.state.isTestUrl) {
       host = this.$store.state.testServerUrl
     } else {
       host = this.$store.state.prodServerUrl
