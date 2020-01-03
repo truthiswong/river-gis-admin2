@@ -7,6 +7,7 @@
     @ok="saveClick"
     @cancel="handleCancel"
     :maskClosable="false"
+    :destroyOnClose="true"
   >
     <a-spin :spinning="confirmLoading">
       <a-form class="from">
@@ -14,12 +15,12 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="名称">
-              <a-input placeholder  v-model="list.innerName"/>
+              <a-input placeholder v-model="list.innerName" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="河道">
-              <a-select                
+              <a-select
                 :allowClear="true"
                 placeholder="请输入河流"
                 optionFilterProp="children"
@@ -38,7 +39,7 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="街道">
-               <a-select
+              <a-select
                 :allowClear="true"
                 placeholder="请输入街道"
                 optionFilterProp="children"
@@ -55,19 +56,31 @@
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="位置">
-              <a-input placeholder v-model="list.address" disabled/>
+              <a-input placeholder v-model="list.address" disabled />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="面积">
-              <a-input placeholder  v-model="list.currentArea" disabled/>
+              <a-input placeholder v-model="list.currentArea" disabled />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="创建时间">
-              <a-date-picker style="width:100%"  :format="dateFormat" @change="onChange"/>
+              <a-date-picker
+                style="width:100%"
+                :showTime="{ format: 'HH:mm' }"
+                format="YYYY-MM-DD HH:mm"
+                @change="onChange"
+              />
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row style="width:100%">
+          <a-col :span="12">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="备注">
+              <a-textarea placeholder="请输入备注" v-model="list.remark" :rows="4" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -80,18 +93,17 @@
         <a-col :span="3">
           <a-button block>保存</a-button>
         </a-col>
-      </a-row> -->
+      </a-row>-->
     </a-spin>
   </a-modal>
 </template>
 
 <script>
 import moment from 'moment'
-import { getRiverList,getStreetList,floatageSave,floatageDetails,mapdrawDetail} from '@/api/login'
+import { getRiverList, getStreetList, floatageSave, floatageDetails, mapdrawDetail } from '@/api/login'
 export default {
   data() {
     return {
-      dateFormat: 'YYYY-MM-DD',
       labelCol: {
         xs: { span: 18 },
         sm: { span: 6 }
@@ -100,69 +112,75 @@ export default {
         xs: { span: 18 },
         sm: { span: 16 }
       },
-      list:{
-        drawId:'',
-        innerName:'',
-        address:'',
-        riverId:'',
-        streetId:'',
-        currentArea:'',
-        discoveryTime:''
+      list: {
+        drawId: '',
+        innerName: '',
+        address: '',
+        riverId: '',
+        streetId: '',
+        currentArea: '',
+        discoveryTime: '',
+        remark: ''
       },
       visible: false,
       confirmLoading: false,
-      riverList:[],
-      streetList:[]
+      riverList: [],
+      streetList: []
     }
   },
   computed: {
+    
+  },
+  mounted() {
+    
   },
   methods: {
     moment,
-    getList(){
-      getRiverList(this.$store.state.id).then(res=>{
+    getList() {
+      getRiverList(this.$store.state.id).then(res => {
         this.riverList = res.data.data
       })
-      getStreetList(this.$store.state.id).then(res=>{
+      getStreetList(this.$store.state.id).then(res => {
         this.streetList = res.data.data
       })
     },
-    detailList(row){
+    detailList(row) {
       this.getList()
       // mapdrawDetail(row.target.options.id).then(res=>{
       //   this.list.lng=res.data.point[0]
       //   this.list.lat=res.data.point[1]
       // })
-      this.list.drawId=row.target.options.id
-      floatageDetails(row.target.options.id).then(res=>{
+      this.list.drawId = row.target.options.id
+      floatageDetails(row.target.options.id).then(res => {
         var arr = res.data
-        this.list.innerName=arr.innerName
+        this.list.innerName = arr.innerName
         // this.list.address=
-        this.list.riverId=arr.river.id
-        this.list.streetId=arr.street.id
+        this.list.riverId = arr.river.id
+        this.list.streetId = arr.street.id
         // this.list.currentArea=
         // this.list.discoveryTime=
-        
       })
       this.visible = true
     },
-    add(id,currentArea,result) {
+    add(id, currentArea, result) {
       // console.log(id,currentArea,result);
       this.getList()
-      this.list.drawId =id
+      this.list.drawId = id
       this.list.address = result.formatted_address
       this.list.currentArea = currentArea
       this.visible = true
     },
-    saveClick(){
+    saveClick() {
       let data = this.list
-      floatageSave(data).then(res=>{
-        this.$message.success('保存成功')
-        this.$parent.drawSaveRefresh()
-        this.handleCancel()
-      }).catch(err => {
-        this.$message.error(err.response.data.message);
-      })
+      floatageSave(data)
+        .then(res => {
+          this.$message.success('保存成功')
+          this.$parent.drawSaveRefresh()
+          this.handleCancel()
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
     },
     onChange(date, dateString) {
       this.list.discoveryTime = dateString
@@ -187,14 +205,14 @@ export default {
     },
     handleCancel() {
       this.visible = false
-      this.list.drawId=''
-      this.list.innerName=''
-      this.list.address=''
-      this.list.riverId=''
-      this.list.streetId=''
-      this.list.currentArea=''
-      this.list.discoveryTime=''
-    },
+      this.list.drawId = ''
+      this.list.innerName = ''
+      this.list.address = ''
+      this.list.riverId = ''
+      this.list.streetId = ''
+      this.list.currentArea = ''
+      this.list.discoveryTime = ''
+    }
   }
 }
 </script>
