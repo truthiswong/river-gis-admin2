@@ -121,7 +121,7 @@
         <p style="margin-top: 10px;">讫点</p>
         <a-row style="width:100%">
           <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="起点位置" has-feedback>
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="讫点位置" has-feedback>
               <a-select style="width:100px" v-model="list.areaId3" @change="getCity1">
                 <a-select-option
                   v-for="item in options"
@@ -473,7 +473,7 @@ export default {
           this.list.priority = arr.info.priority + ''
           this.list.inspectTimes = arr.info.inspectTimes
           this.coordinate = arr.info.region
-          this.supervisoryLevel = arr.info.supervisoryLevel
+          this.supervisoryLevel = arr.info.supervisoryLevel.code
           //起点
           this.list.destAddress = arr.extra.destAddress
           this.list.startAddress = arr.extra.startAddress
