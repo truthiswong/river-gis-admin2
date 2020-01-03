@@ -12,7 +12,7 @@
     <a-spin :spinning="confirmLoading">
       <a-form>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="督办单名称">
-          <a-input placeholder="请输入督办单名称" v-model="list.name"/>
+          <a-input placeholder="请输入督办单名称" v-model="list.name" />
         </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="所属街道" has-feedback>
           <a-select
@@ -37,7 +37,7 @@
             showSearch
             mode="multiple"
             :allowClear="true"
-            placeholder="请输入河流" 
+            placeholder="请输入河流"
             optionFilterProp="children"
             style="width: 100%"
             @change="handleChange2"
@@ -83,23 +83,31 @@
             :on-change="uploadChange"
             :on-remove="handleRemove"
             :file-list="fileList"
-            :limit='1'
-            :auto-upload="false">
-            <a-button type="primary" icon="plus" >添加</a-button>
+            :limit="1"
+            :auto-upload="false"
+          >
+            <a-button type="primary" icon="plus">添加</a-button>
           </el-upload>
         </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="已上传文件名" has-feedback>
-            <a-textarea placeholder="无"  v-model="attachment"  :rows="3" disabled/>
+          <a-textarea placeholder="无" v-model="attachment" :rows="3" disabled />
         </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="调查日期" has-feedback>
           <!-- <a-date-picker   :value="list.surveyDate" :defaultValue="moment('2015-01-01', 'YYYY-MM-DD')"/> -->
-          <el-date-picker v-model="list.surveyDate" type="date" placeholder="选择日期" style="width: 100%"  format="yyyy-MM-dd" @change="onChange"></el-date-picker>
+          <el-date-picker
+            v-model="list.surveyDate"
+            type="date"
+            placeholder="选择日期"
+            style="width: 100%"
+            format="yyyy-MM-dd"
+            @change="onChange"
+          ></el-date-picker>
         </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="标签" has-feedback>
-            <a-input placeholder="使用逗号分隔"  v-model="list.tags" />
+          <a-input placeholder="使用逗号分隔" v-model="list.tags" />
         </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="备注" has-feedback>
-            <a-input placeholder=""  v-model="list.remark"/>
+          <a-input placeholder v-model="list.remark" />
         </a-form-item>
       </a-form>
     </a-spin>
@@ -110,32 +118,32 @@
 import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters']
-import {SuperviseSave,SuperviseDetail} from '@/api/login'
+import { SuperviseSave, SuperviseDetail } from '@/api/login'
 export default {
-  props:{
+  props: {
     streetList: Array,
     riverList: Array,
-    labelList: Array,
+    labelList: Array
   },
   data() {
     return {
-      attachment:'',
-      fileList:[],
-      file:false,
-      list:{
-        id:'',
-        projectId:this.$store.state.id,
-        name:'',
-        streetId:'',
-        riverId:'',
-        riskSourceTypeId:'',
-        surveyDate:'',
-        remark:'',
-        tags:'',
+      attachment: '',
+      fileList: [],
+      file: false,
+      list: {
+        id: '',
+        projectId: this.$store.state.id,
+        name: '',
+        streetId: '',
+        riverId: '',
+        riskSourceTypeId: '',
+        surveyDate: '',
+        remark: '',
+        tags: ''
       },
-      streetId:[],
-      riverId:[],
-      riskSourceTypeId:[],
+      streetId: [],
+      riverId: [],
+      riskSourceTypeId: [],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 }
@@ -158,7 +166,7 @@ export default {
       return OPTIONS.filter(o => !this.selectedItems.includes(o))
     }
   },
-  mounted(){
+  mounted() {
   },
   methods: {
     add() {
@@ -166,47 +174,47 @@ export default {
     },
     add1(id) {
       this.visible = true
-      SuperviseDetail(id).then(res => {
-        var arr = res.data
-        function formatDate(now) { 
-          var year=now.getFullYear() //取得4位数的年份
-          var month=now.getMonth()+1  //取得日期中的月份，其中0表示1月，11表示12月
-          var date=now.getDate()      //返回日期月份中的天数（1到31）
-          var hour=now.getHours()     //返回日期中的小时数（0到23）
-          var minute=now.getMinutes() //返回日期中的分钟数（0到59）
-          var second=now.getSeconds() //返回日期中的秒数（0到59）
-          return year+"-"+month+"-"+date
-        }
-        this.list.name = arr.name
-        this.list.surveyDate = formatDate(new Date(arr.surveyDate))
-        this.list.id= arr.id
-        arr.tags1=''
-        if (arr.tags !=null) {
-          arr.tags.forEach(v => {
-            arr.tags1 = arr.tags1 + v +','
-          });
-        }
-        arr.riskSourceType1=[]
-        arr.rivers1=[]
-        if (arr.riskSourceType!=null) {
-          for (let i = 0; i < arr.riskSourceType.length; i++) {
-            arr.riskSourceType1.push(arr.riskSourceType[i].id)
+      SuperviseDetail(id)
+        .then(res => {
+          var arr = res.data
+          function formatDate(now) {
+            var year = now.getFullYear() //取得4位数的年份
+            var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
+            var date = now.getDate() //返回日期月份中的天数（1到31）
+            var hour = now.getHours() //返回日期中的小时数（0到23）
+            var minute = now.getMinutes() //返回日期中的分钟数（0到59）
+            var second = now.getSeconds() //返回日期中的秒数（0到59）
+            return year + '-' + month + '-' + date
           }
-        }
-        if (arr.rivers!=null) {
-          for (let i = 0; i < arr.rivers.length; i++) {
-            arr.rivers1.push(arr.rivers[i].id)
+          this.list.name = arr.name
+          this.list.surveyDate = formatDate(new Date(arr.surveyDate))
+          this.list.id = arr.id
+          arr.tags1 = ''
+          if (arr.tags != null) {
+            arr.tags.forEach(v => {
+              arr.tags1 = arr.tags1 + v + ','
+            })
           }
-        }
-        this.riskSourceTypeId =arr.riskSourceType1
-        this.riverId =arr.rivers1
-        this.list.streetId =arr.street.id
-        this.list.tags =arr.tags1
-        this.attachment = arr.attachment
-        console.log(arr);
-      }).catch(err => {
-        
-      })
+          arr.riskSourceType1 = []
+          arr.rivers1 = []
+          if (arr.riskSourceType != null) {
+            for (let i = 0; i < arr.riskSourceType.length; i++) {
+              arr.riskSourceType1.push(arr.riskSourceType[i].id)
+            }
+          }
+          if (arr.rivers != null) {
+            for (let i = 0; i < arr.rivers.length; i++) {
+              arr.rivers1.push(arr.rivers[i].id)
+            }
+          }
+          this.riskSourceTypeId = arr.riskSourceType1
+          this.riverId = arr.rivers1
+          this.list.streetId = arr.street.id
+          this.list.tags = arr.tags1
+          this.attachment = arr.attachment
+          console.log(arr)
+        })
+        .catch(err => {})
     },
     // 添加河流
     addRiver(value) {
@@ -252,71 +260,70 @@ export default {
     },
     handleCancel() {
       this.visible = false
-      this.list.id=''
-      this.list.name=''
-      this.list.streetId=''
-      this.list.riverId=''
-      this.list.riskSourceTypeId=''
-      this.streetId=[]
-      this.riverId=[]
-      this.riskSourceTypeId=[]
-      this.list.surveyDate=''
-      this.list.remark=''
-      this.list. tags=''
+      this.list.id = ''
+      this.list.name = ''
+      this.list.streetId = ''
+      this.list.riverId = ''
+      this.list.riskSourceTypeId = ''
+      this.streetId = []
+      this.riverId = []
+      this.riskSourceTypeId = []
+      this.list.surveyDate = ''
+      this.list.remark = ''
+      this.list.tags = ''
       this.attachment = ''
     },
-    onChange(date){
-      function formatDate(now) { 
-        var year=now.getFullYear() //取得4位数的年份
-        var month=now.getMonth()+1  //取得日期中的月份，其中0表示1月，11表示12月
-        var date=now.getDate()      //返回日期月份中的天数（1到31）
-        var hour=now.getHours()     //返回日期中的小时数（0到23）
-        var minute=now.getMinutes() //返回日期中的分钟数（0到59）
-        var second=now.getSeconds() //返回日期中的秒数（0到59）
-        return year+"-"+month+"-"+date
+    onChange(date) {
+      function formatDate(now) {
+        var year = now.getFullYear() //取得4位数的年份
+        var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
+        var date = now.getDate() //返回日期月份中的天数（1到31）
+        var hour = now.getHours() //返回日期中的小时数（0到23）
+        var minute = now.getMinutes() //返回日期中的分钟数（0到59）
+        var second = now.getSeconds() //返回日期中的秒数（0到59）
+        return year + '-' + month + '-' + date
       }
-      this.list.surveyDate=formatDate(date)
+      this.list.surveyDate = formatDate(date)
     },
     handleSubmit() {
-      this.list.riverId=this.riverId.join(',')
-      this.list.riskSourceTypeId=this.riskSourceTypeId.join(',')
+      this.list.riverId = this.riverId.join(',')
+      this.list.riskSourceTypeId = this.riskSourceTypeId.join(',')
       if (this.fileList.length == 0) {
         var data = this.list
-        SuperviseSave(data).then(res => {
+        SuperviseSave(data)
+          .then(res => {
             this.$message.success('保存成功')
             this.handleCancel()
-            this.$parent.$parent.getPage();
-        }).catch(err => {
-          this.$message.error(err.response.data.message)
-        })
-      }else{
-        this.$refs.upload.submit();
+            this.$parent.$parent.getPage()
+          })
+          .catch(err => {
+            this.$message.error(err.response.data.message)
+          })
+      } else {
+        this.$refs.upload.submit()
       }
     },
-    handleSuccess(response, file, fileList){
-      this.$message.success('保存成功');
-      this.handleCancel();
-      this.$parent.$parent.getPage();
+    handleSuccess(response, file, fileList) {
+      this.$message.success('保存成功')
+      this.handleCancel()
+      this.$parent.$parent.getPage()
     },
-    uploadChange(file, fileList){
-      if(this.fileList.length==0){
-        this.fileList=fileList
-      }else{
-        this.fileList=[]
+    uploadChange(file, fileList) {
+      if (this.fileList.length == 0) {
+        this.fileList = fileList
+      } else {
+        this.fileList = []
       }
-      this.attachmentJpg=window.URL.createObjectURL(file.raw)
+      this.attachmentJpg = window.URL.createObjectURL(file.raw)
     },
-    handleRemove(file, fileList) {
-      
-    },
-    handlePreview(file) {
-    }
+    handleRemove(file, fileList) {},
+    handlePreview(file) {}
   }
 }
 </script>
 <style lang="less" >
 .ant-form input[type='file'] {
-  display: none; 
+  display: none;
 }
 </style>
 <style scoped>
