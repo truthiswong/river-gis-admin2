@@ -8,6 +8,7 @@
     @cancel="handleCancel"
     :forceRender="true"
     :maskClosable="false"
+    :centered="true"
   >
     <a-spin :spinning="confirmLoading">
       <a-form class="from" :form="form">
@@ -400,7 +401,10 @@ export default {
       informationRiver(value).then(res=>{
          this.list.code = res.data.info.code
          this.list.controller = res.data.info.controller
-         this.list.supervisoryLevel = res.data.info.supervisoryLevel.name
+         console.log(res.data.info.supervisoryLevel)
+         if (res.data.info.supervisoryLevel) {
+           this.list.supervisoryLevel = res.data.info.supervisoryLevel.name
+         }
          if (res.data.info.priority == true) {
            this.list.priority='重点'
          }else if(res.data.info.priority == false){
@@ -437,6 +441,7 @@ export default {
         this.$message.success('保存成功')
         this.$parent.drawSaveRefresh()
         this.handleCancel()
+        this.$emit('confirm')
       }).catch(err => {
           this.$message.error(err.response.data.message);
       })
@@ -463,7 +468,10 @@ export default {
         });
         this.list.code = arr.river.code
         this.list.controller = arr.river.controller
-        this.list.supervisoryLevel = arr.river.supervisoryLevel.name
+        console.log(arr.river.supervisoryLevel)
+        if (arr.river.supervisoryLevel) {
+          this.list.supervisoryLevel = arr.river.supervisoryLevel.name
+        }
         if (arr.river.priority == true) {
           this.list.priority='重点'
         }else if(arr.river.priority == false){
@@ -511,24 +519,6 @@ export default {
       // })
       this.visible = true
     },
-    handleSubmit() {
-      const {
-        form: { validateFields }
-      } = this
-      this.confirmLoading = true
-      validateFields((errors, values) => {
-        if (!errors) {
-          console.log('values', values)
-          setTimeout(() => {
-            this.visible = false
-            this.confirmLoading = false
-            this.$emit('ok', values)
-          }, 1500)
-        } else {
-          this.confirmLoading = false
-        }
-      })
-    },
     handleCancel() {
       this.list.riverId=''
       this.list.streetId=''
@@ -554,6 +544,7 @@ export default {
       this.upload.id = ''
       this.attachmentJpg=''
       this.visible = false
+      this.$emit('cancel')
     },
     onChange(date){
       function formatDate(now) { 
