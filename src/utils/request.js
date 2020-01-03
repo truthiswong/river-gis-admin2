@@ -13,20 +13,22 @@ switch (process.env.VUE_APP_TITLE) {
     tenantId = "test:jlgis@2019" //这里是测试环境中的url
     console.log("111")
     store.commit('IS_TEST_URL', true)
+    store.commit('tenantIdFn', 'test:jlgis@2019')
     break
   case 'prod':
     baseUrl = "http://jleco-river.jl-shgroup.com" //生产环境url
     tenantId = "jl:jlgis@2019" //这里是测试环境中的url
     console.log("2222")
     store.commit('IS_TEST_URL', false)
+    store.commit('tenantIdFn', 'jl:jlgis@2019')
     break
   default:
     baseUrl = "/" //这里是本地的请求url
     tenantId = "test:jlgis@2019" //这里是测试环境中的url
     console.log("3333")
     store.commit('IS_TEST_URL', true)
+    store.commit('tenantIdFn', 'test:jlgis@2019')
 }
-
 // 创建 axios 实例
 const service = axios.create({
   // baseURL: process.env.VUE_APP_API_BASE_URL, // api base_url

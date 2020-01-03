@@ -21,18 +21,21 @@ export default new Vuex.Store({
     defautProject: [], //默认项目选择
     isTestUrl: true, //默认使用测试服
     testServerUrl: 'http://demo-jleco-river.jl-shgroup.com',
-    prodServerUrl: 'http://jleco-river.jl-shgroup.com'
+    prodServerUrl: 'http://jleco-river.jl-shgroup.com',
+    tenantId: "test:jlgis@2019" // 默认测试
   },
   mutations: {
-    show(state,objid) {
+    show(state, objid) {
       state.id = objid
     },
     SET_DEFAUT_PROJECT: (state, index) => {
       state.defautProject = index
     },
     IS_TEST_URL: (state, index) => {
-      console.log(index)
       state.isTestUrl = index
+    },
+    tenantIdFn: (state, index) => {
+      state.tenantId = index
     }
   },
   actions: {
