@@ -1,7 +1,7 @@
 <template>
   <div class="supervise">
     <div id="map" ref="worldMap" v-show="showView">
-      <div class="time_quantum" v-show="!canDownload">{{timeQuantum}}</div>
+      <div class="time_quantum" v-show="!canDownload">{{historyData?timeQuantum:defaultTime}}</div>
       <div class="compass_pointer" @click="compass" title="指北针">
         <img class="pointer" src="../../assets/img/compassPointer.png" alt="指北针" />
       </div>
@@ -812,15 +812,17 @@
     <!-- 风险源信息 -->
     <risk-source-info ref="riskInfo"></risk-source-info>
     <!-- 添加风险源 -->
-    <add-risk-source ref="addRisk" cancel="riskSourceCancel" confirm="riskSourceComfirm"></add-risk-source>
+    <add-risk-source ref="addRisk" @cancel="riskSourceCancel" @confirm="riskSourceComfirm"></add-risk-source>
     <!-- 水质监测点 -->
     <water-quality ref="waterQualityAlert"></water-quality>
     <!-- 照片编辑 -->
     <photo-edit ref="photoEdit"></photo-edit>
     <!-- 排口 -->
-    <add-outlet ref="addOutlet" cancel="riskSourceCancel" confirm="riskSourceComfirm"></add-outlet>
+    <add-outlet ref="addOutlet" @cancel="outletCancel" @confirm="outletComfirm"></add-outlet>
     <!-- 水面漂浮物 -->
-    <add-floatage ref="AddFloatage" cancel="riskSourceCancel" confirm="riskSourceComfirm"></add-floatage>
+    <add-floatage ref="AddFloatage" @cancel="floatageCancel" @confirm="floatageComfirm"></add-floatage>
+    <!-- 其他 -->
+    <add-floatage ref="AddFloatage" @cancel="otherCancel" @confirm="otherComfirm"></add-floatage>
     <!-- 360全景图 -->
     <look-panorama
       ref="panorama"
@@ -872,16 +874,14 @@ import Text from 'ol/style/Text'
 // import { Point } from 'ol/geom'
 
 import Point from 'ol/geom/Point' //点
-import Circle from 'ol/geom/Circle'; //圆
-import Polygon from 'ol/geom/Polygon'; //面
+import Circle from 'ol/geom/Circle' //圆
+import Polygon from 'ol/geom/Polygon' //面
 import { fromLonLat } from 'ol/proj'
 import TileJSON from 'ol/source/TileJSON'
 
-import GeoJSON from 'ol/format/GeoJSON';
-import MultiPoint from 'ol/geom/MultiPoint';
-import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style';
-
-
+import GeoJSON from 'ol/format/GeoJSON'
+import MultiPoint from 'ol/geom/MultiPoint'
+import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
 
 // 拖拽缩放
 // import { defaults as defaultInteractions, DragRotateAndZoom } from 'ol/interaction'
@@ -1439,11 +1439,10 @@ export default {
   mounted() {
     let that = this
     let token = Vue.ls.get(ACCESS_TOKEN)
-    let host
     if (this.$store.state.isTestUrl) {
-      host = this.$store.state.testServerUrl
+      this.host = this.$store.state.testServerUrl
     } else {
-      host = this.$store.state.prodServerUrl
+      this.host = this.$store.state.prodServerUrl
     }
     // 初始化地图控件
     let zoom = 14
@@ -1456,7 +1455,7 @@ export default {
     let wordLabel = 'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
     this.mapLayerWord = new T.TileLayer(wordLabel, { minZoom: 4, maxZoom: 18, zIndex: 15 })
     // 正射影像
-    this.mapImage = `${host}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
+    this.mapImage = `${this.host}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
     this.mapLayerImage = new T.TileLayer(this.mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
     this.map = new T.Map('map', {
       minZoom: 4,
@@ -1789,7 +1788,7 @@ export default {
     },
     //基础绘制保存刷新基础绘制列表
     drawSaveRefresh() {
-      this.removeOverLays(this.drawPage)
+      // this.removeOverLays(this.drawPage)
       this.getMapDrawPage()
     },
     initMap() {
@@ -1883,7 +1882,6 @@ export default {
       this.toolCard = false
       var time = this.defaultTime
       var picker = time.split('-')
-      console.log(this.isToolEdit)
       if (this.toolIndex === 1) {
         let data = {
           id: '',
@@ -2019,19 +2017,17 @@ export default {
     //风险源，排口弹窗
     searchResult(result) {
       if (result.status == 0) {
-        console.log('1111')
-        console.log(result)
+        if (this.drawTypeId == '5da8374dea6c157d2d61007c') {
+          this.$refs.addRisk.add(this.mapdrawId, this.currentArea, result)
+        } else if (this.drawTypeId == '5da8389eea6c157d2d61007f') {
+          this.$refs.addOutlet.add(this.mapdrawId, result)
+        } else if (this.drawTypeId == '5dafe6c8ea6c159999a0549c') {
+          this.$refs.AddFloatage.add(this.mapdrawId, this.currentArea, result)
+        }
+        this.drawTypeId = ''
       } else {
         this.$message.error('获取地址失败')
       }
-      if (this.drawTypeId == '5da8374dea6c157d2d61007c') {
-        this.$refs.addRisk.add(this.mapdrawId, this.currentArea, result)
-      } else if (this.drawTypeId == '5da8389eea6c157d2d61007f') {
-        this.$refs.addOutlet.add(this.mapdrawId, result)
-      } else if (this.drawTypeId == '5dafe6c8ea6c159999a0549c') {
-        this.$refs.AddFloatage.add(this.mapdrawId, this.currentArea, result)
-      }
-      this.drawTypeId = ''
     },
     // 绘制取消
     toolCradCancel() {
@@ -2059,6 +2055,37 @@ export default {
         this.lineToolNum.clear()
       }
     },
+    // 添加风险源回调
+    riskSourceCancel() {
+      if (this.toolIndex === 1) {
+        // 工具-点
+        this.markerTool.clear()
+      } else if (this.toolIndex === 2) {
+        // 工具-线
+      } else if (this.toolIndex === 3) {
+        // 工具-面
+      }
+    },
+    // 添加风险源回调
+    riskSourceComfirm() {},
+    // 添加排口回调
+    outletCancel() {
+      this.toolCradCancel()
+    },
+    // 添加排口回调
+    outletComfirm() {},
+    // 添加水面漂浮物回调
+    floatageCancel() {
+      this.toolCradCancel()
+    },
+    // 添加水面漂浮物回调
+    floatageComfirm() {},
+    // 添加其他回调
+    otherCancel() {
+      this.toolCradCancel()
+    },
+    // 添加其他回调
+    otherComfirm() {},
     // 绘制结束
     toolDrawn(e) {
       this.isToolEdit = false
@@ -2383,7 +2410,7 @@ export default {
               this.mapMonth = mouth.substring(4, 6)
               this.mapDay = mouth.substring(6, 8)
               this.map.removeLayer(this.mapLayerImage)
-              let mapImage = `http://jleco.jl-shgroup.com/server/data/admin/regulator/uav/data/mbtiles?year=${
+              let mapImage = `${this.host}/server/data/admin/regulator/uav/data/mbtiles?year=${
                 this.mapYear
               }&month=${this.mapMonth}&day=${
                 this.mapDay
@@ -3503,6 +3530,7 @@ export default {
     },
     // 河岸风险源子栏
     onDrawType(id, clicked) {
+      console.log(id, clicked)
       if (clicked) {
         let point = []
         for (const item of this.drawPage) {
@@ -3516,6 +3544,11 @@ export default {
             }
             if (item.locationType.code == 'line') {
               this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+              console.log(item)
+              let markerTool
+              markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+              this.map.addOverLay(markerTool)
+              // markerTool.addEventListener('click', this.panoramaPointClick)
             }
             if (item.locationType.code == 'polygon') {
               this.noodlesDraw(
@@ -3529,6 +3562,9 @@ export default {
                 item.id,
                 item.innerType.code
               )
+              let markerTool
+              markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+              this.map.addOverLay(markerTool)
             }
           }
         }
