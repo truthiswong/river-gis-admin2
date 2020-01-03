@@ -44,7 +44,7 @@
               <span>{{item.dangerContent}}</span>
             </div>
             <p slot="content" style="ma">{{item.comment}}</p>
-            <div class="comment_img">
+            <div class="comment_img" v-show="item.imgList.length > 0">
               <img v-for="img in item.imgList" :key="img" :src="img" :alt="img" />
             </div>
             <a-tooltip slot="datetime" :title="item.datetime">
@@ -134,7 +134,7 @@ export default {
       id:'',
       headers: {
         Authorization: '',
-        'X-TENANT-ID': 'jl:jlgis@2019' 
+        'X-TENANT-ID': 'jl:jlgis@2019'
       },
       data: [
         // {
@@ -268,6 +268,7 @@ export default {
         res.data.data.forEach(v => {
           v.imgList = Object.values(v.pics)
           v.datetime = formatDate(new Date( v.timeCreated))
+          console.log(v.level)
           if (v.level != undefined) {
             if (v.level.code =='one') {
               v.dangerDescribe ='Ⅰ 级'
