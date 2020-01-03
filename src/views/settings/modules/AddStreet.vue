@@ -82,9 +82,6 @@ export default {
       visible: false,
       confirmLoading: false,
       selectedItems: [], //风险源类型
-      headers: {
-        authorization: 'authorization-text'
-      },
       form: this.$form.createForm(this)
     }
   },

@@ -211,8 +211,8 @@ export default {
       addRiverShow: false,
       // 地图对象
       headers: {
-        Authorization: '',
-        'X-TENANT-ID': 'jl:jlgis@2019'
+        Authorization: Vue.ls.get(ACCESS_TOKEN),
+        'X-TENANT-ID': this.$store.state.tenantId
       },
       map: {},
       polylineHandler: '',
@@ -262,7 +262,6 @@ export default {
     this.map.addControl(scale)
 
     // this.scale.setColor({color: '#f00'})
-    this.headers.Authorization = Vue.ls.get(ACCESS_TOKEN)
     this.getList()
     this.getStreetShowList()
   },

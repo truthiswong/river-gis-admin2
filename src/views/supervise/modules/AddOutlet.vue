@@ -353,8 +353,8 @@ export default {
       fileList:[],
       file:false,
       headers: {
-        Authorization: '',
-        'X-TENANT-ID': 'jl:jlgis@2019' 
+        Authorization: Vue.ls.get(ACCESS_TOKEN),
+        'X-TENANT-ID': this.$store.state.tenantId
       },
       list:{
         riverId:'',
@@ -442,7 +442,6 @@ export default {
   computed: {
   },
   mounted(){
-    this.headers.Authorization=Vue.ls.get(ACCESS_TOKEN)
   },
   methods: {
     moment,
@@ -625,7 +624,6 @@ export default {
       })
     },
     add(id,result) {
-      this.headers.Authorization=Vue.ls.get(ACCESS_TOKEN)
       this.visible = true
       this.list.drawId =id
       this.upload.drawId =id

@@ -43,7 +43,7 @@
               <p v-show="code == 'riskSource'" :class="{'danger_level0': item.level == 'three', 'danger_level1': item.level == 'two','danger_level2': item.level == 'one','danger_level3': item.level == 'four'}">{{item.dangerDescribe}}</p>
               <span>{{item.dangerContent}}</span>
             </div>
-            <p slot="content" style="ma">{{item.comment}}</p>
+            <p slot="content" style="ma">{{'管理建议: ' + item.comment}}</p>
             <div class="comment_img" v-show="item.imgList.length > 0">
               <img v-for="img in item.imgList" :key="img" :src="img" :alt="img" />
             </div>
@@ -133,8 +133,8 @@ export default {
       },
       id:'',
       headers: {
-        Authorization: '',
-        'X-TENANT-ID': 'jl:jlgis@2019'
+        Authorization: Vue.ls.get(ACCESS_TOKEN),
+        'X-TENANT-ID': this.$store.state.tenantId
       },
       data: [
         // {
@@ -193,7 +193,6 @@ export default {
     }
   },
   mounted(){
-    this.headers.Authorization=Vue.ls.get(ACCESS_TOKEN)
   },
   computed: {},
   methods: {
@@ -323,16 +322,13 @@ export default {
       })
     },
     saveClick(){
-
       commentMapdrawSave(this.drawList).then(res=>{
         this.drawList.id = res.data.id
         this.$refs.upload.submit();
         this.$message.success('保存成功');
         this.show_type = false
         this.show = true
-        
       })
-      
     },
     handleSuccess(response, file, fileList){
       this.attachmentJpg=[]

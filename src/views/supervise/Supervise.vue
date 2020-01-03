@@ -941,9 +941,8 @@ export default {
         projectId: this.$store.state.id
       },
       headers: {
-        // 文件上传
         Authorization: Vue.ls.get(ACCESS_TOKEN),
-        'X-TENANT-ID': 'jl:jlgis@2019'
+        'X-TENANT-ID': this.$store.state.tenantId
       },
       phonePhotoData: {
         projectId: '',

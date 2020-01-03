@@ -147,8 +147,8 @@ export default {
       visible: false,
       confirmLoading: false,
       headers: {
-        Authorization: '',
-        'X-TENANT-ID': 'jl:jlgis@2019' 
+        Authorization: Vue.ls.get(ACCESS_TOKEN),
+        'X-TENANT-ID': this.$store.state.tenantId
       },
       form: this.$form.createForm(this)
     }
@@ -159,7 +159,6 @@ export default {
     }
   },
   mounted(){
-    this.headers.Authorization=Vue.ls.get(ACCESS_TOKEN)
   },
   methods: {
     add() {

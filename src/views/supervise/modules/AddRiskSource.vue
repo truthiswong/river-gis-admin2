@@ -301,8 +301,8 @@ export default {
       },
       typeList:[],
       headers: {
-        Authorization: '',
-        'X-TENANT-ID': 'jl:jlgis@2019' 
+        Authorization: Vue.ls.get(ACCESS_TOKEN),
+        'X-TENANT-ID': this.$store.state.tenantId
       },
       labelCol: {
         xs: { span: 18 },
@@ -348,7 +348,6 @@ export default {
 
   },
   mounted(){
-    this.headers.Authorization=Vue.ls.get(ACCESS_TOKEN)
   },
   methods: {
     moment,
@@ -505,7 +504,6 @@ export default {
      
     },
     add(id,currentArea,result) {
-      this.headers.Authorization=Vue.ls.get(ACCESS_TOKEN)
       this.list.drawId =id
       this.upload.drawId =id
       this.list.address = result.formatted_address

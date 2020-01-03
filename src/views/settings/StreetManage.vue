@@ -189,8 +189,8 @@ export default {
         tel: ''
       },
       headers: {
-        Authorization: '',
-        'X-TENANT-ID': 'jl:jlgis@2019'
+        Authorization: Vue.ls.get(ACCESS_TOKEN),
+        'X-TENANT-ID': this.$store.state.tenantId
       },
       alertTop: -1000,
       alertShow: false,
@@ -242,7 +242,6 @@ export default {
     // scale.setColor("red")
     this.map.addControl(scale)
 
-    this.headers.Authorization = Vue.ls.get(ACCESS_TOKEN)
     this.getStreetShowList()
     this.getRiverShowList()
   },

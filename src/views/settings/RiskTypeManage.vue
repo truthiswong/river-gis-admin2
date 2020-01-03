@@ -107,8 +107,8 @@ export default {
        
       ],
       headers: {
-        Authorization: '',
-        'X-TENANT-ID': 'jl:jlgis@2019' 
+        Authorization: Vue.ls.get(ACCESS_TOKEN),
+        'X-TENANT-ID': this.$store.state.tenantId
       },
     }
   },
@@ -119,7 +119,6 @@ export default {
   },
   mounted(){
     this.getList()
-    this.headers.Authorization=Vue.ls.get(ACCESS_TOKEN)
   },
   methods: {
     getList(){
