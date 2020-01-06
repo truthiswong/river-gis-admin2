@@ -20,30 +20,30 @@
           <a-tabs defaultActiveKey="1">
             <a-tab-pane tab="巡河" key="1">
               <a-table :columns="columns" :dataSource="data" bordered>
-                <template slot="see" slot-scope="row">
+                <template slot="see">
                   <a-checkbox>查看</a-checkbox>
                 </template>
-                <template slot="del" slot-scope="row">
+                <template slot="del">
                   <a-checkbox>操作</a-checkbox>
                 </template>
               </a-table>
             </a-tab-pane>
             <a-tab-pane tab="监管" key="2" forceRender>
               <a-table :columns="columns" :dataSource="data" bordered>
-                <template slot="see" slot-scope="row">
+                <template slot="see">
                   <a-checkbox>查看</a-checkbox>
                 </template>
-                <template slot="del" slot-scope="row">
+                <template slot="del">
                   <a-checkbox>操作</a-checkbox>
                 </template>
               </a-table>
             </a-tab-pane>
             <a-tab-pane tab="设置" key="3">
               <a-table :columns="columns" :dataSource="data" bordered>
-                <template slot="see" slot-scope="row">
+                <template slot="see">
                   <a-checkbox>查看</a-checkbox>
                 </template>
-                <template slot="del" slot-scope="row">
+                <template slot="del">
                   <a-checkbox>操作</a-checkbox>
                 </template>
               </a-table>
