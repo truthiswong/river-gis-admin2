@@ -51,8 +51,9 @@
             >{{item.name}}</a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="风险源类型" has-feedback>
-          <a-select
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="类型" has-feedback>
+          <a-input placeholder="请输入类型" v-model="list.typeName" />
+          <!-- <a-select
             showSearch
             mode="multiple"
             :allowClear="true"
@@ -68,7 +69,7 @@
               v-for="(item, index) in labelList"
               :key="index"
             >{{item.name}}</a-select-option>
-          </a-select>
+          </a-select> -->
         </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="文件" has-feedback>
           <el-upload
@@ -136,6 +137,7 @@ export default {
         name: '',
         streetId: '',
         riverId: '',
+        typeName: '',
         riskSourceTypeId: '',
         surveyDate: '',
         remark: '',
