@@ -57,12 +57,19 @@ const user = {
           Vue.ls.set(ACCESS_TOKEN, 'Bearer ' + result.token, 7 * 24 * 60 * 60 * 1000)
           commit('SET_TOKEN', 'Bearer ' + result.token)
           projectMinesTructure().then(res => {
+            console.log(res)
+            commit('projectInfoFn', res.data)
             var arr = res.data
             for (let i = 0; i < arr.length; i++) {
-              if (arr[i].children.length > 0) {
-                commit('show', arr[i].children[0].id)
-                // Vue.ls.set('SET_PROJECT_ID', arr[i].children[0].id)
-                break
+              if (arr[i].children != null) {
+                if (arr[i].children.length > 0) {
+                  commit('show', arr[i].children[0].id)
+                  commit('projectCoordinateFn', arr[i].children[0].coordinate)
+                  // Vue.ls.set('SET_PROJECT_ID', arr[i].children[0].id)
+                  break
+                }
+              } else {
+                arr[i].children = []
               }
             }
             // if (rootState.defautProject.length <= 0) {
