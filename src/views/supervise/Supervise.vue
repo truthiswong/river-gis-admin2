@@ -1446,12 +1446,12 @@ export default {
     // 初始化地图控件
     let zoom = 14
     let twoDimensionURL =
-      'http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
+      `http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
     this.mapLayer2d = new T.TileLayer(twoDimensionURL, { minZoom: 4, maxZoom: 18, zIndex: 10 })
-    let satelliteURL = 'http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
+    let satelliteURL = `http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
     this.mapLayerSatellite = new T.TileLayer(satelliteURL, { minZoom: 4, maxZoom: 18, zIndex: 10 })
     // 创建自定义图层对象
-    let wordLabel = 'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
+    let wordLabel = `http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
     this.mapLayerWord = new T.TileLayer(wordLabel, { minZoom: 4, maxZoom: 18, zIndex: 15 })
     // 正射影像
     this.mapImage = `${this.host}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
@@ -2398,7 +2398,7 @@ export default {
       console.log(mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8))
       for (const item of this.timeData) {
         if (mouth == item.date) {
-          if (item.level != 2) {
+          // if (item.level != 2) {
             if (item.date == mouth) {
               this.defaultTime = mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8)
               this.mapYear = mouth.substring(0, 4)
@@ -2417,7 +2417,7 @@ export default {
             } else {
               item.clicked = false
             }
-          }
+          // }
         } else {
           item.clicked = false
         }
@@ -3439,9 +3439,20 @@ export default {
     //绘制点
     spotDraw(pointLists) {
       let markerTool
+      console.log(pointLists)
       for (const item of pointLists) {
-        markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
-        this.map.addOverLay(markerTool)
+        if (item.drawType.icon) {
+          let icon = new T.Icon({
+            iconUrl: item.drawType.icon,
+            iconSize: new T.Point(41, 40),
+            iconAnchor: new T.Point(21, 40)
+          })
+          markerTool = new T.Marker(item.latlng, { icon: icon, id: item.id, title: item.innerName, code: item.innerType.code })
+          this.map.addOverLay(markerTool)
+        } else {
+          markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
+          this.map.addOverLay(markerTool)
+        }
         if (item.innerType.code == 'riskSource') {
           markerTool.addEventListener('click', this.sourceRiskClick)
         } else if (item.innerType.code == 'discharge') {
@@ -3541,8 +3552,18 @@ export default {
               this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
               console.log(item)
               let markerTool
-              markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
-              this.map.addOverLay(markerTool)
+              if (item.drawType.icon) {
+                let icon = new T.Icon({
+                  iconUrl: item.drawType.icon,
+                  iconSize: new T.Point(41, 40),
+                  iconAnchor: new T.Point(21, 40)
+                })
+                markerTool = new T.Marker(item.line[0], { icon: icon, id: item.id, title: item.innerName, code: item.innerType.code })
+                this.map.addOverLay(markerTool)
+              } else {
+                markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+                this.map.addOverLay(markerTool)
+              }
               // markerTool.addEventListener('click', this.panoramaPointClick)
             }
             if (item.locationType.code == 'polygon') {
@@ -3558,8 +3579,20 @@ export default {
                 item.innerType.code
               )
               let markerTool
-              markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
-              this.map.addOverLay(markerTool)
+              if (item.drawType.icon) {
+                let icon = new T.Icon({
+                  iconUrl: item.drawType.icon,
+                  iconSize: new T.Point(41, 40),
+                  iconAnchor: new T.Point(21, 40)
+                })
+                markerTool = new T.Marker(item.polygon[0], { icon: icon, id: item.id, title: item.innerName, code: item.innerType.code })
+                this.map.addOverLay(markerTool)
+              } else {
+                // markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
+                // this.map.addOverLay(markerTool)
+                markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+                this.map.addOverLay(markerTool)
+              }
             }
           }
         }
