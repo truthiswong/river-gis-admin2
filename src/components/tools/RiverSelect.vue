@@ -15,45 +15,55 @@ export default {
     return {
       list: [],
       options: [],
-      defautOption: [] || this.$store.defautProject
+      defautOption: [] || this.$store.defautProject,
+    }
+  },
+  //利用计算属性
+  computed: {
+    projectInfo() {
+      return this.$store.state.projectInfo
+    }
+  },
+  //监听执行
+  watch: {
+    projectInfo(val) {
+      this.uploadProject()
     }
   },
   mounted() {
-    this.getList()
+    this.uploadProject()
   },
   methods: {
-    getList() {
-      projectMinesTructure().then(res => {
-        var arr = res.data
-        arr.forEach(v => {
-          if (v.children == null) {
-            v.children = []
+    uploadProject() {
+      var arr = this.$store.state.projectInfo
+      arr.forEach(v => {
+        if (v.children == null) {
+          v.children = []
+        }
+        v.value = v.id
+        v.label = v.name
+        v.code = '1'
+        v.children.forEach(a => {
+          if (a.children == null) {
+            a.children = []
           }
-          v.value = v.id
-          v.label = v.name
-          v.code = '1'
-          v.children.forEach(a => {
-            if (a.children == null) {
-              a.children = []
-            }
-            a.value = a.id
-            a.label = a.name
-            a.code = '2'
-          })
+          a.value = a.id
+          a.label = a.name
+          a.code = '2'
         })
-        this.options = arr
-        if (this.$store.state.defautProject.length > 0) {
-          this.defautOption = this.$store.state.defautProject
-        } else {
-          for (let i = 0; i < arr.length; i++) {
-            if (arr[i].children.length > 0) {
-              this.defautOption.push(arr[i].id)
-              this.defautOption.push(arr[i].children[0].id)
-              break
-            }
+      })
+      this.options = arr
+      if (this.$store.state.defautProject.length > 0) {
+        this.defautOption = this.$store.state.defautProject
+      } else {
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i].children.length > 0) {
+            this.defautOption.push(arr[i].id)
+            this.defautOption.push(arr[i].children[0].id)
+            break
           }
         }
-      })
+      }
     },
     onChange(value) {
       if (value.length > 1) {
@@ -64,7 +74,18 @@ export default {
           id = value[1]
         }
         this.$store.commit('show', value[1])
+        console.log(value)
         this.$store.commit('SET_DEFAUT_PROJECT', value)
+        for (const item of this.$store.state.projectInfo) {
+          if (value[0] == item.id) {
+            for (const project of item.children) {
+              if (value[1] == project.id) {
+                console.log(project.coordinate)
+                this.$store.commit('projectCoordinateFn', project.coordinate)
+              }
+            }
+          }
+        }
         this.$router.push({
           path: this.$route.path,
           query: {
