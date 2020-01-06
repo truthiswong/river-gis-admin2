@@ -1470,7 +1470,6 @@ export default {
     this.getRiverStreeList()
 
     this.getParamList()
-    // console.log(this.$store.state.id, 'ssasasa')
   },
   methods: {
     //获取绘制类型
@@ -1836,10 +1835,7 @@ export default {
     compass() {},
     // 复位
     setCenter() {
-      let lng = 121.095505
-      let lat = 31.21098
-      let zoom = 10
-      this.map.panTo(new T.LngLat(lng, lat), zoom)
+      this.map.panTo(this.$store.state.projectCoordinate, 12)
     },
     // 工具
     toolsShowFun() {
@@ -2409,11 +2405,11 @@ export default {
               this.mapMonth = mouth.substring(4, 6)
               this.mapDay = mouth.substring(6, 8)
               this.map.removeLayer(this.mapLayerImage)
-              let mapImage = `${this.host}/server/data/admin/regulator/uav/data/mbtiles?year=${
-                this.mapYear
-              }&month=${this.mapMonth}&day=${
-                this.mapDay
-              }&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
+              let mapImage = `${this.host}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${
+                this.mapMonth
+              }&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${Vue.ls.get(
+                ACCESS_TOKEN
+              )}`
               this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
               this.map.addLayer(this.mapLayerImage)
               item.clicked = true
