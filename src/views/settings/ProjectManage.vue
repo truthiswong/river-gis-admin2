@@ -139,6 +139,7 @@ import {
   projectNewsSave,
   projectNewsDel
 } from '@/api/login'
+import { log } from 'util'
 const treeData = []
 const columns = [
   {
@@ -216,6 +217,11 @@ export default {
     this.getList()
   },
   methods: {
+    getProjectInfo() {
+      projectMinesTructure().then(res => {
+        this.$store.commit('projectInfoFn', res.data)
+      })
+    },
     projectCoordinate() {
       console.log(333)
       if (this.cp) {
@@ -242,6 +248,8 @@ export default {
       }
       projectMinesTructure(data)
         .then(res => {
+          console.log(res);
+          
           var arr = res.data
           for (let i = 0; i < arr.length; i++) {
             arr[i].key = i + 1
@@ -299,6 +307,7 @@ export default {
           this.equipmentList.id = ''
           this.equipmentList.projectParentName = ''
           this.getList()
+          this.getProjectInfo() //刷新项目列表
         })
         .catch(err => {
           this.$message.error(err.response.data.message)
@@ -318,7 +327,6 @@ export default {
       this.addProject()
     },
     handleOk1(e) {
-      console
       if (!this.equipmentList.projectName) {
         this.$message.error('项目名不能为空')
       } else if (!this.equipmentList.latlng) {
@@ -336,6 +344,7 @@ export default {
             this.$message.success('保存成功')
             this.handleCancel1()
             this.newList()
+            this.getProjectInfo() //刷新项目列表
           })
           .catch(err => {
             this.$message.error(err.response.data.message)
@@ -399,6 +408,7 @@ export default {
           .then(res => {
             this.$message.success('删除成功')
             this.getList()
+            this.getProjectInfo() //刷新项目列表
           })
           .catch(err => {
             this.$message.error(err.response.data.message)
@@ -408,6 +418,7 @@ export default {
           .then(res => {
             this.$message.success('删除成功')
             this.newList()
+            this.getProjectInfo() //刷新项目列表
           })
           .catch(err => {
             this.$message.error(err.response.data.message)
