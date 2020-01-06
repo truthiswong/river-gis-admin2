@@ -81,6 +81,9 @@ const user = {
             //   commit('SET_DEFAUT_PROJECT', defautArr)
             // }
             resolve()
+          }).catch(error => {
+            console.log(error)
+            reject(error)
           })
         }).catch(error => {
           console.log(error)
