@@ -2947,10 +2947,7 @@ export default {
     compass() {},
     // 复位
     setCenter() {
-      let lng = 121.095505
-      let lat = 31.21098
-      let zoom = 10
-      this.map.panTo(new T.LngLat(lng, lat), zoom)
+      this.map.panTo(this.$store.state.projectCoordinate, 12)
     },
     // 放大
     mapZoomIn() {
