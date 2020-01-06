@@ -89,24 +89,18 @@
       </template>
     </a-table>
     <add-supervisory ref="addSupervisory" @ok="handleOk"  :streetList="streetList" :riverList="riverList" :labelList="labelList"/>
-    <step-by-step-modal ref="modal" @ok="handleOk" />
   </a-card>
 </template>
 
 <script>
 import moment from 'moment'
-import { STable, Ellipsis } from '@/components'
-import StepByStepModal from './modules/StepByStepModal'
 import AddSupervisory from './modules/AddSupervisory'
 import { getRoleList, getServiceList } from '@/api/manage'
 import {SupervisePage,SuperviseSave,SuperviseDel,SuperviseDetail,getStreetList,getRiverList,paramList} from '@/api/login'
 export default {
-  name: 'TableList',
+  name: 'SupervisoryUnitsManage',
   components: {
-    STable,
-    Ellipsis,
     AddSupervisory,
-    StepByStepModal
   },
   data() { 
     return {
