@@ -2094,7 +2094,7 @@ export default {
       } else if (this.toolIndex === 2) {
         // 工具-线
         this.currentArea = 0
-        console.log((e.currentDistance / 1000).toFixed(3)) //获取距离 km
+        console.log((e.currentDistance).toFixed(3)) //获取距离 m
         this.toolCard = true
         this.lineTool.close()
         this.polygonList = e.currentLnglats
@@ -2104,8 +2104,8 @@ export default {
         })
       } else if (this.toolIndex === 3) {
         // 工具-面
-        this.currentArea = (e.currentArea / 1000000).toFixed(3)
-        console.log((e.currentArea / 1000000).toFixed(3)) //获取面积 平方公里
+        this.currentArea = (e.currentArea).toFixed(3)
+        console.log((e.currentArea).toFixed(3)) //获取面积 平方米
         this.toolCard = true
         this.polygonTool.close()
         this.polygonList = e.currentLnglats
