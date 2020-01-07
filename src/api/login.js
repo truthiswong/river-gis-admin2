@@ -966,6 +966,15 @@ export function waterPage(data) {
   })
 }
 
+//资源树
+export function getPermissionTree(data) {
+  return axios({
+    url: '/server/data/admin/auth/permission/tree',
+    method: 'get',
+    params: data
+  })
+}
+
 export function getSmsCaptcha(parameter) {
   return axios({
     url: api.SendSms,
