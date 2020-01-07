@@ -1485,6 +1485,15 @@ export default {
     }
   },
   mounted() {
+    let year = new Date().getFullYear() //取得4位数的年份
+    let month = new Date().getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
+    let day = new Date().getDate() //返回日期月份中的天数（1到31）
+    if (month < 10) {
+      month = '0' + month
+    }
+    if (day < 10) {
+      day = '0' + day
+    }
     let token = Vue.ls.get(ACCESS_TOKEN)
     let zoom = 14
     let twoDimensionURL =
@@ -1496,15 +1505,13 @@ export default {
     let wordLabel = 'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
     this.mapLayerWord = new T.TileLayer(wordLabel, { minZoom: 4, maxZoom: 18, zIndex: 15 })
     // 正射影像
-    let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=&month&day&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
+    let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${year}&month=${month}&day=${day}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
     this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
     this.map = new T.Map('map', {
       minZoom: 4,
       maxZoom: 23,
       layers: [this.mapLayerSatellite, this.mapLayerWord, this.mapLayerImage]
     })
-    // this.map.addEventListener('zoomend', this.mapZoomChange)
-
     this.map.centerAndZoom(new T.LngLat(121.43429, 31.15847), zoom)
     //添加比例尺控件
     this.map.addControl(new T.Control.Scale())
