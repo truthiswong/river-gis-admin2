@@ -1453,7 +1453,7 @@ export default {
     this.map = new T.Map('map', {
       minZoom: 4,
       maxZoom: 23,
-      layers: [this.mapLayerSatellite, this.mapLayerWord, this.mapLayerImage]
+      layers: [this.mapLayerSatellite, this.mapLayerWord]
     })
     this.map.addEventListener('zoomend', this.mapZoomChange)
 
@@ -2276,7 +2276,13 @@ export default {
           month: picker[1],
           day: picker[2]
         }
-        // console.log(this.phonePhotoData)
+        let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${picker[0]}&month=${
+          picker[1]
+        }&day=${picker[2]}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${Vue.ls.get(
+          ACCESS_TOKEN
+        )}`
+        this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
+        this.map.addLayer(this.mapLayerImage)
       })
     },
     //获取天气
@@ -3933,7 +3939,6 @@ export default {
     },
     sourceRiskView(id, code) {
       console.log(id, code)
-
       if (code == 'riskSource') {
         console.log('1')
         this.$refs.addRisk.addSource(id)
