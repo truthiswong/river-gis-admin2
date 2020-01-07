@@ -331,6 +331,8 @@ export default {
         this.$message.error('项目名不能为空')
       } else if (!this.equipmentList.latlng) {
         this.$message.error('请选择项目中心')
+      } else if (!this.equipmentList.number) {
+        this.$message.error('请选择间隔周期')
       } else {
         var data = {
           id: this.equipmentList.id,
@@ -354,7 +356,7 @@ export default {
     handleCancel1(e) {
       this.equipmentList.id = ''
       this.equipmentList.projectName = ''
-      this.equipmentList.number = ''
+      // this.equipmentList.number = ''
       this.equipmentModel = false
     },
     newList() {
@@ -383,13 +385,11 @@ export default {
         .catch(err => {})
     },
     select(e) {
-      // console.log(this.treeData);
       console.log(e)
       if (e.code == '1') {
         this.treeId = true
       } else if (e.code == '2') {
         this.treeId = false
-        console.log(e.name)
         this.equipmentList.projectParentName = e.name
         this.equipmentList.projectNameId = e.id
         this.id = e.id
