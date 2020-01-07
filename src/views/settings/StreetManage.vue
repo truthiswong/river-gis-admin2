@@ -227,8 +227,8 @@ export default {
     this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
     this.map = new T.Map('map', {
       minZoom: 4,
-      maxZoom: 23,
-      layers: [this.mapLayerSatellite, this.mapLayerWord, this.mapLayerImage]
+      maxZoom: 18,
+      layers: [this.mapLayerSatellite, this.mapLayerWord]
     })
     this.map.centerAndZoom(new T.LngLat(121.43429, 31.15847), zoom)
     //添加比例尺控件
