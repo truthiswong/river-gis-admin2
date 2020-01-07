@@ -19,7 +19,7 @@
         <el-form-item>
           <a-tabs defaultActiveKey="1">
             <a-tab-pane tab="巡河" key="1">
-              <a-table :columns="columns" :dataSource="data" bordered>
+              <a-table :columns="columns" :dataSource="permissionList[0]" bordered>
                 <template slot="see">
                   <a-checkbox>查看</a-checkbox>
                 </template>
@@ -29,7 +29,7 @@
               </a-table>
             </a-tab-pane>
             <a-tab-pane tab="监管" key="2" forceRender>
-              <a-table :columns="columns" :dataSource="data" bordered>
+              <a-table :columns="columns" :dataSource="permissionList[1]" bordered>
                 <template slot="see">
                   <a-checkbox>查看</a-checkbox>
                 </template>
@@ -39,7 +39,7 @@
               </a-table>
             </a-tab-pane>
             <a-tab-pane tab="设置" key="3">
-              <a-table :columns="columns" :dataSource="data" bordered>
+              <a-table :columns="columns" :dataSource="permissionList[2]" bordered>
                 <template slot="see">
                   <a-checkbox>查看</a-checkbox>
                 </template>
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { roleDetails, rolePreservation } from '@/api/login'
+import { roleDetails, rolePreservation, getPermissionTree } from '@/api/login'
 const columns = [
   {
     title: '名称',
@@ -90,24 +90,64 @@ export default {
         name: [{ required: true, message: '不能为空', trigger: 'blur' }]
       },
       columns,
-      data: [
-        {
+      permissionList: [
+        [{
           key: '1',
           name: '巡河计划'
         },
         {
           key: '12',
           name: '今日计划'
-        }
-      ]
+        }],
+        [{
+          key: '1',
+          name: '监管'
+        }],
+        [{
+          key: '1',
+          name: '巡河'
+        },
+        {
+          key: '12',
+          name: '街道'
+        },
+        {
+          key: '12',
+          name: '任务'
+        },
+        {
+          key: '12',
+          name: '巡河'
+        }]
+      ],
     }
   },
   mounted() {
     if (this.$route.query.id != '') {
       this.getList()
     }
+    this.getPermissionTreeList()
   },
   methods: {
+    getPermissionTreeList() {
+      let data = {
+        parentId: 0
+      }
+      getPermissionTree(data)
+        .then(res => {
+          // {
+          //   key: '12',
+          //   name: '今日计划'
+          // }
+          for (const item of res.data) {
+            for (const iterator of item.children) {
+              item.key = item.id
+            }
+          }
+          // this.permissionList = 
+        })
+        .catch(err => {})
+    },
     getList() {
       var data = {
         id: this.$route.query.id
