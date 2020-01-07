@@ -284,7 +284,7 @@ export default {
         // this.mapLayerImage = new T.TileLayer(this.mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
         this.map = new T.Map('center_map', {
           minZoom: 4,
-          maxZoom: 23,
+          maxZoom: 18,
           layers: [this.mapLayerSatellite, this.mapLayerWord]
         })
         this.map.centerAndZoom(new T.LngLat(121.43429, 31.15847), zoom)
