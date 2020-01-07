@@ -19,9 +19,7 @@ export default new Vuex.Store({
   state: {
     id: '', //默认当前项目id
     defautProject: [], //默认项目选择
-    isTestUrl: true, //默认使用测试服
-    testServerUrl: 'http://demo-jleco-river.jl-shgroup.com',
-    prodServerUrl: 'http://jleco-river.jl-shgroup.com',
+    serverUrl: 'http://demo-jleco-river.jl-shgroup.com',
     tenantId: "test:jlgis@2019", // 默认测试
     projectCoordinate: { //项目坐标
       lng: 0,
@@ -36,8 +34,8 @@ export default new Vuex.Store({
     SET_DEFAUT_PROJECT: (state, index) => {
       state.defautProject = index
     },
-    IS_TEST_URL: (state, index) => {
-      state.isTestUrl = index
+    setServerUrl: (state, index) => {
+      state.serverUrl = index
     },
     // 商户签名
     tenantIdFn: (state, index) => {
