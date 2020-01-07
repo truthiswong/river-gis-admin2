@@ -33,7 +33,7 @@
             <a-icon type="setting" />
             <span>测试</span>
           </a-menu-item>
-          <a-menu-divider /> -->
+          <a-menu-divider />-->
           <a-menu-item key="3">
             <a href="javascript:;" @click="handleLogout">
               <a-icon type="logout" />
@@ -72,21 +72,21 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        Vue.ls.remove(ACCESS_TOKEN)
-        this.$router.push({
-          path: '/user/login'
+      })
+        .then(() => {
+          localStorage.removeItem('store')
+          Vue.ls.remove(ACCESS_TOKEN)
+          this.$router.push({
+            path: '/user/login'
+          })
         })
-      }).catch(() => {
-            
-      });
+        .catch(() => {})
       // this.$confirm({
       //   title: '提示',
       //   content: '真的要注销登录吗 ?',
       //   onOk: () => {
       //     console.log('11');
-          
-          
+
       //   },
       //   onCancel() {}
       // })
