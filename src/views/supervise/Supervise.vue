@@ -1436,13 +1436,7 @@ export default {
     }
   },
   mounted() {
-    let that = this
     let token = Vue.ls.get(ACCESS_TOKEN)
-    if (this.$store.state.isTestUrl) {
-      this.host = this.$store.state.testServerUrl
-    } else {
-      this.host = this.$store.state.prodServerUrl
-    }
     // 初始化地图控件
     let zoom = 14
     let twoDimensionURL =
@@ -1454,7 +1448,7 @@ export default {
     let wordLabel = `http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
     this.mapLayerWord = new T.TileLayer(wordLabel, { minZoom: 4, maxZoom: 18, zIndex: 15 })
     // 正射影像
-    this.mapImage = `${this.host}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
+    this.mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
     this.mapLayerImage = new T.TileLayer(this.mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
     this.map = new T.Map('map', {
       minZoom: 4,
@@ -2405,7 +2399,7 @@ export default {
               this.mapMonth = mouth.substring(4, 6)
               this.mapDay = mouth.substring(6, 8)
               this.map.removeLayer(this.mapLayerImage)
-              let mapImage = `${this.host}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${
+              let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${
                 this.mapMonth
               }&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${Vue.ls.get(
                 ACCESS_TOKEN
