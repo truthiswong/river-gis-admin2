@@ -125,7 +125,7 @@
           </a-col>
         </a-row>
       </el-form>
-      <div id="map" class="map_wrap"></div>
+      <div id="center_map" class="map_wrap"></div>
     </a-modal>
   </div>
 </template>
@@ -282,7 +282,7 @@ export default {
         // 正射影像
         // this.mapImage = `${this.host}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${token}`
         // this.mapLayerImage = new T.TileLayer(this.mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
-        this.map = new T.Map('map', {
+        this.map = new T.Map('center_map', {
           minZoom: 4,
           maxZoom: 23,
           layers: [this.mapLayerSatellite, this.mapLayerWord]
