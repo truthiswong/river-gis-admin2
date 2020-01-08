@@ -230,7 +230,8 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol"   label="建成时间">
-              <a-input placeholder v-model="list.activateTime"/>
+              <!-- <a-input placeholder v-model="list.activateTime"/> -->
+              <a-date-picker @change="onChange" style="width: 100%" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -279,9 +280,9 @@
                 :limit='1'>
                 <a-button type="primary" icon="plus" >上传</a-button>
               </el-upload>
-              <viewer >
+              <viewer>
                 <img v-for="item in attachmentJpg" :key="item.id" :src="item.media" alt="" style="height:70px;">
-              </viewer >
+              </viewer>
             </a-form-item>
           </a-col>
         </a-row>
@@ -330,6 +331,9 @@
       <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
         <a-col :span="3">
           <a-button block @click="handleCancel">取消</a-button>
+        </a-col>
+        <a-col :span="3">
+          <!-- <a-button block @click="handleCancel">删除</a-button> -->
         </a-col>
         <a-col :span="3">
           <a-button block @click="saveClick">保存</a-button>
@@ -445,6 +449,10 @@ export default {
   },
   methods: {
     moment,
+    onChange(date, dateString) {
+      console.log(date, dateString);
+      this.list.activateTime = dateString
+    },
     getList(){
       SupervisePage(this.$store.state.id).then(res=>{
         function formatDate(now) { 
