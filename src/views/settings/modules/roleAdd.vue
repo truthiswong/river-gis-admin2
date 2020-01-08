@@ -21,30 +21,30 @@
             <a-tab-pane tab="巡河" key="1">
               <a-table :columns="columns" :dataSource="permissionList[0]" bordered>
                 <template slot="see" slot-scope="item">
-                  <a-switch v-model="item.read" size="small" @change="permission1(item)" />
+                  <a-switch v-model="item.read" size="small" @change="permissionRead(item)" />
                 </template>
                 <template slot="del" slot-scope="item">
-                  <a-switch v-model="item.write" size="small" @change="permission1(item)" />
+                  <a-switch v-model="item.write" size="small" @change="permissionWrite(item)" />
                 </template>
               </a-table>
             </a-tab-pane>
             <a-tab-pane tab="监管" key="2" forceRender>
               <a-table :columns="columns" :dataSource="permissionList[1]" bordered>
                 <template slot="see" slot-scope="item">
-                  <a-switch v-model="item.read" size="small" @change="permission1(item)" />
+                  <a-switch v-model="item.read" size="small" @change="permissionRead(item)" />
                 </template>
                 <template slot="del" slot-scope="item">
-                  <a-switch v-model="item.write" size="small" @change="permission1(item)" />
+                  <a-switch v-model="item.write" size="small" @change="permissionWrite(item)" />
                 </template>
               </a-table>
             </a-tab-pane>
             <a-tab-pane tab="设置" key="3">
               <a-table :columns="columns" :dataSource="permissionList[2]" bordered>
                 <template slot="see" slot-scope="item">
-                  <a-switch v-model="item.read" size="small" />
+                  <a-switch v-model="item.read" size="small" @change="permissionRead(item)" />
                 </template>
                 <template slot="del" slot-scope="item">
-                  <a-switch v-model="item.write" size="small" />
+                  <a-switch v-model="item.write" size="small" @change="permissionWrite(item)" />
                 </template>
               </a-table>
             </a-tab-pane>
@@ -125,11 +125,38 @@ export default {
     this.getPermissionTreeList()
   },
   methods: {
-    permission1(value) {
-      // this.permissionList[0].read = false
-      console.log(value)
-      console.log(this.permissionList)
-      // value.target.checked = false
+    permissionRead(item) {
+      if (!item.read) {
+        item.write = false
+      }
+    },
+    permissionWrite(item) {
+      if (item.write) {
+        item.read = true
+      }
+    },
+    getRoleDetails() {
+      roleDetails(this.$route.query.id)
+        .then(res => {
+          let data = res.data.permission
+          for (const item of this.permissionList) {
+              for (const k in res.data.permission) {
+                item.filter((key)=>{
+                  if (k == key.id) {
+                    // console.log(key)
+                    if (data[k]) {
+                      key.read = true
+                      key.write = true
+                    } else {
+                      key.read = true
+                      key.write = false
+                    }
+                  }
+                })
+              }
+          }
+        })
+        .catch(err => {})
     },
     getPermissionTreeList() {
       let data = {
@@ -139,7 +166,6 @@ export default {
         .then(res => {
           let arr = []
           res.data.forEach((v, i) => {
-            console.log(v, i)
             if (v.children.length > 0) {
               for (const item of v.children) {
                 item.key = item.flag
@@ -157,15 +183,14 @@ export default {
             }
           })
           console.log(this.permissionList)
-          this.permissionList = this.permissionList
+          if (this.$route.query.id != '') {
+            this.getRoleDetails()
+          }
         })
         .catch(err => {})
     },
     getList() {
-      var data = {
-        id: this.$route.query.id
-      }
-      roleDetails(data)
+      roleDetails(this.$route.query.id)
         .then(res => {
           var arr = res.data
           this.list.type = arr.type.code
@@ -176,11 +201,39 @@ export default {
     preservation() {
       this.$refs['formValidate'].validate(valid => {
         if (valid) {
-          var data = {
+          let str = ''
+          for (const item of this.permissionList) {
+            if (item.length > 1) {
+              for (const vlaue of item) {
+                if (vlaue.write) {
+                  str += `"permission[${vlaue.id}]": true,`
+                } else {
+                  if (vlaue.read) {
+                    str += `"permission[${vlaue.id}]": false,`
+                  }
+                }
+              }
+            } else {
+              if (item[0].write) {
+                str += `"permission[${item[0].id}]": true,`
+              } else {
+                if (item[0].read) {
+                  str += `"permission[${item[0].id}]": false,`
+                }
+              }
+            }
+          }
+          str = str.substring(0, str.length - 1)
+          str = `{${str}}`
+          let strObj = JSON.parse(str)
+          let listObj = {
             // code:this.list.number,
             name: this.list.name,
             type: this.list.type
           }
+          let data = {}
+          Object.assign(data, listObj, strObj)
+          // console.log(data)
           if (this.id) {
             data.id = this.id
           }
