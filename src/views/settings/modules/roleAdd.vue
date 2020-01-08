@@ -20,31 +20,31 @@
           <a-tabs defaultActiveKey="1">
             <a-tab-pane tab="巡河" key="1">
               <a-table :columns="columns" :dataSource="permissionList[0]" bordered>
-                <template slot="see">
-                  <a-checkbox>查看</a-checkbox>
+                <template slot="see" slot-scope="item">
+                  <a-switch v-model="item.read" size="small" @change="permission1(item)" />
                 </template>
-                <template slot="del">
-                  <a-checkbox>操作</a-checkbox>
+                <template slot="del" slot-scope="item">
+                  <a-switch v-model="item.write" size="small" @change="permission1(item)" />
                 </template>
               </a-table>
             </a-tab-pane>
             <a-tab-pane tab="监管" key="2" forceRender>
               <a-table :columns="columns" :dataSource="permissionList[1]" bordered>
-                <template slot="see">
-                  <a-checkbox>查看</a-checkbox>
+                <template slot="see" slot-scope="item">
+                  <a-switch v-model="item.read" size="small" @change="permission1(item)" />
                 </template>
-                <template slot="del">
-                  <a-checkbox>操作</a-checkbox>
+                <template slot="del" slot-scope="item">
+                  <a-switch v-model="item.write" size="small" @change="permission1(item)" />
                 </template>
               </a-table>
             </a-tab-pane>
             <a-tab-pane tab="设置" key="3">
               <a-table :columns="columns" :dataSource="permissionList[2]" bordered>
-                <template slot="see">
-                  <a-checkbox>查看</a-checkbox>
+                <template slot="see" slot-scope="item">
+                  <a-switch v-model="item.read" size="small" />
                 </template>
-                <template slot="del">
-                  <a-checkbox>操作</a-checkbox>
+                <template slot="del" slot-scope="item">
+                  <a-switch v-model="item.write" size="small" />
                 </template>
               </a-table>
             </a-tab-pane>
@@ -91,35 +91,31 @@ export default {
       },
       columns,
       permissionList: [
-        [{
-          key: '1',
-          name: '巡河计划'
-        },
-        {
-          key: '12',
-          name: '今日计划'
-        }],
-        [{
-          key: '1',
-          name: '监管'
-        }],
-        [{
-          key: '1',
-          name: '巡河'
-        },
-        {
-          key: '12',
-          name: '街道'
-        },
-        {
-          key: '12',
-          name: '任务'
-        },
-        {
-          key: '12',
-          name: '巡河'
-        }]
-      ],
+        [
+          // {
+          //   key: '1',
+          //   name: '巡河',
+          //   read: false,
+          //   write: false
+          // }
+        ],
+        [
+          // {
+          //   key: '1',
+          //   name: '监管',
+          //   read: false,
+          //   write: false
+          // }
+        ],
+        [
+          // {
+          //   key: '1',
+          //   name: '巡河管理',
+          //   read: false,
+          //   write: false
+          // }
+        ]
+      ]
     }
   },
   mounted() {
@@ -129,22 +125,39 @@ export default {
     this.getPermissionTreeList()
   },
   methods: {
+    permission1(value) {
+      // this.permissionList[0].read = false
+      console.log(value)
+      console.log(this.permissionList)
+      // value.target.checked = false
+    },
     getPermissionTreeList() {
       let data = {
         parentId: 0
       }
       getPermissionTree(data)
         .then(res => {
-          // {
-          //   key: '12',
-          //   name: '今日计划'
-          // }
-          for (const item of res.data) {
-            for (const iterator of item.children) {
-              item.key = item.id
+          let arr = []
+          res.data.forEach((v, i) => {
+            console.log(v, i)
+            if (v.children.length > 0) {
+              for (const item of v.children) {
+                item.key = item.flag
+                item.name = item.name
+                item.read = false
+                item.write = false
+                this.permissionList[i].push(item)
+              }
+            } else {
+              v.key = v.flag
+              v.name = v.name
+              v.read = false
+              v.write = false
+              this.permissionList[i].push(res.data[i])
             }
-          }
-          // this.permissionList = 
+          })
+          console.log(this.permissionList)
+          this.permissionList = this.permissionList
         })
         .catch(err => {})
     },
