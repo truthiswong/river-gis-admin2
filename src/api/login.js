@@ -82,9 +82,9 @@ export function roleList(parameter) {
   })
 }
 //角色详情
-export function roleDetails(parameter) {
+export function roleDetails(id) {
   return axios({
-    url: '/server/data/admin/auth/role/detail/' + parameter.id,
+    url: '/server/data/admin/auth/role/detail/' + id,
     method: 'get',
   })
 }
