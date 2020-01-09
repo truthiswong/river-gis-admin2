@@ -97,21 +97,21 @@
         </a-form-item>
       </a-form>
     </a-modal>
-    <a-modal title="添加设备" v-model="equipmentModel" :width="700"
+    <a-modal title="添加设备" v-model="equipmentModel" :width="850"
       @ok="handleOk1"
       @cancel="handleCancel1">
-      <el-form ref="formValidate" :model="equipmentList" :rules="ruleValidate"  label-width="100px">
+      <el-form ref="formValidate" :model="equipmentList" :rules="ruleValidate"  label-width="150px">
         <el-form-item label="设备名称" prop="name">
-          <el-input v-model="equipmentList.name" placeholder="请输入" style="width:200px" />
+          <el-input v-model="equipmentList.name" placeholder="请输入" style="width:250px" />
         </el-form-item>
         <el-form-item label="设备型号" prop="type">
-          <el-input v-model="equipmentList.type" placeholder="请输入" style="width:200px" />
+          <el-input v-model="equipmentList.type" placeholder="请输入" style="width:250px" />
         </el-form-item>
         <el-form-item label="设备数量">
-          <el-input  placeholder="请输入" v-model="equipmentList.amount" style="width:200px" />
+          <el-input  placeholder="请输入" v-model="equipmentList.amount" style="width:250px" />
         </el-form-item>
         <el-form-item label="设备聚隆编号">
-          <el-input v-model="equipmentList.number" placeholder="请输入" style="width:200px" />
+          <el-input v-model="equipmentList.number" placeholder="请输入" style="width:250px" />
         </el-form-item>
         <h3 style="margin-bottom:25px">关联设备</h3>
         <!-- <el-form-item label="无人机类型"></el-form-item> -->
@@ -120,13 +120,13 @@
           <div v-for="item in option.children" :key="item.id" style="padding-left:20px">
             <p >{{item.name}}</p>
             <el-checkbox-group  style="display:flex;flex-wrap:wrap;" v-model="checkedList">
-              <div  style="width:260px;margin:0 5px 10px 0" v-for="index in item.children" :key="index.id">
+              <div style="width:340px;margin:0 5px 10px 0" v-for="index in item.children" :key="index.id">
                 <a-row>
                   <a-col :span="12" offset="4" style="height:30px;">
                     <el-checkbox :label="index.id">{{index.name}}</el-checkbox>
                   </a-col>
                   <a-col :span="8" style="height:30px;text-align:right;">
-                    <a-input-number :min="1" :max="100000"  v-model="index.num" />
+                    <el-input-number size="mini" v-model="index.num" :min="1" :max="999999"></el-input-number>
                   </a-col>
                 </a-row>
               </div>
