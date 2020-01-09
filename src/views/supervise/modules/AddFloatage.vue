@@ -8,6 +8,7 @@
     @cancel="handleCancel"
     :maskClosable="false"
     :destroyOnClose="true"
+    :footer="null"
   >
     <a-spin :spinning="confirmLoading">
       <a-form class="from">
@@ -86,21 +87,24 @@
         </a-row>
       </a-form>
       <a-divider orientation="left"></a-divider>
-      <!-- <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
+      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
         <a-col :span="3">
           <a-button block @click="handleCancel">取消</a-button>
         </a-col>
         <a-col :span="3">
-          <a-button block>保存</a-button>
+          <a-button block @click="handleDelete">删除</a-button>
         </a-col>
-      </a-row>-->
+        <a-col :span="3">
+          <a-button block @click="saveClick">保存</a-button>
+        </a-col>
+      </a-row>
     </a-spin>
   </a-modal>
 </template>
 
 <script>
 import moment from 'moment'
-import { getRiverList, getStreetList, floatageSave, floatageDetails, mapdrawDetail } from '@/api/login'
+import { getRiverList, getStreetList, floatageSave, floatageDetails, mapdrawDetail, mapdrawDelete } from '@/api/login'
 export default {
   data() {
     return {
@@ -128,12 +132,8 @@ export default {
       streetList: []
     }
   },
-  computed: {
-    
-  },
-  mounted() {
-    
-  },
+  computed: {},
+  mounted() {},
   methods: {
     moment,
     getList() {
@@ -212,6 +212,17 @@ export default {
       this.list.streetId = ''
       this.list.currentArea = ''
       this.list.discoveryTime = ''
+    },
+    handleDelete() {
+      mapdrawDelete(this.list.drawId)
+        .then(res => {
+          this.$message.success('删除成功')
+          this.$parent.drawSaveRefresh()
+          this.handleCancel()
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
     }
   }
 }
