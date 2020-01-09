@@ -3,9 +3,9 @@
     <a-card title="权限设置">
       <a-button slot="extra" @click="backPage">返回上一页</a-button>
       <el-form ref="formValidate" :model="list" :rules="ruleValidate">
-        <el-form-item label="编号" prop="number">
+        <!-- <el-form-item label="编号" prop="number">
           <el-input v-model="list.number" placeholder="请输入" style="width:200px"></el-input>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="类型" prop="type">
           <a-select style="width: 200px" placeholder="请选择" v-model="list.type">
             <a-select-option value="worker">外勤</a-select-option>
@@ -85,7 +85,7 @@ export default {
         name: ''
       },
       ruleValidate: {
-        number: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        // number: [{ required: true, message: '不能为空', trigger: 'blur' }],
         type: [{ required: true, message: '不能为空', trigger: 'blur' }],
         name: [{ required: true, message: '不能为空', trigger: 'blur' }]
       },
@@ -140,20 +140,20 @@ export default {
         .then(res => {
           let data = res.data.permission
           for (const item of this.permissionList) {
-              for (const k in res.data.permission) {
-                item.filter((key)=>{
-                  if (k == key.id) {
-                    // console.log(key)
-                    if (data[k]) {
-                      key.read = true
-                      key.write = true
-                    } else {
-                      key.read = true
-                      key.write = false
-                    }
+            for (const k in res.data.permission) {
+              item.filter(key => {
+                if (k == key.id) {
+                  // console.log(key)
+                  if (data[k]) {
+                    key.read = true
+                    key.write = true
+                  } else {
+                    key.read = true
+                    key.write = false
                   }
-                })
-              }
+                }
+              })
+            }
           }
         })
         .catch(err => {})
@@ -165,8 +165,10 @@ export default {
       getPermissionTree(data)
         .then(res => {
           let arr = []
+          console.log(res.data)
+          // res.data[0]
           res.data.forEach((v, i) => {
-            if (v.children.length > 0) {
+            if (i == 2) {
               for (const item of v.children) {
                 item.key = item.flag
                 item.name = item.name
@@ -183,6 +185,7 @@ export default {
             }
           })
           console.log(this.permissionList)
+          this.permissionList = this.permissionList
           if (this.$route.query.id != '') {
             this.getRoleDetails()
           }
