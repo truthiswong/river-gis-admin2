@@ -6,9 +6,9 @@
     :confirmLoading="confirmLoading"
     @ok="saveClick"
     @cancel="handleCancel"
-    :forceRender="true"
-    :maskClosable="false"
     :centered="true"
+    :maskClosable="false"
+    :footer="null"
   >
     <a-spin :spinning="confirmLoading">
       <a-form class="from" :form="form">
@@ -151,10 +151,6 @@
                   v-for="item in typeList"
                   :key="item.id"
                 >{{item.name}}</a-select-option>
-                <!-- <a-select-option value="surface_ratio">水面率</a-select-option>
-                <a-select-option value="bank_risk">河岸风险</a-select-option>
-                <a-select-option value="surface_flotage">水面漂浮物</a-select-option>
-                <a-select-option value="bottom_sediment">底泥</a-select-option>-->
               </a-select>
             </a-form-item>
           </a-col>
@@ -267,6 +263,17 @@
         </a-table>
       </a-form>
       <a-divider orientation="left"></a-divider>
+      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
+        <a-col :span="3">
+          <a-button block @click="handleCancel">取消</a-button>
+        </a-col>
+        <a-col :span="3">
+          <a-button block @click="handleDelete">删除</a-button>
+        </a-col>
+        <a-col :span="3">
+          <a-button block @click="saveClick">保存</a-button>
+        </a-col>
+      </a-row>
     </a-spin>
   </a-modal>
 </template>
@@ -287,7 +294,8 @@ import {
   mapdrawRiskSave,
   paramList,
   SupervisePage,
-  riskDetails
+  riskDetails,
+  mapdrawDelete
 } from '@/api/login'
 export default {
   data() {
@@ -578,6 +586,18 @@ export default {
       this.attachmentJpg = ''
       this.visible = false
       this.$emit('cancel')
+    },
+    handleDelete() {
+      mapdrawDelete(this.list.drawId)
+        .then(res => {
+          this.$message.success('删除成功')
+          this.$parent.drawSaveRefresh()
+          this.handleCancel()
+          // this.$emit('confirm')
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
     },
     onChange(date) {
       function formatDate(now) {
