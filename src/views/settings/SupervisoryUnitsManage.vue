@@ -15,7 +15,7 @@
           </a-col>
           <a-col :md="8" :sm="24">
             <a-form-item label="所属街道">
-              <a-select v-model="queryParam.status" placeholder="请选择" default-value="0">
+              <a-select v-model="queryParam.type" placeholder="请选择" default-value="0">
                 <a-select-option value="0">全部</a-select-option>
                 <a-select-option value="1">关闭</a-select-option>
                 <a-select-option value="2">运行中</a-select-option>
@@ -25,11 +25,11 @@
           <template v-if="advanced">
             <a-col :md="8" :sm="24">
               <a-form-item label="所属河道">
-                <a-input-number v-model="queryParam.callNo" style="width: 100%" />
+                <a-input-number v-model="queryParam.rivers" style="width: 100%" />
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="风险源类型">
+              <a-form-item label="类型">
                 <a-select v-model="queryParam.useStatus" placeholder="请选择" default-value="0">
                   <a-select-option value="0">全部</a-select-option>
                   <a-select-option value="1">关闭</a-select-option>
@@ -71,7 +71,12 @@
     </div>
 
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="$refs.addSupervisory.add()" style="margin-bottom: 15px;">添加</a-button>
+      <a-button
+        type="primary"
+        icon="plus"
+        @click="$refs.addSupervisory.add()"
+        style="margin-bottom: 15px;"
+      >添加</a-button>
     </div>
     <a-table :columns="columns" :dataSource="loadData" bordered>
       <template slot="action" slot-scope="row">
@@ -88,7 +93,13 @@
         </a-popconfirm>
       </template>
     </a-table>
-    <add-supervisory ref="addSupervisory" @ok="handleOk"  :streetList="streetList" :riverList="riverList" :labelList="labelList"/>
+    <add-supervisory
+      ref="addSupervisory"
+      @ok="handleOk"
+      :streetList="streetList"
+      :riverList="riverList"
+      :labelList="labelList"
+    />
   </a-card>
 </template>
 
@@ -96,19 +107,27 @@
 import moment from 'moment'
 import AddSupervisory from './modules/AddSupervisory'
 import { getRoleList, getServiceList } from '@/api/manage'
-import {SupervisePage,SuperviseSave,SuperviseDel,SuperviseDetail,getStreetList,getRiverList,paramList} from '@/api/login'
+import {
+  SupervisePage,
+  SuperviseSave,
+  SuperviseDel,
+  SuperviseDetail,
+  getStreetList,
+  getRiverList,
+  paramList
+} from '@/api/login'
 export default {
   name: 'SupervisoryUnitsManage',
   components: {
-    AddSupervisory,
+    AddSupervisory
   },
-  data() { 
+  data() {
     return {
-      streetList:[],
-      riverList:[],
-      labelList:[],
+      streetList: [],
+      riverList: [],
+      labelList: [],
       mdl: {},
-      id:'',
+      id: '',
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
@@ -126,15 +145,15 @@ export default {
         },
         {
           title: '所属街道',
-          dataIndex: 'description',
+          dataIndex: 'street'
         },
         {
           title: '所属河道',
-          dataIndex: 'callNo',
+          dataIndex: 'riverStr'
         },
         {
-          title: '风险源类型',
-          dataIndex: 'status',
+          title: '类型',
+          dataIndex: 'type'
         },
         {
           title: '编辑人',
@@ -152,105 +171,111 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
-      
+
       loadData: [
         // {
-        //   key:'1',
-        //   no:'督办单1',
-        //   description:'上钢新村街道',
-        //   callNo:'黄浦江',
-        //   status:'排口',
-        //   editor:'张三',
-        //   updatedAt:'2019-7-8',
+        //   key: '1',
+        //   name: '督办单1',
+        //   street: '上钢新村街道',
+        //   riverStr: '黄浦江',
+        //   type: '排口',
+        //   editor: '张三',
+        //   updatedAt: '2019-7-8'
         // },
         // {
-        //   key:'2',
-        //   no:'督办单1',
-        //   description:'上钢新村街道',
-        //   callNo:'黄浦江',
-        //   status:'排口',
-        //   editor:'张三',
-        //   updatedAt:'2019-7-8',
-        // },
+        //   key: '2',
+        //   name: '督办单1',
+        //   street: '上钢新村街道',
+        //   riverStr: '黄浦江',
+        //   type: '排口',
+        //   editor: '张三',
+        //   updatedAt: '2019-7-8'
+        // }
       ],
       selectedRowKeys: [],
       selectedRows: []
     }
   },
   watch: {
-    $route(){
+    $route() {
       this.getPage()
       this.getType()
-    },
+    }
   },
-  mounted(){
+  mounted() {
     this.getPage()
     this.getType()
   },
   methods: {
-    getPage(){
-      SupervisePage(this.$store.state.id).then(res => {
-        function formatDate(now) { 
-          var year=now.getFullYear() //取得4位数的年份
-          var month=now.getMonth()+1  //取得日期中的月份，其中0表示1月，11表示12月
-          var date=now.getDate()      //返回日期月份中的天数（1到31）
-          var hour=now.getHours()     //返回日期中的小时数（0到23）
-          var minute=now.getMinutes() //返回日期中的分钟数（0到59）
-          var second=now.getSeconds() //返回日期中的秒数（0到59）
-          return year+"-"+month+"-"+date
-        }
-        var arr = res.data.data
-        for (let i = 0; i < arr.length; i++) {
-          arr[i].key = i + 1
-          arr[i].description =arr[i].street.name
-          arr[i].updatedAt = formatDate(new Date(arr[i].surveyDate))
-          arr[i].callNo = ''
-          for (let a = 0; a < arr[i].rivers.length; a++) {
-            arr[i].callNo =arr[i].callNo + arr[i].rivers[a].name + ' '
+    getPage() {
+      SupervisePage(this.$store.state.id)
+        .then(res => {
+          function formatDate(now) {
+            var year = now.getFullYear() //取得4位数的年份
+            var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
+            var day = now.getDate() //返回日期月份中的天数（1到31）
+            var hour = now.getHours() //返回日期中的小时数（0到23）
+            var minute = now.getMinutes() //返回日期中的分钟数（0到59）
+            var second = now.getSeconds() //返回日期中的秒数（0到59）
+            month = month > 9 ? month : '0' + month
+            day = day > 9 ? day : '0' + day
+            return year + '-' + month + '-' + day
           }
-          arr[i].status = ''
-          for (let a = 0; a < arr[i].riskSourceType.length; a++) {
-            arr[i].status =arr[i].status + arr[i].riskSourceType[a].name + ' '
+          var arr = res.data.data
+          for (let i = 0; i < arr.length; i++) {
+            arr[i].key = i + 1
+            arr[i].street = arr[i].street.name
+            arr[i].updatedAt = formatDate(new Date(arr[i].surveyDate))
+            arr[i].riverStr = ''
+            for (let a = 0; a < arr[i].rivers.length; a++) {
+              arr[i].riverStr = arr[i].riverStr + arr[i].rivers[a].name + ', '
+            }
+            arr[i].riverStr = arr[i].riverStr.substring(0, arr[i].riverStr.length - 2)
+            arr[i].type = arr[i].type
           }
-        }
-        this.loadData = arr
-      }).catch(err => {
-      })
+          this.loadData = arr
+        })
+        .catch(err => {})
     },
-    getType(){
-      getStreetList(this.$store.state.id).then(res => {
-        var arr = res.data.data
-        this.streetList = arr
-      }).catch(err => {
-      })
-      getRiverList(this.$store.state.id).then(res => {
-        var arr = res.data.data
-        this.riverList=arr
-      }).catch(err => {
-      })
-      var data ={
-        type:'risk_source_type'
+    getType() {
+      getStreetList(this.$store.state.id)
+        .then(res => {
+          var arr = res.data.data
+          this.streetList = arr
+        })
+        .catch(err => {})
+      getRiverList(this.$store.state.id)
+        .then(res => {
+          var arr = res.data.data
+          this.riverList = arr
+        })
+        .catch(err => {})
+      var data = {
+        type: 'risk_source_type'
       }
-      paramList(data).then(res => {
-        var arr = res.data
-        this.labelList=arr
-      }).catch(err => {
-      })
+      paramList(data)
+        .then(res => {
+          var arr = res.data
+          this.labelList = arr
+        })
+        .catch(err => {})
     },
     onChange(date, dateString) {
       console.log(date, dateString)
     },
-    del(id){
+    del(id) {
       this.id = id
     },
     confirmDelete(id) {
-      SuperviseDel(id).then(res => {
+      SuperviseDel(id)
+        .then(res => {
           this.$message.success('删除成功')
-          this.id=''
+          this.id = ''
           this.getPage()
-        }).catch(err => {})
+        })
+        .catch(err => {})
     },
-    cancelDelete(){},
+    cancelDelete() {},
     handleOk() {
       this.$refs.table.refresh()
     },
