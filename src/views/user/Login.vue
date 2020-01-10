@@ -199,7 +199,7 @@ export default {
       })
     },
     loginSuccess(res) {
-      console.log(res)
+      console.log("登录成功")
       // check res.homePage define, set $router.push name res.homePage
       // Why not enter onComplete
       /*
