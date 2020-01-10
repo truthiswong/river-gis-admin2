@@ -975,6 +975,14 @@ export function getPermissionTree(data) {
   })
 }
 
+//当前登录管理的用户&账户信息
+export function getUserCurrent() {
+  return axios({
+    url: '/server/data/admin/user/current',
+    method: 'get'
+  })
+}
+
 export function getSmsCaptcha(parameter) {
   return axios({
     url: api.SendSms,

@@ -20,15 +20,19 @@ router.beforeEach((to, from, next) => {
     // Vue.ls.remove(ACCESS_TOKEN)
     /* has token */
     if (to.path === '/user/login') {
+      console.log("路由1111")
       next({ path: '/dashboard/analysis' }) 
       NProgress.done()
     } else {
+      console.log("路由222")
+      console.log(store.getters.roles.length)
       if (store.getters.roles.length === 0) {
         next()
         // store
         //   .dispatch('GetInfo')
         //   .then(res => {
         //     const roles = res.result && res.result.role
+        //     console.log(roles)
         //     store.dispatch('GenerateRoutes', { roles }).then(() => {
         //       // 根据roles权限生成可访问的路由表
         //       // 动态添加可访问路由表
@@ -44,13 +48,14 @@ router.beforeEach((to, from, next) => {
         //     })
         //   })
         //   .catch(() => {
-        //     notification.error({
-        //       message: '错误',
-        //       description: '请求用户信息失败，请重试'
-        //     })
-        //     store.dispatch('Logout').then(() => {
-        //       next({ path: '/user/login', query: { redirect: to.fullPath } })
-        //     })
+        //     // notification.error({
+        //     //   message: '错误',
+        //     //   description: '请求用户信息失败，请重试'
+        //     // })
+        //     next({ path: '/user/login', query: { redirect: to.fullPath } })
+        //     // store.dispatch('Logout').then(() => {
+        //     //   next({ path: '/user/login', query: { redirect: to.fullPath } })
+        //     // })
         //   })
       } else {
         next()
