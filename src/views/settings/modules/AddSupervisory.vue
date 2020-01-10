@@ -120,6 +120,7 @@ import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters']
 import { SuperviseSave, SuperviseDetail } from '@/api/login'
+import { type } from 'os'
 export default {
   props: {
     streetList: Array,
@@ -138,14 +139,12 @@ export default {
         streetId: '',
         riverId: '',
         type: '',
-        riskSourceTypeId: '',
         surveyDate: '',
         remark: '',
         tags: ''
       },
       streetId: [],
       riverId: [],
-      riskSourceTypeId: [],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 }
@@ -182,11 +181,13 @@ export default {
           function formatDate(now) {
             var year = now.getFullYear() //取得4位数的年份
             var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
-            var date = now.getDate() //返回日期月份中的天数（1到31）
+            var day = now.getDate() //返回日期月份中的天数（1到31）
             var hour = now.getHours() //返回日期中的小时数（0到23）
             var minute = now.getMinutes() //返回日期中的分钟数（0到59）
             var second = now.getSeconds() //返回日期中的秒数（0到59）
-            return year + '-' + month + '-' + date
+            month = month > 9 ? month : '0' + month
+            day = day > 9 ? day : '0' + day
+            return year + '-' + month + '-' + day
           }
           this.list.name = arr.name
           this.list.surveyDate = formatDate(new Date(arr.surveyDate))
@@ -194,22 +195,18 @@ export default {
           arr.tags1 = ''
           if (arr.tags != null) {
             arr.tags.forEach(v => {
-              arr.tags1 = arr.tags1 + v + ','
+              arr.tags1 = arr.tags1 + v + ', '
             })
           }
-          arr.riskSourceType1 = []
+          arr.tags1 = arr.tags1.substring(0, arr.tags1.length - 2)
           arr.rivers1 = []
-          if (arr.riskSourceType != null) {
-            for (let i = 0; i < arr.riskSourceType.length; i++) {
-              arr.riskSourceType1.push(arr.riskSourceType[i].id)
-            }
-          }
           if (arr.rivers != null) {
             for (let i = 0; i < arr.rivers.length; i++) {
               arr.rivers1.push(arr.rivers[i].id)
             }
           }
-          this.riskSourceTypeId = arr.riskSourceType1
+          this.list.type = arr.type
+          this.list.remark = arr.remark
           this.riverId = arr.rivers1
           this.list.streetId = arr.street.id
           this.list.tags = arr.tags1
@@ -266,11 +263,9 @@ export default {
       this.list.name = ''
       this.list.streetId = ''
       this.list.riverId = ''
-      this.list.riskSourceTypeId = ''
       this.streetId = []
       this.riverId = []
-      this.type = ''
-      this.riskSourceTypeId = []
+      this.list.type = ''
       this.list.surveyDate = ''
       this.list.remark = ''
       this.list.tags = ''
@@ -290,7 +285,6 @@ export default {
     },
     handleSubmit() {
       this.list.riverId = this.riverId.join(',')
-      this.list.riskSourceTypeId = this.riskSourceTypeId.join(',')
       if (this.fileList.length == 0) {
         var data = this.list
         SuperviseSave(data)
