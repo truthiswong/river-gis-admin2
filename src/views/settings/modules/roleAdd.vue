@@ -140,7 +140,7 @@ export default {
         .then(res => {
           let data = res.data.permission
           for (const item of this.permissionList) {
-            for (const k in res.data.permission) {
+            for (const k in data) {
               item.filter(key => {
                 if (k == key.id) {
                   // console.log(key)
