@@ -52,7 +52,7 @@
           </a-select>
         </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="类型" has-feedback>
-          <a-input placeholder="请输入类型" v-model="list.typeName" />
+          <a-input placeholder="请输入类型" v-model="list.type" />
           <!-- <a-select
             showSearch
             mode="multiple"
@@ -137,7 +137,7 @@ export default {
         name: '',
         streetId: '',
         riverId: '',
-        typeName: '',
+        type: '',
         riskSourceTypeId: '',
         surveyDate: '',
         remark: '',
@@ -269,6 +269,7 @@ export default {
       this.list.riskSourceTypeId = ''
       this.streetId = []
       this.riverId = []
+      this.type = ''
       this.riskSourceTypeId = []
       this.list.surveyDate = ''
       this.list.remark = ''
