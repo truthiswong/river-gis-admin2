@@ -76,6 +76,8 @@ export default {
         .then(() => {
           localStorage.removeItem('store')
           Vue.ls.remove(ACCESS_TOKEN)
+          this.$store.commit('SET_TOKEN', '')
+          this.$store.commit('SET_ROLES', [])
           this.$router.push({
             path: '/user/login'
           })
