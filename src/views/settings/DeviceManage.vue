@@ -416,11 +416,12 @@ export default {
         var arr = res.data.data
         var sz = []
         for (const item of arr) {
-          sz.push(item.device.id)
+          
           for (const aa of this.classificationList) {
             for (const vv of aa.children) {
               for (const bb of vv.children) {
                 if (item.device.id== bb.id) {
+                  sz.push(item.device.id)
                   bb.num = item.num
                   break
                 }
