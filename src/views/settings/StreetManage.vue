@@ -553,8 +553,6 @@ export default {
     },
     handleSuccess(response, file, fileList) {
       this.getStreetShowList()
-      console.log('111')
-
       this.$message.success('保存成功')
       this.fileList = []
     },

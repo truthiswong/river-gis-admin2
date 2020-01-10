@@ -960,7 +960,13 @@ export default {
       }, //天气
       fileList: [], //手机照片
       defaultTime: '', //默认日期
-      otherList: [], //其他
+      otherList: [
+        {
+          id: 0,
+          name: "测试",
+          clicked: false
+        }
+      ], //其他
       riskSourceList: [], //河岸风险源
       currentArea: '', //面积
       drawTypeId: '', //绘制类型
@@ -1468,15 +1474,15 @@ export default {
   methods: {
     //获取绘制类型
     getParamList() {
-      var data = {
+      let data = {
         type: 'draw_type'
       }
       paramList(data)
         .then(res => {
           this.paramPage = res.data
-          var arr = []
+          let arr = []
           for (const item of res.data) {
-            item.clicked = false
+            this.$set(item, 'clicked', false)
             if (
               item.id != '5da8374dea6c157d2d61007c' &&
               item.id != '5da8389eea6c157d2d61007f' &&
@@ -1485,7 +1491,6 @@ export default {
               arr.push(item)
             }
           }
-          console.log(arr)
           this.otherList = arr
         })
         .catch(err => {
@@ -3610,6 +3615,7 @@ export default {
     // 水土流失
     onWaterLandLoss(id, clicked) {
       console.log(id, clicked)
+      console.log(this.otherList)
       if (clicked) {
         let point = []
         for (const item of this.drawPage) {
