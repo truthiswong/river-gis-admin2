@@ -24,9 +24,7 @@
           <p>风险源类别: {{list.type}}</p>
           <p>首次发现时间: {{list.discoveryTime}}</p>
           <p>河道所属: {{list.river}}</p>
-          <router-link to="#111">
-            <a-button type="primary" ghost size="small" @click="riskSee">查看详情</a-button>
-          </router-link>
+          <a-button type="primary" ghost size="small" @click="riskSee">查看详情</a-button>
         </a-col>
       </a-row>
       <a-list
