@@ -317,9 +317,18 @@ export function getSaveStreet(parameter) {
     data: parameter
   })
 }
+// 获取水质数据分页
 export function getWaterQualityList(parameter) {
   return axios({
     url: '/server/data/admin/regulator/water/page',
+    method: 'get',
+    params: parameter
+  })
+}
+// 水质监测站（有数据的）
+export function getWaterStation(parameter) {
+  return axios({
+    url: '/server/data/admin/regulator/water/station',
     method: 'get',
     params: parameter
   })
@@ -832,6 +841,13 @@ export function mediaList(id) {
   return axios({
     url: '/server/data/admin/mapdraw/media/list?drawId=' + id,
     method: 'get',
+  })
+}
+//绘制数据图片删除
+export function mediaRemove(id) {
+  return axios({
+    url: '/server/data/admin/mapdraw/media/remove/' + id,
+    method: 'post',
   })
 }
 //风险源  排口   漂浮物详情
