@@ -216,7 +216,10 @@
                 <a-button type="primary" icon="plus">上传</a-button>
               </el-upload>
               <viewer>
-                <img v-for="item in attachmentJpg" :key="item.id" :src="item.media" alt="" style="width:70px;height:70px;margin:0 4px 4px 0;">
+                <a-popconfirm title="确定删除吗？" v-for="item in attachmentJpg" :key="item.id" @confirm="mediaDelete(item.id)">
+                  <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                  <img :src="item.media" alt style="width:70px;height:70px;margin:0 4px 4px 0;" />
+                </a-popconfirm>
               </viewer>
             </a-form-item>
           </a-col>
@@ -295,7 +298,8 @@ import {
   paramList,
   SupervisePage,
   riskDetails,
-  mapdrawDelete
+  mapdrawDelete,
+  mediaRemove
 } from '@/api/login'
 export default {
   data() {
@@ -546,20 +550,6 @@ export default {
         this.list.standardName = arr.standardName
       })
     },
-    add(id, currentArea, result) {
-      this.list.drawId = id
-      this.upload.drawId = id
-      this.list.address = result.formatted_address
-      this.list.lat = result.resultObj.location.lat
-      this.list.lng = result.resultObj.location.lon
-      this.list.currentArea = currentArea
-      this.getList()
-      // mapdrawDetail(id).then(res=>{
-      //   console.log(res);
-
-      // })
-      this.visible = true
-    },
     handleCancel() {
       this.list.riverId = ''
       this.list.streetId = ''
@@ -612,18 +602,27 @@ export default {
       this.list.discoveryTime = formatDate(date)
     },
     handleSuccess(response, file, fileList) {
-      // this.attachmentJpg = response.data.media
       this.$message.success('上传成功')
-      this.fileList=[]
-      mediaList(this.list.drawId).then(res=>{
-        console.log(res.data);
+      this.fileList = []
+      mediaList(this.list.drawId).then(res => {
         this.attachmentJpg = res.data
       })
-      // this.upload.id = response.data.id
-      this.fileList = []
     },
     handleRemove(err) {
       console.log(err)
+    },
+    // 影像删除
+    mediaDelete(id) {
+      mediaRemove(id)
+        .then(res => {
+          this.$message.success('删除成功')
+          mediaList(this.list.drawId).then(res => {
+            this.attachmentJpg = res.data
+          })
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
     },
     handlePreview(file) {
       console.log(file)
