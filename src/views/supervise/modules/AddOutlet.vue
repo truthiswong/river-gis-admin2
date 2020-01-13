@@ -234,8 +234,11 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="建成时间">
-              <!-- <a-input placeholder v-model="list.activateTime"/> -->
-              <a-date-picker @change="onChange" style="width: 100%" />
+              <a-date-picker
+                :value="moment(list.activateTime, 'YYYY-MM-DD HH:mm')"
+                @change="onChange"
+                style="width: 100%"
+              />
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -286,13 +289,15 @@
                 <a-button type="primary" icon="plus">上传</a-button>
               </el-upload>
               <viewer>
-                <img
+                <a-popconfirm
+                  title="确定删除吗？"
                   v-for="item in attachmentJpg"
                   :key="item.id"
-                  :src="item.media"
-                  alt
-                  style="height:70px;"
-                />
+                  @confirm="mediaDelete(item.id)"
+                >
+                  <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                  <img :src="item.media" alt style="width:70px;height:70px;margin:0 4px 4px 0;" />
+                </a-popconfirm>
               </viewer>
             </a-form-item>
           </a-col>
@@ -369,7 +374,8 @@ import {
   mediaList,
   dischargeDetails,
   mapdrawDetail,
-  SupervisePage
+  SupervisePage,
+  mediaRemove
 } from '@/api/login'
 export default {
   data() {
@@ -474,23 +480,13 @@ export default {
   methods: {
     moment,
     onChange(date, dateString) {
-      console.log(date, dateString)
       this.list.activateTime = dateString
     },
     getList() {
       SupervisePage(this.$store.state.id).then(res => {
-        function formatDate(now) {
-          var year = now.getFullYear() //取得4位数的年份
-          var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
-          var date = now.getDate() //返回日期月份中的天数（1到31）
-          var hour = now.getHours() //返回日期中的小时数（0到23）
-          var minute = now.getMinutes() //返回日期中的分钟数（0到59）
-          var second = now.getSeconds() //返回日期中的秒数（0到59）
-          return year + '-' + month + '-' + date
-        }
         res.data.data.forEach(v => {
           v.key = v.id
-          v.surveyDate = formatDate(new Date(v.surveyDate))
+          v.surveyDate = moment(v.surveyDate).format('YYYY-MM-DD')
         })
         this.sheetList = res.data.data
       })
@@ -503,80 +499,15 @@ export default {
     },
     detailList(row) {
       this.getList()
-      // mapdrawDetail(row.target.options.id).then(res=>{
-      //   this.list.lng=res.data.point[0]
-      //   this.list.lat=res.data.point[1]
-      // })
-      this.list.drawId = row.target.options.id
-      dischargeDetails(row.target.options.id).then(res => {
-        var arr = res.data
-        this.list.riverId = arr.river.id
-        this.list.streetId = arr.street.id
-        this.list.code = arr.river.code
-        this.list.controller = arr.river.controller
-        this.list.supervisoryLevel = arr.river.supervisoryLevel.name
-        if (arr.river.priority == true) {
-          this.list.priority = '重点'
-        } else if (arr.river.priority == false) {
-          this.list.priority = '非重点'
-        }
-        this.list.tworiver = arr.street.controller
-        this.list.address = arr.address
-        // this.list.supervisoryLevel=arr.
-        // this.list.controller=arr.
-        // this.list.priority=arr.
-        this.list.standardCode = arr.standardCode
-        this.list.standardName = arr.standardName
-        this.list.type = arr.type.code
-        this.list.landmarkLocation = arr.landmarkLocation
-        this.list.accurateLocation = arr.accurateLocation
-        this.list.innerCode = arr.innerCode
-        this.list.innerName = arr.innerName
-        this.list.letway = arr.letway.code
-        this.list.enterRiverWay = arr.enterRiverWay
-        this.list.enterRiverSize = arr.enterRiverSize
-        this.list.yearLetSize = arr.yearLetSize
-        this.list.pollutant = arr.pollutant
-        this.list.settingUnit = arr.settingUnit
-        this.list.unitAddress = arr.unitAddress
-        this.list.linkman = arr.linkman
-        this.list.linktel = arr.linktel
-        this.list.blockoffStatus = arr.blockoffStatus
-        this.list.statement = arr.statement
-        this.list.activateTime = arr.activateTime
-        this.list.registrationState = arr.registrationState
-        this.list.approveState = arr.approveState
-        this.list.approveUnit = arr.approveUnit
-        this.list.dischargeLicense = arr.dischargeLicense
-        this.list.licenseNo = arr.licenseNo
-        this.list.innerCode = arr.innerCode
-        this.list.innerName = arr.innerName
-        this.list.functionName = arr.functionName
-      })
       this.visible = true
-    },
-    detailList1(row) {
-      this.getList()
-      this.visible = true
-      // mapdrawDetail(row).then(res=>{
-      //   this.list.lng=res.data.point[0]
-      //   this.list.lat=res.data.point[1]
-      // })
       this.list.drawId = row
-      function formatDate(now) {
-        var year = now.getFullYear() //取得4位数的年份
-        var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
-        var date = now.getDate() //返回日期月份中的天数（1到31）
-        var hour = now.getHours() //返回日期中的小时数（0到23）
-        var minute = now.getMinutes() //返回日期中的分钟数（0到59）
-        var second = now.getSeconds() //返回日期中的秒数（0到59）
-        return year + '-' + month + '-' + date
-      }
+      this.upload.drawId = row
+      console.log(this.list.drawId)
       dischargeDetails(row).then(res => {
         var arr = res.data
         arr.bill.forEach(v => {
           v.key = v.id
-          v.surveyDate = formatDate(new Date(v.surveyDate))
+          v.surveyDate = moment(v.surveyDate).format('YYYY-MM-DD')
           this.dataSourceId.push(v.id)
         })
         this.dataSource = arr.bill
@@ -611,7 +542,7 @@ export default {
         this.list.linktel = arr.linktel
         this.list.blockoffStatus = arr.blockoffStatus
         this.list.statement = arr.statement
-        this.list.activateTime = arr.activateTime
+        this.list.activateTime = moment(arr.activateTime).format('YYYY-MM-DD')
         this.list.registrationState = arr.registrationState
         this.list.approveState = arr.approveState
         this.list.approveUnit = arr.approveUnit
@@ -620,6 +551,9 @@ export default {
         this.list.innerCode = arr.innerCode
         this.list.innerName = arr.innerName
         this.list.functionName = arr.functionName
+        mediaList(this.list.drawId).then(res => {
+          this.attachmentJpg = res.data
+        })
       })
     },
     typeChange(value, option) {
@@ -653,15 +587,6 @@ export default {
       informationStreet(value).then(res => {
         this.list.tworiver = res.data.controller
       })
-    },
-    add(id, result) {
-      this.visible = true
-      this.list.drawId = id
-      this.upload.drawId = id
-      this.list.address = result.formatted_address
-      this.list.lat = result.resultObj.location.lat
-      this.list.lng = result.resultObj.location.lon
-      this.getList()
     },
     // 添加河流
     handleSubmit() {
@@ -748,6 +673,7 @@ export default {
     },
     handleSuccess(response, file, fileList) {
       this.$message.success('上传成功')
+      console.log(this.list.drawId)
       this.fileList = []
       mediaList(this.list.drawId).then(res => {
         console.log(res.data)
@@ -756,6 +682,19 @@ export default {
     },
     handleRemove(err) {
       console.log(err)
+    },
+    // 影像删除
+    mediaDelete(id) {
+      mediaRemove(id)
+        .then(res => {
+          this.$message.success('删除成功')
+          mediaList(this.list.drawId).then(res => {
+            this.attachmentJpg = res.data
+          })
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
     },
     handlePreview(file) {
       console.log(file)
