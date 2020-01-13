@@ -70,9 +70,11 @@
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="创建时间">
               <a-date-picker
-                style="width:100%"
+                style="width:100%;"
                 :showTime="{ format: 'HH:mm' }"
                 format="YYYY-MM-DD HH:mm"
+                :value="moment(list.discoveryTime, 'YYYY-MM-DD HH:mm')"
+                placeholder="选择日期"
                 @change="onChange"
               />
             </a-form-item>
@@ -123,7 +125,7 @@ export default {
         riverId: '',
         streetId: '',
         currentArea: '',
-        discoveryTime: '',
+        discoveryTime: null,
         remark: ''
       },
       visible: false,
@@ -154,11 +156,13 @@ export default {
       floatageDetails(row.target.options.id).then(res => {
         var arr = res.data
         this.list.innerName = arr.innerName
-        // this.list.address=
+        this.list.address = arr.address
         this.list.riverId = arr.river.id
         this.list.streetId = arr.street.id
         // this.list.currentArea=
-        // this.list.discoveryTime=
+        console.log(moment(arr.timeCreated).format('YYYY-MM-DD HH:mm'))
+        this.list.discoveryTime = moment(arr.timeCreated).format('YYYY-MM-DD HH:mm')
+        this.list.remark = arr.remark
       })
       this.visible = true
     },
@@ -183,6 +187,7 @@ export default {
         })
     },
     onChange(date, dateString) {
+      console.log(date, dateString)
       this.list.discoveryTime = dateString
     },
     handleSubmit() {
@@ -211,7 +216,7 @@ export default {
       this.list.riverId = ''
       this.list.streetId = ''
       this.list.currentArea = ''
-      this.list.discoveryTime = ''
+      this.list.discoveryTime = null
     },
     handleDelete() {
       mapdrawDelete(this.list.drawId)
