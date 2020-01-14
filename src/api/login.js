@@ -965,12 +965,7 @@ export function commentMapdrawSave(data) {
   return axios({
     url: '/server/data/admin/mapdraw/comment/save',
     method: 'post',
-    params: {
-      id: data.id,
-      drawId:data.drawId,
-      comment:data.comment,
-      exist:data.exist,
-    }
+    params: data
   })
 }
 //绘制评论保存
@@ -979,6 +974,14 @@ export function waterPage(data) {
     url: '/server/data/admin/regulator/water/page',
     method: 'get',
     params: data
+  })
+}
+
+//绘制评论删除
+export function commentRemove(id) {
+  return axios({
+    url: '/server/data/admin/mapdraw/comment/remove/' + id,
+    method: 'post',
   })
 }
 
