@@ -512,12 +512,19 @@ export default {
           this.dataSourceId.push(v.id)
         })
         this.dataSource = arr.bill
-        this.list.riverId = arr.river.id
-        this.list.streetId = arr.street.id
+        if (arr.river) {
+          this.list.riverId = arr.river.id
+          this.list.supervisoryLevel = arr.river.supervisoryLevel.name
+        }
+        if (arr.street) {
+          this.list.streetId = arr.street.id
+        }
         this.list.tworiver = arr.tworiver
-        this.list.code = arr.river.code
+        if (arr.river) {
+          this.list.code = arr.river.code
+        }
         this.list.controller = arr.river.controller
-        this.list.supervisoryLevel = arr.river.supervisoryLevel.name
+        
         if (arr.river.priority == true) {
           this.list.priority = '重点'
         } else if (arr.river.priority == false) {
@@ -527,12 +534,18 @@ export default {
         this.list.address = arr.address
         this.list.standardCode = arr.standardCode
         this.list.standardName = arr.standardName
-        this.list.type = arr.type.code
+        if (arr.type) {
+          this.list.type = arr.type.code
+        }
+        
         this.list.landmarkLocation = arr.landmarkLocation
         this.list.accurateLocation = arr.accurateLocation
         this.list.innerCode = arr.innerCode
         this.list.innerName = arr.innerName
-        this.list.letway = arr.letway.code
+        if (arr.letway) {
+          this.list.letway = arr.letway.code
+        }
+        
         this.list.enterRiverWay = arr.enterRiverWay
         this.list.enterRiverSize = arr.enterRiverSize
         this.list.yearLetSize = arr.yearLetSize

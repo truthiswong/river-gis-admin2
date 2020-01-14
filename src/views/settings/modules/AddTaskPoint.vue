@@ -145,13 +145,14 @@ export default {
     },
     //编辑
     edit(id){
+
       taskPointDetail(id).then(res => {
         console.log(res);
         var arr = res.data
         this.list.taskId = arr.taskInfo.id
         this.list.name = arr.name
         this.list.locationInfo = arr.locationInfo
-        this.list.coordinate = arr.coordinate[0] +','+arr.coordinate[1]
+        this.list.coordinate = arr.coordinate.lng +','+arr.coordinate.lat
         this.list.id = arr.id
         this.list.times=arr.times
         var riverId =[]

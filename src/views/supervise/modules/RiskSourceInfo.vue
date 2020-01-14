@@ -235,8 +235,13 @@ export default {
         dischargeDetails(row.target.options.id).then(res => {
           let arr = res.data
           arr.discoveryTime = arr.activateTime
-          arr.type = arr.type.name
-          arr.river = arr.river.name
+          if (arr.type) {
+            arr.type = arr.type.name
+          }
+          if (arr.river) {
+            arr.river = arr.river.name
+          }
+          
           this.list = arr
         })
       }
