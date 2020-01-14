@@ -644,6 +644,16 @@ export default {
     addSheet() {
       this.sheet = true
     },
+    add(id, currentArea, result) {
+      this.list.drawId = id
+      this.upload.drawId = id
+      this.list.address = result.formatted_address
+      this.list.lat = result.resultObj.location.lat
+      this.list.lng = result.resultObj.location.lon
+      this.list.currentArea = currentArea
+      this.getList()
+      this.visible = true
+    },
     addSelectSheet() {
       this.sheetId.forEach(v => {
         this.sheetList.forEach(a => {
