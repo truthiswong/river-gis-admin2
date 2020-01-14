@@ -513,9 +513,11 @@ export default {
           v.surveyDate = formatDate(new Date(v.surveyDate))
           this.dataSourceId.push(v.id)
         })
-        this.list.code = arr.river.code
-        this.list.controller = arr.river.controller
-        console.log(arr.river.supervisoryLevel)
+        if (arr.river) {
+          this.list.code = arr.river.code
+          this.list.controller = arr.river.controller
+          this.list.riverId = arr.river.id
+        }
         if (arr.river.supervisoryLevel) {
           this.list.supervisoryLevel = arr.river.supervisoryLevel.name
         }
@@ -524,14 +526,20 @@ export default {
         } else if (arr.river.priority == false) {
           this.list.priority = '非重点'
         }
-        this.list.tworiver = arr.street.controller
+        
         this.list.address = arr.address
         this.dataSource = arr.bill
-        this.list.riverId = arr.river.id
-        this.list.streetId = arr.street.id
-        this.list.typeId = arr.type.id
-        this.list.level = arr.level.code
-
+        if (arr.street) {
+          this.list.tworiver = arr.street.controller
+          this.list.streetId = arr.street.id
+        }
+        if ( arr.type) {
+          this.list.typeId = arr.type.id  
+        }
+        
+        if (arr.level) {
+          this.list.level = arr.level.code
+        }
         // this.list.supervisoryLevel=arr.
         // this.list.controller=arr.
         // this.list.priority=arr.

@@ -173,7 +173,7 @@ export default {
     getList(){
       let data = {
         projectId:this.$store.state.id,
-        coordinate:this.list.lng+','+this.list.lat,
+        // coordinate:this.list.lng+','+this.list.lat,
         sectionCode:this.list.number,
         startDate:this.startDate,
         endDate:this.endDate

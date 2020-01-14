@@ -21,12 +21,12 @@
                 <a-divider type="vertical" />
                 <a-popconfirm
                   title="是否确认删除?"
-                  @confirm="handleSub"
+                  @confirm="handleSub(item.id)"
                   @cancel="cancel"
                   okText="确认"
                   cancelText="取消"
                 >
-                  <a @click="del(item.id)">删除</a>
+                  <a>删除</a>
                 </a-popconfirm>
               </template>
             </a-table>
@@ -39,12 +39,12 @@
                 <a-divider type="vertical" />
                 <a-popconfirm
                   title="是否确认删除?"
-                  @confirm="handleSub"
+                  @confirm="handleSub(item.id)"
                   @cancel="cancel"
                   okText="确认"
                   cancelText="取消"
                 >
-                  <a @click="del(item.id)">删除</a>
+                  <a>删除</a>
                 </a-popconfirm>
               </template>
             </a-table>
@@ -63,7 +63,7 @@
             >添加</a-button>
             <a-table :columns="columns1" :dataSource="data1" bordered>
               <template slot="state" slot-scope="row">
-                <a v-if="row.state==true">可用</a>
+                <a v-if="row.status== 'available'">可用</a>
                 <a v-else>不可用</a>
               </template>
               <template slot="operation" slot-scope="row">
@@ -71,16 +71,16 @@
                 <a-divider type="vertical" />
                 <a-popconfirm
                   title="是否确认删除?"
-                  @confirm="handleSub1"
+                  @confirm="handleSub1(row.id)"
                   @cancel="cancel"
                   okText="确认"
                   cancelText="取消"
                 >
-                  <a @click="del(row.id)">删除</a>
+                  <a>删除</a>
                 </a-popconfirm>
                 <a-divider type="vertical" />
-                <a @click="handleSub(id)" v-if="row.state==false">启用</a>
-                <a @click="handleSub(id)" v-else>禁用</a>
+                <a v-if="row.status!= 'available'" @click="deviceStatus(row.id,'available')">启用</a>
+                <a v-else @click="deviceStatus(row.id,'forbidden')">禁用</a>
               </template>
             </a-table>
           </div>
@@ -139,7 +139,7 @@
   </div>
 </template>
 <script>
-import { structureEquipment, equipmentTypeList,equipmentTypeSave,equipmentTypeDel,equipmentNewsList,equipmentNewsSave,equipmentNewsDel,relatedList,structDeviceList } from '@/api/login'
+import { structureEquipment, equipmentTypeList,equipmentTypeSave,equipmentTypeDel,equipmentNewsList,equipmentNewsSave,equipmentNewsDel,relatedList,structDeviceList,equipmentTypetatus } from '@/api/login'
 const treeData = [
   {
     label: '全部',
@@ -308,9 +308,9 @@ export default {
           this.$message.error(err.response.data.message);
       })
     },
-    handleSub() {
+    handleSub(id) {
       var data = {
-        id:this.id
+        id:id
       }
       equipmentTypeDel(data).then(res => {
         var arr = res.data
@@ -374,8 +374,14 @@ export default {
       }
       equipmentNewsList(data).then(res => {
         var sz = res.data.data
+        console.log(sz);
+        
         for (let i = 0; i < sz.length; i++) {
           sz[i].key=i+1
+          if (sz[i].status) {
+            sz[i].status = sz[i].status.code
+          }
+          
         }
         this.data1=sz
         this.uavList = sz
@@ -383,12 +389,9 @@ export default {
 
       })
     },
-    del(id){
-      this.id = id
-    },
     handleSub1(id){
       var data = {
-        id:this.id
+        id:id
       }
       equipmentNewsDel(data).then(res => {
         var arr = res.data
@@ -401,6 +404,18 @@ export default {
     },
     addequipment(){
       this.equipmentModel =true
+    },
+    deviceStatus(id,status){
+      let data = {
+        id:id,
+        status:status
+      }
+      equipmentTypetatus(data).then(res=>{
+        this.$message.success('成功');
+         this.getList1()
+      }).catch(err => {
+        this.$message.error(err.response.data.message);
+      })
     },
     addequipment1(row){
       this.equipmentModel =true
