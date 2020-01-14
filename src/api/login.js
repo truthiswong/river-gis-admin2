@@ -153,6 +153,7 @@ export function equipmentTypeSave(parameter) {
     data: parameter
   })
 }
+
 //设备类型删除
 export function equipmentTypeDel(parameter) {
   return axios({
@@ -180,6 +181,14 @@ export function equipmentNewsDel(parameter) {
   return axios({
     url: '/server/data/admin/device/info/remove/' + parameter.id,
     method: 'post',
+  })
+}
+//设备状态
+export function equipmentTypetatus(parameter) {
+  return axios({
+    url: '/server/data/admin/device/info/status',
+    method: 'post',
+    data: parameter
   })
 }
 //关联设备分页
