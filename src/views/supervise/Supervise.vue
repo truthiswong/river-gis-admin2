@@ -838,6 +838,7 @@ import {
   getRiverList,
   getStreetList,
   getWaterQualityList,
+  getWaterStation,
   paramList,
   mapdrawSave,
   mapdrawDelete,
@@ -963,7 +964,7 @@ export default {
       otherList: [
         {
           id: 0,
-          name: "测试",
+          name: '测试',
           clicked: false
         }
       ], //其他
@@ -1445,8 +1446,7 @@ export default {
     let token = Vue.ls.get(ACCESS_TOKEN)
     // 初始化地图控件
     let zoom = 14
-    let twoDimensionURL =
-      `http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
+    let twoDimensionURL = `http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
     this.mapLayer2d = new T.TileLayer(twoDimensionURL, { minZoom: 4, maxZoom: 18, zIndex: 10 })
     let satelliteURL = `http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
     this.mapLayerSatellite = new T.TileLayer(satelliteURL, { minZoom: 4, maxZoom: 18, zIndex: 10 })
@@ -1725,20 +1725,21 @@ export default {
         }
       } else {
         var time = this.defaultTime
-        var picker = time.split('-')
+        // var picker = time.split('-')
         var data = {
           projectId: this.$store.state.id,
-          year: picker[0],
-          month: picker[1],
-          day: picker[2]
+          date: this.defaultTime
+          // year: picker[0],
+          // month: picker[1],
+          // day: picker[2]
           // year: '2019',
           // month: '12',
           // day: '25',
         }
       }
-      getWaterQualityList(data)
+      getWaterStation(data)
         .then(res => {
-          let arr = res.data.data
+          let arr = res.data
           this.waterQualityPoints = arr
           this.onWaterQuality()
         })
@@ -1834,6 +1835,7 @@ export default {
     compass() {},
     // 复位
     setCenter() {
+      console.log(this.$store.state.projectCoordinate)
       this.map.panTo(this.$store.state.projectCoordinate, 12)
     },
     // 工具
@@ -2099,7 +2101,7 @@ export default {
       } else if (this.toolIndex === 2) {
         // 工具-线
         this.currentArea = 0
-        console.log((e.currentDistance).toFixed(3)) //获取距离 m
+        console.log(e.currentDistance.toFixed(3)) //获取距离 m
         this.toolCard = true
         this.lineTool.close()
         this.polygonList = e.currentLnglats
@@ -2109,8 +2111,8 @@ export default {
         })
       } else if (this.toolIndex === 3) {
         // 工具-面
-        this.currentArea = (e.currentArea).toFixed(3)
-        console.log((e.currentArea).toFixed(3)) //获取面积 平方米
+        this.currentArea = e.currentArea.toFixed(3)
+        console.log(e.currentArea.toFixed(3)) //获取面积 平方米
         this.toolCard = true
         this.polygonTool.close()
         this.polygonList = e.currentLnglats
@@ -2281,9 +2283,9 @@ export default {
           month: picker[1],
           day: picker[2]
         }
-        let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${picker[0]}&month=${
-          picker[1]
-        }&day=${picker[2]}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${Vue.ls.get(
+        let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
+          picker[0]
+        }&month=${picker[1]}&day=${picker[2]}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${Vue.ls.get(
           ACCESS_TOKEN
         )}`
         this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
@@ -2404,24 +2406,24 @@ export default {
       for (const item of this.timeData) {
         if (mouth == item.date) {
           // if (item.level != 2) {
-            if (item.date == mouth) {
-              this.defaultTime = mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8)
-              this.mapYear = mouth.substring(0, 4)
-              this.mapMonth = mouth.substring(4, 6)
-              this.mapDay = mouth.substring(6, 8)
-              this.map.removeLayer(this.mapLayerImage)
-              let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${
-                this.mapMonth
-              }&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${Vue.ls.get(
-                ACCESS_TOKEN
-              )}`
-              this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
-              this.map.addLayer(this.mapLayerImage)
-              item.clicked = true
-              this.timeLineChange() //时间轴切换
-            } else {
-              item.clicked = false
-            }
+          if (item.date == mouth) {
+            this.defaultTime = mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8)
+            this.mapYear = mouth.substring(0, 4)
+            this.mapMonth = mouth.substring(4, 6)
+            this.mapDay = mouth.substring(6, 8)
+            this.map.removeLayer(this.mapLayerImage)
+            let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
+              this.mapYear
+            }&month=${this.mapMonth}&day=${
+              this.mapDay
+            }&x={x}&y={y}&z={z}&X-TENANT-ID=jl:jlgis@2019&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
+            this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
+            this.map.addLayer(this.mapLayerImage)
+            item.clicked = true
+            this.timeLineChange() //时间轴切换
+          } else {
+            item.clicked = false
+          }
           // }
         } else {
           item.clicked = false
@@ -3246,112 +3248,133 @@ export default {
     onWaterQuality() {
       this.removeOverLays(this.waterQualityPoints)
       if (this.waterQuality) {
-        for (const item of this.waterQualityPoints) {
-          let markerTool = new T.Marker(item.coordinate, { item: item, id: item.id })
-          this.map.addOverLay(markerTool)
-          if (this.historyData) {
-            markerTool.addEventListener('click', this.waterQualityClick)
-          } else {
-            markerTool.addEventListener('click', function() {
-              var html = `
-                <div style='margin:0px;height: 300px;overflow-y: scroll;'>
-                  <div style='line-height:30px;font-size:14px;margin-bottom:5px; '>
-                    <span style='font-weight:400'>水体名称: ${item.name}</span>
-                    <span style='margin-left:50px'>${item.date}</span>
-                    <div style='border-bottom:1px #c3c3c3 solid'>断面名称: ${item.sectionName}</div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>PH值: ${item.ph}</span>
-                      <span style='width:150px'>溶解氧: ${item.do}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>氨氮: ${item.nh3N}mg/L</span>
-                      <span style='width:150px'>总磷: ${item.tp}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>高锰酸盐指数: ${item.kmnO}mg/L</span>
-                      <span style='width:150px'>透明度: ${item.opacity}cm</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>氧化还原电位: ${item.orp}mv</span>
-                      <span style='width:150px'>铜: ${item.cu}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>化学需氧量: ${item.cod}mg/L</span>
-                      <span style='width:150px'>锌: ${item.zn}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>五日生化需氧量: ${item.bod}mg/L</span>
-                      <span style='width:150px'>硒: ${item.se}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>总氮: ${item.tn}mg/L</span>
-                      <span style='width:150px'>氟化物: ${item.pmsf}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>砷: ${item.as}mg/L</span>
-                      <span style='width:150px'>汞: ${item.hg}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>镉: ${item.cd}mg/L</span>
-                      <span style='width:150px'>六价铬: ${item.cr}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>铅: ${item.pb}mg/L</span>
-                      <span style='width:150px'>总氰化物: ${item.cyanide}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>挥发酚: ${item.phenol}mg/L</span>
-                      <span style='width:150px'>石油类: ${item.petroleum}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>阴离子表面活性剂: ${item.las}mg/L</span>
-                      <span style='width:150px'>铁: ${item.fe}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>硫化物: ${item.sox}mg/L</span>
-                      <span style='width:150px'>硫酸盐: ${item.sulfate}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>粪大肠菌群: ${item.coliform}个/L</span>
-                      <span style='width:150px'>锰: ${item.mn}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>氯化物: ${item.ci}mg/L</span>
-                      <span style='width:150px'>硝酸盐氮: ${item.nitrate}mg/L</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>亚硝酸盐氮: ${item.nitrite}mg/L</span>
-                      <span style='width:150px'>浊度: ${item.turbidity}NTO</span>
-                    </div>
-                    <div style='display: flex;justify-content:space-around'>
-                      <span style='width:180px'>盐度: ${item.salinity}%</span>
-                      <span style='width:150px'>水温: ${item.temperature}℃</span>
-                    </div>
-                    <div>
-                      <span style='width:180px'>流速: ${item.velocity}m/s</span>
-                    </div>
-                    <div>
-                      <span style='width:300px'>水质评价: ${item.quality}</span>
-                    </div>
-                    <div>
-                      <span style='width:300px'>黑臭评价: ${item.suncus}</span>
-                    </div>
-                    <div>
-                      <span style='width:300px'>备注: ${item.remark}</span>
-                    </div>
-                  </div>
-                </div>
-              `
-              var infoWin = new T.InfoWindow(html)
-              markerTool.openInfoWindow(infoWin)
-            })
+        console.log(this.waterQualityPoints)
+        if (this.waterQualityPoints.length > 0) {
+          for (const item of this.waterQualityPoints) {
+            let markerTool = new T.Marker(item.coordinate, { item: item, id: item.id })
+            this.map.addOverLay(markerTool)
+            if (this.historyData) {
+              markerTool.addEventListener('click', this.waterQualityHistoryClick)
+            } else {
+              markerTool.addEventListener('click', this.waterQualityClick)
+            }
           }
         }
       }
     },
     // 水质监测点点击
-    waterQualityClick(item) {
+    waterQualityHistoryClick(item) {
       this.$refs.waterQualityAlert.add(item)
+    },
+    waterQualityClick(item) {
+      console.log(item)
+      return
+      var time = this.defaultTime
+      var picker = time.split('-')
+      var data = {
+        projectId: this.$store.state.id,
+        year: picker[0],
+        month: picker[1],
+        day: picker[2],
+        sectionCode: item.code
+      }
+      getWaterQualityList(data)
+        .then(res => {
+          let arr = res.data.data
+          this.waterQualityPoints = arr
+          var html = `
+            <div style='margin:0px;height: 300px;overflow-y: scroll;'>
+              <div style='line-height:30px;font-size:14px;margin-bottom:5px; '>
+                <span style='font-weight:400'>水体名称: ${item.name}</span>
+                <span style='margin-left:50px'>${item.date}</span>
+                <div style='border-bottom:1px #c3c3c3 solid'>断面名称: ${item.sectionName}</div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>PH值: ${item.ph}</span>
+                  <span style='width:150px'>溶解氧: ${item.do}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>氨氮: ${item.nh3N}mg/L</span>
+                  <span style='width:150px'>总磷: ${item.tp}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>高锰酸盐指数: ${item.kmnO}mg/L</span>
+                  <span style='width:150px'>透明度: ${item.opacity}cm</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>氧化还原电位: ${item.orp}mv</span>
+                  <span style='width:150px'>铜: ${item.cu}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>化学需氧量: ${item.cod}mg/L</span>
+                  <span style='width:150px'>锌: ${item.zn}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>五日生化需氧量: ${item.bod}mg/L</span>
+                  <span style='width:150px'>硒: ${item.se}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>总氮: ${item.tn}mg/L</span>
+                  <span style='width:150px'>氟化物: ${item.pmsf}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>砷: ${item.as}mg/L</span>
+                  <span style='width:150px'>汞: ${item.hg}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>镉: ${item.cd}mg/L</span>
+                  <span style='width:150px'>六价铬: ${item.cr}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>铅: ${item.pb}mg/L</span>
+                  <span style='width:150px'>总氰化物: ${item.cyanide}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>挥发酚: ${item.phenol}mg/L</span>
+                  <span style='width:150px'>石油类: ${item.petroleum}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>阴离子表面活性剂: ${item.las}mg/L</span>
+                  <span style='width:150px'>铁: ${item.fe}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>硫化物: ${item.sox}mg/L</span>
+                  <span style='width:150px'>硫酸盐: ${item.sulfate}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>粪大肠菌群: ${item.coliform}个/L</span>
+                  <span style='width:150px'>锰: ${item.mn}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>氯化物: ${item.ci}mg/L</span>
+                  <span style='width:150px'>硝酸盐氮: ${item.nitrate}mg/L</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>亚硝酸盐氮: ${item.nitrite}mg/L</span>
+                  <span style='width:150px'>浊度: ${item.turbidity}NTO</span>
+                </div>
+                <div style='display: flex;justify-content:space-around'>
+                  <span style='width:180px'>盐度: ${item.salinity}%</span>
+                  <span style='width:150px'>水温: ${item.temperature}℃</span>
+                </div>
+                <div>
+                  <span style='width:180px'>流速: ${item.velocity}m/s</span>
+                </div>
+                <div>
+                  <span style='width:300px'>水质评价: ${item.quality}</span>
+                </div>
+                <div>
+                  <span style='width:300px'>黑臭评价: ${item.suncus}</span>
+                </div>
+                <div>
+                  <span style='width:300px'>备注: ${item.remark}</span>
+                </div>
+              </div>
+            </div>
+          `
+        })
+        .catch(err => {})
+      var infoWin = new T.InfoWindow(html)
+      markerTool.openInfoWindow(infoWin)
     },
     // 水质漂浮物
     onWaterFlotage() {
@@ -3452,7 +3475,12 @@ export default {
             iconSize: new T.Point(41, 40),
             iconAnchor: new T.Point(21, 40)
           })
-          markerTool = new T.Marker(item.latlng, { icon: icon, id: item.id, title: item.innerName, code: item.innerType.code })
+          markerTool = new T.Marker(item.latlng, {
+            icon: icon,
+            id: item.id,
+            title: item.innerName,
+            code: item.innerType.code
+          })
           this.map.addOverLay(markerTool)
         } else {
           markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
@@ -3563,7 +3591,12 @@ export default {
                   iconSize: new T.Point(41, 40),
                   iconAnchor: new T.Point(21, 40)
                 })
-                markerTool = new T.Marker(item.line[0], { icon: icon, id: item.id, title: item.innerName, code: item.innerType.code })
+                markerTool = new T.Marker(item.line[0], {
+                  icon: icon,
+                  id: item.id,
+                  title: item.innerName,
+                  code: item.innerType.code
+                })
                 this.map.addOverLay(markerTool)
               } else {
                 markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
@@ -3590,7 +3623,12 @@ export default {
                   iconSize: new T.Point(41, 40),
                   iconAnchor: new T.Point(21, 40)
                 })
-                markerTool = new T.Marker(item.polygon[0], { icon: icon, id: item.id, title: item.innerName, code: item.innerType.code })
+                markerTool = new T.Marker(item.polygon[0], {
+                  icon: icon,
+                  id: item.id,
+                  title: item.innerName,
+                  code: item.innerType.code
+                })
                 this.map.addOverLay(markerTool)
               } else {
                 // markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
@@ -3951,9 +3989,7 @@ export default {
       }
       if (code == 'discharge') {
         console.log('2')
-
-        this.$refs.addOutlet.detailList1(id)
-        // this.$parent.addOutlet.detailList(this.id)
+        this.$refs.addOutlet.detailList(id)
       }
     },
     //水质数据上传成功
