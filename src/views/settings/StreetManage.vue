@@ -356,9 +356,9 @@ export default {
       }
       for (const item of this.streetShowList) {
         if (item.clicked == true) {
-          this.setPolylineFn(item.lineData, 'red', 3, 1, 0, item.id, item.name)
+          this.setPolylineFn(item.lineData, 'red', 3, 1, 'red', 0.2, item.id, item.name)
         } else {
-          this.setPolylineFn(item.lineData, 'blue', 3, 1, 0, item.id, item.name)
+          this.setPolylineFn(item.lineData, 'blue', 3, 1, '', 0, item.id, item.name)
         }
       }
     },
@@ -467,12 +467,12 @@ export default {
     // 绘制确定
     confirmClick() {},
     // 设置绘制的多边形
-    setPolylineFn(lineData, color, weight, opacity, fillOpacity, id, title) {
+    setPolylineFn(lineData, color, weight, opacity, fillColor, fillOpacity, id, title) {
       this.polygon = new T.Polygon(lineData, {
         color: color, //线颜色
         weight: weight, //线宽
         opacity: 0.5, //透明度
-        fillColor: '#FFFFFF', //填充颜色
+        fillColor: fillColor, //填充颜色
         fillOpacity: fillOpacity, // 填充透明度
         id: id,
         title: title
