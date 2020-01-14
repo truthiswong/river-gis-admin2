@@ -701,8 +701,6 @@ export default {
           this.$message.success('删除成功')
           mediaList(this.list.drawId).then(res => {
             this.attachmentJpg = res.data
-          }).catch(err => {
-            this.attachmentJpg = res.data
           })
         })
         .catch(err => {
