@@ -3251,12 +3251,12 @@ export default {
         console.log(this.waterQualityPoints)
         if (this.waterQualityPoints.length > 0) {
           for (const item of this.waterQualityPoints) {
-            let markerTool = new T.Marker(item.coordinate, { item: item, id: item.id })
-            this.map.addOverLay(markerTool)
+            this.waterQualityMarkerTool = new T.Marker(item.coordinate, { item: item, id: item.id })
+            this.map.addOverLay(this.waterQualityMarkerTool)
             if (this.historyData) {
-              markerTool.addEventListener('click', this.waterQualityHistoryClick)
+              this.waterQualityMarkerTool.addEventListener('click', this.waterQualityHistoryClick)
             } else {
-              markerTool.addEventListener('click', this.waterQualityClick)
+              this.waterQualityMarkerTool.addEventListener('click', this.waterQualityClick)
             }
           }
         }
@@ -3264,11 +3264,11 @@ export default {
     },
     // 水质监测点点击
     waterQualityHistoryClick(item) {
+      console.log(item)
       this.$refs.waterQualityAlert.add(item)
     },
-    waterQualityClick(item) {
-      console.log(item)
-      return
+    waterQualityClick(e) {
+      console.log(e)
       var time = this.defaultTime
       var picker = time.split('-')
       var data = {
@@ -3276,12 +3276,11 @@ export default {
         year: picker[0],
         month: picker[1],
         day: picker[2],
-        sectionCode: item.code
+        sectionCode: e.target.options.item.code
       }
       getWaterQualityList(data)
         .then(res => {
-          let arr = res.data.data
-          this.waterQualityPoints = arr
+          let item = res.data.data[0]
           var html = `
             <div style='margin:0px;height: 300px;overflow-y: scroll;'>
               <div style='line-height:30px;font-size:14px;margin-bottom:5px; '>
@@ -3371,10 +3370,10 @@ export default {
               </div>
             </div>
           `
+          var infoWin = new T.InfoWindow(html)
+          this.waterQualityMarkerTool.openInfoWindow(infoWin)
         })
         .catch(err => {})
-      var infoWin = new T.InfoWindow(html)
-      markerTool.openInfoWindow(infoWin)
     },
     // 水质漂浮物
     onWaterFlotage() {
