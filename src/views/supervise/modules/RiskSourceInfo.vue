@@ -48,9 +48,17 @@
             <div class="comment_img" v-show="item.imgList.length > 0">
               <img v-for="img in item.imgList" :key="img" :src="img" :alt="img" />
             </div>
-            <a-tooltip slot="datetime" :title="item.datetime">
-              <span>{{item.datetime}}</span>
-            </a-tooltip>
+            <template slot="datetime">
+              <div class="comment_title">
+                <a-tooltip slot="datetime" :title="item.datetime">
+                  <span>{{item.datetime}}</span>
+                </a-tooltip>
+                <a-popconfirm title="确定删除吗？" @confirm="confirmDelete(item.id)" @cancel="cancelDelete">
+                  <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                  <a-button size="small">删除</a-button>
+                </a-popconfirm>
+              </div>
+            </template>
           </a-comment>
         </a-list-item>
       </a-list>
@@ -70,7 +78,7 @@
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 12 }"
         >
-          <a-select defaultValue="yes" v-model="drawList.level">
+          <a-select defaultValue="one" v-model="drawList.level">
             <a-select-option value="one">一级</a-select-option>
             <a-select-option value="two">二级</a-select-option>
             <a-select-option value="three">三级</a-select-option>
@@ -116,7 +124,7 @@
 import Vue from 'vue'
 import moment from 'moment'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-import { riskDetails, dischargeDetails, floatageDetails, commentMapdraw, commentMapdrawSave } from '@/api/login'
+import { riskDetails, dischargeDetails, floatageDetails, commentMapdraw, commentMapdrawSave, commentRemove } from '@/api/login'
 export default {
   data() {
     return {
@@ -135,7 +143,7 @@ export default {
         drawId: '',
         comment: '',
         exist: '',
-        level: ''
+        level: 'one'
       },
       id: '',
       headers: {
@@ -249,20 +257,10 @@ export default {
       this.getCommentMapdraw()
     },
     getCommentMapdraw() {
-      function formatDate(now) {
-        var year = now.getFullYear() //取得4位数的年份
-        var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
-        var date = now.getDate() //返回日期月份中的天数（1到31）
-        var hour = now.getHours() //返回日期中的小时数（0到23）
-        var minute = now.getMinutes() //返回日期中的分钟数（0到59）
-        var second = now.getSeconds() //返回日期中的秒数（0到59）
-        return year + '-' + month + '-' + date
-      }
       commentMapdraw(this.id).then(res => {
         res.data.data.forEach(v => {
           v.imgList = Object.values(v.pics)
-          v.datetime = formatDate(new Date(v.timeCreated))
-          console.log(v.level)
+          v.datetime = moment(v.timeCreated).format('YYYY-MM-DD')
           if (v.level != undefined) {
             if (v.level.code == 'one') {
               v.dangerDescribe = 'Ⅰ 级'
@@ -322,6 +320,8 @@ export default {
         this.drawList.id = res.data.id
         this.$refs.upload.submit()
         this.$message.success('保存成功')
+        this.drawList.id = ''
+        this.getCommentMapdraw()
         this.show_type = false
         this.show = true
       })
@@ -354,6 +354,16 @@ export default {
         this.show = true
         this.show_type = false
       }
+    },
+    confirmDelete(id) {
+      console.log(id)
+      commentRemove(id).then(res => {
+        this.$message.success('删除成功')
+        this.getCommentMapdraw()
+      })
+    },
+    cancelDelete() {
+
     },
     handleCancel() {
       this.show = true
@@ -408,8 +418,8 @@ p {
 .comment_img {
   display: flex;
   display: -webkit-flex;
-  justify-content: space-between;
-  -webkit-justify-content: space-between;
+  // justify-content: space-between;
+  // -webkit-justify-content: space-between;
   flex-wrap: wrap;
   height: 100px;
   overflow-y: scroll;
@@ -421,6 +431,13 @@ p {
   img:nth-last-child(1) {
     margin: 0;
   }
+}
+.comment_title {
+  width: 358px;
+  display: flex;
+  display: -webkit-flex;
+  justify-content: space-between;
+  -webkit-justify-content: space-between;
 }
 .a-list {
   max-height: 400px;
