@@ -644,7 +644,7 @@ export default {
       this.list.linktel = ''
       this.list.blockoffStatus = ''
       this.list.statement = ''
-      this.list.activateTime = ''
+      this.list.activateTime = moment(new Date()).format('YYYY-MM-DD')
       this.list.registrationState = ''
       this.list.approveState = ''
       this.list.approveUnit = ''
