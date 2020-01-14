@@ -9,6 +9,7 @@
     :centered="true"
     :footer="null"
     :maskClosable="false"
+    :destroyOnClose="true"
   >
     <a-spin :spinning="confirmLoading">
       <a-form class="from">
@@ -235,7 +236,7 @@
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="建成时间">
               <a-date-picker
-                :value="moment(list.activateTime, 'YYYY-MM-DD HH:mm')"
+                :value="moment(list.activateTime, 'YYYY-MM-DD')"
                 @change="onChange"
                 style="width: 100%"
               />
@@ -416,7 +417,7 @@ export default {
         linktel: '',
         blockoffStatus: '',
         statement: '',
-        activateTime: '',
+        activateTime: moment(new Date()).format('YYYY-MM-DD'),
         registrationState: '',
         approveState: '',
         approveUnit: '',
@@ -588,6 +589,15 @@ export default {
         this.list.tworiver = res.data.controller
       })
     },
+    add(id, result) {
+      this.visible = true
+      this.list.drawId = id
+      this.upload.drawId = id
+      this.list.address = result.formatted_address
+      this.list.lat = result.resultObj.location.lat
+      this.list.lng = result.resultObj.location.lon
+      this.getList()
+    },
     // 添加河流
     handleSubmit() {
       const {
@@ -646,6 +656,7 @@ export default {
       this.upload.id = ''
       this.dataSourceId = []
       this.dataSource = []
+      this.attachmentJpg = []
     },
     handleDelete() {
       mapdrawDelete(this.list.drawId)
@@ -689,6 +700,8 @@ export default {
         .then(res => {
           this.$message.success('删除成功')
           mediaList(this.list.drawId).then(res => {
+            this.attachmentJpg = res.data
+          }).catch(err => {
             this.attachmentJpg = res.data
           })
         })
