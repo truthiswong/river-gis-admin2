@@ -125,7 +125,7 @@ export default {
         riverId: '',
         streetId: '',
         currentArea: '',
-        discoveryTime: null,
+        discoveryTime: moment(new Date()).format('YYYY-MM-DD HH:mm'),
         remark: ''
       },
       visible: false,
@@ -210,13 +210,16 @@ export default {
     },
     handleCancel() {
       this.visible = false
-      this.list.drawId = ''
-      this.list.innerName = ''
-      this.list.address = ''
-      this.list.riverId = ''
-      this.list.streetId = ''
-      this.list.currentArea = ''
-      this.list.discoveryTime = null
+      this.list = {
+        drawId: '',
+        innerName: '',
+        address: '',
+        riverId: '',
+        streetId: '',
+        currentArea: '',
+        discoveryTime: moment(new Date()).format('YYYY-MM-DD HH:mm'),
+        remark: ''
+      }
     },
     handleDelete() {
       mapdrawDelete(this.list.drawId)
