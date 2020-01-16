@@ -220,9 +220,7 @@ export default {
     getProjectInfo() {
       projectMinesTructure().then(res => {
         this.$store.commit('projectInfoFn', res.data)
-        var arr = res.data
-        console.log(arr)
-        for (const item of arr) {
+        for (const item of res.data) {
           if (item.id == this.$store.state.defautProject[0]) {
             if (item.children.length > 0) {
               for (const value of item.children) {
