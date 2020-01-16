@@ -1,6 +1,6 @@
 <template>
   <div class="supervise">
-    <div id="map" ref="worldMap" v-show="showView">
+    <div id="map" ref="worldMap" v-show="!sharedChecked && !swipeChecked">
       <div class="time_quantum" v-show="!canDownload">{{historyData?timeQuantum:defaultTime}}</div>
       <div class="compass_pointer" @click="compass" title="指北针">
         <img class="pointer" src="../../assets/img/compassPointer.png" alt="指北针" />
@@ -394,7 +394,7 @@
       </a-list>
     </div>
     <!-- 双球 -->
-    <div class="showMap" id="showmap">
+    <div class="showMap" id="showmap" v-show="sharedChecked">
       <div class="half">
         <div id="roadMap" class="vmap"></div>
       </div>
@@ -403,7 +403,7 @@
       </div>
     </div>
     <!-- 卷帘 -->
-    <div id="layerMap" class="layerMap">
+    <div id="layerMap" class="layerMap" v-show="swipeChecked">
       <div class="main">
         <div id="lmap" class="lmap"></div>
       </div>
@@ -863,40 +863,32 @@ import Vtour from './Vtour'
 import moment from 'moment' // 时间格式
 
 import 'ol/ol.css'
-import { Map, View, Feature } from 'ol'
-import TileLayer from 'ol/layer/Tile'
+import Map from 'ol/Map'
+import View from 'ol/View'
+import Feature from 'ol/Feature'
+import Overlay from 'ol/Overlay'
 import OSM from 'ol/source/OSM'
 import LayerGroup from 'ol/layer/Group'
-import VectorLayer from 'ol/layer/Vector'
-import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
-// import { Style, Icon } from 'ol/style'
+import {Icon, Style} from 'ol/style'
 import Text from 'ol/style/Text'
-// import { Point } from 'ol/geom'
+
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer'
 
 import Point from 'ol/geom/Point' //点
 import Circle from 'ol/geom/Circle' //圆
 import Polygon from 'ol/geom/Polygon' //面
 import { fromLonLat } from 'ol/proj'
 import TileJSON from 'ol/source/TileJSON'
+import VectorSource from 'ol/source/Vector'
 
 import GeoJSON from 'ol/format/GeoJSON'
 import MultiPoint from 'ol/geom/MultiPoint'
-import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
+import { Circle as CircleStyle, Fill, Stroke } from 'ol/style'
 
 // 拖拽缩放
 // import { defaults as defaultInteractions, DragRotateAndZoom } from 'ol/interaction'
 
-// import 'ol/ol.css'
-// import Map from 'ol/Map'
-// import View from 'ol/View'
-// import TileLayer from 'ol/layer/Tile'
-// import TileJSON from 'ol/source/TileJSON'
-// import Feature from 'ol/Feature'
-// import Point from 'ol/geom/Point'
-// import { Vector } from 'ol/source'
-// import { fromLonLat } from 'ol/proj'
-// import WebGLPointsLayer from 'ol/layer/WebGLPoints'
 
 import Vue from 'vue'
 // token
@@ -1194,8 +1186,9 @@ export default {
       mapType: 'b',
       roadWordChange: true, // 道路标注显隐
       sharedChecked: false, // 双球
+      sharedOnce: 1, // 加载一次
       swipeChecked: false, // 卷帘
-      showView: true,
+      swipeOnce: 1, // 加载一次
 
       // openlayers 地图
       olMap1: null, // 双球左
@@ -1365,6 +1358,7 @@ export default {
       } else {
         this.getTimeQuantum() // 获取时间段
         this.getRiverStreeList()
+        this.map.panTo(this.$store.state.projectCoordinate, 14)
       }
     },
     accordionAlertKey(key) {
@@ -1462,14 +1456,17 @@ export default {
       layers: [this.mapLayerSatellite, this.mapLayerWord]
     })
     this.map.addEventListener('zoomend', this.mapZoomChange)
-
-    this.map.centerAndZoom(new T.LngLat(121.43429, 31.15847), zoom)
+    console.log(this.$store.state.projectCoordinate)
+    this.map.centerAndZoom(this.$store.state.projectCoordinate, zoom)
     //添加比例尺控件
     this.map.addControl(new T.Control.Scale())
     this.getTimeQuantum() // 获取时间段
     this.getRiverStreeList()
 
     this.getParamList()
+
+    // this.showMap() //双球init
+    // this.showSwipeMap() //卷帘init
   },
   methods: {
     //获取绘制类型
@@ -1836,7 +1833,7 @@ export default {
     // 复位
     setCenter() {
       console.log(this.$store.state.projectCoordinate)
-      this.map.panTo(this.$store.state.projectCoordinate, 12)
+      this.map.panTo(this.$store.state.projectCoordinate, 14)
     },
     // 工具
     toolsShowFun() {
@@ -2565,7 +2562,6 @@ export default {
       var vec_c = this.getTdLayer('vec_w')
       var cva_c = this.getTdLayer('cva_w')
       var img_c = this.getTdLayer('img_w')
-
       let veclayerGroup = new LayerGroup({
         layers: [vec_c]
         // layers: [vec_c, cva_c]
@@ -2574,39 +2570,71 @@ export default {
         layers: [img_c]
         // layers: [img_c, cva_c]
       })
+
+      var iconFeature = new Feature({
+        geometry: new Point([121.43025, 31.16963]),
+        name: 'Null Island',
+        population: 4000,
+        rainfall: 500
+      });
+      var iconStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 46],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
+        })
+      });
+
+      iconFeature.setStyle(iconStyle);
+
+      var vectorSource = new VectorSource({
+        features: [iconFeature]
+      });
+
+      var vectorLayer = new VectorLayer({
+        source: vectorSource
+      });
+
       var view = new View({
         projection: 'EPSG:4326',
-        center: [121.495505, 31.21098],
+        center: [this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat],
         zoom: 14
       })
       this.olMap1 = new Map({
         target: 'roadMap',
-        layers: [veclayerGroup],
+        layers: [veclayerGroup, vectorLayer],
         view: view
       })
       console.log(this.olMap1)
       this.olMap2 = new Map({
         target: 'aerialMap',
-        layers: [imglayerGroup],
+        layers: [imglayerGroup, vectorLayer],
         view: view
       })
     },
     // 双球开关
     sharedView() {
-      if (this.sharedChecked == true) {
-        this.showView = false
+      console.log(!this.sharedChecked && !this.swipeChecked)
+      if (this.sharedChecked) {
         this.swipeChecked = false
-        var layerMap = document.getElementById('layerMap')
-        layerMap.style.display = 'none'
-        var show = document.getElementById('showmap')
-        show.style.display = 'block'
-        this.showMap()
-      } else if (this.sharedChecked == false) {
-        var show = document.getElementById('showmap')
-        show.style.display = 'none'
-        this.showView = true
-        this.olMap1.removeLayer(this.veclayerGroup)
-        this.olMap2.removeLayer(this.imglayerGroup)
+        // var layerMap = document.getElementById('layerMap')
+        // layerMap.style.display = 'none'
+        // var show = document.getElementById('showmap')
+        // show.style.display = 'block'
+        if (this.sharedOnce == 1) {
+          this.$nextTick(() => {
+            this.showMap() //双球init
+          })
+          // swipeOnce
+        }
+        this.sharedOnce = 2
+        // this.showMap() //双球init
+      } else {
+        // var show = document.getElementById('showmap')
+        // show.style.display = 'none'
+        // this.olMap1.removeLayer(this.veclayerGroup)
+        // this.olMap2.removeLayer(this.imglayerGroup)
       }
     },
     // 卷帘
@@ -2614,7 +2642,6 @@ export default {
       var vec_c = this.getTdLayer('vec_w')
       var cva_c = this.getTdLayer('cva_w')
       var img_c = this.getTdLayer('img_w')
-
       var veclayerGroup = new LayerGroup({
         layers: [vec_c]
         // layers: [vec_c, cva_c]
@@ -2623,13 +2650,12 @@ export default {
         layers: [img_c]
         // layers: [img_c, cva_c]
       })
-
       var lmap = new Map({
         target: 'lmap',
         layers: [imglayerGroup, veclayerGroup],
         view: new View({
           projection: 'EPSG:4326',
-          center: [121.495505, 31.21098],
+          center: [this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat],
           zoom: 14
         })
       })
@@ -2637,7 +2663,6 @@ export default {
       vec_c.on('prerender', function(event) {
         var ctx = event.context
         var width = ctx.canvas.width * (swipe.value / 100)
-
         ctx.save()
         ctx.beginPath()
         ctx.rect(width, 0, ctx.canvas.width - width, ctx.canvas.height)
@@ -2657,27 +2682,72 @@ export default {
     },
     // 卷帘开关
     layerSwipe() {
-      if (this.swipeChecked == true) {
-        this.showView = false
+      if (this.swipeChecked) {
         this.sharedChecked = false
-        var show = document.getElementById('showmap')
-        show.style.display = 'none'
-        var layerMap = document.getElementById('layerMap')
-        layerMap.style.display = 'block'
-        this.showSwipeMap()
-      }
-      if (this.swipeChecked == false) {
-        var layerMap = document.getElementById('layerMap')
-        layerMap.style.display = 'none'
-
-        this.showView = true
+        // var show = document.getElementById('showmap')
+        // show.style.display = 'none'
+        // var layerMap = document.getElementById('layerMap')
+        // layerMap.style.display = 'block'
+        if (this.swipeOnce == 1) {
+          this.$nextTick(() => {
+            this.showSwipeMap() //卷帘init
+          })
+        }
+        this.swipeOnce = 2
+      } else {
+        // var layerMap = document.getElementById('layerMap')
+        // layerMap.style.display = 'none'
       }
     },
     // 更多-历史数据
     onHistoryData() {
       this.moreLoadOnce = 1
       this.getMapdrawPage()
-      this.testdate()
+
+      // this.init()
+      // this.testdate()
+    },
+    init() {
+      var iconFeature = new Feature({
+        geometry: new Point([121.43025, 31.16963]),
+        name: 'Null Island',
+        population: 4000,
+        rainfall: 500
+      });
+      var iconStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 46],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
+        })
+      });
+
+      iconFeature.setStyle(iconStyle);
+
+      var vectorSource = new VectorSource({
+        features: [iconFeature]
+      });
+
+      var vectorLayer = new VectorLayer({
+        source: vectorSource
+      });
+
+      // var rasterLayer = new TileLayer({
+      //   source: new TileJSON({
+      //     url: 'https://a.tiles.mapbox.com/v3/aj.1x1-degrees.json',
+      //     crossOrigin: ''
+      //   })
+      // });
+      this.olMap1 = new Map({
+        layers: [vectorLayer],
+        target: document.getElementById('roadMap'),
+        view: new View({
+          projection: 'EPSG:4326',
+          center: [121.43025, 31.16963],
+          zoom: 3
+        })
+      });
     },
     testdate() {
       var styles = [
@@ -4034,14 +4104,14 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 555;
-  display: none;
+  // display: none;
 }
 .main {
   width: 100%;
   height: calc(100vh - 64px);
 }
 .layerMap {
-  display: none;
+  // display: none;
 }
 .lmap {
   width: 100%;
