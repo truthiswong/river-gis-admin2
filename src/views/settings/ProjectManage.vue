@@ -220,10 +220,22 @@ export default {
     getProjectInfo() {
       projectMinesTructure().then(res => {
         this.$store.commit('projectInfoFn', res.data)
+        var arr = res.data
+        console.log(arr)
+        for (const item of arr) {
+          if (item.id == this.$store.state.defautProject[0]) {
+            if (item.children.length > 0) {
+              for (const value of item.children) {
+                if (value.id == this.$store.state.defautProject[1]) {
+                  this.$store.commit('projectCoordinateFn', value.coordinate)
+                }
+              }
+            }
+          }
+        }
       })
     },
     projectCoordinate() {
-      console.log(333)
       if (this.cp) {
         this.cp.removeEvent()
       }
@@ -248,8 +260,8 @@ export default {
       }
       projectMinesTructure(data)
         .then(res => {
-          console.log(res);
-          
+          console.log(res)
+
           var arr = res.data
           for (let i = 0; i < arr.length; i++) {
             arr[i].key = i + 1
@@ -287,7 +299,7 @@ export default {
           maxZoom: 18,
           layers: [this.mapLayerSatellite, this.mapLayerWord]
         })
-        this.map.centerAndZoom(new T.LngLat(121.43429, 31.15847), zoom)
+        this.map.centerAndZoom(this.$store.state.projectCoordinate, zoom)
       })
     },
     add(id, name) {
