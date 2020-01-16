@@ -760,7 +760,7 @@ export default {
       maxZoom: 18,
       layers: [this.mapLayerSatellite, this.mapLayerWord]
     })
-    this.map.centerAndZoom(new T.LngLat(121.43429, 31.15847), zoom)
+    this.map.centerAndZoom(this.$store.state.projectCoordinate, zoom)
     //添加比例尺控件
     let scale = new T.Control.Scale()
     // scale.setColor("red")

@@ -1443,13 +1443,12 @@ export default {
   },
   watch: {
     $route() {
-      console.log('12');
-      
       this.getPicker()
       this.getTask()
       this.getList()
       this.getPage()
       this.getRecommendFangan()
+      this.map.panTo(this.$store.state.projectCoordinate, 14)
     },
     //选中树节点
     checkedKeys(val) {
@@ -1512,7 +1511,7 @@ export default {
       maxZoom: 23,
       layers: [this.mapLayerSatellite, this.mapLayerWord, this.mapLayerImage]
     })
-    this.map.centerAndZoom(new T.LngLat(121.43429, 31.15847), zoom)
+    this.map.centerAndZoom(this.$store.state.projectCoordinate, zoom)
     //添加比例尺控件
     this.map.addControl(new T.Control.Scale())
 
@@ -2949,7 +2948,8 @@ export default {
     compass() {},
     // 复位
     setCenter() {
-      this.map.panTo(this.$store.state.projectCoordinate, 12)
+      console.log(this.$store.state.projectCoordinate)
+      this.map.panTo(this.$store.state.projectCoordinate, 14)
     },
     // 放大
     mapZoomIn() {
