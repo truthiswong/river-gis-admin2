@@ -1638,7 +1638,8 @@ export default {
     //目标列表
     getinspectPointPage() {
       var list = {
-        id: this.planList1.id
+        id: this.planList1.id,
+        projectId: this.$store.state.id,
       }
       targetPage(list)
         .then(res => {
