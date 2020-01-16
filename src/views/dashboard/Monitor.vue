@@ -1448,6 +1448,7 @@ export default {
       this.getList()
       this.getPage()
       this.getRecommendFangan()
+      this.map.panTo(this.$store.state.projectCoordinate, 14)
     },
     //选中树节点
     checkedKeys(val) {
