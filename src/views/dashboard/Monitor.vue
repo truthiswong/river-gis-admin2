@@ -2849,6 +2849,7 @@ export default {
     },
     //加入已有计划
     addToPlan(id) {
+      
       var ids = []
       for (const item of this.riverMontion) {
         for (const index of item.taskChoose) ids.push(index)
@@ -2861,6 +2862,7 @@ export default {
       joinPlanTask(data).then(res => {})
       this.ishidden = 2
       this.$refs.creatGroup.planGeneration(id)
+      this.planList1.id= id
     },
     showOk() {
       // var arrInfo =  this.asasd
