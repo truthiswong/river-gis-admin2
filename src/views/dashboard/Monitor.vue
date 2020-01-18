@@ -2859,9 +2859,14 @@ export default {
         taskIds: ids.join(','),
         targetPlanId: id
       }
-      joinPlanTask(data).then(res => {})
+      joinPlanTask(data).then(res => {
+        this.$refs.creatGroup.planGeneration(id)
+      }).catch(err => {
+        this.$message.error(err.response.data.message)
+        this.$refs.creatGroup.planGeneration(id)
+      })
       this.ishidden = 2
-      this.$refs.creatGroup.planGeneration(id)
+     
       this.planList1.id= id
     },
     showOk() {
