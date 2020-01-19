@@ -809,6 +809,11 @@
     >
       <span>{{defaultRiver}}</span>
     </div>
+    <!-- <div id="popup" style="color:write; background: red;">
+      1234564564
+      <br/>
+      12333333
+    </div>-->
     <!-- 风险源信息 -->
     <risk-source-info ref="riskInfo"></risk-source-info>
     <!-- 添加风险源 -->
@@ -816,7 +821,13 @@
     <!-- 水质监测点 -->
     <water-quality ref="waterQualityAlert"></water-quality>
     <!-- 照片编辑 -->
-    <photo-edit ref="photoEdit"></photo-edit>
+    <image-editor
+      ref="photoEdit"
+      v-if="photoAlertShow"
+      :msg="imageEditorData"
+      @exitImage="closeImageEditor"
+      @saveImage="confirmImageEditor"
+    ></image-editor>
     <!-- 排口 -->
     <add-outlet ref="addOutlet" @cancel="outletCancel" @confirm="outletComfirm"></add-outlet>
     <!-- 水面漂浮物 -->
@@ -854,7 +865,7 @@ import {
 import RiskSourceInfo from './modules/RiskSourceInfo'
 import AddRiskSource from './modules/AddRiskSource'
 import AddFloatage from './modules/AddFloatage'
-import PhotoEdit from './modules/PhotoEdit'
+import ImageEditor from './ImageEditor'
 import AddOutlet from './modules/AddOutlet'
 import LookPanorama from './modules/LookPanorama'
 import WaterQuality from './modules/waterQualityData'
@@ -866,14 +877,16 @@ import 'ol/ol.css'
 import Map from 'ol/Map'
 import View from 'ol/View'
 import Feature from 'ol/Feature'
-import Overlay from 'ol/Overlay'
+import Overlay from 'ol/Overlay' // 覆盖物
 import OSM from 'ol/source/OSM'
 import LayerGroup from 'ol/layer/Group'
 import XYZ from 'ol/source/XYZ'
-import {Icon, Style} from 'ol/style'
+import { Icon, Style } from 'ol/style'
 import Text from 'ol/style/Text'
 
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer'
+import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer'
+
+import Layer from 'ol/layer/Layer'
 
 import Point from 'ol/geom/Point' //点
 import Circle from 'ol/geom/Circle' //圆
@@ -888,7 +901,6 @@ import { Circle as CircleStyle, Fill, Stroke } from 'ol/style'
 
 // 拖拽缩放
 // import { defaults as defaultInteractions, DragRotateAndZoom } from 'ol/interaction'
-
 
 import Vue from 'vue'
 // token
@@ -919,7 +931,7 @@ export default {
     'risk-source-info': RiskSourceInfo,
     'add-risk-source': AddRiskSource,
     'water-quality': WaterQuality,
-    'photo-edit': PhotoEdit,
+    'image-editor': ImageEditor,
     'add-outlet': AddOutlet,
     'look-panorama': LookPanorama,
     'chrome-picker': Chrome,
@@ -1219,7 +1231,11 @@ export default {
       riverShow: false, // 河道显示
       streetShow: false, // 街道显示
       phonePhoto: false, // 手机照片
-      photoAlert: false, // 照片弹窗
+      photoAlertShow: false, // 照片弹窗显隐
+      imageEditorData: {
+        id: '',
+        url: ''
+      }, // 照片编辑传值数据
       phonePhotoTool: '', // 手机照片工具
       UAVPhoto: false, // 无人机照片
       UAVPhotoTool: '', // 无人机照片工具
@@ -2576,7 +2592,7 @@ export default {
         name: 'Null Island',
         population: 4000,
         rainfall: 500
-      });
+      })
       var iconStyle = new Style({
         image: new Icon({
           anchor: [0.5, 46],
@@ -2584,17 +2600,17 @@ export default {
           anchorYUnits: 'pixels',
           src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
         })
-      });
+      })
 
-      iconFeature.setStyle(iconStyle);
+      iconFeature.setStyle(iconStyle)
 
       var vectorSource = new VectorSource({
         features: [iconFeature]
-      });
+      })
 
       var vectorLayer = new VectorLayer({
         source: vectorSource
-      });
+      })
 
       var view = new View({
         projection: 'EPSG:4326',
@@ -2703,6 +2719,140 @@ export default {
     onHistoryData() {
       this.moreLoadOnce = 1
       this.getMapdrawPage()
+      if (this.historyData) {
+        // var popup = new Overlay({
+        //   element: document.getElementById('popup')
+        // });
+        // popup.setPosition([121.42025, 31.26963]);
+        // this.olMap1.addOverlay(popup);
+        // setTimeout(() => {
+        //   this.olMap1.removeOverlay(popup);
+        // }, 2000);
+
+        // var vectorSource = new VectorSource()
+        // var iconFeature = new Feature({
+        //   geometry: new Point([121.40025, 31.46963]),
+        //   name: 'Null Island',
+        //   population: 4000,
+        //   rainfall: 500
+        // })
+        // var iconStyle = new Style({
+        //   image: new Icon({
+        //     anchor: [0.5, 46],
+        //     anchorXUnits: 'fraction',
+        //     anchorYUnits: 'pixels',
+        //     src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
+        //   })
+        // })
+
+        // // iconFeature.setStyle(iconStyle)
+
+        // vectorSource.addFeature(iconFeature);
+
+        // //创建矢量层
+        // var vectorLayer = new VectorSource({
+        //     source: vectorSource,
+        //     style: iconStyle
+        // });
+        // //添加进map层
+        // this.olMap1.addLayer(vectorLayer);
+
+        return
+
+        var vectorSource = new VectorSource({
+          features: [iconFeature]
+        })
+
+        var vectorLayer = new VectorLayer({
+          source: vectorSource
+        })
+
+        this.olMap1.addOverlay(vectorSource)
+
+        // var view = new View({
+        //   projection: 'EPSG:4326',
+        //   center: [this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat],
+        //   zoom: 14
+        // })
+        // this.olMap1 = new Map({
+        //   target: 'roadMap',
+        //   layers: [veclayerGroup, vectorLayer],
+        //   view: view
+        // })
+        return
+
+        var vectorSource = new VectorSource({})
+        //创建图标特性
+        var iconFeature = new Feature({
+          geometry: new Point([121.42025, 31.26963], 'XY'),
+          name: 'my Icon',
+          id: '123456'
+        })
+        //将图标特性添加进矢量中
+        vectorSource.addFeature(iconFeature)
+
+        //创建图标样式
+        var iconStyle = new Style({
+          image: new Icon({
+            opacity: 0.75,
+            src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
+          })
+        })
+        //创建矢量层
+        var vectorLayer = new VectorSource({
+          source: vectorSource,
+          style: iconStyle
+        })
+        //添加进map层
+        this.olMap1.addLayer(vectorLayer)
+
+        return
+        var iconFeature = new Feature({
+          geometry: new Point([121.42025, 31.26963]),
+          name: 'Null Island',
+          population: 4000,
+          rainfall: 500
+        })
+        var iconStyle = new Style({
+          image: new Icon({
+            anchor: [0.5, 46],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'pixels',
+            src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
+          })
+        })
+
+        iconFeature.setStyle(iconStyle)
+
+        var vectorSource = new VectorSource({
+          features: [iconFeature]
+        })
+        // markVectorSource.addFeature(iconFeature)
+        // this.olMap1.removeLayer(vectorSource)
+        // this.olMap1.addLayer(vectorSource)
+
+        // var markVectorSource = new Map.source.Vector()
+        // var markVectorLayer = new Map.layer.Vector({
+        //   source: markVectorSource
+        // })
+        // var iconFeature = new Map.Feature({
+        //   //geometry: new ol.geom.Point(markSettings.markCoordinate)
+        //   geometry: new Map.geom.Point(Map.proj.fromLonLat(markSettings.markCoordinate)) //纬度 经度
+        // })
+        // var iconStyle = new Map.style.Style({
+        //   image: new Map.style.Icon({
+        //       anchor: markSettings.markAnchor, //点图片偏移量
+        //       src: markSettings.markImage, //图片路径
+        //       img: undefined, //图片
+        //       imgSize: undefined
+        //     }
+        //   )
+        // })
+        // iconFeature.setStyle(iconStyle)
+        // markVectorSource.addFeature(iconFeature)
+        // this.olMap1.removeLayer(markVectorLayer)
+        // this.olMap1.addLayer(markVectorLayer)
+      }
 
       // this.init()
       // this.testdate()
@@ -2713,7 +2863,7 @@ export default {
         name: 'Null Island',
         population: 4000,
         rainfall: 500
-      });
+      })
       var iconStyle = new Style({
         image: new Icon({
           anchor: [0.5, 46],
@@ -2721,17 +2871,17 @@ export default {
           anchorYUnits: 'pixels',
           src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
         })
-      });
+      })
 
-      iconFeature.setStyle(iconStyle);
+      iconFeature.setStyle(iconStyle)
 
       var vectorSource = new VectorSource({
         features: [iconFeature]
-      });
+      })
 
       var vectorLayer = new VectorLayer({
         source: vectorSource
-      });
+      })
 
       // var rasterLayer = new TileLayer({
       //   source: new TileJSON({
@@ -2747,7 +2897,7 @@ export default {
           center: [121.43025, 31.16963],
           zoom: 3
         })
-      });
+      })
     },
     testdate() {
       var styles = [
@@ -3907,16 +4057,41 @@ export default {
       this.MarkerClusterer = new T.MarkerClusterer(this.map, { markers: arrayObj, styles: styles })
     },
     // 任务照片点击
-    taskImageClick(index) {
-      console.log(index)
-      // this.photoAlert = true
-      this.$refs.photoEdit.showVisible()
+    taskImageClick(e) {
+      console.log(e.target.options.id)
+      this.photoAlertShow = true
+      console.log(this.phonePhotoPoints)
+      for (const item of this.phonePhotoPoints) {
+        if (e.target.options.id == item.id) {
+          this.imageEditorData.id = item.id
+          this.imageEditorData.defaultTime = this.defaultTime
+          this.imageEditorData.url = item.imgUrl
+        }
+      }
+      // this.$router.push({
+      //   path: '/supervise/ImageEditor',
+      //   // query: {
+      //   //   id: e.target.options.id,
+      //   //   panoramaPoints: this.panoramaPoints
+      //   // }
+      // })
       // for (const item of this.historyPoints) {
       //   if (index.lnglat.lat === item.latlng.lat && index.lnglat.lng === item.latlng.lng) {
       //     console.log(index.lnglat.lat, index.lnglat.lng)
       //     this.$refs.riskInfo.riskInfo()
       //   }
       // }
+    },
+    // 照片编辑关闭
+    closeImageEditor() {
+      this.photoAlertShow = false
+    },
+    // 照片确定
+    confirmImageEditor() {
+      this.photoAlertShow = false
+      // 获取手机照片
+      this.removeOverLays(this.phonePhotoPoints)
+      this.getPhonePhotoPoints()
     },
     // 上传手机照片
     phonePhotoSuccess(response, file, fileList) {
