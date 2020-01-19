@@ -11,6 +11,9 @@
         <a-button @click="goBack" block>取消</a-button>
       </a-col>
       <a-col :span="3">
+        <a-button @click="imageDelete" block>删除</a-button>
+      </a-col>
+      <a-col :span="3">
         <a-button block>
           原图
           <a-switch v-model="originalImageClicked" size="small" defaultChecked />
@@ -169,6 +172,10 @@ export default {
     },
     // 关闭弹窗
     goBack() {
+      this.$emit('exitImage')
+    },
+    // 删除照片
+    imageDelete() {
       this.$emit('exitImage')
     }
   }
