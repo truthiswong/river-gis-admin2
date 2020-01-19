@@ -99,7 +99,8 @@ export default {
           menu: ['crop', 'shape', 'draw', 'text'],
           theme: blackTheme
         }
-      }
+      },
+      imageUrl: require('../../../assets/loginBg.jpg')
     }
   },
   components: {
@@ -113,6 +114,7 @@ export default {
     //   'Delete-all': '全删'
     //   // etc...
     // }
+
     // var instance = new ImageEditor(document.querySelector('#tui-image-editor'), {
     //   includeUI: {
     //     loadImage: {
