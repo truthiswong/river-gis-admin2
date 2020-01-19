@@ -48,12 +48,18 @@ export const asyncRouterMap = [
             component: () => import('@/views/supervise/Supervise'),
             meta: { title: '数据统计分析', permission: [ 'supervise' ] }
           },
-          {
-            path: '/supervise/Vtour',
-            name: 'Vtour',
-            component: () => import('@/views/supervise/Vtour'),
-            meta: { title: '360全景图', permission: [ 'supervise' ] }
-          }
+          // {
+          //   path: '/supervise/Vtour',
+          //   name: 'Vtour',
+          //   component: () => import('@/views/supervise/Vtour'),
+          //   meta: { title: '360全景图', permission: [ 'supervise' ] }
+          // },
+          // {
+          //   path: '/supervise/ImageEditor',
+          //   name: 'ImageEditor',
+          //   component: () => import('@/views/supervise/ImageEditor'),
+          //   meta: { title: '图片编辑', permission: [ 'supervise' ] }
+          // }
         ]
       },
       // 设置
