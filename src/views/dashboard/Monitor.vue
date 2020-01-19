@@ -406,6 +406,7 @@
               v-if="firstShow"
             ></a-card>-->
             <a-tabs
+              :activeKey='SamedayAndNewlybuild'
               defaultActiveKey="addPlan"
               @change="onTabChange"
               v-show="firstShow"
@@ -1289,6 +1290,7 @@ export default {
           scopedSlots: { tab: 'customRender' }
         }
       ],
+      SamedayAndNewlybuild:'addPlan',
       rolePage:[],
       listAppend: {
         planId: '',
@@ -2032,6 +2034,8 @@ export default {
         return year + '-' + month + '-' + date
       }
       function tab(date1) {
+        console.log(date1);
+        
         var oDate1 = new Date(date1)
         var oDate2 = new Date()
         if (oDate1.getTime() > oDate2.getTime()) {
@@ -2062,6 +2066,8 @@ export default {
       this.hidingJudgment1 = tab1(this.picker)
       this.hidingJudgment2 = tab2(this.picker, formatDate(new Date()))
       this.hidingJudgment3 = tab(this.picker)
+      console.log(this.hidingJudgment3);
+      
       this.planListPage = []
       planPage(data)
         .then(res => {
@@ -2661,10 +2667,14 @@ export default {
       console.log(key)
       this[type] = key
       if (key == 'addPlan') {
+        this.SamedayAndNewlybuild = 'addPlan'
+        this.noTitleKey = 'addPlan'
         this.ishidden = 1
         this.judgeDate()
       }
       if (key == 'nowPlan') {
+        this.SamedayAndNewlybuild = 'nowPlan'
+        this.noTitleKey = 'nowPlan'
         this.planDayDraw()
         // //判断子节点
         // var sutree = this.sutreeData
@@ -2783,23 +2793,35 @@ export default {
       // this.$refs.planList.getstaffInspectPage(this.planList1.id)
     },
     showPlanJudge(list) {
-      if (list.lenght != 0) {
+      console.log(list);
+      let arr =  false
+      if (list.length != 0) {
         for (let i = 0; i < list.length; i++) {
-          if (list[i].taskList.length != 0) {
-            this.ishidden = 3
-            this.$refs.planList.getstaffInspectPage(this.planList1.id)
-            break
-          } else {
-            if (i + 1 == list.length) {
-              this.$message.warning('请往分组添加调查点或河道')
+          if (i + 1 == list.length) {
+            if (list[i].taskList.length != 0) {
+              // this.ishidden = 3
+              this.$refs.planList.getstaffInspectPage(this.planList1.id)
+            } else {
+              this.$message.warning('不能有空分组')
+            }
+          }else{
+            if (list[i].taskList.length  == 0) {
+              this.$message.warning('不能有空分组')
+              break
+            } else {
+              
             }
           }
+          
         }
       } else {
+        console.log('111');
+        
         this.$message.warning('请先创建分组')
       }
     },
     getNowPlan() {
+      this.SamedayAndNewlybuild = 'nowPlan'
       this.noTitleKey = 'nowPlan'
     },
     //底部上一步按钮
@@ -2854,20 +2876,25 @@ export default {
       for (const item of this.riverMontion) {
         for (const index of item.taskChoose) ids.push(index)
       }
-      var data = {
-        sourcePlanId: this.planList1.id,
-        taskIds: ids.join(','),
-        targetPlanId: id
+      if (ids.length == 0) {
+        this.$message.warning('请先选择河道或调查点')
+      }else{
+        var data = {
+          sourcePlanId: this.planList1.id,
+          taskIds: ids.join(','),
+          targetPlanId: id
+        }
+        joinPlanTask(data).then(res => {
+          this.$refs.creatGroup.planGeneration(id)
+        }).catch(err => {
+          this.$message.error(err.response.data.message)
+          this.$refs.creatGroup.planGeneration(id)
+        })
+        this.ishidden = 2
+      
+        this.planList1.id= id
       }
-      joinPlanTask(data).then(res => {
-        this.$refs.creatGroup.planGeneration(id)
-      }).catch(err => {
-        this.$message.error(err.response.data.message)
-        this.$refs.creatGroup.planGeneration(id)
-      })
-      this.ishidden = 2
-     
-      this.planList1.id= id
+      
     },
     showOk() {
       // var arrInfo =  this.asasd

@@ -217,54 +217,73 @@ export default {
       var worker = ''
       var amount = ''
       for (const item of this.planTab) {
-        worker = ''
-        amount = ''
-        for (const role of item.roles) {
-          var data = {
-            id: '',
-            teamId: item.id,
-            roleId: role.role.id,
-            workerId: role.workerId.join(',')
+        for (let i=0;i<item.roles.length;i++) {
+          if (i + 1 == item.roles.length) {
+            if (item.roles[i].workerId.length  == 0) {
+              this.$message.warning('请全部分配人员')
+              break
+            }else{
+              for (const item of this.planTab) {
+                worker = ''
+                amount = ''
+                for (const role of item.roles) {
+                  var data = {
+                    id: '',
+                    teamId: item.id,
+                    roleId: role.role.id,
+                    workerId: role.workerId.join(',')
+                  }
+                  memberRiverSave(data)
+                    .then(res => {})
+                    .catch(err => {
+                      this.numvis = false
+                    })
+                }
+                for (const devices of item.devices) {
+                  for (const am of devices.workerId) {
+                    // worker.push(am.workerId)
+                    worker = worker + am + ','
+                  }
+                  for (const devi of devices.devices) {
+                    amount = amount + devi.amount + ','
+                    // amount.push(devi.amount)
+                  }
+                }
+                var arr = {
+                  id: '',
+                  teamId: item.id,
+                  deviceId: worker,
+                  amount: amount
+                }
+                equipmentRiverSave(arr)
+                  .then(res => {})
+                  .catch(err => {
+                    this.numvis = false
+                  })
+              }
+              if (this.numvis == true) {
+                planPublish(this.id).then(res => {
+                  this.$message.success('成功')
+                  this.spinning = true
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+                })
+                this.visible = false
+              } else {
+                this.$message.error('请全部选择')
+              }
+            }
+          }else{
+            if (item.roles[i].workerId.length  == 0) {
+              this.$message.warning('请全部分配人员')
+              break
+            } else {
+              
+            }
           }
-          memberRiverSave(data)
-            .then(res => {})
-            .catch(err => {
-              this.numvis = false
-            })
         }
-        for (const devices of item.devices) {
-          for (const am of devices.workerId) {
-            // worker.push(am.workerId)
-            worker = worker + am + ','
-          }
-          for (const devi of devices.devices) {
-            amount = amount + devi.amount + ','
-            // amount.push(devi.amount)
-          }
-        }
-        var arr = {
-          id: '',
-          teamId: item.id,
-          deviceId: worker,
-          amount: amount
-        }
-        equipmentRiverSave(arr)
-          .then(res => {})
-          .catch(err => {
-            this.numvis = false
-          })
-      }
-      if (this.numvis == true) {
-        planPublish(this.id).then(res => {
-          this.$message.success('成功')
-          this.spinning = true
-          this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
-          this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
-          this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
-        })
-        this.visible = false
-      } else {
-        this.$message.error('请全部选择')
+        
       }
     },
     //人员修改
