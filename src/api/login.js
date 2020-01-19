@@ -576,7 +576,7 @@ export function inspectPointPageRiver(data) {
   return axios({
     url: '/server/data/admin/inspect/point/page',
     method: 'get',
-    params:data
+    params: data
   })
 }
 //调查点保存
@@ -883,14 +883,7 @@ export function phoneLatlngList(data) {
   return axios({
     url: '/server/data/admin/regulator/manual/data/save',
     method: 'post',
-    params: {
-      projectId: data.projectId,
-      year: data.year,
-      month: data.month,
-      day: data.day,
-      id: data.id,
-      coordinate: data.coordinate,
-    }
+    params: data
   })
 }
 //360数据
@@ -898,7 +891,7 @@ export function panoramaList(data) {
   return axios({
     url: '/server/data/admin/regulator/panorama/data/points',
     method: 'get',
-    params:data
+    params: data
   })
 }
 //360数据
