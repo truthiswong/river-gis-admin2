@@ -894,6 +894,14 @@ export function phoneMediaEdit(data) {
     data
   })
 }
+// 手机照片编辑删除
+export function phoneMediaRemove(data) {
+  return axios({
+    url: '/server/data/admin/regulator/manual/data/media/remove',
+    method: 'post',
+    data
+  })
+}
 //360数据
 export function panoramaList(data) {
   return axios({
