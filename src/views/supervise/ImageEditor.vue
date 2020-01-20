@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { phoneMediaEdit, dataDetails } from '@/api/login'
+import { phoneMediaEdit, dataDetails, phoneMediaRemove } from '@/api/login'
 
 import 'tui-code-snippet'
 import 'fabric'
@@ -165,7 +165,17 @@ export default {
     },
     // 删除照片
     imageDelete() {
-      this.$emit('exitImage')
+      let data = {
+        id: this.msg.id,
+      }
+      phoneMediaRemove(data)
+        .then(res => {
+          this.$message.success('删除成功')
+          this.$emit('saveImage')
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
     }
   }
 }
