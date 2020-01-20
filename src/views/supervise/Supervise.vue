@@ -4064,7 +4064,6 @@ export default {
       for (const item of this.phonePhotoPoints) {
         if (e.target.options.id == item.id) {
           this.imageEditorData.id = item.id
-          this.imageEditorData.defaultTime = this.defaultTime
           this.imageEditorData.url = item.imgUrl
         }
       }
