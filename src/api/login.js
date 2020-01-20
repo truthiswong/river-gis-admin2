@@ -886,6 +886,14 @@ export function phoneLatlngList(data) {
     params: data
   })
 }
+// 手机照片编辑保存
+export function phoneMediaEdit(data) {
+  return axios({
+    url: '/server/data/admin/regulator/manual/data/media/edit',
+    method: 'post',
+    data
+  })
+}
 //360数据
 export function panoramaList(data) {
   return axios({
