@@ -2,7 +2,7 @@
   <div id="wrapper">
     <div class="content">
       <div v-show="originalImageClicked" class="original_image">
-        <img :src="imageUrl" alt />
+        <img :src="imageOriginalUrl" alt />
       </div>
       <tui-image-editor v-show="!originalImageClicked" ref="tuiImageEditor" :options="options"></tui-image-editor>
     </div>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { phoneLatlngList } from '@/api/login'
+import { phoneMediaEdit, dataDetails } from '@/api/login'
 
 import 'tui-code-snippet'
 import 'fabric'
@@ -98,7 +98,8 @@ export default {
           theme: blackTheme
         }
       },
-      imageUrl: require('../../assets/img/peopleIcon.png')
+      imageUrl: require('../../assets/img/peopleIcon.png'),
+      imageOriginalUrl: ''
     }
   },
   components: {
@@ -107,6 +108,9 @@ export default {
   computed: {},
 
   mounted() {
+    dataDetails(this.msg.id).then(res => {
+      this.imageOriginalUrl = res.data.media
+    })
     this.imageUrl = this.msg.url
     let actions = this.$refs.tuiImageEditor.invoke('getActions')
     if (this.imageUrl && actions) {
@@ -118,34 +122,19 @@ export default {
     // 保存
     imageSave() {
       let base64Str = this.$refs.tuiImageEditor.invoke('toDataURL')
-      console.log(this.$refs.tuiImageEditor.invoke('toDataURL'))
-      // let blobObj = this.dataURLtoBlob(base64Str)
-      // console.log(this.dataURLtoBlob(base64Str))
-
-      let blobObj = this.base64UrlToBlob(base64Str, 0)
-      console.log(blobObj)
-
-      let fileObj = this.dataURLtoFile(base64Str, 'photoEditor')
-      // var file = fileObj[0]
-      // var formdata = new FormData()
-      // formdata.append('media', blobObj, 'file_' + Date.parse(new Date()) + '.png')
-      console.log(fileObj)
-
-      let picker = this.msg.defaultTime.split('-')
       let data = {
-        projectId: this.$store.state.id,
-        year: picker[0],
-        month: picker[1],
-        day: picker[2],
         id: this.msg.id,
-        // media: blobObj
+        imgSuffix: 'png',
+        base64image: base64Str
       }
-      console.log(data)
-
-      phoneLatlngList(data).then(res => {
-        console.log(res.data)
-        this.$emit('saveImage')
-      })
+      phoneMediaEdit(data)
+        .then(res => {
+          this.$message.success('编辑成功')
+          this.$emit('saveImage')
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
     },
     base64UrlToBlob(urlData, type) {
       /*将base64转换成可用formdata提交的文件,urlData base64的url,type 0图片 1视频 */
