@@ -22,8 +22,8 @@ export default new Vuex.Store({
     serverUrl: 'http://demo-jleco-river.jl-shgroup.com',
     tenantId: "test:jlgis@2019", // 默认测试
     projectCoordinate: { //项目坐标
-      lng: 0,
-      lat: 0
+      lng: 121.43489, // 经度
+      lat: 31.15053 // 纬度
     },
     projectInfo: {}, //项目信息
     permissionLists: [
