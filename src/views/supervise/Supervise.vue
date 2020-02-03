@@ -2316,7 +2316,7 @@ export default {
       var date = this.defaultTime.split('-')
       let data = {
         date: date[0] + date[1] + date[2],
-        coor: '31.15847:121.43429'
+        coor: `${this.$store.state.projectCoordinate.lat}:${this.$store.state.projectCoordinate.lng}`
       }
       weatherList(data)
         .then(res => {
@@ -2450,8 +2450,6 @@ export default {
       this.moreLoadOnce = 1
       this.getMapdrawPage()
     },
-    //获取天气
-
     // 时间格式
     moment,
     // 更多
