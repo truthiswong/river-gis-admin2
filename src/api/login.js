@@ -895,11 +895,10 @@ export function phoneMediaEdit(data) {
   })
 }
 // 手机照片编辑删除
-export function phoneMediaRemove(data) {
+export function phoneMediaRemove(id) {
   return axios({
-    url: '/server/data/admin/regulator/manual/data/media/remove',
-    method: 'post',
-    data
+    url: '/server/data/admin/regulator/manual/data/remove/' + id,
+    method: 'post'
   })
 }
 //360数据
