@@ -165,10 +165,7 @@ export default {
     },
     // 删除照片
     imageDelete() {
-      let data = {
-        id: this.msg.id,
-      }
-      phoneMediaRemove(data)
+      phoneMediaRemove(this.msg.id)
         .then(res => {
           this.$message.success('删除成功')
           this.$emit('saveImage')
