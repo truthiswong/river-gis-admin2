@@ -61,19 +61,18 @@
     <!-- 右侧时间轴 -->
     <div class="time_line time_line_right" v-show="sharedChecked || swipeChecked">
       <ul class="time_ul">
-        <li v-for="item in timeDataRight" :key="item.id">
-          <!-- <h6 style="font-size:12px;text-align:center;margin:0;">{{item.title}}</h6> -->
+        <li>
           <a-tooltip
-            placement="right"
+            placement="left"
             class="time_item"
             trigger="hover"
-            v-for="day in item.month"
-            :key="day.id"
-            @click="timeLineItem(item.title, day.title)"
+            v-for="day in timeDataRight"
+            :key="day.date"
+            @click="timeLineItemRight(day.date)"
             :class="{'time_item_clicked':day.clicked == true}"
           >
             <template slot="title">
-              <span>{{item.title}}.{{day.title}}</span>
+              <span>{{day.date}}</span>
             </template>
             <div class="line_style">
               <div
@@ -1056,85 +1055,12 @@ export default {
         //   ]
         // }
       ],
+
       timeQuantum: '', // 时间段
       dateFormat: 'YYYY-MM-DD',
       startDate: '', // 开始日期
       endDate: '', // 结束日期
-      timeDataRight: [
-        {
-          id: 0,
-          title: '2019.09',
-          month: [
-            { id: '30', title: '30', level: 0, clicked: false },
-            { id: '29', title: '29', level: 1, clicked: false },
-            { id: '28', title: '28', level: 2, clicked: false },
-            { id: '27', title: '27', level: 2, clicked: false },
-            { id: '26', title: '26', level: 1, clicked: false },
-            { id: '25', title: '25', level: 1, clicked: false },
-            { id: '24', title: '24', level: 1, clicked: false },
-            { id: '23', title: '23', level: 0, clicked: false },
-            { id: '22', title: '22', level: 0, clicked: false },
-            { id: '21', title: '21', level: 2, clicked: false },
-            { id: '20', title: '20', level: 2, clicked: false },
-            { id: '19', title: '19', level: 1, clicked: false },
-            { id: '18', title: '18', level: 0, clicked: false },
-            { id: '17', title: '17', level: 2, clicked: false },
-            { id: '16', title: '16', level: 2, clicked: false },
-            { id: '15', title: '15', level: 0, clicked: false },
-            { id: '14', title: '14', level: 1, clicked: false },
-            { id: '13', title: '13', level: 0, clicked: false },
-            { id: '12', title: '12', level: 1, clicked: false },
-            { id: '11', title: '11', level: 1, clicked: false },
-            { id: '10', title: '10', level: 0, clicked: false },
-            { id: '09', title: '09', level: 1, clicked: false },
-            { id: '08', title: '08', level: 0, clicked: false },
-            { id: '07', title: '07', level: 2, clicked: false },
-            { id: '06', title: '06', level: 0, clicked: false },
-            { id: '05', title: '05', level: 2, clicked: false },
-            { id: '04', title: '04', level: 2, clicked: false },
-            { id: '03', title: '03', level: 0, clicked: false },
-            { id: '02', title: '02', level: 1, clicked: false },
-            { id: '01', title: '01', level: 1, clicked: false }
-          ]
-        },
-        {
-          id: 1,
-          title: '2019.08',
-          month: [
-            { id: '31', title: '31', level: 0, clicked: false },
-            { id: '30', title: '30', level: 0, clicked: false },
-            { id: '29', title: '29', level: 1, clicked: false },
-            { id: '28', title: '28', level: 2, clicked: false },
-            { id: '27', title: '27', level: 2, clicked: false },
-            { id: '26', title: '26', level: 1, clicked: false },
-            { id: '25', title: '25', level: 1, clicked: false },
-            { id: '24', title: '24', level: 1, clicked: false },
-            { id: '23', title: '23', level: 0, clicked: false },
-            { id: '22', title: '22', level: 0, clicked: false },
-            { id: '21', title: '21', level: 2, clicked: false },
-            { id: '20', title: '20', level: 2, clicked: false },
-            { id: '19', title: '19', level: 1, clicked: false },
-            { id: '18', title: '18', level: 0, clicked: false },
-            { id: '17', title: '17', level: 2, clicked: false },
-            { id: '16', title: '16', level: 2, clicked: false },
-            { id: '15', title: '15', level: 0, clicked: false },
-            { id: '14', title: '14', level: 1, clicked: false },
-            { id: '13', title: '13', level: 0, clicked: false },
-            { id: '12', title: '12', level: 1, clicked: false },
-            { id: '11', title: '11', level: 1, clicked: false },
-            { id: '10', title: '10', level: 0, clicked: false },
-            { id: '09', title: '09', level: 1, clicked: false },
-            { id: '08', title: '08', level: 0, clicked: false },
-            { id: '07', title: '07', level: 2, clicked: false },
-            { id: '06', title: '06', level: 0, clicked: false },
-            { id: '05', title: '05', level: 2, clicked: false },
-            { id: '04', title: '04', level: 2, clicked: false },
-            { id: '03', title: '03', level: 0, clicked: false },
-            { id: '02', title: '02', level: 1, clicked: false },
-            { id: '01', title: '01', level: 1, clicked: false }
-          ]
-        }
-      ],
+      timeDataRight: [], // 右侧时间轴
       weatherList: [
         {
           temperature: '26°',
@@ -2285,6 +2211,9 @@ export default {
           }
         }
         this.timeData = res.data
+        this.timeDataRight = res.data
+        console.log(this.timeDataRight)
+        
         this.getWeatherList()
         // 手机照片上传参数
         this.moreLoadOnce = 1
@@ -2434,6 +2363,24 @@ export default {
             this.map.addLayer(this.mapLayerImage)
             item.clicked = true
             this.timeLineChange() //时间轴切换
+          } else {
+            item.clicked = false
+          }
+          // }
+        } else {
+          item.clicked = false
+        }
+      }
+    },
+    // 右侧时间轴
+    timeLineItemRight(mouth) {
+      console.log(mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8))
+      for (const item of this.timeDataRight) {
+        if (mouth == item.date) {
+          // if (item.level != 2) {
+          if (item.date == mouth) {
+            this.defaultTime = mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8)
+            item.clicked = true
           } else {
             item.clicked = false
           }
@@ -2755,6 +2702,41 @@ export default {
         // //添加进map层
         // this.olMap1.addLayer(vectorLayer);
 
+        var iconFeature = new Feature({
+        geometry: new Point([121.43654, 31.16543]),
+        name: 'Null Island',
+        title: '测试',
+        population: 4000,
+        rainfall: 500
+      })
+      var iconStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 46],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
+        })
+      })
+
+      iconFeature.setStyle(iconStyle)
+
+      var vectorSource = new VectorSource({
+        features: [iconFeature]
+      })
+
+      var vectorLayer = new VectorLayer({
+        source: vectorSource
+      })
+        this.olMap1.addLayer(vectorLayer)
+        this.olMap2.addLayer(vectorLayer)
+
+        setTimeout(() => {
+        this.olMap1.removeLayer(vectorLayer)
+        this.olMap2.removeLayer(vectorLayer)
+        console.log('移除')
+        }, 5000);
+
+
         return
 
         var vectorSource = new VectorSource({
@@ -2766,6 +2748,8 @@ export default {
         })
 
         this.olMap1.addOverlay(vectorSource)
+
+        
 
         // var view = new View({
         //   projection: 'EPSG:4326',
