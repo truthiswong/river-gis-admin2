@@ -188,7 +188,7 @@ export default {
   overflow: auto;
   .content {
     position: relative;
-    height: calc(100% - 50px);
+    height: calc(100% - 74px);
     width: 100%;
     .original_image {
       position: absolute;
