@@ -881,6 +881,7 @@ import OSM from 'ol/source/OSM'
 import LayerGroup from 'ol/layer/Group'
 import XYZ from 'ol/source/XYZ'
 import { Icon, Style } from 'ol/style'
+import {toSize} from 'ol/size';
 import Text from 'ol/style/Text'
 
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer'
@@ -1186,7 +1187,12 @@ export default {
           id: 'fdsfdsfdsfdsa',
           name: '河道测试111',
           clicked: false,
-          lineData: [[121.38777, 31.17433], [121.37678, 31.14686], [121.42262, 31.16743], [121.40373, 31.19606]]
+          lineData: [
+            [121.38777, 31.17433],
+            [121.37678, 31.14686],
+            [121.42262, 31.16743],
+            [121.40373, 31.19606]
+          ]
         }
       ], // 河道
       streetShowList: [], //街道
@@ -1973,15 +1979,24 @@ export default {
       if (this.toolIndex === 1) {
         // 工具-点
         this.markerTool.clear()
-        this.toolIndexPointData.splice(this.toolIndexPointData.findIndex(item => item.id === this.toolIndexId), 1)
+        this.toolIndexPointData.splice(
+          this.toolIndexPointData.findIndex(item => item.id === this.toolIndexId),
+          1
+        )
       } else if (this.toolIndex === 2) {
         // 工具-线
         this.lineTool.clear()
-        this.toolIndexLineData.splice(this.toolIndexLineData.findIndex(item => item.id === this.toolIndexId), 1)
+        this.toolIndexLineData.splice(
+          this.toolIndexLineData.findIndex(item => item.id === this.toolIndexId),
+          1
+        )
       } else if (this.toolIndex === 3) {
         // 工具-面
         this.polygonTool.clear()
-        this.toolIndexPolygonData.splice(this.toolIndexPolygonData.findIndex(item => item.id === this.toolIndexId), 1)
+        this.toolIndexPolygonData.splice(
+          this.toolIndexPolygonData.findIndex(item => item.id === this.toolIndexId),
+          1
+        )
       } else if (this.toolIndex === 4) {
         // 工具-面积
         this.polygonTool.clear()
@@ -2212,8 +2227,6 @@ export default {
         }
         this.timeData = res.data
         this.timeDataRight = res.data
-        console.log(this.timeDataRight)
-        
         this.getWeatherList()
         // 手机照片上传参数
         this.moreLoadOnce = 1
@@ -2227,9 +2240,9 @@ export default {
         }
         let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
           picker[0]
-        }&month=${picker[1]}&day=${picker[2]}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&Authorization=${Vue.ls.get(
-          ACCESS_TOKEN
-        )}`
+        }&month=${picker[1]}&day=${picker[2]}&x={x}&y={y}&z={z}&X-TENANT-ID=${
+          this.$store.state.tenantId
+        }&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
         this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
         this.map.addLayer(this.mapLayerImage)
       })
@@ -2356,9 +2369,9 @@ export default {
             this.map.removeLayer(this.mapLayerImage)
             let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
               this.mapYear
-            }&month=${this.mapMonth}&day=${
-              this.mapDay
-            }&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
+            }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
+              this.$store.state.tenantId
+            }&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
             this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
             this.map.addLayer(this.mapLayerImage)
             item.clicked = true
@@ -2379,7 +2392,6 @@ export default {
         if (mouth == item.date) {
           // if (item.level != 2) {
           if (item.date == mouth) {
-            this.defaultTime = mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8)
             item.clicked = true
           } else {
             item.clicked = false
@@ -2564,13 +2576,13 @@ export default {
       })
       this.olMap1 = new Map({
         target: 'roadMap',
-        layers: [veclayerGroup, vectorLayer],
+        layers: [veclayerGroup],
         view: view
       })
       console.log(this.olMap1)
       this.olMap2 = new Map({
         target: 'aerialMap',
-        layers: [imglayerGroup, vectorLayer],
+        layers: [imglayerGroup],
         view: view
       })
     },
@@ -2665,80 +2677,7 @@ export default {
       this.moreLoadOnce = 1
       this.getMapdrawPage()
       if (this.historyData) {
-        // var popup = new Overlay({
-        //   element: document.getElementById('popup')
-        // });
-        // popup.setPosition([121.42025, 31.26963]);
-        // this.olMap1.addOverlay(popup);
-        // setTimeout(() => {
-        //   this.olMap1.removeOverlay(popup);
-        // }, 2000);
-
-        // var vectorSource = new VectorSource()
-        // var iconFeature = new Feature({
-        //   geometry: new Point([121.40025, 31.46963]),
-        //   name: 'Null Island',
-        //   population: 4000,
-        //   rainfall: 500
-        // })
-        // var iconStyle = new Style({
-        //   image: new Icon({
-        //     anchor: [0.5, 46],
-        //     anchorXUnits: 'fraction',
-        //     anchorYUnits: 'pixels',
-        //     src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
-        //   })
-        // })
-
-        // // iconFeature.setStyle(iconStyle)
-
-        // vectorSource.addFeature(iconFeature);
-
-        // //创建矢量层
-        // var vectorLayer = new VectorSource({
-        //     source: vectorSource,
-        //     style: iconStyle
-        // });
-        // //添加进map层
-        // this.olMap1.addLayer(vectorLayer);
-
-        var iconFeature = new Feature({
-        geometry: new Point([121.43654, 31.16543]),
-        name: 'Null Island',
-        title: '测试',
-        population: 4000,
-        rainfall: 500
-      })
-      var iconStyle = new Style({
-        image: new Icon({
-          anchor: [0.5, 46],
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'pixels',
-          src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
-        })
-      })
-
-      iconFeature.setStyle(iconStyle)
-
-      var vectorSource = new VectorSource({
-        features: [iconFeature]
-      })
-
-      var vectorLayer = new VectorLayer({
-        source: vectorSource
-      })
-        this.olMap1.addLayer(vectorLayer)
-        this.olMap2.addLayer(vectorLayer)
-
-        setTimeout(() => {
-        this.olMap1.removeLayer(vectorLayer)
-        this.olMap2.removeLayer(vectorLayer)
-        console.log('移除')
-        }, 5000);
-
-
         return
-
         var vectorSource = new VectorSource({
           features: [iconFeature]
         })
@@ -2748,9 +2687,6 @@ export default {
         })
 
         this.olMap1.addOverlay(vectorSource)
-
-        
-
         // var view = new View({
         //   projection: 'EPSG:4326',
         //   center: [this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat],
@@ -2809,35 +2745,42 @@ export default {
         var vectorSource = new VectorSource({
           features: [iconFeature]
         })
-        // markVectorSource.addFeature(iconFeature)
-        // this.olMap1.removeLayer(vectorSource)
-        // this.olMap1.addLayer(vectorSource)
-
-        // var markVectorSource = new Map.source.Vector()
-        // var markVectorLayer = new Map.layer.Vector({
-        //   source: markVectorSource
-        // })
-        // var iconFeature = new Map.Feature({
-        //   //geometry: new ol.geom.Point(markSettings.markCoordinate)
-        //   geometry: new Map.geom.Point(Map.proj.fromLonLat(markSettings.markCoordinate)) //纬度 经度
-        // })
-        // var iconStyle = new Map.style.Style({
-        //   image: new Map.style.Icon({
-        //       anchor: markSettings.markAnchor, //点图片偏移量
-        //       src: markSettings.markImage, //图片路径
-        //       img: undefined, //图片
-        //       imgSize: undefined
-        //     }
-        //   )
-        // })
-        // iconFeature.setStyle(iconStyle)
-        // markVectorSource.addFeature(iconFeature)
-        // this.olMap1.removeLayer(markVectorLayer)
-        // this.olMap1.addLayer(markVectorLayer)
       }
 
       // this.init()
       // this.testdate()
+    },
+    // openlayers 绘制点
+    olDrawPoint(lnglat, imgUrl) {
+      console.log(lnglat, imgUrl)
+      let iconFeature = new Feature({
+        geometry: new Point([lnglat.lng, lnglat.lat]),
+        name: '',
+        population: 4000,
+        rainfall: 500
+      })
+      let iconStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          // anchorXUnits: 'fraction',
+          // anchorYUnits: 'pixels',
+          // size: new toSize([41, 40]),
+          // imgSize: new toSize([41, 40]),
+          // offset: new toSize([21, 40]),
+          src: imgUrl
+        })
+      })
+      iconFeature.setStyle(iconStyle)
+      let vectorSource = new VectorSource({
+        features: [iconFeature]
+      })
+      let vectorLayer = new VectorLayer({
+        source: vectorSource
+      })
+      this.olMap1.addLayer(vectorLayer)
+      this.olMap2.addLayer(vectorLayer)
+      // this.olMap1.removeLayer(vectorLayer)
+      // this.olMap2.removeLayer(vectorLayer)
     },
     init() {
       var iconFeature = new Feature({
@@ -2927,28 +2870,59 @@ export default {
             type: 'Feature',
             geometry: {
               type: 'Polygon',
-              coordinates: [[[-5e6, 6e6], [-5e6, 8e6], [-3e6, 8e6], [-3e6, 6e6], [-5e6, 6e6]]]
+              coordinates: [
+                [
+                  [-5e6, 6e6],
+                  [-5e6, 8e6],
+                  [-3e6, 8e6],
+                  [-3e6, 6e6],
+                  [-5e6, 6e6]
+                ]
+              ]
             }
           },
           {
             type: 'Feature',
             geometry: {
               type: 'Polygon',
-              coordinates: [[[-2e6, 6e6], [-2e6, 8e6], [0, 8e6], [0, 6e6], [-2e6, 6e6]]]
+              coordinates: [
+                [
+                  [-2e6, 6e6],
+                  [-2e6, 8e6],
+                  [0, 8e6],
+                  [0, 6e6],
+                  [-2e6, 6e6]
+                ]
+              ]
             }
           },
           {
             type: 'Feature',
             geometry: {
               type: 'Polygon',
-              coordinates: [[[1e6, 6e6], [1e6, 8e6], [3e6, 8e6], [3e6, 6e6], [1e6, 6e6]]]
+              coordinates: [
+                [
+                  [1e6, 6e6],
+                  [1e6, 8e6],
+                  [3e6, 8e6],
+                  [3e6, 6e6],
+                  [1e6, 6e6]
+                ]
+              ]
             }
           },
           {
             type: 'Feature',
             geometry: {
               type: 'Polygon',
-              coordinates: [[[-2e6, -1e6], [-1e6, 1e6], [0, -1e6], [-2e6, -1e6]]]
+              coordinates: [
+                [
+                  [-2e6, -1e6],
+                  [-1e6, 1e6],
+                  [0, -1e6],
+                  [-2e6, -1e6]
+                ]
+              ]
             }
           }
         ]
@@ -3395,7 +3369,10 @@ export default {
         return
       }
       this.polygonTool.clear()
-      this.riskPolygonData.splice(this.riskPolygonData.findIndex(item => item.id === this.riskIndexId), 1)
+      this.riskPolygonData.splice(
+        this.riskPolygonData.findIndex(item => item.id === this.riskIndexId),
+        1
+      )
     },
     // 风险地图绘制删除
     riskCradDelete() {
@@ -3841,6 +3818,15 @@ export default {
           }
         }
         this.spotDraw(point)
+        // 双球开关
+        if (this.sharedChecked) {
+          console.log('双球')
+          for (const item of point) {
+            this.olDrawPoint(item.latlng, item.drawType.icon)
+          }
+        }
+         
+        console.log(point)
       } else {
         let data = []
         for (const item of this.drawPage) {
