@@ -57,29 +57,32 @@ import { userList, userEnable, userProhibit, userDel } from '@/api/login'
 const columns = [
   {
     title: '编号',
-    width: 80,
+    width: 70,
     dataIndex: 'key'
   },
   {
     title: '姓名',
+    width: 80,
     dataIndex: 'name'
   },
   {
     title: '联系方式',
+    width: 120,
     dataIndex: 'mobile'
   },
   {
     title: '角色',
-    dataIndex: 'role'
+    dataIndex: 'roleStr'
   },
   {
     title: '类型',
+    width: 70,
     dataIndex: 'type'
   },
   {
     title: '状态',
-    scopedSlots: { customRender: 'state' },
-    width: 90
+    width: 70,
+    scopedSlots: { customRender: 'state' }
   },
   {
     title: '操作',
@@ -95,7 +98,7 @@ export default {
     }
   },
   watch: {
-    $route(){
+    $route() {
       this.getList()
     }
   },
@@ -111,6 +114,13 @@ export default {
           for (let i = 0; i < arr.length; i++) {
             arr[i].type = arr[i].type.name
             arr[i].key = i + 1
+            arr[i].roleStr = ''
+            if (arr[i].role) {
+              for (const value of arr[i].role) {
+                arr[i].roleStr = arr[i].roleStr + value.name + ', '
+              }
+              arr[i].roleStr = arr[i].roleStr.substring(0, arr[i].roleStr.length - 2)
+            }
           }
           this.data = arr
           console.log(arr)
