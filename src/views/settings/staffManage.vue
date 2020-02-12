@@ -32,7 +32,7 @@
           <a v-else>禁用</a>
         </template>
         <template slot="operation" slot-scope="row">
-          <a @click="add(row.id)">编辑</a>
+          <a @click="add(row)">编辑</a>
           <a-divider type="vertical" />
           <a-popconfirm
             title="是否确认删除?"
@@ -170,13 +170,29 @@ export default {
         })
     },
     cancel(e) {},
-    add(id) {
-      this.$router.push({
-        path: '/settings/staff',
-        query: {
-          id: id
-        }
-      })
+    add(data) {
+      let type = ''
+      if (data.type == '外勤') {
+        type = 'worker'
+      } else if (data.type == '内业') {
+        type = 'admin'
+      } else if (data.type == '查访') {
+        type = 'viewer'
+      }
+      if (data == '') {
+        this.$router.push({
+          path: '/settings/staff'
+        })
+      } else {
+        this.$router.push({
+          path: '/settings/staff',
+          query: {
+            id: data.id,
+            type: type,
+            actived: data.actived
+          }
+        })
+      }
     }
   }
 }
