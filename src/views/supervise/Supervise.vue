@@ -4211,7 +4211,7 @@ export default {
     },
     //水质数据上传失败
     waterQualityError(err, file, fileList) {
-      this.$message.error('导入失败,数据相同')
+      this.$message.error(JSON.parse(err.message).message)
     }
   }
 }
