@@ -87,7 +87,7 @@ export default {
   data() {
     return {
       id: this.$route.query.id,
-      jurisdiction: 'worker',
+      jurisdiction: this.$route.query.type,
       list: {
         number: '',
         phone: '',
@@ -168,7 +168,7 @@ export default {
     },
     getRoleList() {
       let data = {
-        type: this.$route.query.type,
+        type: this.jurisdiction,
         actived: this.$route.query.actived,
       }
       roleListDetail(data).then(res => {
