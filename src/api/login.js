@@ -81,6 +81,14 @@ export function roleList(parameter) {
     method: 'get',
   })
 }
+//角色清单
+export function roleListDetail(parameter) {
+  return axios({
+    url: '/server/data/admin/auth/role/list',
+    method: 'get',
+    params: parameter
+  })
+}
 //角色详情
 export function roleDetails(id) {
   return axios({
