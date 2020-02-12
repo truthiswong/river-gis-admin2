@@ -82,7 +82,7 @@
   </div>
 </template>
 <script>
-import { userDetails, userPreservation, roleList } from '@/api/login'
+import { userDetails, userPreservation, roleList, roleListDetail } from '@/api/login'
 export default {
   data() {
     return {
@@ -141,11 +141,14 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.query.id != '') {
+    if (this.$route.query.id) {
       this.getList()
     } else {
       this.getRoleList()
     }
+    console.log(this.$route.query.id)
+    console.log(this.$route.query.type)
+    console.log(this.$route.query.actived)
   },
   methods: {
     getList() {
@@ -164,9 +167,13 @@ export default {
         .catch(err => {})
     },
     getRoleList() {
-      roleList(this.list.type).then(res => {
+      let data = {
+        type: this.$route.query.type,
+        actived: this.$route.query.actived,
+      }
+      roleListDetail(data).then(res => {
         this.list.roleId = []
-        this.externalList = res.data.data
+        this.externalList = res.data
       })
     },
     preservation() {
