@@ -3430,12 +3430,18 @@ export default {
         console.log(this.waterQualityPoints)
         if (this.waterQualityPoints.length > 0) {
           for (const item of this.waterQualityPoints) {
-            this.waterQualityMarkerTool = new T.Marker(item.coordinate, { item: item, id: item.id })
-            this.map.addOverLay(this.waterQualityMarkerTool)
+            this.waterQualityMarker = new T.Marker(item.coordinate, { item: item, id: item.id, title: item.name })
+            this.map.addOverLay(this.waterQualityMarker)
             if (this.historyData) {
-              this.waterQualityMarkerTool.addEventListener('click', this.waterQualityHistoryClick)
+              this.waterQualityMarker.addEventListener('click', this.waterQualityHistoryClick)
             } else {
-              this.waterQualityMarkerTool.addEventListener('click', this.waterQualityClick)
+              this.waterQualityMarker.addEventListener('click', this.waterQualityClick)
+              // this.waterQualityMarker.addEventListener("click",function(e){
+              //   let point = item.coordinate;
+              //   that.waterQualityMarker = new T.Marker(point);// 创建标注
+              //   let markerInfoWin = new T.InfoWindow(item.name,{offset:new T.Point(0,-30)}); // 创建信息窗口对象
+              //   that.map.openInfoWindow(markerInfoWin,point); //开启信息窗口
+              // });
             }
           }
         }
@@ -3549,8 +3555,9 @@ export default {
               </div>
             </div>
           `
-          var infoWin = new T.InfoWindow(html)
-          this.waterQualityMarkerTool.openInfoWindow(infoWin)
+          let point = e.target.options.item.coordinate
+          let markerInfoWin = new T.InfoWindow(html,{offset:new T.Point(0,-30)}) // 创建信息窗口对象
+          this.map.openInfoWindow(markerInfoWin,point) //开启信息窗口
         })
         .catch(err => {})
     },
