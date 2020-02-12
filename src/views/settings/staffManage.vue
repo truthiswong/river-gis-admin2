@@ -171,7 +171,7 @@ export default {
     },
     cancel(e) {},
     add(data) {
-      let type = ''
+      let type = 'worker'
       if (data.type == '外勤') {
         type = 'worker'
       } else if (data.type == '内业') {
@@ -181,7 +181,11 @@ export default {
       }
       if (data == '') {
         this.$router.push({
-          path: '/settings/staff'
+          path: '/settings/staff',
+          query: {
+            type: type,
+            actived: true
+          }
         })
       } else {
         this.$router.push({
