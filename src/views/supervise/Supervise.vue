@@ -2764,21 +2764,18 @@ export default {
           anchor: [0.5, 1],
           // anchorXUnits: 'fraction',
           // anchorYUnits: 'pixels',
-          // size: new toSize([41, 40]),
-          // imgSize: new toSize([41, 40]),
-          // offset: new toSize([21, 40]),
           src: imgUrl
         })
       })
       iconFeature.setStyle(iconStyle)
-      let vectorSource = new VectorSource({
+      this.vectorSource = new VectorSource({
         features: [iconFeature]
       })
-      let vectorLayer = new VectorLayer({
-        source: vectorSource
+      this.vectorLayer = new VectorLayer({
+        source: this.vectorSource
       })
-      this.olMap1.addLayer(vectorLayer)
-      this.olMap2.addLayer(vectorLayer)
+      this.olMap1.addLayer(this.vectorLayer)
+      this.olMap2.addLayer(this.vectorLayer)
       // this.olMap1.removeLayer(vectorLayer)
       // this.olMap2.removeLayer(vectorLayer)
     },
@@ -3842,6 +3839,13 @@ export default {
           }
         }
         this.removeOverLays(data)
+        // 双球开关
+        if (this.sharedChecked) {
+          console.log('双球')
+          this.olMap1.removeLayer(this.vectorLayer)
+          this.olMap2.removeLayer(this.vectorLayer)
+        }
+        
       }
     },
     // 水土流失
