@@ -193,7 +193,8 @@ export default {
           query: {
             id: data.id,
             type: type,
-            actived: data.actived
+            actived: data.actived,
+            roleList: data.role
           }
         })
       }
