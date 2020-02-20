@@ -881,7 +881,7 @@ import OSM from 'ol/source/OSM'
 import LayerGroup from 'ol/layer/Group'
 import XYZ from 'ol/source/XYZ'
 import { Icon, Style } from 'ol/style'
-import {toSize} from 'ol/size';
+import { toSize } from 'ol/size'
 import Text from 'ol/style/Text'
 
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer'
@@ -2723,7 +2723,6 @@ export default {
         })
         //添加进map层
         this.olMap1.addLayer(vectorLayer)
-
         return
         var iconFeature = new Feature({
           geometry: new Point([121.42025, 31.26963]),
@@ -2739,19 +2738,14 @@ export default {
             src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
           })
         })
-
         iconFeature.setStyle(iconStyle)
-
         var vectorSource = new VectorSource({
           features: [iconFeature]
         })
       }
-
-      // this.init()
-      // this.testdate()
     },
     // openlayers 绘制点
-    olDrawPoint(lnglat, imgUrl) {
+    olRiverRiskPoint(lnglat, imgUrl, id) {
       console.log(lnglat, imgUrl)
       let iconFeature = new Feature({
         geometry: new Point([lnglat.lng, lnglat.lat]),
@@ -2768,16 +2762,15 @@ export default {
         })
       })
       iconFeature.setStyle(iconStyle)
-      this.vectorSource = new VectorSource({
+      let vectorSource = new VectorSource({
         features: [iconFeature]
       })
-      this.vectorLayer = new VectorLayer({
-        source: this.vectorSource
+      let vectorLayer = new VectorLayer({
+        source: vectorSource
       })
-      this.olMap1.addLayer(this.vectorLayer)
-      this.olMap2.addLayer(this.vectorLayer)
-      // this.olMap1.removeLayer(vectorLayer)
-      // this.olMap2.removeLayer(vectorLayer)
+      vectorLayer.set('id', id)
+      this.olMap1.addLayer(vectorLayer)
+      this.olMap2.addLayer(vectorLayer)
     },
     init() {
       var iconFeature = new Feature({
@@ -2821,205 +2814,7 @@ export default {
         })
       })
     },
-    testdate() {
-      var styles = [
-        /* We are using two different styles for the polygons:
-         *  - The first style is for the polygons themselves.
-         *  - The second style is to draw the vertices of the polygons.
-         *    In a custom `geometry` function the vertices of a polygon are
-         *    returned as `MultiPoint` geometry, which will be used to render
-         *    the style.
-         */
-        new Style({
-          stroke: new Stroke({
-            color: 'blue',
-            width: 3
-          }),
-          fill: new Fill({
-            color: 'rgba(0, 0, 255, 0.1)'
-          })
-        }),
-        new Style({
-          image: new CircleStyle({
-            radius: 5,
-            fill: new Fill({
-              color: 'orange'
-            })
-          }),
-          geometry: function(feature) {
-            // return the coordinates of the first ring of the polygon
-            var coordinates = feature.getGeometry().getCoordinates()[0]
-            return new MultiPoint(coordinates)
-          }
-        })
-      ]
-
-      var geojsonObject = {
-        type: 'FeatureCollection',
-        crs: {
-          type: 'name',
-          properties: {
-            name: 'EPSG:3857'
-          }
-        },
-        features: [
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [
-                [
-                  [-5e6, 6e6],
-                  [-5e6, 8e6],
-                  [-3e6, 8e6],
-                  [-3e6, 6e6],
-                  [-5e6, 6e6]
-                ]
-              ]
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [
-                [
-                  [-2e6, 6e6],
-                  [-2e6, 8e6],
-                  [0, 8e6],
-                  [0, 6e6],
-                  [-2e6, 6e6]
-                ]
-              ]
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [
-                [
-                  [1e6, 6e6],
-                  [1e6, 8e6],
-                  [3e6, 8e6],
-                  [3e6, 6e6],
-                  [1e6, 6e6]
-                ]
-              ]
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [
-                [
-                  [-2e6, -1e6],
-                  [-1e6, 1e6],
-                  [0, -1e6],
-                  [-2e6, -1e6]
-                ]
-              ]
-            }
-          }
-        ]
-      }
-
-      var source = new VectorSource({
-        features: new GeoJSON().readFeatures(geojsonObject)
-      })
-
-      var layer = new VectorLayer({
-        source: source,
-        style: styles
-      })
-      var map = new Map({
-        layers: [layer],
-        target: 'showmap',
-        view: new View({
-          center: [121.495505, 31.21098],
-          zoom: 2
-        })
-      })
-    },
-    testarr() {
-      var obj = {
-        fenceId: '12',
-        name: '围栏3',
-        center: '',
-        radius: '',
-        type: 'polyline',
-        points: '113.960623,22.546082;113.958197,22.544029;113.956526,22.543245;113.953562,22.544563'
-      }
-      this.showFence(obj)
-    },
-    showFence(obj) {
-      if (obj.type == 'polygon') {
-        this.showPolygon(obj.fenceId, obj.points, obj.name)
-      }
-      if (obj.type == 'circle') {
-        this.showCircle(obj.fenceId, obj.center, obj.radius, obj.name)
-      }
-      if (obj.type == 'polyline') {
-        this.showPolyline(obj.fenceId, obj.points, obj.name)
-      }
-    },
-    // //转换坐标点（多）
-    transPoints(points) {
-      let arr = points.split(';')
-      let point = []
-      arr.forEach(item => {
-        let newPoint = item.split(',')
-        point.push(newPoint)
-      })
-      let _points = point.map(item => {
-        item = [parseFloat(item[0]), parseFloat(item[1])]
-        item = new ol.proj.transform(item, 'EPSG:4326', 'EPSG:3857')
-        return item
-      })
-      return _points
-    },
-    //转换圆的
-    transPoint(point) {
-      let item = point.split(',')
-      item = [parseFloat(item[0]), parseFloat(item[1])]
-      let _point = new ol.proj.transform(item, 'EPSG:4326', 'EPSG:3857')
-      return _point
-    },
-    showCircle(fenceId, center, radius, name) {
-      let centerPoint = this.transPoint(center)
-      radius = parseFloat(radius)
-      var circleFeature = new ol.Feature({
-        //路线
-        geometry: new ol.geom.Circle(centerPoint, radius)
-      })
-      circleFeature.setId(fenceId)
-      //将所有矢量图层添加进去
-      this.source.addFeature(circleFeature)
-    },
-    showPolygon(fenceId, points, name) {
-      let _points = this.transPoints(points)
-      _points = [_points]
-      //多边形的数据格式是[[[lng,lat],[lng,lat]……]]外围两个中括号
-      var polygonFeature = new ol.Feature({
-        //路线
-        geometry: new ol.geom.Polygon(_points)
-      })
-      polygonFeature.setId(fenceId)
-      this.source.addFeature(polygonFeature)
-      console.log(this.source.getFeatures())
-    },
-    showPolyline(fenceId, points, name) {
-      let _points = this.transPoints(points)
-      var lineFeature = new ol.Feature({
-        //路线
-        geometry: new ol.geom.LineString(_points, 'XY')
-      })
-      lineFeature.setId(fenceId)
-      //将所有矢量图层添加进去
-      this.source.addFeature(lineFeature)
-    },
-
+    
     // 添加标注
     drawAllPoint(latlng, index, id) {
       let markerTool = new T.Marker(latlng, { title: index, id: id })
@@ -3553,8 +3348,8 @@ export default {
             </div>
           `
           let point = e.target.options.item.coordinate
-          let markerInfoWin = new T.InfoWindow(html,{offset:new T.Point(0,-30)}) // 创建信息窗口对象
-          this.map.openInfoWindow(markerInfoWin,point) //开启信息窗口
+          let markerInfoWin = new T.InfoWindow(html, { offset: new T.Point(0, -30) }) // 创建信息窗口对象
+          this.map.openInfoWindow(markerInfoWin, point) //开启信息窗口
         })
         .catch(err => {})
     },
@@ -3747,6 +3542,17 @@ export default {
           v.clicked = false
         })
         this.removeOverLays(data)
+        // 双球开关
+        if (this.sharedChecked) {
+          for (const item of data) {
+            for (const layer of this.olMap1.getLayers().array_) {
+              if (layer.values_.id == item.id) {
+                this.olMap1.removeLayer(layer)
+                this.olMap2.removeLayer(layer)
+              }
+            }
+          }
+        }
       }
     },
     // 河岸风险源子栏
@@ -3826,10 +3632,9 @@ export default {
         if (this.sharedChecked) {
           console.log('双球')
           for (const item of point) {
-            this.olDrawPoint(item.latlng, item.drawType.icon)
+            this.olRiverRiskPoint(item.latlng, item.drawType.icon, item.id)
           }
         }
-         
         console.log(point)
       } else {
         let data = []
@@ -3841,11 +3646,15 @@ export default {
         this.removeOverLays(data)
         // 双球开关
         if (this.sharedChecked) {
-          console.log('双球')
-          this.olMap1.removeLayer(this.vectorLayer)
-          this.olMap2.removeLayer(this.vectorLayer)
+          for (const item of data) {
+            for (const layer of this.olMap1.getLayers().array_) {
+              if (layer.values_.id == item.id) {
+                this.olMap1.removeLayer(layer)
+                this.olMap2.removeLayer(layer)
+              }
+            }
+          }
         }
-        
       }
     },
     // 水土流失
@@ -3922,7 +3731,52 @@ export default {
           this.map.addOverLay(marker)
           marker.addEventListener('click', this.taskPointClick)
         }
+        // 双球开关
+        if (this.sharedChecked) {
+          console.log('双球')
+          for (const item of this.surveyPointPoints) {
+            this.olSurveyPoint(item.coordinate, item.id)
+          }
+        }
+      } else {
+        console.log('关闭专项调查')
+        if (this.sharedChecked) {
+          for (const item of this.surveyPointPoints) {
+            for (const layer of this.olMap1.getLayers().array_) {
+              if (layer.values_.id == item.id) {
+                this.olMap1.removeLayer(layer)
+                this.olMap2.removeLayer(layer)
+              }
+            }
+          }
+        }
       }
+    },
+    olSurveyPoint(lnglat, id) {
+      let iconFeature = new Feature({
+        geometry: new Point([lnglat.lng, lnglat.lat]),
+        name: '',
+        population: 4000,
+        rainfall: 500
+      })
+      let iconStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          // anchorXUnits: 'fraction',
+          // anchorYUnits: 'pixels',
+          src: require('./img/surveyPointIcon.png')
+        })
+      })
+      iconFeature.setStyle(iconStyle)
+      let vectorSource = new VectorSource({
+        features: [iconFeature]
+      })
+      let surveyPointLayer = new VectorLayer({
+        source: vectorSource
+      })
+      surveyPointLayer.set('id', id)
+      this.olMap1.addLayer(surveyPointLayer)
+      this.olMap2.addLayer(surveyPointLayer)
     },
     // 河道连通性
     onRiverLink() {
