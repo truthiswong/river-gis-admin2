@@ -20,43 +20,40 @@ router.beforeEach((to, from, next) => {
     // Vue.ls.remove(ACCESS_TOKEN)
     /* has token */
     if (to.path === '/user/login') {
-      console.log("路由1111")
-      next({ path: '/dashboard/analysis' }) 
+      next({ path: window.localStorage.getItem('DefaultRoutePath') }) 
       NProgress.done()
     } else {
-      console.log("路由222")
-      console.log(store.getters.roles.length)
       if (store.getters.roles.length === 0) {
-        next()
-        // store
-        //   .dispatch('GetInfo')
-        //   .then(res => {
-        //     const roles = res.result && res.result.role
-        //     console.log(roles)
-        //     store.dispatch('GenerateRoutes', { roles }).then(() => {
-        //       // 根据roles权限生成可访问的路由表
-        //       // 动态添加可访问路由表
-        //       router.addRoutes(store.getters.addRouters)
-        //       const redirect = decodeURIComponent(from.query.redirect || to.path)
-        //       if (to.path === redirect) {
-        //         // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-        //         next({ ...to, replace: true })
-        //       } else {
-        //         // 跳转到目的路由
-        //         next({ path: redirect })
-        //       }
-        //     })
-        //   })
-        //   .catch(() => {
-        //     // notification.error({
-        //     //   message: '错误',
-        //     //   description: '请求用户信息失败，请重试'
-        //     // })
-        //     next({ path: '/user/login', query: { redirect: to.fullPath } })
-        //     // store.dispatch('Logout').then(() => {
-        //     //   next({ path: '/user/login', query: { redirect: to.fullPath } })
-        //     // })
-        //   })
+        // next()
+        store
+          .dispatch('GetInfo1')
+          .then(res => {
+            var arr = []
+            res.data.forEach(v => {
+              arr.push(v.flag)
+              if (v.children) {
+                for (const item of v.children) {
+                  arr.push(item.flag)
+                }
+              }
+              
+            });
+            const roles = arr
+            store.dispatch('GenerateRoutes', { roles }).then(() => {
+              router.addRoutes(store.getters.addRouters)
+              next({ ...to, replace: true })
+            }) 
+          })
+          .catch(() => {
+            // notification.error({
+            //   message: '错误',
+            //   description: '请求用户信息失败，请重试'
+            // })
+            next({ path: '/user/login', query: { redirect: to.fullPath } })
+            // store.dispatch('Logout').then(() => {
+            //   next({ path: '/user/login', query: { redirect: to.fullPath } })
+            // })
+          })
       } else {
         next()
       }

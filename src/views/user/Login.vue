@@ -213,7 +213,7 @@ export default {
       */
       // this.$router.push({ name: 'analysis' })
       this.$router.push({
-        path: '/dashboard/analysis'
+        path: window.localStorage.getItem('DefaultRoutePath')
       })
       // 延迟 1 秒显示欢迎信息
       setTimeout(() => {

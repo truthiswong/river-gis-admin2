@@ -143,7 +143,9 @@ export default new Vuex.Store({
           write: false
         }
       ]
-    ]
+    ],
+    defaultRoutePath:''//首页
+
   },
   mutations: {
     show(state, objid) {
@@ -151,6 +153,9 @@ export default new Vuex.Store({
     },
     SET_DEFAUT_PROJECT: (state, index) => {
       state.defautProject = index
+    },
+    getDefaultRoutePath: (state, index) => {
+      state.defaultRoutePath = index
     },
     setServerUrl: (state, index) => {
       state.serverUrl = index

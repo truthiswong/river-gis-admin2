@@ -81,6 +81,7 @@ export default {
           this.$router.push({
             path: '/user/login'
           })
+          window.location.reload()
         })
         .catch(() => {})
       // this.$confirm({
