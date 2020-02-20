@@ -38,33 +38,27 @@
         <el-form-item label="角色">
           <div v-if="jurisdiction=='worker'">
             <p>外勤</p>
-            <a-checkbox-group v-model="list.roleId">
-              <a-checkbox
-                v-for="(option, index) in externalList"
-                :value="option.id"
-                :key="index"
-              >{{option.name}}</a-checkbox>
-            </a-checkbox-group>
+            <a-checkbox
+              v-for="option in externalList"
+              :checked="option.clicked"
+              :key="option.id"
+            >{{option.name}}</a-checkbox>
           </div>
           <div v-if="jurisdiction=='admin'">
             <p>内业</p>
-            <a-checkbox-group v-model="list.roleId">
-              <a-checkbox
-                v-for="(option, index) in externalList"
-                :value="option.id"
-                :key="index"
-              >{{option.name}}</a-checkbox>
-            </a-checkbox-group>
+            <a-checkbox
+              v-for="option in externalList"
+              :checked="option.clicked"
+              :key="option.id"
+            >{{option.name}}</a-checkbox>
           </div>
           <div v-if="jurisdiction=='viewer'">
             <p>外部用户</p>
-            <a-checkbox-group v-model="list.roleId">
-              <a-checkbox
-                v-for="(option, index) in externalList"
-                :value="option.id"
-                :key="index"
-              >{{option.name}}</a-checkbox>
-            </a-checkbox-group>
+            <a-checkbox
+              v-for="option in externalList"
+              :checked="option.clicked"
+              :key="option.id"
+            >{{option.name}}</a-checkbox>
           </div>
         </el-form-item>
         <el-form-item label="管理范围">
@@ -169,11 +163,25 @@ export default {
     getRoleList() {
       let data = {
         type: this.jurisdiction,
-        actived: this.$route.query.actived,
+        actived: this.$route.query.actived
       }
       roleListDetail(data).then(res => {
         this.list.roleId = []
+        for (const item of res.data) {
+          item.clicked = false
+          item.value = item.name
+        }
         this.externalList = res.data
+        if (this.$route.query.roleList) {
+          for (const item of this.externalList) {
+            for (const role of this.$route.query.roleList) {
+              if (role.name == item.name) {
+                item.clicked = true
+                item.value = item.name
+              }
+            }
+          }
+        }
       })
     },
     preservation() {
