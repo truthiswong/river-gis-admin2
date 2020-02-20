@@ -2226,7 +2226,12 @@ export default {
           }
         }
         this.timeData = res.data
-        this.timeDataRight = res.data
+        this.timeDataRight = JSON.parse(JSON.stringify(this.timeData))
+        // this.timeDataRight = this.timeData.concat()
+        // [].concat(map)
+        // this.timeData[0] = 50
+        console.log(this.timeData)
+        // console.log(this.timeDataRight)
         this.getWeatherList()
         // 手机照片上传参数
         this.moreLoadOnce = 1
