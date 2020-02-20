@@ -8,9 +8,10 @@ import { asyncRouterMap, constantRouterMap } from '@/config/router.config'
  * @returns {boolean}
  */
 function hasPermission (permission, route) {
-  console.log(permission, route)
   if (route.meta && route.meta.permission) {
     let flag = false
+    // console.log(permission);
+    
     for (let i = 0, len = permission.length; i < len; i++) {
       flag = route.meta.permission.includes(permission[i])
       if (flag) {
@@ -40,7 +41,7 @@ function hasRole(roles, route) {
 
 function filterAsyncRouter (routerMap, roles) {
   const accessedRouters = routerMap.filter(route => {
-    if (hasPermission(roles.permissionList, route)) {
+    if (hasPermission(roles, route)) {
       if (route.children && route.children.length) {
         route.children = filterAsyncRouter(route.children, roles)
       }

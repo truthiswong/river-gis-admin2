@@ -12,6 +12,6 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   scrollBehavior: () => ({ y: 0 }),
-  // routes: constantRouterMap //修改权限
-  routes: constantRouterMap.concat(asyncRouterMap)
+  routes: constantRouterMap //修改权限
+  // routes: constantRouterMap.concat(asyncRouterMap)
 })

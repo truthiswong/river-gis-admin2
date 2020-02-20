@@ -58,6 +58,17 @@ const user = {
           const result = response.data
           Vue.ls.set(ACCESS_TOKEN, 'Bearer ' + result.token, 7 * 24 * 60 * 60 * 1000)
           commit('SET_TOKEN', 'Bearer ' + result.token)
+          getUserCurrent().then(res => {
+            // console.log(res);
+            var arr = res.data
+            if (arr[0].children) {
+              window.localStorage.setItem('DefaultRoutePath', arr[0].children[0].route)
+              // commit('getDefaultRoutePath', arr[0].children[0].route)
+            }else{
+              window.localStorage.setItem('DefaultRoutePath', arr[0].route)
+              // commit('getDefaultRoutePath', arr[0].route)
+            }
+          })
           let permissionInfo = [
             [{
               id: '5e142f3273e44f2d59d43766',
@@ -227,7 +238,35 @@ const user = {
         })
       })
     },
+    GetInfo1 ({ commit }) {
+      return new Promise((resolve, reject) => {
+        getUserCurrent().then(res => {
+          // console.log(res)
+          var arr = []
+          res.data.forEach(v => {
+            arr.push(v.flag)
+            if (v.children) {
+              for (const item of v.children) {
+                arr.push(item.flag)
+              }
+            }
+            
+          });
+          
+          const role ={
 
+          }
+          const result = role
+          role.permissionList = arr
+          commit('SET_ROLES', role)
+          commit('SET_INFO', result)
+
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
     // 获取用户信息
     GetInfo({
       commit
@@ -611,27 +650,46 @@ const user = {
           }
         }
         getUserCurrent().then(res => {
-          const result = userInfo
-          
-          if (result.role && result.role.permissions.length > 0) {
-            const role = result.role
-            role.permissions = result.role.permissions
-            role.permissions.map(per => {
-              if (per.actionEntitySet != null && per.actionEntitySet.length > 0) {
-                const action = per.actionEntitySet.map(action => {
-                  return action.action
-                })
-                per.actionList = action
+          console.log(res,'11111');
+          var arr = []
+          res.forEach(v => {
+            arr.push(v.flag)
+            if (v.children) {
+              for (const item of v.children) {
+                arr.push(item.flag)
               }
-            })
-            role.permissionList = role.permissions.map(permission => {
-              return permission.permissionId
-            })
-            commit('SET_ROLES', result.role)
-            commit('SET_INFO', result)
-          } else {
-            reject(new Error('getInfo: roles must be a non-null array !'))
+            }
+            
+          });
+          console.log(arr);
+          const result = userInfo
+          const role ={
+
           }
+          role.permissionList = arr
+          
+          
+          commit('SET_ROLES', role)
+          commit('SET_INFO', result)
+          // if (result.role && result.role.permissions.length > 0) {
+          //   const role = result.role
+          //   role.permissions = result.role.permissions
+          //   role.permissions.map(per => {
+          //     if (per.actionEntitySet != null && per.actionEntitySet.length > 0) {
+          //       const action = per.actionEntitySet.map(action => {
+          //         return action.action
+          //       })
+          //       per.actionList = action
+          //     }
+          //   })
+            
+          //   role.permissionList = role.permissions.map(permission => {
+          //     return permission.permissionId
+          //   })
+            
+          // } else {
+          //   reject(new Error('getInfo: roles must be a non-null array !'))
+          // }
 
           commit('SET_NAME', {
             name: '',
