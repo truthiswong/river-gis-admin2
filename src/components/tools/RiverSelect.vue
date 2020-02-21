@@ -42,6 +42,7 @@ export default {
         }
         v.value = v.id
         v.label = v.name
+        v.disabled =false,
         v.code = '1'
         v.children.forEach(a => {
           if (a.children == null) {
@@ -49,6 +50,7 @@ export default {
           }
           a.value = a.id
           a.label = a.name
+          a.disabled =false,
           a.code = '2'
         })
       })

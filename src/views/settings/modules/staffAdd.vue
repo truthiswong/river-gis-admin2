@@ -16,12 +16,12 @@
         <el-form-item label="姓名" prop="name">
           <el-input v-model="list.name" placeholder="请输入" style="width:200px"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="sex">
+        <!-- <el-form-item label="性别" prop="sex">
           <a-select style="width: 200px" placeholder="请选择" v-model="list.sex">
             <a-select-option value="jack">男</a-select-option>
             <a-select-option value="lucy">女</a-select-option>
           </a-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="类型">
           <a-select
             style="width: 200px"
@@ -35,36 +35,47 @@
           </a-select>
         </el-form-item>
         <h3>权限信息</h3>
-        <el-form-item label="角色">
-          <div v-if="jurisdiction=='worker'">
+        <el-form-item label="角色" prop="roleId">
+          <div v-show="jurisdiction=='worker'">
             <p>外勤</p>
-            <a-checkbox
-              v-for="option in externalList"
-              :checked="option.clicked"
-              :key="option.id"
-            >{{option.name}}</a-checkbox>
+            <a-checkbox-group v-model="list.roleId">
+              <a-checkbox
+                v-for="(option, index) in externalList"
+                :value="option.id"
+                :key="index"
+              >{{option.name}}</a-checkbox>
+            </a-checkbox-group>
           </div>
-          <div v-if="jurisdiction=='admin'">
+          <div v-show="jurisdiction=='admin'">
             <p>内业</p>
-            <a-checkbox
-              v-for="option in externalList"
-              :checked="option.clicked"
-              :key="option.id"
-            >{{option.name}}</a-checkbox>
+            <a-checkbox-group v-model="list.roleId">
+              <a-checkbox
+                v-for="(option, index) in externalList"
+                :value="option.id"
+                :key="index"
+              >{{option.name}}</a-checkbox>
+            </a-checkbox-group>
           </div>
-          <div v-if="jurisdiction=='viewer'">
+          <div v-show="jurisdiction=='viewer'">
             <p>外部用户</p>
-            <a-checkbox
-              v-for="option in externalList"
-              :checked="option.clicked"
-              :key="option.id"
-            >{{option.name}}</a-checkbox>
+            <a-checkbox-group v-model="list.roleId">
+              <a-checkbox
+                v-for="(option, index) in externalList"
+                :value="option.id"
+                :key="index"
+              >{{option.name}}</a-checkbox>
+            </a-checkbox-group>
           </div>
         </el-form-item>
-        <el-form-item label="管理范围">
-          <a-card style="min-height: 200px;width:300px">
-            <a-directory-tree :treeData="treeData"></a-directory-tree>
-          </a-card>
+        <el-form-item label="管理范围" prop="projectId">
+          <el-select v-model="list.projectId" multiple placeholder="请选择" style="width:350px">
+            <el-option
+              v-for="item in projectList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
           <!-- <Tree :data="treeData" :expand='true'></Tree> -->
         </el-form-item>
         <el-form-item>
@@ -76,7 +87,7 @@
   </div>
 </template>
 <script>
-import { userDetails, userPreservation, roleList, roleListDetail } from '@/api/login'
+import { userDetails, userPreservation, roleList, roleListDetail,projectMinesTructure} from '@/api/login'
 export default {
   data() {
     return {
@@ -89,14 +100,22 @@ export default {
         password: '',
         sex: '',
         type: 'worker',
-        roleId: []
+        roleId: [],
+        projectId:[],
+
       },
       ruleValidate: {
         phone: [{ required: true, message: '不能为空', trigger: 'blur' }],
         password: [{ required: true, message: '不能为空', trigger: 'blur' }],
         number: [{ required: true, message: '不能为空', trigger: 'blur' }],
         type: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        name: [{ required: true, message: '不能为空', trigger: 'blur' }]
+        name: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        roleId: [
+            { type: 'array', required: true, message: '请至少选择一个角色', trigger: 'change' }
+        ],
+        projectId: [
+            { type: 'array', required: true, message: '请至少选择一个项目', trigger: 'change' }
+        ],
       },
       externalList: [
         {
@@ -109,29 +128,7 @@ export default {
           name: '河道管理员'
         }
       ],
-      treeData: [
-        //     {
-        //     title: '全部',
-        //     key: '1',
-        //     id:'1',
-        //     children: [{
-        //         title: '无人机类型',
-        //         key: '2-2',
-        //         id:'2',
-        //         children: [
-        //         { title: '无人机', key: '3-1',id:'3' },
-        //         { title: '无人机螺旋桨', key: '3-2',id:'3' },
-        //         { title: '无人机电池', key: '3-3' ,id:'3'},
-        //         ],
-        //     }, {
-        //         title: '采水样类型',
-        //         key: '2-3',
-        //         id:'2',
-        //         children: [
-        //         ],
-        //     }],
-        // }
-      ]
+      projectList:[],
     }
   },
   mounted() {
@@ -139,10 +136,8 @@ export default {
       this.getList()
     } else {
       this.getRoleList()
+      this.getProject()
     }
-    console.log(this.$route.query.id)
-    console.log(this.$route.query.type)
-    console.log(this.$route.query.actived)
   },
   methods: {
     getList() {
@@ -154,34 +149,44 @@ export default {
           var arr = res.data
           this.list.type = arr.type.code
           this.list.name = arr.name
+          this.list.password = arr.password
           this.list.phone = arr.mobile
           this.list.number = arr.code
+          this.list.roleId=arr.role.map(function (item) {
+          　　　return item.id; 
+          }); 
+          this.list.projectId=arr.accessProjects.map(function (item) {
+          　　　return item.id; 
+          }); 
           this.getRoleList()
+          this.getProject()
         })
         .catch(err => {})
     },
     getRoleList() {
       let data = {
         type: this.jurisdiction,
-        actived: this.$route.query.actived
+        actived: this.$route.query.actived,
       }
       roleListDetail(data).then(res => {
-        this.list.roleId = []
-        for (const item of res.data) {
-          item.clicked = false
-          item.value = item.name
-        }
+        
         this.externalList = res.data
-        if (this.$route.query.roleList) {
-          for (const item of this.externalList) {
-            for (const role of this.$route.query.roleList) {
-              if (role.name == item.name) {
-                item.clicked = true
-                item.value = item.name
-              }
+      })
+    },
+    getProject(){
+      projectMinesTructure().then(res => {
+        
+        let arr = res.data
+        let  project =[]
+        arr.forEach(v => {
+          if (v.children) {
+            for (const item of v.children) {
+              project.push(item)
+              
             }
           }
-        }
+        });
+        this.projectList = project
       })
     },
     preservation() {
@@ -190,9 +195,11 @@ export default {
           var data = {
             code: this.list.number,
             name: this.list.name,
+            password:this.list.password,
             mobile: this.list.phone,
             type: this.list.type,
-            roleId: this.list.roleId.join(',')
+            roleId: this.list.roleId.join(','),
+            projectId: this.list.projectId.join(',')
           }
           if (this.id) {
             data.id = this.id
@@ -211,6 +218,7 @@ export default {
       })
     },
     handleChange(value) {
+      this.list.roleId =[]
       this.jurisdiction = value
       this.getRoleList()
     },
