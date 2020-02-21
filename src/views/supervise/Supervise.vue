@@ -2628,7 +2628,7 @@ export default {
         layers: [img_c]
         // layers: [img_c, cva_c]
       })
-      var lmap = new Map({
+      this.lmap = new Map({
         target: 'lmap',
         layers: [imglayerGroup, veclayerGroup],
         view: new View({
@@ -2650,10 +2650,11 @@ export default {
         var ctx = event.context
         ctx.restore()
       })
+      let that = this
       swipe.addEventListener(
         'input',
         function() {
-          lmap.render()
+          that.lmap.render()
         },
         false
       )
@@ -2662,10 +2663,6 @@ export default {
     layerSwipe() {
       if (this.swipeChecked) {
         this.sharedChecked = false
-        // var show = document.getElementById('showmap')
-        // show.style.display = 'none'
-        // var layerMap = document.getElementById('layerMap')
-        // layerMap.style.display = 'block'
         if (this.swipeOnce == 1) {
           this.$nextTick(() => {
             this.showSwipeMap() //卷帘init
@@ -2819,7 +2816,7 @@ export default {
         })
       })
     },
-    
+
     // 添加标注
     drawAllPoint(latlng, index, id) {
       let markerTool = new T.Marker(latlng, { title: index, id: id })
@@ -3435,6 +3432,19 @@ export default {
         }
         if (point.length > 0) {
           this.spotDraw(point)
+          // 双球开关
+          if (this.sharedChecked) {
+            console.log('双球')
+            for (const item of point) {
+              this.olSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+            }
+          }
+          // 卷帘开关
+          if (this.swipeChecked) {
+            for (const item of point) {
+              this.olSwipeSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+            }
+          }
         }
       } else {
         let data = []
@@ -3444,6 +3454,27 @@ export default {
           }
         }
         this.removeOverLays(data)
+        // 双球开关排口关闭
+        if (this.sharedChecked) {
+          for (const item of data) {
+            for (const layer of this.olMap1.getLayers().array_) {
+              if (layer.values_.id == item.id) {
+                this.olMap1.removeLayer(layer)
+                this.olMap2.removeLayer(layer)
+              }
+            }
+          }
+        }
+        // 卷帘开关排口关闭
+        if (this.swipeChecked) {
+          for (const item of data) {
+            for (const layer of this.lmap.getLayers().array_) {
+              if (layer.values_.id == item.id) {
+                this.lmap.removeLayer(layer)
+              }
+            }
+          }
+        }
       }
     },
     //绘制点
@@ -3740,7 +3771,7 @@ export default {
         if (this.sharedChecked) {
           console.log('双球')
           for (const item of this.surveyPointPoints) {
-            this.olSurveyPoint(item.coordinate, item.id)
+            this.olSurveyPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id)
           }
         }
       } else {
@@ -3757,7 +3788,7 @@ export default {
         }
       }
     },
-    olSurveyPoint(lnglat, id) {
+    olSurveyPoint(lnglat, imgUrl, id) {
       let iconFeature = new Feature({
         geometry: new Point([lnglat.lng, lnglat.lat]),
         name: '',
@@ -3769,7 +3800,7 @@ export default {
           anchor: [0.5, 1],
           // anchorXUnits: 'fraction',
           // anchorYUnits: 'pixels',
-          src: require('./img/surveyPointIcon.png')
+          src: imgUrl
         })
       })
       iconFeature.setStyle(iconStyle)
@@ -3782,6 +3813,32 @@ export default {
       surveyPointLayer.set('id', id)
       this.olMap1.addLayer(surveyPointLayer)
       this.olMap2.addLayer(surveyPointLayer)
+    },
+    olSwipeSurveyPoint(lnglat, imgUrl, id) {
+      let iconFeature = new Feature({
+        geometry: new Point([lnglat.lng, lnglat.lat]),
+        name: '',
+        population: 4000,
+        rainfall: 500
+      })
+      let iconStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          // anchorXUnits: 'fraction',
+          // anchorYUnits: 'pixels',
+          src: imgUrl
+        })
+      })
+      iconFeature.setStyle(iconStyle)
+      let vectorSource = new VectorSource({
+        features: [iconFeature]
+      })
+      let surveyPointLayer = new VectorLayer({
+        source: vectorSource
+      })
+      surveyPointLayer.set('id', id)
+      this.lmap.addLayer(surveyPointLayer)
+      // this.olMap2.addLayer(surveyPointLayer)
     },
     // 河道连通性
     onRiverLink() {
