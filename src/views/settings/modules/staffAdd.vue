@@ -7,7 +7,7 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="list.phone" placeholder="请输入" style="width:200px"></el-input>
         </el-form-item>
-        <el-form-item label="登录密码" prop="password">
+        <el-form-item label="登录密码">
           <el-input v-model="list.password" placeholder="请输入" style="width:200px"></el-input>
         </el-form-item>
         <el-form-item label="编号" prop="number">
@@ -106,7 +106,7 @@ export default {
       },
       ruleValidate: {
         phone: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        password: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        // password: [{ required: true, message: '不能为空', trigger: 'blur' }],
         number: [{ required: true, message: '不能为空', trigger: 'blur' }],
         type: [{ required: true, message: '不能为空', trigger: 'blur' }],
         name: [{ required: true, message: '不能为空', trigger: 'blur' }],
@@ -149,7 +149,7 @@ export default {
           var arr = res.data
           this.list.type = arr.type.code
           this.list.name = arr.name
-          this.list.password = arr.password
+          // this.list.password = arr.password
           this.list.phone = arr.mobile
           this.list.number = arr.code
           this.list.roleId=arr.role.map(function (item) {
