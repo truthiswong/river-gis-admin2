@@ -118,15 +118,7 @@ export default {
         ],
       },
       externalList: [
-        {
-          name: '主飞手'
-        },
-        {
-          name: '副飞手'
-        },
-        {
-          name: '河道管理员'
-        }
+
       ],
       projectList:[],
     }
@@ -152,12 +144,17 @@ export default {
           // this.list.password = arr.password
           this.list.phone = arr.mobile
           this.list.number = arr.code
-          this.list.roleId=arr.role.map(function (item) {
+          if (arr.role) {
+            this.list.roleId=arr.role.map(function (item) {
           　　　return item.id; 
-          }); 
-          this.list.projectId=arr.accessProjects.map(function (item) {
+            })
+          }
+          if (arr.accessProjects) {
+            this.list.projectId=arr.accessProjects.map(function (item) {
           　　　return item.id; 
-          }); 
+            });
+          }
+           
           this.getRoleList()
           this.getProject()
         })
