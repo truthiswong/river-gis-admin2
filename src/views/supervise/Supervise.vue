@@ -3238,6 +3238,35 @@ export default {
               // });
             }
           }
+          // 双球开关
+          if (this.sharedChecked) {
+            for (const item of this.waterQualityPoints) {
+              this.olSharedSurveyPoint(item.coordinate, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap1')
+              this.olSharedSurveyPoint(item.coordinate, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap2')
+            }
+          }
+          // 卷帘开关
+          if (this.swipeChecked) {
+            for (const item of this.waterQualityPoints) {
+              this.olSwipeSurveyPoint(item.coordinate, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+            }
+          }
+        }
+      } else {
+        // 双球开关水质数据关闭
+        if (this.sharedChecked) {
+          this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
+          this.olRemoveLayer(this.waterQualityPoints, 'olMap2')
+        }
+        // 卷帘开关水质数据关闭
+        if (this.swipeChecked) {
+          for (const item of this.waterQualityPoints) {
+            for (const layer of this.lmap.getLayers().array_) {
+              if (layer.values_.id == item.id) {
+                this.lmap.removeLayer(layer)
+              }
+            }
+          }
         }
       }
     },
@@ -3388,6 +3417,19 @@ export default {
         }
         if (point.length > 0) {
           this.spotDraw(point)
+          // 双球开关
+          if (this.sharedChecked) {
+            for (const item of point) {
+              this.olSharedSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap1')
+              this.olSharedSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap2')
+            }
+          }
+          // 卷帘开关
+          if (this.swipeChecked) {
+            for (const item of point) {
+              this.olSwipeSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+            }
+          }
         }
       } else {
         let data = []
@@ -3397,6 +3439,21 @@ export default {
           }
         }
         this.removeOverLays(data)
+        // 双球开关水面漂浮物关闭
+        if (this.sharedChecked) {
+          this.olRemoveLayer(data, 'olMap1')
+          this.olRemoveLayer(data, 'olMap2')
+        }
+        // 卷帘开关水面漂浮物闭
+        if (this.swipeChecked) {
+          for (const item of data) {
+            for (const layer of this.lmap.getLayers().array_) {
+              if (layer.values_.id == item.id) {
+                this.lmap.removeLayer(layer)
+              }
+            }
+          }
+        }
       }
     },
     // 排口
@@ -3436,7 +3493,8 @@ export default {
           if (this.sharedChecked) {
             console.log('双球')
             for (const item of point) {
-              this.olSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+              this.olSharedSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap1')
+              this.olSharedSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap2')
             }
           }
           // 卷帘开关
@@ -3456,14 +3514,8 @@ export default {
         this.removeOverLays(data)
         // 双球开关排口关闭
         if (this.sharedChecked) {
-          for (const item of data) {
-            for (const layer of this.olMap1.getLayers().array_) {
-              if (layer.values_.id == item.id) {
-                this.olMap1.removeLayer(layer)
-                this.olMap2.removeLayer(layer)
-              }
-            }
-          }
+          this.olRemoveLayer(data, 'olMap1')
+          this.olRemoveLayer(data, 'olMap2')
         }
         // 卷帘开关排口关闭
         if (this.swipeChecked) {
@@ -3771,24 +3823,19 @@ export default {
         if (this.sharedChecked) {
           console.log('双球')
           for (const item of this.surveyPointPoints) {
-            this.olSurveyPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id)
+            this.olSharedSurveyPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id, 'olMap1')
+            this.olSharedSurveyPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id, 'olMap2')
           }
         }
       } else {
         console.log('关闭专项调查')
         if (this.sharedChecked) {
-          for (const item of this.surveyPointPoints) {
-            for (const layer of this.olMap1.getLayers().array_) {
-              if (layer.values_.id == item.id) {
-                this.olMap1.removeLayer(layer)
-                this.olMap2.removeLayer(layer)
-              }
-            }
-          }
+          this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
+          this.olRemoveLayer(this.surveyPointPoints, 'olMap2')
         }
       }
     },
-    olSurveyPoint(lnglat, imgUrl, id) {
+    olSharedSurveyPoint(lnglat, imgUrl, id, map) {
       let iconFeature = new Feature({
         geometry: new Point([lnglat.lng, lnglat.lat]),
         name: '',
@@ -3811,8 +3858,11 @@ export default {
         source: vectorSource
       })
       surveyPointLayer.set('id', id)
-      this.olMap1.addLayer(surveyPointLayer)
-      this.olMap2.addLayer(surveyPointLayer)
+      if (map == 'olMap1') {
+        this.olMap1.addLayer(surveyPointLayer)
+      } else if (map == 'olMap2') {
+        this.olMap2.addLayer(surveyPointLayer)
+      }
     },
     olSwipeSurveyPoint(lnglat, imgUrl, id) {
       let iconFeature = new Feature({
@@ -3839,6 +3889,25 @@ export default {
       surveyPointLayer.set('id', id)
       this.lmap.addLayer(surveyPointLayer)
       // this.olMap2.addLayer(surveyPointLayer)
+    },
+    olRemoveLayer(data, map) {
+      if (map == 'olMap1') {
+        for (const item of data) {
+          for (const layer of this.olMap1.getLayers().array_) {
+            if (layer.values_.id == item.id) {
+              this.olMap1.removeLayer(layer)
+            }
+          }
+        }
+      } else if (map == 'olMap2') {
+        for (const item of data) {
+          for (const layer of this.olMap2.getLayers().array_) {
+            if (layer.values_.id == item.id) {
+              this.olMap2.removeLayer(layer)
+            }
+          }
+        }
+      }
     },
     // 河道连通性
     onRiverLink() {
