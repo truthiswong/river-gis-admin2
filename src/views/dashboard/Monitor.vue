@@ -2718,6 +2718,8 @@ export default {
       this.spinning = true
       this.map.clearOverLays() //将之前绘制的清除
       this.riverMontion = []
+      this.firstShow = true
+      this.nosuperKey = 'taskCard'
       if (this.firstShow == true) {
         this.getPage()
         this.getPlanSave()
