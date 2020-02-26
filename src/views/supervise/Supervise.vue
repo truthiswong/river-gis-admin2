@@ -965,6 +965,8 @@ export default {
       }, //天气
       fileList: [], //手机照片
       defaultTime: '', //默认日期
+      defaultRightTime: '', //右侧默认日期
+
       otherList: [
         {
           id: 0,
@@ -1469,6 +1471,7 @@ export default {
         // 获取风险地图
         this.removeOverLays(this.riskPolygonData)
         this.getRiskMapList()
+        // 获取水质数据
         this.removeOverLays(this.waterQualityPoints)
         this.getWaterQualityPoints()
         this.moreLoadOnce = '2'
@@ -2227,11 +2230,6 @@ export default {
         }
         this.timeData = res.data
         this.timeDataRight = JSON.parse(JSON.stringify(this.timeData))
-        // this.timeDataRight = this.timeData.concat()
-        // [].concat(map)
-        // this.timeData[0] = 50
-        console.log(this.timeData)
-        // console.log(this.timeDataRight)
         this.getWeatherList()
         // 手机照片上传参数
         this.moreLoadOnce = 1
@@ -2397,7 +2395,9 @@ export default {
         if (mouth == item.date) {
           // if (item.level != 2) {
           if (item.date == mouth) {
+            this.defaultRightTime = mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8)
             item.clicked = true
+            this.rightTimeLineChange() //右侧时间轴切换
           } else {
             item.clicked = false
           }
@@ -2411,6 +2411,15 @@ export default {
     timeLineChange() {
       this.getWeatherList()
       this.map.clearOverLays()
+      this.moreLoadOnce = 1
+      this.getMapdrawPage()
+    },
+    // 右侧时间轴切换操作
+    rightTimeLineChange() {
+      // 双球开关 卷帘开关
+      if (this.sharedChecked || this.swipeChecked) {
+        console.log("时间轴切换")
+      }
       this.moreLoadOnce = 1
       this.getMapdrawPage()
     },
@@ -2537,41 +2546,16 @@ export default {
     showMap() {
       // this.map.removeLayer(map1);
       // this.map.removeLayer(map2);
-      var vec_c = this.getTdLayer('vec_w')
-      var cva_c = this.getTdLayer('cva_w')
-      var img_c = this.getTdLayer('img_w')
+      var vec_c = this.getTdLayer('vec_w') //2d图
+      var cva_c = this.getTdLayer('cva_w') //道路标注
+      var img_c = this.getTdLayer('img_w') //卫星图
       let veclayerGroup = new LayerGroup({
         layers: [vec_c]
-        // layers: [vec_c, cva_c]
+        // layers: [img_c, cva_c]
       })
       let imglayerGroup = new LayerGroup({
         layers: [img_c]
         // layers: [img_c, cva_c]
-      })
-
-      var iconFeature = new Feature({
-        geometry: new Point([121.43025, 31.16963]),
-        name: 'Null Island',
-        population: 4000,
-        rainfall: 500
-      })
-      var iconStyle = new Style({
-        image: new Icon({
-          anchor: [0.5, 46],
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'pixels',
-          src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
-        })
-      })
-
-      iconFeature.setStyle(iconStyle)
-
-      var vectorSource = new VectorSource({
-        features: [iconFeature]
-      })
-
-      var vectorLayer = new VectorLayer({
-        source: vectorSource
       })
 
       var view = new View({
