@@ -2774,7 +2774,9 @@ export default {
     newPlan_btn() {
       var ids = []
       for (const item of this.riverMontion) {
-        for (const index of item.taskChoose) ids.push(index)
+        for (const index of item.taskChoose){
+          ids.push(index)
+        } 
       }
       if (ids.length != 0) {
         taskChoose(ids.join(',')).then(res => {})
