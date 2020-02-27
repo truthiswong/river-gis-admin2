@@ -28,7 +28,8 @@
       <div class="player">
         <!-- <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :options="item.playerOptions" :playsinline="true"></video-player> -->
         <img :src="item.media" alt style="width:100%" />
-        <audio :src="item.media" controls="controls"></audio>
+        <a-button @click="audioBut(item.media)" v-show="audioSHow">播放</a-button>
+        <!-- <audio :src="item.media" controls="controls"></audio> -->
       </div>
     </div>
     <!-- <div style="margin-top:20px;border-top:1px solid #e8e8e8;">
@@ -50,11 +51,13 @@
 </template>
 <script>
 import { dataManual } from '@/api/login'
+import BenzAMRRecorder from 'benz-amr-recorder'
 export default {
   name: '',
   data() {
     return {
       visible: false,
+      audioSHow:false,
       playerOptions: {
         height: '360',
         autoplay: false,
@@ -87,6 +90,18 @@ export default {
     }
   },
   methods: {
+    audioBut(item){
+      var amr = new BenzAMRRecorder();
+      amr.initWithUrl(item).then(function() {
+        // amr.isPlaying() 返回音频的播放状态 是否正在播放 返回boolean类型
+        console.log(amr.isPlaying())
+        if(amr.isPlaying()){
+          amr.stop();
+        } else {
+          amr.play();
+        }
+      });
+    },
     show(index, picker) {
       var data = {
         projectId: this.$store.state.id,
@@ -103,8 +118,13 @@ export default {
         let arr = res.data.data
         // arr.forEach(v => {
         //     v.media =
-        // });
+        // });  
         this.list = arr
+        if (arr.length>0) {
+          if (arr.media) {
+            this.audioSHow =true
+          }
+        }
       })
 
       this.visible = true
