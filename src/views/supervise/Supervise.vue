@@ -767,9 +767,12 @@
       <a-row style="width:100%">
         <a-col :span="24">绘制类型</a-col>
         <a-col :span="24">
-          <a-select style="width:100%;" v-model="drawTypeId">
+          <a-select style="width:100%;" v-model="drawTypeId" @change="choiceDrawChange">
             <a-select-option :value="item.id" v-for="item in paramPage" :key="item.id">{{item.name}}</a-select-option>
           </a-select>
+        </a-col>
+         <a-col :span="24" style="margin:8px 0" v-show='drawNameShow'>
+          <a-input placeholder="请输入名称" v-model="drawName"/>
         </a-col>
       </a-row>
       <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-between">
@@ -940,6 +943,8 @@ export default {
   },
   data() {
     return {
+      drawNameShow:false,
+      drawName:'',
       accordionAlertKey: ['phonePhoto'], // 手风琴
       //水质数据上传参数
       waterQualityData: {
@@ -1913,10 +1918,18 @@ export default {
           pointRadius: '0.4',
           drawTypeId: this.drawTypeId
         }
+        if (this.drawNameShow==true) {
+          data.innerName = this.drawName
+        }
         mapdrawSave(data)
           .then(res => {
             this.$message.success('保存成功')
             this.mapdrawId = res.data.id
+            if (this.drawNameShow==true) {
+              this.drawName = ''
+              this.drawNameShow = false
+            }
+            
             let result = this.toolIndexPointData.findIndex(item => {
               return this.toolIndexId == item.id
             })
@@ -1952,9 +1965,16 @@ export default {
           framePellucidity: this.borderOpacity,
           drawTypeId: this.drawTypeId
         }
+        if (this.drawNameShow==true) {
+          data.innerName = this.drawName
+        }
         mapdrawSave(data)
           .then(res => {
             this.$message.success('保存成功')
+            if (this.drawNameShow==true) {
+              this.drawName = ''
+              this.drawNameShow = false
+            }
             this.mapdrawId = res.data.id
             let geocode = new T.Geocoder()
             geocode.getLocation(this.toolIndexLineData[result].lineData[0], this.searchResult)
@@ -2001,9 +2021,16 @@ export default {
           framePellucidity: this.borderOpacity,
           drawTypeId: this.drawTypeId
         }
+        if (this.drawNameShow==true) {
+          data.innerName = this.drawName
+        }
         mapdrawSave(data)
           .then(res => {
             this.$message.success('保存成功')
+            if (this.drawNameShow==true) {
+              this.drawName = ''
+              this.drawNameShow = false
+            }
             this.mapdrawId = res.data.id
             // 获取地理位置
             let geocode = new T.Geocoder()
@@ -2050,7 +2077,12 @@ export default {
     },
     // 绘制取消
     toolCradCancel() {
+      if (this.drawNameShow ==true) {
+        this.drawName = ''
+        this.drawNameShow = false
+      }
       this.toolCard = false
+      this.drawTypeId = ''
       if (this.isToolEdit) {
         return
       }
@@ -2133,7 +2165,7 @@ export default {
       } else if (this.toolIndex === 2) {
         // 工具-线
         this.currentArea = 0
-        console.log(e.currentDistance.toFixed(3)) //获取距离 m
+        //console.log(e.currentDistance.toFixed(3)) //获取距离 m
         this.toolCard = true
         this.lineTool.close()
         this.polygonList = e.currentLnglats
@@ -4312,7 +4344,17 @@ export default {
     //水质数据上传失败
     waterQualityError(err, file, fileList) {
       this.$message.error(JSON.parse(err.message).message)
-    }
+    },
+    //选择绘制类型
+    choiceDrawChange(value){
+      console.log(`selected ${value}`);
+      if (value!='5da8374dea6c157d2d61007c'&value!='5da8389eea6c157d2d61007f'&value!='5dafe6c8ea6c159999a0549c') {
+        this.drawNameShow = true
+      }else{
+         this.drawNameShow = false
+        
+      }
+    },
   }
 }
 </script>
