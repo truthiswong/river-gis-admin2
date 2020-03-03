@@ -360,17 +360,18 @@
             showSearch
             mode="tags"
             :allowClear="true"
-            placeholder="请选择排口等级"
+            placeholder="请选择排口类别"
             optionFilterProp="children"
             style="width: 100%"
             @change="waterQualityChange"
             :filterOption="waterQualityFilterOption"
             v-model="dischargeLevel"
           >
-            <a-select-option value="one">Ⅰ级</a-select-option>
-            <a-select-option value="two">Ⅱ级</a-select-option>
-            <a-select-option value="three">Ⅲ级</a-select-option>
-            <a-select-option value="four">Ⅳ级</a-select-option>
+            <a-select-option value="rainwater">雨水</a-select-option>
+            <a-select-option value="life">生活</a-select-option>
+            <a-select-option value="mix">混合</a-select-option>
+            <a-select-option value="industrial">工业</a-select-option>
+            <a-select-option value="powerplant">电厂温排水</a-select-option>
           </a-select>
         </a-collapse-panel>
       </a-collapse>
@@ -3976,13 +3977,7 @@ export default {
           }
         }
       } else {
-        let data = []
-        for (const item of this.drawPage) {
-          if (item.drawType.id == id) {
-            data.push(item)
-          }
-        }
-        this.removeOverLays(data)
+        this.removeOverLays(this.RiskSourceDrawPage)
         // 双球开关
         if (this.sharedChecked) {
           for (const item of data) {
@@ -3998,8 +3993,6 @@ export default {
     },
     // 水土流失
     onWaterLandLoss(id, clicked) {
-      console.log(id, clicked)
-      console.log(this.otherList)
       if (clicked) {
         let point = []
         for (const item of this.drawPage) {
