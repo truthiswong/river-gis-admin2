@@ -94,7 +94,8 @@ import {
   memberRiverSave,
   equipmentRiverSave,
   deviceInspectPage,
-  devicePage
+  devicePage,
+  planPublish
 } from '@/api/login'
 export default {
   name: 'planDetail',
@@ -162,7 +163,9 @@ export default {
               ar.forEach(v => {
                 v.workerId = []
                 v.name = v.role.name
+                
                 for (const ss of staff) {
+                  v.id = ss.id
                   if (v.role.id == ss.role.id) {
                     v.workerId.push(ss.worker.id)
                   }
@@ -181,47 +184,80 @@ export default {
       })
       this.teamId = id
     },
-    submitPlan() {
-      // var worker =''
-      // var amount = ''
-      // console.log( this.planTab);
-      // for(const item of this.planTab){
-      //     worker =''
-      //     amount = ''
-      //     for(const role of item.roles){
-      //         var data ={
-      //             id:'',
-      //             teamId:item.id,
-      //             roleId:role.role.id,
-      //             workerId:role.workerId.join(',')
-      //         }
-      //         memberRiverSave(data).then(res=>{
+    submitPlan(e) {
+      var worker = ''
+      var amount = ''
+      console.log(this.planTab);
+      for (const item of this.planTab) {
+        for (let i=0;i<item.roles.length;i++) {
+          if (i + 1 == item.roles.length) {
+            if (item.roles[i].workerId.length  == 0) {
+              this.$message.warning('请全部分配人员')
+              break
+            }else{
+              for (const item of this.planTab) {
+                worker = ''
+                amount = ''
+                for (const role of item.roles) {
+                  var data = {
+                    id: '',
+                    teamId: item.id,
+                    roleId: role.role.id,
+                    workerId: role.workerId.join(',')
+                  }
+                  memberRiverSave(data)
+                    .then(res => {})
+                    .catch(err => {
+                      this.numvis = false
+                    })
+                }
+                for (const devices of item.devices) {
+                  for (const am of devices.workerId) {
+                    // worker.push(am.workerId)
+                    worker = worker + am + ','
+                  }
+                  for (const devi of devices.devices) {
+                    amount = amount + devi.amount + ','
+                    // amount.push(devi.amount)
+                  }
+                }
+                var arr = {
+                  id: '',
+                  teamId: item.id,
+                  deviceId: worker,
+                  amount: amount
+                }
+                equipmentRiverSave(arr).then(res => {
 
-      //         })
-
-      //     }
-      //     for(const devices of item.devices){
-      //         for(const am of devices.workerId){
-      //             // worker.push(am.workerId)
-      //             worker = worker +am+','
-      //         }
-      //         for( const devi of devices.devices){
-      //             amount = amount +devi.amount+','
-      //             // amount.push(devi.amount)
-      //         }
-      //     }
-      //     var arr ={
-      //         id:'',
-      //         teamId:item.id,
-      //         deviceId:worker,
-      //         amount:amount
-      //     }
-      //     equipmentRiverSave(arr).then(res=>{
-
-      //     })
-      // }
-      this.spinning = true
-      this.visible = false
+                }).catch(err => {
+                  this.numvis = false
+                })
+              }
+              if (this.numvis == true) {
+                planPublish(this.id).then(res => {
+                  this.$message.success('成功')
+                  this.spinning = true
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+                })
+                this.visible = false
+              } else {
+                this.$message.error('请全部选择')
+                this.numvis = true
+              }
+            }
+          }else{
+            if (item.roles[i].workerId.length  == 0) {
+              this.$message.warning('请全部分配人员')
+              break
+            } else {
+              
+            }
+          }
+        }
+        
+      }
     },
     cancleBtn() {
       this.spinning = true

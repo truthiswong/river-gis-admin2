@@ -1133,7 +1133,6 @@ import updateTime from './modules/updateTime'
 import communication from './modules/communication'
 import waterquality from '../supervise/modules/waterQualityData'
 import '../../assets/css/monitor.less'
-
 import Vue from 'vue'
 // token
 import { ACCESS_TOKEN } from '@/store/mutation-types'
@@ -1266,6 +1265,7 @@ export default {
   },
   data() {
     return {
+      akakak:'/iii.amr',
       confirmLoading: false,
       hidingJudgment: true, //计划显示方案
       hidingJudgment1: true,
