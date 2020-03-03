@@ -1536,6 +1536,8 @@ export default {
             this.phonePhotoPointsList.push(item)
           }
         }
+        console.log(this.phonePhotoPoints)
+        console.log(this.phonePhotoPointsList)
         this.onPhonePhoto()
       })
     },
@@ -3508,6 +3510,7 @@ export default {
           this.waterFlotagePoints = point
           console.log(this.rightWaterFlotagePoints);
           console.log(this.waterFlotagePoints);
+          console.log("水面漂浮物")
           
           this.spotDraw(this.waterFlotagePoints)
           // 双球开关
@@ -4351,9 +4354,6 @@ export default {
 .main {
   width: 100%;
   height: calc(100vh - 64px);
-}
-.layerMap {
-  // display: none;
 }
 .lmap {
   width: 100%;
