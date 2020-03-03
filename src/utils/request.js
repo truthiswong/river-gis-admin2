@@ -44,8 +44,14 @@ const service = axios.create({
     data = qs.stringify(data)
     return data
   }]
+  
 })
-
+// if (service.method === 'get') {
+//   // 如果是get请求，且params是数组类型如arr=[1,2]，则转换成arr=1&arr=2
+//   service.paramsSerializer = function(params) {
+//     return qs.stringify(params, { arrayFormat: 'repeat' })
+//   }
+// }
 const err = (error) => {
   if (error.response) {
     const data = error.response.data

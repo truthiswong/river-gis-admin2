@@ -179,7 +179,7 @@ export default {
       floatageSave(data)
         .then(res => {
           this.$message.success('保存成功')
-          this.$parent.drawSaveRefresh()
+          this.$parent.drawSaveRefresh('floatage')
           this.handleCancel()
         })
         .catch(err => {
@@ -225,7 +225,7 @@ export default {
       mapdrawDelete(this.list.drawId)
         .then(res => {
           this.$message.success('删除成功')
-          this.$parent.drawSaveRefresh()
+          this.$parent.drawSaveRefresh('floatage')
           this.handleCancel()
         })
         .catch(err => {

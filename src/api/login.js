@@ -788,8 +788,25 @@ export function mapdrawPage(data) {
   return axios({
     url: '/server/data/admin/mapdraw/data/list',
     method: 'get',
-    params: data
+    params: data,
   })
+}
+//基础绘制数据列表
+export function mapdrawPageRiskSource(data,aa) {
+  if (aa) {
+    return axios({
+      url: '/server/data/admin/mapdraw/data/list?'+aa,
+      method: 'get',
+      params: data,
+    })
+  }else{
+    return axios({
+      url: '/server/data/admin/mapdraw/data/list',
+      method: 'get',
+      params: data,
+    })
+  }
+  
 }
 //基础绘制数据保存
 export function mapdrawSave(data) {

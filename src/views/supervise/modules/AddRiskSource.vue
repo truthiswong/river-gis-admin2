@@ -480,7 +480,7 @@ export default {
       mapdrawRiskSave(data)
         .then(res => {
           this.$message.success('保存成功')
-          this.$parent.drawSaveRefresh()
+          this.$parent.drawSaveRefresh('riskSource')
           this.handleCancel()
           this.$emit('confirm')
         })
@@ -589,7 +589,7 @@ export default {
       mapdrawDelete(this.list.drawId)
         .then(res => {
           this.$message.success('删除成功')
-          this.$parent.drawSaveRefresh()
+          this.$parent.drawSaveRefresh('riskSource')
           this.handleCancel()
           // this.$emit('confirm')
         })

@@ -241,12 +241,13 @@
             optionFilterProp="children"
             style="width: 100%"
             @change="riverRiskChange"
+            v-model="riskSourceLevel"
             :filterOption="riverRiskFilterOption"
           >
-            <a-select-option value="1">Ⅰ级</a-select-option>
-            <a-select-option value="2">Ⅱ级</a-select-option>
-            <a-select-option value="3">Ⅲ级</a-select-option>
-            <a-select-option value="4">Ⅳ级</a-select-option>
+            <a-select-option value="one">Ⅰ级</a-select-option>
+            <a-select-option value="two">Ⅱ级</a-select-option>
+            <a-select-option value="three">Ⅲ级</a-select-option>
+            <a-select-option value="four">Ⅳ级</a-select-option>
           </a-select>
         </a-collapse-panel>
         <a-collapse-panel
@@ -364,11 +365,12 @@
             style="width: 100%"
             @change="waterQualityChange"
             :filterOption="waterQualityFilterOption"
+            v-model="dischargeLevel"
           >
-            <a-select-option value="1">Ⅰ级</a-select-option>
-            <a-select-option value="2">Ⅱ级</a-select-option>
-            <a-select-option value="3">Ⅲ级</a-select-option>
-            <a-select-option value="4">Ⅳ级</a-select-option>
+            <a-select-option value="one">Ⅰ级</a-select-option>
+            <a-select-option value="two">Ⅱ级</a-select-option>
+            <a-select-option value="three">Ⅲ级</a-select-option>
+            <a-select-option value="four">Ⅳ级</a-select-option>
           </a-select>
         </a-collapse-panel>
       </a-collapse>
@@ -862,7 +864,8 @@ import {
   panoramaList,
   panoramaImgList,
   dataManual,
-  inspectPointPageRiver
+  inspectPointPageRiver,
+  mapdrawPageRiskSource
 } from '@/api/login'
 import RiskSourceInfo from './modules/RiskSourceInfo'
 import AddRiskSource from './modules/AddRiskSource'
@@ -872,7 +875,7 @@ import AddOutlet from './modules/AddOutlet'
 import LookPanorama from './modules/LookPanorama'
 import WaterQuality from './modules/waterQualityData'
 import Vtour from './Vtour'
-
+import qs from 'qs'
 import moment from 'moment' // 时间格式
 
 import 'ol/ol.css'
@@ -944,6 +947,11 @@ export default {
   data() {
     return {
       drawNameShow:false,
+      riskSourceLevel:[],//风险源风险等级
+      RiskSourceDrawPage:[],//风险源绘制数据
+      dischargeDrawPage:[],//排口风险等级
+      dischargeLevel:[],//排口绘制数据
+      floatageDrawPage:[],//漂浮物绘制数据
       drawName:'',
       accordionAlertKey: ['phonePhoto'], // 手风琴
       //水质数据上传参数
@@ -989,79 +997,6 @@ export default {
       timeSetShow: false, // 时间弹窗显隐
       timeSetShowRight: false, // 右侧时间弹窗显隐
       timeData: [
-        // {
-        //   id: 0,
-        //   title: '2019.09',
-        //   month: [
-        //     { id: '30', title: '30', level: 0, clicked: false },
-        //     { id: '29', title: '29', level: 1, clicked: false },
-        //     { id: '28', title: '28', level: 2, clicked: false },
-        //     { id: '27', title: '27', level: 2, clicked: false },
-        //     { id: '26', title: '26', level: 1, clicked: false },
-        //     { id: '25', title: '25', level: 1, clicked: false },
-        //     { id: '24', title: '24', level: 1, clicked: false },
-        //     { id: '23', title: '23', level: 0, clicked: false },
-        //     { id: '22', title: '22', level: 0, clicked: false },
-        //     { id: '21', title: '21', level: 2, clicked: false },
-        //     { id: '20', title: '20', level: 2, clicked: false },
-        //     { id: '19', title: '19', level: 1, clicked: false },
-        //     { id: '18', title: '18', level: 0, clicked: false },
-        //     { id: '17', title: '17', level: 2, clicked: false },
-        //     { id: '16', title: '16', level: 2, clicked: false },
-        //     { id: '15', title: '15', level: 0, clicked: false },
-        //     { id: '14', title: '14', level: 1, clicked: false },
-        //     { id: '13', title: '13', level: 0, clicked: false },
-        //     { id: '12', title: '12', level: 1, clicked: false },
-        //     { id: '11', title: '11', level: 1, clicked: false },
-        //     { id: '10', title: '10', level: 0, clicked: false },
-        //     { id: '09', title: '09', level: 1, clicked: false },
-        //     { id: '08', title: '08', level: 0, clicked: false },
-        //     { id: '07', title: '07', level: 2, clicked: false },
-        //     { id: '06', title: '06', level: 0, clicked: false },
-        //     { id: '05', title: '05', level: 2, clicked: false },
-        //     { id: '04', title: '04', level: 2, clicked: false },
-        //     { id: '03', title: '03', level: 0, clicked: false },
-        //     { id: '02', title: '02', level: 1, clicked: false },
-        //     { id: '01', title: '01', level: 1, clicked: false }
-        //   ]
-        // },
-        // {
-        //   id: 1,
-        //   title: '2019.08',
-        //   month: [
-        //     { id: '31', title: '31', level: 0, clicked: false },
-        //     { id: '30', title: '30', level: 0, clicked: false },
-        //     { id: '29', title: '29', level: 1, clicked: false },
-        //     { id: '28', title: '28', level: 2, clicked: false },
-        //     { id: '27', title: '27', level: 2, clicked: false },
-        //     { id: '26', title: '26', level: 1, clicked: false },
-        //     { id: '25', title: '25', level: 1, clicked: false },
-        //     { id: '24', title: '24', level: 1, clicked: false },
-        //     { id: '23', title: '23', level: 0, clicked: false },
-        //     { id: '22', title: '22', level: 0, clicked: false },
-        //     { id: '21', title: '21', level: 2, clicked: false },
-        //     { id: '20', title: '20', level: 2, clicked: false },
-        //     { id: '19', title: '19', level: 1, clicked: false },
-        //     { id: '18', title: '18', level: 0, clicked: false },
-        //     { id: '17', title: '17', level: 2, clicked: false },
-        //     { id: '16', title: '16', level: 2, clicked: false },
-        //     { id: '15', title: '15', level: 0, clicked: false },
-        //     { id: '14', title: '14', level: 1, clicked: false },
-        //     { id: '13', title: '13', level: 0, clicked: false },
-        //     { id: '12', title: '12', level: 1, clicked: false },
-        //     { id: '11', title: '11', level: 1, clicked: false },
-        //     { id: '10', title: '10', level: 0, clicked: false },
-        //     { id: '09', title: '09', level: 1, clicked: false },
-        //     { id: '08', title: '08', level: 0, clicked: false },
-        //     { id: '07', title: '07', level: 2, clicked: false },
-        //     { id: '06', title: '06', level: 0, clicked: false },
-        //     { id: '05', title: '05', level: 2, clicked: false },
-        //     { id: '04', title: '04', level: 2, clicked: false },
-        //     { id: '03', title: '03', level: 0, clicked: false },
-        //     { id: '02', title: '02', level: 1, clicked: false },
-        //     { id: '01', title: '01', level: 1, clicked: false }
-        //   ]
-        // }
       ],
 
       timeQuantum: '', // 时间段
@@ -1471,9 +1406,15 @@ export default {
         // 360点
         this.removeOverLays(this.panoramaPoints)
         this.getPanoramaPoints()
-        //获取 基础绘制
-        this.removeOverLays(this.drawPage)
-        this.getMapDrawPage()
+        //获取风险源绘制数据
+        this.removeOverLays(this.RiskSourceDrawPage)
+        this.getRiskSourceMapDrawPage(true)
+        //获取排口绘制数据
+        this.removeOverLays(this.dischargeDrawPage)
+        this.getDischargeMapDrawPage() 
+        //获取漂浮物绘制数据
+        this.removeOverLays(this.floatageDrawPage)
+        this.getFloatageMapDrawPage() 
         // 双球 获取 基础绘制
         this.getMapDrawPageRight()
         // 获取专项调查点
@@ -1735,13 +1676,51 @@ export default {
         .catch(err => {})
     },
     //获取基础绘制数据
-    getMapDrawPage() {
+    // getMapDrawPage() {
+    //   if (this.historyData) {
+    //     var data = {
+    //       projectId: this.$store.state.id,
+    //       startDate: this.startDate,
+    //       endDate: this.endDate,
+    //     }
+    //   } else {
+    //     var time = this.defaultTime
+    //     var picker = time.split('-')
+    //     var data = {
+    //       projectId: this.$store.state.id,
+    //       year: picker[0],
+    //       month: picker[1],
+    //       day: picker[2],
+    //     }
+    //   }
+    //   mapdrawPage(data).then(res => {
+    //     let arr = res.data
+    //     let ar = []
+    //     arr.forEach(v => {
+    //       v.shapePellucidity = v.shapePellucidity / 100
+    //       v.framePellucidity = v.framePellucidity / 100
+    //       if (v.drawType == undefined) {
+    //         v.drawType = {
+    //           code: '',
+    //           id: ''
+    //         }
+    //       }
+    //       if (v.innerType != undefined) {
+    //         ar.push(v)
+    //       }
+    //     })
+    //     this.drawPage = ar
+    //   })
+    // },
+    //风险源绘制数据
+    getRiskSourceMapDrawPage(riskSourceType) {
+      var riskSourceLevel = qs.stringify({ riskSourceLevel:this.riskSourceLevel }, { indices: false })
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
           endDate: this.endDate,
-          mediaType: 'image'
+          innerType:'riskSource',
         }
       } else {
         var time = this.defaultTime
@@ -1751,7 +1730,160 @@ export default {
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          mediaType: 'image'
+          innerType:'riskSource',
+        }
+      }
+      mapdrawPageRiskSource(data,riskSourceLevel).then(res => {
+        let arr = res.data
+        let ar = []
+        arr.forEach(v => {
+          v.shapePellucidity = v.shapePellucidity / 100
+          v.framePellucidity = v.framePellucidity / 100
+          if (v.drawType == undefined) {
+            v.drawType = {
+              code: '',
+              id: ''
+            }
+          }
+          if (v.innerType != undefined) {
+            ar.push(v)
+          }
+        })
+        this.RiskSourceDrawPage = ar
+        if ( riskSourceType== true) {
+          for (const risk of this.riskSourceList) {
+            if (risk.clicked == true) {
+              let point = []
+              for (const item of this.RiskSourceDrawPage) {
+                if (item.drawType.id == risk.id) {
+                  if (item.locationType.code == 'point') {
+                    item.latlng = {
+                      lng: item.point[0],
+                      lat: item.point[1]
+                    }
+                    point.push(item)
+                  }
+                  if (item.locationType.code == 'line') {
+                    this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+                    let markerTool
+                    if (item.drawType.icon) {
+                      let icon = new T.Icon({
+                        iconUrl: item.drawType.icon,
+                        iconSize: new T.Point(41, 40),
+                        iconAnchor: new T.Point(21, 40)
+                      })
+                      markerTool = new T.Marker(item.line[0], {
+                        icon: icon,
+                        id: item.id,
+                        title: item.innerName,
+                        code: item.innerType.code
+                      })
+                      this.map.addOverLay(markerTool)
+                    } else {
+                      markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+                      this.map.addOverLay(markerTool)
+                    }
+                    // markerTool.addEventListener('click', this.panoramaPointClick)
+                  }
+                  if (item.locationType.code == 'polygon') {
+                    this.noodlesDraw(
+                      item.polygon,
+                      item.frameColor,
+                      3,
+                      item.framePellucidity,
+                      item.shapeColor,
+                      item.shapePellucidity,
+                      '',
+                      item.id,
+                      item.innerType.code
+                    )
+                    let markerTool
+                    if (item.drawType.icon) {
+                      let icon = new T.Icon({
+                        iconUrl: item.drawType.icon,
+                        iconSize: new T.Point(41, 40),
+                        iconAnchor: new T.Point(21, 40)
+                      })
+                      markerTool = new T.Marker(item.polygon[0], {
+                        icon: icon,
+                        id: item.id,
+                        title: item.innerName,
+                        code: item.innerType.code
+                      })
+                      this.map.addOverLay(markerTool)
+                    } else {
+                      // markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
+                      // this.map.addOverLay(markerTool)
+                      markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+                      this.map.addOverLay(markerTool)
+                    }
+                  }
+                }
+              }
+              this.spotDraw(point)
+            } 
+          }
+        }
+      })
+    },
+    //排口绘制数据
+    getDischargeMapDrawPage() {
+      var dischargeLevel = qs.stringify({ riskSourceLevel:this.dischargeLevel }, { indices: false })
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType:'discharge',
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType:'discharge',
+        }
+      }
+      mapdrawPageRiskSource(data,dischargeLevel).then(res => {
+        let arr = res.data
+        let ar = []
+        arr.forEach(v => {
+          v.shapePellucidity = v.shapePellucidity / 100
+          v.framePellucidity = v.framePellucidity / 100
+          if (v.drawType == undefined) {
+            v.drawType = {
+              code: '',
+              id: ''
+            }
+          }
+          if (v.innerType != undefined) {
+            ar.push(v)
+          }
+        })
+        this.dischargeDrawPage = ar
+      })
+    },
+    //漂浮物绘制数据
+    getFloatageMapDrawPage() {
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType:'floatage',
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType:'floatage',
         }
       }
       mapdrawPage(data).then(res => {
@@ -1770,7 +1902,7 @@ export default {
             ar.push(v)
           }
         })
-        this.drawPage = ar
+        this.floatageDrawPage = ar
       })
     },
     //右侧获取基础绘制数据
@@ -1815,9 +1947,17 @@ export default {
       })
     },
     //基础绘制保存刷新基础绘制列表
-    drawSaveRefresh() {
+    drawSaveRefresh(type) {
       // this.removeOverLays(this.drawPage)
-      this.getMapDrawPage()
+      if (type=='riskSource') {
+        this.getRiskSourceMapDrawPage(true)
+      }
+      if (type=='discharge') {
+        this.getDischargeMapDrawPage() 
+      }
+      if (type=='floatage') {
+        this.getFloatageMapDrawPage() 
+      }
     },
     initMap() {
       // this.map = new Map({
@@ -1847,7 +1987,8 @@ export default {
     },
     // 河岸风险源
     riverRiskChange(value) {
-      console.log(value)
+      this.removeOverLays(this.RiskSourceDrawPage)
+      this.getRiskSourceMapDrawPage(true)
     },
     // 河岸风险源过滤
     riverRiskFilterOption(input, option) {
@@ -1855,7 +1996,7 @@ export default {
     },
     // 水质监测点
     waterQualityChange(value) {
-      console.log(value)
+      this.getDischargeMapDrawPage()
     },
     // 水质监测点过滤
     waterQualityFilterOption(input, option) {
@@ -3479,8 +3620,7 @@ export default {
         }
         let point = []
         let point2 = []
-        for (const item of this.drawPage) {
-          if (item.drawType.name == '水面漂浮物') {
+        for (const item of this.floatageDrawPage) {
             if (item.locationType.code == 'point') {
               item.latlng = {
                 lat: item.point[1],
@@ -3504,7 +3644,6 @@ export default {
                 item.innerType.code
               )
             }
-          }
         }
         if (this.sharedChecked || this.swipeChecked) {
           for (const item of this.rightDrawPage) {
@@ -3540,10 +3679,6 @@ export default {
             this.rightWaterFlotagePoints = point2
           }
           this.waterFlotagePoints = point
-          console.log(this.rightWaterFlotagePoints);
-          console.log(this.waterFlotagePoints);
-          console.log("水面漂浮物")
-          
           this.spotDraw(this.waterFlotagePoints)
           // 双球开关
           if (this.sharedChecked) {
@@ -3562,13 +3697,7 @@ export default {
           }
         }
       } else {
-        let data = []
-        for (const item of this.drawPage) {
-          if (item.drawType.name == '水面漂浮物') {
-            data.push(item)
-          }
-        }
-        this.removeOverLays(this.waterFlotagePoints)
+        this.removeOverLays(this.floatageDrawPage)
         // 双球开关水面漂浮物关闭
         if (this.sharedChecked) {
           this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
@@ -3590,31 +3719,29 @@ export default {
     onOutlet() {
       if (this.outlet) {
         let point = []
-        for (const item of this.drawPage) {
-          if (item.drawType.name == '排口') {
-            if (item.locationType.code == 'point') {
-              item.latlng = {
-                lng: item.point[0],
-                lat: item.point[1]
-              }
-              point.push(item)
+        for (const item of this.dischargeDrawPage) {
+          if (item.locationType.code == 'point') {
+            item.latlng = {
+              lng: item.point[0],
+              lat: item.point[1]
             }
-            if (item.locationType.code == 'line') {
-              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
-            }
-            if (item.locationType.code == 'polygon') {
-              this.noodlesDraw(
-                item.polygon,
-                item.frameColor,
-                3,
-                item.framePellucidity,
-                item.shapeColor,
-                item.shapePellucidity,
-                item.innerName,
-                item.id,
-                item.innerType.code
-              )
-            }
+            point.push(item)
+          }
+          if (item.locationType.code == 'line') {
+            this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+          }
+          if (item.locationType.code == 'polygon') {
+            this.noodlesDraw(
+              item.polygon,
+              item.frameColor,
+              3,
+              item.framePellucidity,
+              item.shapeColor,
+              item.shapePellucidity,
+              item.innerName,
+              item.id,
+              item.innerType.code
+            )
           }
         }
         if (point.length > 0) {
@@ -3642,13 +3769,8 @@ export default {
           }
         }
       } else {
-        let data = []
-        for (const item of this.drawPage) {
-          if (item.drawType.name == '排口') {
-            data.push(item)
-          }
-        }
-        this.removeOverLays(data)
+
+        this.removeOverLays(this.dischargeDrawPage)
         // 双球开关排口关闭
         if (this.sharedChecked) {
           this.olRemoveLayer(data, 'olMap1')
@@ -3757,16 +3879,10 @@ export default {
     onRiverRisk() {
       if (this.riverRisk) {
       } else {
-        let data = []
-        for (const item of this.drawPage) {
-          if (item.innerType.name == '风险源') {
-            data.push(item)
-          }
-        }
         this.riskSourceList.forEach(v => {
           v.clicked = false
         })
-        this.removeOverLays(data)
+        this.removeOverLays(this.RiskSourceDrawPage)
         // 双球开关
         if (this.sharedChecked) {
           for (const item of data) {
@@ -3782,10 +3898,9 @@ export default {
     },
     // 河岸风险源子栏
     onDrawType(id, clicked) {
-      console.log(id, clicked)
       if (clicked) {
         let point = []
-        for (const item of this.drawPage) {
+        for (const item of this.RiskSourceDrawPage) {
           if (item.drawType.id == id) {
             if (item.locationType.code == 'point') {
               item.latlng = {
@@ -3860,7 +3975,6 @@ export default {
             this.olRiverRiskPoint(item.latlng, item.drawType.icon, item.id)
           }
         }
-        console.log(point)
       } else {
         let data = []
         for (const item of this.drawPage) {
