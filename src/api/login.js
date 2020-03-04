@@ -992,6 +992,14 @@ export function recommendFangan(data) {
     }
   })
 }
+//无人机照片
+export function uavPhoto(data) {
+  return axios({
+    url: '/server/data/admin/regulator/uav/pic/list',
+    method: 'get',
+    params: data
+  })
+}
 //绘制评论
 export function commentMapdraw(id) {
   return axios({
