@@ -949,7 +949,6 @@ export default {
     return {
       drawNameShow: false,
       riskSourceLevel: [], //风险源风险等级
-      RiskSourceDrawPage: [], //风险源绘制数据
       dischargeDrawPage: [], //排口风险等级
       dischargeLevel: [], //排口绘制数据
       drawName: '',
@@ -1194,11 +1193,8 @@ export default {
       rightOutletPoints: [],
       drawType: false,
       riverRisk: false, // 河岸风险源
-      riverRiskPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.20333, lng: 121.49999 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.21666, lng: 121.48666 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.22999, lng: 121.47333 } }
-      ],
+      riverRiskPoints: [],// 河岸风险源数据
+      riverRiskPointsRight: [],// 右侧河岸风险源数据
       waterLandLoss: false, // 水土流失
       waterLandLossPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.09999, lng: 121.50333 } },
@@ -1406,7 +1402,7 @@ export default {
         this.removeOverLays(this.panoramaPoints)
         this.getPanoramaPoints()
         //获取风险源绘制数据
-        this.removeOverLays(this.RiskSourceDrawPage)
+        this.removeOverLays(this.riverRiskPoints)
         this.getRiskSourceMapDrawPage(true)
         //获取排口绘制数据
         this.removeOverLays(this.dischargeDrawPage)
@@ -1433,6 +1429,8 @@ export default {
         this.getFloatageMapDrawPageRight()
         // 右侧获取水质数据
         this.getWaterQualityPointsRight()
+        // 右侧获取风险源
+        this.getRiskSourceMapDrawPageRight(false)
         this.moreLoadOnce = '2'
       }
     },
@@ -1693,43 +1691,6 @@ export default {
         })
         .catch(err => {})
     },
-    //获取基础绘制数据
-    // getMapDrawPage() {
-    //   if (this.historyData) {
-    //     var data = {
-    //       projectId: this.$store.state.id,
-    //       startDate: this.startDate,
-    //       endDate: this.endDate,
-    //     }
-    //   } else {
-    //     var time = this.defaultTime
-    //     var picker = time.split('-')
-    //     var data = {
-    //       projectId: this.$store.state.id,
-    //       year: picker[0],
-    //       month: picker[1],
-    //       day: picker[2],
-    //     }
-    //   }
-    //   mapdrawPage(data).then(res => {
-    //     let arr = res.data
-    //     let ar = []
-    //     arr.forEach(v => {
-    //       v.shapePellucidity = v.shapePellucidity / 100
-    //       v.framePellucidity = v.framePellucidity / 100
-    //       if (v.drawType == undefined) {
-    //         v.drawType = {
-    //           code: '',
-    //           id: ''
-    //         }
-    //       }
-    //       if (v.innerType != undefined) {
-    //         ar.push(v)
-    //       }
-    //     })
-    //     this.drawPage = ar
-    //   })
-    // },
     //风险源绘制数据
     getRiskSourceMapDrawPage(riskSourceType) {
       var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
@@ -1767,12 +1728,18 @@ export default {
             ar.push(v)
           }
         })
-        this.RiskSourceDrawPage = ar
+        this.riverRiskPoints = ar
+        // 点击切换重新绘制触发
+        for (const item of this.riskSourceList) {
+          if (item.clicked) {
+            this.onDrawType(item.id, true)
+          }
+        }
         if (riskSourceType == true) {
           for (const risk of this.riskSourceList) {
             if (risk.clicked == true) {
               let point = []
-              for (const item of this.RiskSourceDrawPage) {
+              for (const item of this.riverRiskPoints) {
                 if (item.drawType.id == risk.id) {
                   if (item.locationType.code == 'point') {
                     item.latlng = {
@@ -1848,6 +1815,52 @@ export default {
               }
               this.spotDraw(point)
             }
+          }
+        }
+      })
+    },
+    //右侧风险源绘制数据
+    getRiskSourceMapDrawPageRight(riskSourceType) {
+      var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType: 'riskSource'
+        }
+      } else {
+        var time = this.defaultRightTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType: 'riskSource'
+        }
+      }
+      mapdrawPageRiskSource(data, riskSourceLevel).then(res => {
+        let arr = res.data
+        let ar = []
+        arr.forEach(v => {
+          v.shapePellucidity = v.shapePellucidity / 100
+          v.framePellucidity = v.framePellucidity / 100
+          if (v.drawType == undefined) {
+            v.drawType = {
+              code: '',
+              id: ''
+            }
+          }
+          if (v.innerType != undefined) {
+            ar.push(v)
+          }
+        })
+        this.riverRiskPointsRight = ar
+        // 点击切换重新绘制触发
+        for (const item of this.riskSourceList) {
+          if (item.clicked) {
+            this.onDrawType(item.id, true)
           }
         }
       })
@@ -2015,7 +2028,7 @@ export default {
     },
     // 河岸风险源
     riverRiskChange(value) {
-      this.removeOverLays(this.RiskSourceDrawPage)
+      this.removeOverLays(this.riverRiskPoints)
       this.getRiskSourceMapDrawPage(true)
     },
     // 河岸风险源过滤
@@ -2692,6 +2705,7 @@ export default {
     timeLineChange() {
       // 双球开关 卷帘开关
       if (this.sharedChecked || this.swipeChecked) {
+        console.log('时间轴切换')
         // 河道显示
         if (this.riverShow) {
           this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
@@ -2724,8 +2738,8 @@ export default {
         }
         // 水质数据
         if (this.waterQuality) {
-          this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterQualityPoints, 'olMap2')
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 水质漂浮物
         if (this.waterFlotage) {
@@ -2739,8 +2753,25 @@ export default {
         }
         // 河岸风险源
         if (this.riverRisk) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+          let data1 = []
+          let data2 = []
+          for (const listItem of this.riskSourceList) {
+            console.log(listItem.clicked)
+            if (listItem.clicked) {
+              for (const item of this.riverRiskPoints) {
+                if (item.drawType.id == listItem.id) {
+                  data1.push(item)
+                }
+              }
+              for (const item of this.riverRiskPointsRight) {
+                if (item.drawType.id == listItem.id) {
+                  data2.push(item)
+                }
+              }
+            }
+          }
+          this.olRemoveLayer(data1, 'olMap1')
+          // this.olRemoveLayer(data2, 'olMap2')
         }
         if (this.drawType) {
         }
@@ -2775,6 +2806,7 @@ export default {
           this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
       }
+      
       this.getWeatherList()
       this.map.clearOverLays()
       this.moreLoadOnce = 1
@@ -2833,8 +2865,25 @@ export default {
       }
       // 河岸风险源
       if (this.riverRisk) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        let data1 = []
+        let data2 = []
+        for (const listItem of this.riskSourceList) {
+          console.log(listItem.clicked)
+          if (listItem.clicked) {
+            for (const item of this.riverRiskPoints) {
+              if (item.drawType.id == listItem.id) {
+                data1.push(item)
+              }
+            }
+            for (const item of this.riverRiskPointsRight) {
+              if (item.drawType.id == listItem.id) {
+                data2.push(item)
+              }
+            }
+          }
+        }
+        // this.olRemoveLayer(data1, 'olMap1')
+        this.olRemoveLayer(data2, 'olMap2')
       }
       if (this.drawType) {
       }
@@ -3031,6 +3080,7 @@ export default {
         if (this.sharedOnce == 1) {
           this.$nextTick(() => {
             this.showMap() //双球init
+            this.moreLoadOnce = 1
             this.getMapPageDataRight()
           })
         }
@@ -4101,25 +4151,44 @@ export default {
         this.riskSourceList.forEach(v => {
           v.clicked = false
         })
-        this.removeOverLays(this.RiskSourceDrawPage)
+        this.removeOverLays(this.riverRiskPoints)
         // 双球开关
         if (this.sharedChecked) {
-          for (const item of this.RiskSourceDrawPage) {
-            for (const layer of this.olMap1.getLayers().array_) {
-              if (layer.values_.id == item.id) {
-                this.olMap1.removeLayer(layer)
-                this.olMap2.removeLayer(layer)
-              }
-            }
+          // 双球开关风险源关闭
+          if (this.sharedChecked) {
+            this.olRemoveLayer(this.riverRiskPoints, 'olMap1')
+            this.olRemoveLayer(this.riverRiskPointsRight, 'olMap2')
           }
         }
       }
     },
     // 河岸风险源子栏
     onDrawType(id, clicked) {
+      console.log(id, clicked)
+      console.log(this.riverRiskPoints)
+      // 点击时间轴切换先清除上一次的地图数据
+      let data1 = []
+      let data2 = []
+      // 双球开关风险源关闭
+      if (this.sharedChecked) {
+        for (const item of this.riverRiskPoints) {
+        if (item.drawType.id == id) {
+            data1.push(item)
+          }
+        }
+        for (const item of this.riverRiskPointsRight) {
+          if (item.drawType.id == id) {
+            data2.push(item)
+          }
+        }
+        this.olRemoveLayer(data1, 'olMap1')
+        this.olRemoveLayer(data2, 'olMap2')
+      }
+
+      let point = []
+      let point2 = []
       if (clicked) {
-        let point = []
-        for (const item of this.RiskSourceDrawPage) {
+        for (const item of this.riverRiskPoints) {
           if (item.drawType.id == id) {
             if (item.locationType.code == 'point') {
               item.latlng = {
@@ -4189,23 +4258,57 @@ export default {
         this.spotDraw(point)
         // 双球开关
         if (this.sharedChecked) {
-          console.log('双球')
-          for (const item of point) {
-            this.olRiverRiskPoint(item.latlng, item.drawType.icon, item.id)
-          }
-        }
-      } else {
-        this.removeOverLays(this.RiskSourceDrawPage)
-        // 双球开关
-        if (this.sharedChecked) {
-          for (const item of data) {
-            for (const layer of this.olMap1.getLayers().array_) {
-              if (layer.values_.id == item.id) {
-                this.olMap1.removeLayer(layer)
-                this.olMap2.removeLayer(layer)
+          console.log(this.riverRiskPointsRight)
+          for (const item of this.riverRiskPointsRight) {
+            if (item.drawType.id == id) {
+              if (item.locationType.code == 'point') {
+                item.latlng = {
+                  lng: item.point[0],
+                  lat: item.point[1]
+                }
+                point2.push(item)
+              }
+              if (item.locationType.code == 'line') {
+              }
+              if (item.locationType.code == 'polygon') {
               }
             }
           }
+          for (const item of point) {
+            this.olSharedSurveyPoint(
+              item.latlng,
+              'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+              item.id,
+              'olMap1'
+            )
+          }
+          for (const item of point2) {
+            this.olSharedSurveyPoint(
+              item.latlng,
+              'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+              item.id,
+              'olMap2'
+            )
+          }
+        }
+      } else {
+        let data1 = []
+        let data2 = []
+        for (const item of this.riverRiskPoints) {
+          if (item.drawType.id == id) {
+            data1.push(item)
+          }
+        }
+        this.removeOverLays(data1)
+        // 双球开关风险源关闭
+        if (this.sharedChecked) {
+          this.olRemoveLayer(data1, 'olMap1')
+          for (const item of this.riverRiskPointsRight) {
+            if (item.drawType.id == id) {
+              data2.push(item)
+            }
+          }
+          this.olRemoveLayer(data2, 'olMap2')
         }
       }
     },
@@ -4998,7 +5101,7 @@ export default {
   max-height: calc(100vh - 85px);
   // overflow: auto;
   background-color: white;
-  z-index: 889;
+  z-index: 887;
   border-radius: 4px;
   box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.5);
 }
