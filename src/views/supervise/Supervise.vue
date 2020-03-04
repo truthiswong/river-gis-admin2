@@ -846,6 +846,20 @@
       :msg="panoramaData"
       @exitPanorama="closePanorma"
     ></look-panorama>
+    <a-modal
+      title="无人机照片"
+      :visible="UAVPhotosModal"
+      @ok="UAVPhotosOk"
+      @cancel="UAVPhotosOk"
+    >
+      <div>点击坐标: {{UAVPhotosCoordinate}}</div>
+      <div style="margin-top:10px;max-height: 600px;overflow-y: scroll;" >
+        <viewer v-for="item in uavPhotoList" :key="item.id" style="margin:5px">
+          <div>名称:{{item.name}}</div>
+          <img :src="item.pic" alt style="width:100%;margin:0 4px 4px 0;" />
+        </viewer>
+      </div>
+    </a-modal>
   </div>
 </template>
 
@@ -866,7 +880,8 @@ import {
   panoramaImgList,
   dataManual,
   inspectPointPageRiver,
-  mapdrawPageRiskSource
+  mapdrawPageRiskSource,
+  uavPhoto
 } from '@/api/login'
 import RiskSourceInfo from './modules/RiskSourceInfo'
 import AddRiskSource from './modules/AddRiskSource'
@@ -951,6 +966,9 @@ export default {
       riskSourceLevel: [], //风险源风险等级
       dischargeDrawPage: [], //排口风险等级
       dischargeLevel: [], //排口绘制数据
+      UAVPhotosModal:false,//无人机照片弹窗
+      uavPhotoList:[],//无人机照片
+      UAVPhotosCoordinate:'',//无人机照片点击坐标
       drawName: '',
       accordionAlertKey: ['phonePhoto'], // 手风琴
       //水质数据上传参数
@@ -1415,6 +1433,7 @@ export default {
         // 获取水质数据
         this.removeOverLays(this.waterQualityPoints)
         this.getWaterQualityPoints()
+        // this.getUavPhoto()//无人机照片
         this.moreLoadOnce = '2'
       }
     },
@@ -1434,6 +1453,9 @@ export default {
       // console.log(this.map.getZoom())
       if (this.map.getZoom() > 18) {
       }
+    },
+    getUavPhoto(){
+      
     },
     // 获取手机照片
     getPhonePhotoPoints() {
@@ -3352,10 +3374,44 @@ export default {
     // 无人机照片
     onUAVPhoto() {
       if (this.UAVPhoto) {
-        this.allPointTask(this.UAVPhotoPoints)
+        this.map.addEventListener("click",this.UAVPhotoClick);
       } else {
-        this.removeOverLays(this.UAVPhotoPoints)
+        this.map.removeEventListener("click",this.UAVPhotoClick);
       }
+    },
+    //无人机照片地图点击事件
+    UAVPhotoClick(e){
+      console.log(e);
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          point:e.lnglat.lng+","+e.lnglat.lat,
+          startDate: this.startDate,
+          endDate: this.endDate,
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          point:e.lnglat.lng+","+e.lnglat.lat,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+        }
+      }
+      uavPhoto(data).then(res=>{
+        var arr = res.data
+        console.log(res.data);
+        if (arr.length>0) {
+          this.UAVPhotosCoordinate = e.lnglat.lng+","+e.lnglat.lat
+          this.uavPhotoList = arr
+          this.UAVPhotosModal = true
+          
+        }
+        
+      })
+      // alert(e.lnglat.lng+","+e.lnglat.lat);
     },
     // 360全景图
     onPanorama() {
@@ -4724,7 +4780,14 @@ export default {
       } else {
         this.drawNameShow = false
       }
-    }
+    },
+    //关闭无人机照片弹窗
+    UAVPhotosOk(){
+      
+      this.UAVPhotosModal = false
+      this.UAVPhotosCoordinate = ''
+      this.uavPhotoList = []
+    },
   }
 }
 </script>
