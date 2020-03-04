@@ -36,7 +36,8 @@
         style
       >
         <a-list-item slot="renderItem" slot-scope="item" class="comment_list">
-          <a-comment :author="item.author" :avatar="item.avatar">
+          <a-comment  :avatar="item.avatar">
+            <p slot='author' style="width:50px;padding:0;margin:0;color:#000000">{{item.author}}</p>
             <div class="comment_level">
               <p
                 v-show="code == 'riskSource'"
@@ -287,7 +288,11 @@ export default {
           } else {
             v.dangerContent = '不存在'
           }
-          v.avatar = 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
+          v.avatar = require('../img/head.png')
+          if (v.creator) {
+            v.author = v.creator.name
+          }
+          
         })
         this.data = res.data.data
       })
@@ -438,7 +443,7 @@ p {
   }
 }
 .comment_title {
-  width: 358px;
+  width: 295px;
   display: flex;
   display: -webkit-flex;
   justify-content: space-between;
