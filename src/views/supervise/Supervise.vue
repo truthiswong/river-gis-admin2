@@ -773,8 +773,8 @@
             <a-select-option :value="item.id" v-for="item in paramPage" :key="item.id">{{item.name}}</a-select-option>
           </a-select>
         </a-col>
-         <a-col :span="24" style="margin:8px 0" v-show='drawNameShow'>
-          <a-input placeholder="请输入名称" v-model="drawName"/>
+        <a-col :span="24" style="margin:8px 0" v-show="drawNameShow">
+          <a-input placeholder="请输入名称" v-model="drawName" />
         </a-col>
       </a-row>
       <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-between">
@@ -946,13 +946,12 @@ export default {
   },
   data() {
     return {
-      drawNameShow:false,
-      riskSourceLevel:[],//风险源风险等级
-      RiskSourceDrawPage:[],//风险源绘制数据
-      dischargeDrawPage:[],//排口风险等级
-      dischargeLevel:[],//排口绘制数据
-      floatageDrawPage:[],//漂浮物绘制数据
-      drawName:'',
+      drawNameShow: false,
+      riskSourceLevel: [], //风险源风险等级
+      RiskSourceDrawPage: [], //风险源绘制数据
+      dischargeDrawPage: [], //排口风险等级
+      dischargeLevel: [], //排口绘制数据
+      drawName: '',
       accordionAlertKey: ['phonePhoto'], // 手风琴
       //水质数据上传参数
       waterQualityData: {
@@ -996,8 +995,7 @@ export default {
       pointList: {}, //绘制点坐标
       timeSetShow: false, // 时间弹窗显隐
       timeSetShowRight: false, // 右侧时间弹窗显隐
-      timeData: [
-      ],
+      timeData: [],
 
       timeQuantum: '', // 时间段
       dateFormat: 'YYYY-MM-DD',
@@ -1411,12 +1409,10 @@ export default {
         this.getRiskSourceMapDrawPage(true)
         //获取排口绘制数据
         this.removeOverLays(this.dischargeDrawPage)
-        this.getDischargeMapDrawPage() 
+        this.getDischargeMapDrawPage()
         //获取漂浮物绘制数据
-        this.removeOverLays(this.floatageDrawPage)
-        this.getFloatageMapDrawPage() 
-        // 双球 获取 基础绘制
-        this.getMapDrawPageRight()
+        this.removeOverLays(this.waterFlotagePoints)
+        this.getFloatageMapDrawPage()
         // 获取专项调查点
         this.removeOverLays(this.surveyPointPoints)
         this.getSurveyPointPoints()
@@ -1429,11 +1425,13 @@ export default {
         this.moreLoadOnce = '2'
       }
     },
-    // 双球 获取当前页面数据
+    // 右侧 双球 获取当前页面数据
     getMapPageDataRight() {
       if (this.moreLoadOnce == '1') {
-        // 双球 获取 基础绘制
-        this.getMapDrawPageRight()
+        // 获取 水面漂浮物
+        this.getFloatageMapDrawPageRight()
+        // 右侧获取水质数据
+        this.getWaterQualityPointsRight()
         this.moreLoadOnce = '2'
       }
     },
@@ -1527,7 +1525,7 @@ export default {
           mediaType: 'image'
         }
       } else {
-        var time = '';
+        var time = ''
         // 双球开关
         if (this.sharedChecked || this.swipeChecked) {
           time = this.defaultRightTime
@@ -1595,6 +1593,7 @@ export default {
         this.onRiskMap()
       })
     },
+    // 获取河流街道列表
     getRiverStreeList() {
       getStreetList(this.$store.state.id)
         .then(res => {
@@ -1644,17 +1643,10 @@ export default {
           endDate: this.endDate
         }
       } else {
-        var time = '';
-        // 双球开关
-        if (this.sharedChecked || this.swipeChecked) {
-          time = this.defaultRightTime
-        } else {
-          time = this.defaultTime
-        }
         // var picker = time.split('-')
         var data = {
           projectId: this.$store.state.id,
-          date: time
+          date: this.defaultTime
           // year: picker[0],
           // month: picker[1],
           // day: picker[2]
@@ -1666,11 +1658,36 @@ export default {
       getWaterStation(data)
         .then(res => {
           let arr = res.data
-          if (this.sharedChecked || this.swipeChecked) {
-            this.rightWaterQualityPoints = JSON.parse(JSON.stringify(arr))
-          } else {
-            this.waterQualityPoints = arr
-          }
+          this.waterQualityPoints = arr
+          this.onWaterQuality()
+        })
+        .catch(err => {})
+    },
+    // 右侧获取水质数据
+    getWaterQualityPointsRight() {
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate
+        }
+      } else {
+        // var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          date: this.defaultRightTime
+          // year: picker[0],
+          // month: picker[1],
+          // day: picker[2]
+          // year: '2019',
+          // month: '12',
+          // day: '25',
+        }
+      }
+      getWaterStation(data)
+        .then(res => {
+          let arr = res.data
+          this.rightWaterQualityPoints = JSON.parse(JSON.stringify(arr))
           this.onWaterQuality()
         })
         .catch(err => {})
@@ -1714,13 +1731,13 @@ export default {
     // },
     //风险源绘制数据
     getRiskSourceMapDrawPage(riskSourceType) {
-      var riskSourceLevel = qs.stringify({ riskSourceLevel:this.riskSourceLevel }, { indices: false })
+      var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
           endDate: this.endDate,
-          innerType:'riskSource',
+          innerType: 'riskSource'
         }
       } else {
         var time = this.defaultTime
@@ -1730,10 +1747,10 @@ export default {
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          innerType:'riskSource',
+          innerType: 'riskSource'
         }
       }
-      mapdrawPageRiskSource(data,riskSourceLevel).then(res => {
+      mapdrawPageRiskSource(data, riskSourceLevel).then(res => {
         let arr = res.data
         let ar = []
         arr.forEach(v => {
@@ -1750,7 +1767,7 @@ export default {
           }
         })
         this.RiskSourceDrawPage = ar
-        if ( riskSourceType== true) {
+        if (riskSourceType == true) {
           for (const risk of this.riskSourceList) {
             if (risk.clicked == true) {
               let point = []
@@ -1764,7 +1781,15 @@ export default {
                     point.push(item)
                   }
                   if (item.locationType.code == 'line') {
-                    this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+                    this.lineDraw(
+                      item.line,
+                      item.frameColor,
+                      3,
+                      item.framePellucidity,
+                      item.id,
+                      '',
+                      item.innerType.code
+                    )
                     let markerTool
                     if (item.drawType.icon) {
                       let icon = new T.Icon({
@@ -1821,20 +1846,20 @@ export default {
                 }
               }
               this.spotDraw(point)
-            } 
+            }
           }
         }
       })
     },
     //排口绘制数据
     getDischargeMapDrawPage() {
-      var dischargeLevel = qs.stringify({ riskSourceLevel:this.dischargeLevel }, { indices: false })
+      var dischargeLevel = qs.stringify({ riskSourceLevel: this.dischargeLevel }, { indices: false })
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
           endDate: this.endDate,
-          innerType:'discharge',
+          innerType: 'discharge'
         }
       } else {
         var time = this.defaultTime
@@ -1844,10 +1869,10 @@ export default {
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          innerType:'discharge',
+          innerType: 'discharge'
         }
       }
-      mapdrawPageRiskSource(data,dischargeLevel).then(res => {
+      mapdrawPageRiskSource(data, dischargeLevel).then(res => {
         let arr = res.data
         let ar = []
         arr.forEach(v => {
@@ -1866,14 +1891,14 @@ export default {
         this.dischargeDrawPage = ar
       })
     },
-    //漂浮物绘制数据
+    //水面漂浮物绘制数据
     getFloatageMapDrawPage() {
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
           endDate: this.endDate,
-          innerType:'floatage',
+          innerType: 'floatage'
         }
       } else {
         var time = this.defaultTime
@@ -1883,7 +1908,7 @@ export default {
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          innerType:'floatage',
+          innerType: 'floatage'
         }
       }
       mapdrawPage(data).then(res => {
@@ -1902,17 +1927,18 @@ export default {
             ar.push(v)
           }
         })
-        this.floatageDrawPage = ar
+        this.waterFlotagePoints = ar
+        console.log(this.waterFlotagePoints)
       })
     },
-    //右侧获取基础绘制数据
-    getMapDrawPageRight() {
+    //右侧获取水面漂浮物数据
+    getFloatageMapDrawPageRight() {
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
           endDate: this.endDate,
-          mediaType: 'image'
+          innerType: 'floatage'
         }
       } else {
         var time = this.defaultRightTime
@@ -1922,7 +1948,7 @@ export default {
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          mediaType: 'image'
+          innerType: 'floatage'
         }
       }
       mapdrawPage(data).then(res => {
@@ -1941,22 +1967,23 @@ export default {
             ar.push(v)
           }
         })
-        this.rightDrawPage = ar
-        console.log(this.rightDrawPage)
+        this.rightWaterFlotagePoints = ar
+        // this.rightDrawPage = ar
+        console.log(this.rightWaterFlotagePoints)
         this.onWaterFlotage()
       })
     },
     //基础绘制保存刷新基础绘制列表
     drawSaveRefresh(type) {
       // this.removeOverLays(this.drawPage)
-      if (type=='riskSource') {
+      if (type == 'riskSource') {
         this.getRiskSourceMapDrawPage(true)
       }
-      if (type=='discharge') {
-        this.getDischargeMapDrawPage() 
+      if (type == 'discharge') {
+        this.getDischargeMapDrawPage()
       }
-      if (type=='floatage') {
-        this.getFloatageMapDrawPage() 
+      if (type == 'floatage') {
+        this.getFloatageMapDrawPage()
       }
     },
     initMap() {
@@ -2061,18 +2088,18 @@ export default {
           pointRadius: '0.4',
           drawTypeId: this.drawTypeId
         }
-        if (this.drawNameShow==true) {
+        if (this.drawNameShow == true) {
           data.innerName = this.drawName
         }
         mapdrawSave(data)
           .then(res => {
             this.$message.success('保存成功')
             this.mapdrawId = res.data.id
-            if (this.drawNameShow==true) {
+            if (this.drawNameShow == true) {
               this.drawName = ''
               this.drawNameShow = false
             }
-            
+
             let result = this.toolIndexPointData.findIndex(item => {
               return this.toolIndexId == item.id
             })
@@ -2108,13 +2135,13 @@ export default {
           framePellucidity: this.borderOpacity,
           drawTypeId: this.drawTypeId
         }
-        if (this.drawNameShow==true) {
+        if (this.drawNameShow == true) {
           data.innerName = this.drawName
         }
         mapdrawSave(data)
           .then(res => {
             this.$message.success('保存成功')
-            if (this.drawNameShow==true) {
+            if (this.drawNameShow == true) {
               this.drawName = ''
               this.drawNameShow = false
             }
@@ -2164,13 +2191,13 @@ export default {
           framePellucidity: this.borderOpacity,
           drawTypeId: this.drawTypeId
         }
-        if (this.drawNameShow==true) {
+        if (this.drawNameShow == true) {
           data.innerName = this.drawName
         }
         mapdrawSave(data)
           .then(res => {
             this.$message.success('保存成功')
-            if (this.drawNameShow==true) {
+            if (this.drawNameShow == true) {
               this.drawName = ''
               this.drawNameShow = false
             }
@@ -2220,7 +2247,7 @@ export default {
     },
     // 绘制取消
     toolCradCancel() {
-      if (this.drawNameShow ==true) {
+      if (this.drawNameShow == true) {
         this.drawName = ''
         this.drawNameShow = false
       }
@@ -2662,6 +2689,91 @@ export default {
     },
     // 时间轴切换操作
     timeLineChange() {
+      // 双球开关 卷帘开关
+      if (this.sharedChecked || this.swipeChecked) {
+        // 河道显示
+        if (this.riverShow) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 街道显示
+        if (this.streetShow) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 手机照片
+        if (this.phonePhoto) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 无人机照片
+        if (this.UAVPhoto) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 360全景图
+        if (this.panorama) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 风险地图
+        if (this.riskMap) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 水质数据
+        if (this.waterQuality) {
+          this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterQualityPoints, 'olMap2')
+        }
+        // 水质漂浮物
+        if (this.waterFlotage) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 排口
+        if (this.outlet) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 河岸风险源
+        if (this.riverRisk) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        if (this.drawType) {
+        }
+        // 水土流失
+        if (this.waterLandLoss) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 水面率
+        if (this.waterRatio) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 底泥
+        if (this.bottomMud) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 专项调查点
+        if (this.surveyPoint) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 河道连通性
+        if (this.riverLink) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+        // 水陆分布
+        if (this.landAndWater) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        }
+      }
       this.getWeatherList()
       this.map.clearOverLays()
       this.moreLoadOnce = 1
@@ -2671,11 +2783,90 @@ export default {
     rightTimeLineChange() {
       // 双球开关 卷帘开关
       if (this.sharedChecked || this.swipeChecked) {
-        console.log("时间轴切换")
+        console.log('时间轴切换')
       }
-      // for (const layer of this.olMap2.getLayers().array_) {
-      //   this.olMap2.removeLayer(layer)
-      // }
+      // 河道显示
+      if (this.riverShow) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 街道显示
+      if (this.streetShow) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 手机照片
+      if (this.phonePhoto) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 无人机照片
+      if (this.UAVPhoto) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 360全景图
+      if (this.panorama) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 风险地图
+      if (this.riskMap) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 水质数据
+      if (this.waterQuality) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 水质漂浮物
+      if (this.waterFlotage) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 排口
+      if (this.outlet) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 河岸风险源
+      if (this.riverRisk) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      if (this.drawType) {
+      }
+      // 水土流失
+      if (this.waterLandLoss) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 水面率
+      if (this.waterRatio) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 底泥
+      if (this.bottomMud) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 专项调查点
+      if (this.surveyPoint) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 河道连通性
+      if (this.riverLink) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
+      // 水陆分布
+      if (this.landAndWater) {
+        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+      }
       this.moreLoadOnce = 1
       this.getMapPageDataRight()
     },
@@ -3466,10 +3657,20 @@ export default {
           // 双球开关
           if (this.sharedChecked) {
             for (const item of this.waterQualityPoints) {
-              this.olSharedSurveyPoint(item.coordinate, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap1')
+              this.olSharedSurveyPoint(
+                item.coordinate,
+                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+                item.id,
+                'olMap1'
+              )
             }
             for (const item of this.rightWaterQualityPoints) {
-              this.olSharedSurveyPoint(item.coordinate, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap2')
+              this.olSharedSurveyPoint(
+                item.coordinate,
+                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+                item.id,
+                'olMap2'
+              )
             }
           }
           // 卷帘开关
@@ -3614,19 +3815,41 @@ export default {
     // 水面漂浮物
     onWaterFlotage() {
       if (this.waterFlotage) {
-        if (this.sharedChecked) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
-        }
         let point = []
         let point2 = []
-        for (const item of this.floatageDrawPage) {
+        for (const item of this.waterFlotagePoints) {
+          if (item.locationType.code == 'point') {
+            item.latlng = {
+              lat: item.point[1],
+              lng: item.point[0]
+            }
+            point.push(item)
+          }
+          if (item.locationType.code == 'line') {
+            this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+          }
+          if (item.locationType.code == 'polygon') {
+            this.noodlesDraw(
+              item.polygon,
+              item.frameColor,
+              3,
+              item.framePellucidity,
+              item.shapeColor,
+              item.shapePellucidity,
+              item.innerName,
+              item.id,
+              item.innerType.code
+            )
+          }
+        }
+        if (this.sharedChecked || this.swipeChecked) {
+          for (const item of this.rightWaterFlotagePoints) {
             if (item.locationType.code == 'point') {
               item.latlng = {
                 lat: item.point[1],
                 lng: item.point[0]
               }
-              point.push(item)
+              point2.push(item)
             }
             if (item.locationType.code == 'line') {
               this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
@@ -3644,60 +3867,46 @@ export default {
                 item.innerType.code
               )
             }
-        }
-        if (this.sharedChecked || this.swipeChecked) {
-          for (const item of this.rightDrawPage) {
-            if (item.drawType.name == '水面漂浮物') {
-              if (item.locationType.code == 'point') {
-                item.latlng = {
-                  lat: item.point[1],
-                  lng: item.point[0]
-                }
-                point2.push(item)
-              }
-              if (item.locationType.code == 'line') {
-                this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
-              }
-              if (item.locationType.code == 'polygon') {
-                this.noodlesDraw(
-                  item.polygon,
-                  item.frameColor,
-                  3,
-                  item.framePellucidity,
-                  item.shapeColor,
-                  item.shapePellucidity,
-                  item.innerName,
-                  item.id,
-                  item.innerType.code
-                )
-              }
-            }
           }
         }
         if (point.length > 0) {
+          this.waterFlotagePoints = point
           if (point2.length > 0) {
             this.rightWaterFlotagePoints = point2
           }
-          this.waterFlotagePoints = point
+
+          console.log(this.waterFlotagePoints)
+          console.log(this.rightWaterFlotagePoints)
+
           this.spotDraw(this.waterFlotagePoints)
           // 双球开关
           if (this.sharedChecked) {
             for (const item of this.waterFlotagePoints) {
-              this.olSharedSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap1')
+              this.olSharedSurveyPoint(
+                item.latlng,
+                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+                item.id,
+                'olMap1'
+              )
             }
             for (const item of this.rightWaterFlotagePoints) {
-              this.olSharedSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap2')
+              this.olSharedSurveyPoint(
+                item.latlng,
+                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+                item.id,
+                'olMap2'
+              )
             }
           }
           // 卷帘开关
           if (this.swipeChecked) {
-            for (const item of point) {
+            for (const item of this.waterFlotagePoints) {
               this.olSwipeSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
             }
           }
         }
       } else {
-        this.removeOverLays(this.floatageDrawPage)
+        this.removeOverLays(this.waterFlotagePoints)
         // 双球开关水面漂浮物关闭
         if (this.sharedChecked) {
           this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
@@ -3705,7 +3914,7 @@ export default {
         }
         // 卷帘开关水面漂浮物闭
         if (this.swipeChecked) {
-          for (const item of data) {
+          for (const item of this.waterFlotagePoints) {
             for (const layer of this.lmap.getLayers().array_) {
               if (layer.values_.id == item.id) {
                 this.lmap.removeLayer(layer)
@@ -3755,10 +3964,20 @@ export default {
           if (this.sharedChecked) {
             console.log('双球')
             for (const item of this.outletPoints) {
-              this.olSharedSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap1')
+              this.olSharedSurveyPoint(
+                item.latlng,
+                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+                item.id,
+                'olMap1'
+              )
             }
             for (const item of this.rightOutletPoints) {
-              this.olSharedSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id, 'olMap2')
+              this.olSharedSurveyPoint(
+                item.latlng,
+                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+                item.id,
+                'olMap2'
+              )
             }
           }
           // 卷帘开关
@@ -3769,16 +3988,15 @@ export default {
           }
         }
       } else {
-
         this.removeOverLays(this.dischargeDrawPage)
         // 双球开关排口关闭
         if (this.sharedChecked) {
-          this.olRemoveLayer(data, 'olMap1')
-          this.olRemoveLayer(data, 'olMap2')
+          this.olRemoveLayer(this.dischargeDrawPage, 'olMap1')
+          this.olRemoveLayer(this.dischargeDrawPage, 'olMap2')
         }
         // 卷帘开关排口关闭
         if (this.swipeChecked) {
-          for (const item of data) {
+          for (const item of this.dischargeDrawPage) {
             for (const layer of this.lmap.getLayers().array_) {
               if (layer.values_.id == item.id) {
                 this.lmap.removeLayer(layer)
@@ -3885,7 +4103,7 @@ export default {
         this.removeOverLays(this.RiskSourceDrawPage)
         // 双球开关
         if (this.sharedChecked) {
-          for (const item of data) {
+          for (const item of this.RiskSourceDrawPage) {
             for (const layer of this.olMap1.getLayers().array_) {
               if (layer.values_.id == item.id) {
                 this.olMap1.removeLayer(layer)
@@ -4463,15 +4681,18 @@ export default {
       this.$message.error(JSON.parse(err.message).message)
     },
     //选择绘制类型
-    choiceDrawChange(value){
-      console.log(`selected ${value}`);
-      if (value!='5da8374dea6c157d2d61007c'&value!='5da8389eea6c157d2d61007f'&value!='5dafe6c8ea6c159999a0549c') {
+    choiceDrawChange(value) {
+      console.log(`selected ${value}`)
+      if (
+        (value != '5da8374dea6c157d2d61007c') &
+        (value != '5da8389eea6c157d2d61007f') &
+        (value != '5dafe6c8ea6c159999a0549c')
+      ) {
         this.drawNameShow = true
-      }else{
-         this.drawNameShow = false
-        
+      } else {
+        this.drawNameShow = false
       }
-    },
+    }
   }
 }
 </script>
