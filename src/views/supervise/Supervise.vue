@@ -1178,12 +1178,8 @@ export default {
       ],
       rightWaterQualityPoints: [],
       waterFlotage: false, // 水面漂浮物
-      waterFlotagePoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.22222, lng: 121.52222 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.23555, lng: 121.50555 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.22333, lng: 121.51333 } }
-      ],
-      rightWaterFlotagePoints: [],
+      waterFlotagePoints: [],
+      waterFlotagePointsRight: [],
       outlet: false, // 排口
       outletPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.22222, lng: 121.52222 } },
@@ -1425,7 +1421,7 @@ export default {
     // 右侧 双球 获取当前页面数据
     getMapPageDataRight() {
       if (this.moreLoadOnce == '1') {
-        // 获取 水面漂浮物
+        // 右侧获取水面漂浮物
         this.getFloatageMapDrawPageRight()
         // 右侧获取水质数据
         this.getWaterQualityPointsRight()
@@ -1943,6 +1939,7 @@ export default {
         })
         this.waterFlotagePoints = ar
         console.log(this.waterFlotagePoints)
+        this.onWaterFlotage()
       })
     },
     //右侧获取水面漂浮物数据
@@ -1981,9 +1978,8 @@ export default {
             ar.push(v)
           }
         })
-        this.rightWaterFlotagePoints = ar
-        // this.rightDrawPage = ar
-        console.log(this.rightWaterFlotagePoints)
+        this.waterFlotagePointsRight = ar
+        console.log(this.waterFlotagePointsRight)
         this.onWaterFlotage()
       })
     },
@@ -2708,48 +2704,32 @@ export default {
         console.log('时间轴切换')
         // 河道显示
         if (this.riverShow) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 街道显示
         if (this.streetShow) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 手机照片
         if (this.phonePhoto) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 无人机照片
         if (this.UAVPhoto) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 360全景图
         if (this.panorama) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 风险地图
         if (this.riskMap) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 水质数据
         if (this.waterQuality) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 水质漂浮物
         if (this.waterFlotage) {
           this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+          this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
         }
         // 排口
         if (this.outlet) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 河岸风险源
         if (this.riverRisk) {
@@ -2777,33 +2757,21 @@ export default {
         }
         // 水土流失
         if (this.waterLandLoss) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 水面率
         if (this.waterRatio) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 底泥
         if (this.bottomMud) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 专项调查点
         if (this.surveyPoint) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 河道连通性
         if (this.riverLink) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
         // 水陆分布
         if (this.landAndWater) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
         }
       }
       
@@ -2820,48 +2788,32 @@ export default {
       }
       // 河道显示
       if (this.riverShow) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 街道显示
       if (this.streetShow) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 手机照片
       if (this.phonePhoto) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 无人机照片
       if (this.UAVPhoto) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 360全景图
       if (this.panorama) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 风险地图
       if (this.riskMap) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 水质数据
       if (this.waterQuality) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 水质漂浮物
       if (this.waterFlotage) {
         this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+        this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
       }
       // 排口
       if (this.outlet) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 河岸风险源
       if (this.riverRisk) {
@@ -2889,33 +2841,21 @@ export default {
       }
       // 水土流失
       if (this.waterLandLoss) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 水面率
       if (this.waterRatio) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 底泥
       if (this.bottomMud) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 专项调查点
       if (this.surveyPoint) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 河道连通性
       if (this.riverLink) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       // 水陆分布
       if (this.landAndWater) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
       }
       this.moreLoadOnce = 1
       this.getMapPageDataRight()
@@ -3893,8 +3833,14 @@ export default {
             )
           }
         }
+        if (point.length > 0) {
+          this.spotDraw(point)
+          console.log(this.waterFlotagePoints)
+          console.log(this.waterFlotagePointsRight)
+        }
+        // 双球开关
         if (this.sharedChecked || this.swipeChecked) {
-          for (const item of this.rightWaterFlotagePoints) {
+          for (const item of this.waterFlotagePointsRight) {
             if (item.locationType.code == 'point') {
               item.latlng = {
                 lat: item.point[1],
@@ -3919,20 +3865,8 @@ export default {
               )
             }
           }
-        }
-        if (point.length > 0) {
-          this.waterFlotagePoints = point
-          if (point2.length > 0) {
-            this.rightWaterFlotagePoints = point2
-          }
-
-          console.log(this.waterFlotagePoints)
-          console.log(this.rightWaterFlotagePoints)
-
-          this.spotDraw(this.waterFlotagePoints)
-          // 双球开关
-          if (this.sharedChecked) {
-            for (const item of this.waterFlotagePoints) {
+          if (point.length > 0) {
+            for (const item of point) {
               this.olSharedSurveyPoint(
                 item.latlng,
                 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
@@ -3940,7 +3874,9 @@ export default {
                 'olMap1'
               )
             }
-            for (const item of this.rightWaterFlotagePoints) {
+          }
+          if (point2.length > 0) {
+            for (const item of point2) {
               this.olSharedSurveyPoint(
                 item.latlng,
                 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
@@ -3949,11 +3885,11 @@ export default {
               )
             }
           }
-          // 卷帘开关
-          if (this.swipeChecked) {
-            for (const item of this.waterFlotagePoints) {
-              this.olSwipeSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
-            }
+        }
+        // 卷帘开关
+        if (this.swipeChecked) {
+          for (const item of point) {
+            this.olSwipeSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
           }
         }
       } else {
@@ -3961,7 +3897,7 @@ export default {
         // 双球开关水面漂浮物关闭
         if (this.sharedChecked) {
           this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterFlotagePoints, 'olMap2')
+          this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
         }
         // 卷帘开关水面漂浮物闭
         if (this.swipeChecked) {
