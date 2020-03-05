@@ -846,14 +846,9 @@
       :msg="panoramaData"
       @exitPanorama="closePanorma"
     ></look-panorama>
-    <a-modal
-      title="无人机照片"
-      :visible="UAVPhotosModal"
-      @ok="UAVPhotosOk"
-      @cancel="UAVPhotosOk"
-    >
+    <a-modal title="无人机照片" :visible="UAVPhotosModal" @ok="UAVPhotosOk" @cancel="UAVPhotosOk">
       <div>点击坐标: {{UAVPhotosCoordinate}}</div>
-      <div style="margin-top:10px;max-height: 600px;overflow-y: scroll;" >
+      <div style="margin-top:10px;max-height: 600px;overflow-y: scroll;">
         <viewer v-for="item in uavPhotoList" :key="item.id" style="margin:5px">
           <div>名称:{{item.name}}</div>
           <img :src="item.pic" alt style="width:100%;margin:0 4px 4px 0;" />
@@ -964,11 +959,9 @@ export default {
     return {
       drawNameShow: false,
       riskSourceLevel: [], //风险源风险等级
-      dischargeDrawPage: [], //排口风险等级
-      dischargeLevel: [], //排口绘制数据
-      UAVPhotosModal:false,//无人机照片弹窗
-      uavPhotoList:[],//无人机照片
-      UAVPhotosCoordinate:'',//无人机照片点击坐标
+      UAVPhotosModal: false, //无人机照片弹窗
+      uavPhotoList: [], //无人机照片
+      UAVPhotosCoordinate: '', //无人机照片点击坐标
       drawName: '',
       accordionAlertKey: ['phonePhoto'], // 手风琴
       //水质数据上传参数
@@ -1199,16 +1192,13 @@ export default {
       waterFlotagePoints: [],
       waterFlotagePointsRight: [],
       outlet: false, // 排口
-      outletPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.22222, lng: 121.52222 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.23555, lng: 121.50555 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.22333, lng: 121.51333 } }
-      ],
-      rightOutletPoints: [],
+      dischargeLevel: [], //排口绘制等级
+      outletPoints: [], //排口数据
+      outletPointsRight: [], //右侧排口数据
       drawType: false,
       riverRisk: false, // 河岸风险源
-      riverRiskPoints: [],// 河岸风险源数据
-      riverRiskPointsRight: [],// 右侧河岸风险源数据
+      riverRiskPoints: [], // 河岸风险源数据
+      riverRiskPointsRight: [], // 右侧河岸风险源数据
       waterLandLoss: false, // 水土流失
       waterLandLossPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.09999, lng: 121.50333 } },
@@ -1419,7 +1409,7 @@ export default {
         this.removeOverLays(this.riverRiskPoints)
         this.getRiskSourceMapDrawPage(true)
         //获取排口绘制数据
-        this.removeOverLays(this.dischargeDrawPage)
+        this.removeOverLays(this.outletPoints)
         this.getDischargeMapDrawPage()
         //获取漂浮物绘制数据
         this.removeOverLays(this.waterFlotagePoints)
@@ -1446,6 +1436,10 @@ export default {
         this.getWaterQualityPointsRight()
         // 右侧获取风险源
         this.getRiskSourceMapDrawPageRight(false)
+        //右侧获取排口绘制数据
+        this.getDischargeMapDrawPageRight()
+        // 右侧获取专项调查点
+        this.getSurveyPointPointsRight()
         this.moreLoadOnce = '2'
       }
     },
@@ -1454,9 +1448,7 @@ export default {
       if (this.map.getZoom() > 18) {
       }
     },
-    getUavPhoto(){
-      
-    },
+    getUavPhoto() {},
     // 获取手机照片
     getPhonePhotoPoints() {
       if (this.historyData) {
@@ -1542,14 +1534,7 @@ export default {
           mediaType: 'image'
         }
       } else {
-        var time = ''
-        // 双球开关
-        if (this.sharedChecked || this.swipeChecked) {
-          time = this.defaultRightTime
-        } else {
-          time = this.defaultTime
-        }
-        var picker = time.split('-')
+        var picker = this.defaultTime.split('-')
         var data = {
           projectId: this.$store.state.id,
           year: picker[0],
@@ -1563,11 +1548,36 @@ export default {
         arr.forEach(v => {
           v.clicked = false
         })
-        if (this.sharedChecked || this.swipeChecked) {
-          this.rightSurveyPointPoints = JSON.parse(JSON.stringify(arr))
-        } else {
-          this.surveyPointPoints = arr
+        this.surveyPointPoints = arr
+        console.log(this.surveyPointPoints)
+        this.onSurveyPoint()
+      })
+    },
+    // 右侧获取专项调查点
+    getSurveyPointPointsRight() {
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          mediaType: 'image'
         }
+      } else {
+        var picker = this.defaultRightTime.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          mediaType: 'image'
+        }
+      }
+      inspectPointPageRiver(data).then(res => {
+        let arr = res.data.data
+        arr.forEach(v => {
+          v.clicked = false
+        })
+        this.rightSurveyPointPoints = arr
         console.log(this.surveyPointPoints)
         this.onSurveyPoint()
       })
@@ -1883,7 +1893,7 @@ export default {
         }
       })
     },
-    //排口绘制数据
+    //获取排口绘制数据
     getDischargeMapDrawPage() {
       var dischargeLevel = qs.stringify({ riskSourceLevel: this.dischargeLevel }, { indices: false })
       if (this.historyData) {
@@ -1920,7 +1930,49 @@ export default {
             ar.push(v)
           }
         })
-        this.dischargeDrawPage = ar
+        this.outletPoints = ar
+        this.onOutlet()
+      })
+    },
+    //右侧获取排口绘制数据
+    getDischargeMapDrawPageRight() {
+      var dischargeLevel = qs.stringify({ riskSourceLevel: this.dischargeLevel }, { indices: false })
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType: 'discharge'
+        }
+      } else {
+        var time = this.defaultRightTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType: 'discharge'
+        }
+      }
+      mapdrawPageRiskSource(data, dischargeLevel).then(res => {
+        let arr = res.data
+        let ar = []
+        arr.forEach(v => {
+          v.shapePellucidity = v.shapePellucidity / 100
+          v.framePellucidity = v.framePellucidity / 100
+          if (v.drawType == undefined) {
+            v.drawType = {
+              code: '',
+              id: ''
+            }
+          }
+          if (v.innerType != undefined) {
+            ar.push(v)
+          }
+        })
+        this.outletPointsRight = ar
+        this.onOutlet()
       })
     },
     //水面漂浮物绘制数据
@@ -2752,6 +2804,8 @@ export default {
         }
         // 排口
         if (this.outlet) {
+          this.olRemoveLayer(this.outletPoints, 'olMap1')
+          this.olRemoveLayer(this.outletPointsRight, 'olMap2')
         }
         // 河岸风险源
         if (this.riverRisk) {
@@ -2788,6 +2842,8 @@ export default {
         }
         // 专项调查点
         if (this.surveyPoint) {
+          this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
+          this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
         }
         // 河道连通性
         if (this.riverLink) {
@@ -2796,7 +2852,7 @@ export default {
         if (this.landAndWater) {
         }
       }
-      
+
       this.getWeatherList()
       this.map.clearOverLays()
       this.moreLoadOnce = 1
@@ -2836,6 +2892,8 @@ export default {
       }
       // 排口
       if (this.outlet) {
+        this.olRemoveLayer(this.outletPoints, 'olMap1')
+        this.olRemoveLayer(this.outletPointsRight, 'olMap2')
       }
       // 河岸风险源
       if (this.riverRisk) {
@@ -2872,6 +2930,8 @@ export default {
       }
       // 专项调查点
       if (this.surveyPoint) {
+        this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
+        this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
       }
       // 河道连通性
       if (this.riverLink) {
@@ -3374,42 +3434,40 @@ export default {
     // 无人机照片
     onUAVPhoto() {
       if (this.UAVPhoto) {
-        this.map.addEventListener("click",this.UAVPhotoClick);
+        this.map.addEventListener('click', this.UAVPhotoClick)
       } else {
-        this.map.removeEventListener("click",this.UAVPhotoClick);
+        this.map.removeEventListener('click', this.UAVPhotoClick)
       }
     },
     //无人机照片地图点击事件
-    UAVPhotoClick(e){
-      console.log(e);
+    UAVPhotoClick(e) {
+      console.log(e)
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
-          point:e.lnglat.lng+","+e.lnglat.lat,
+          point: e.lnglat.lng + ',' + e.lnglat.lat,
           startDate: this.startDate,
-          endDate: this.endDate,
+          endDate: this.endDate
         }
       } else {
         var time = this.defaultTime
         var picker = time.split('-')
         var data = {
           projectId: this.$store.state.id,
-          point:e.lnglat.lng+","+e.lnglat.lat,
+          point: e.lnglat.lng + ',' + e.lnglat.lat,
           year: picker[0],
           month: picker[1],
-          day: picker[2],
+          day: picker[2]
         }
       }
-      uavPhoto(data).then(res=>{
+      uavPhoto(data).then(res => {
         var arr = res.data
-        console.log(res.data);
-        if (arr.length>0) {
-          this.UAVPhotosCoordinate = e.lnglat.lng+","+e.lnglat.lat
+        console.log(res.data)
+        if (arr.length > 0) {
+          this.UAVPhotosCoordinate = e.lnglat.lng + ',' + e.lnglat.lat
           this.uavPhotoList = arr
           this.UAVPhotosModal = true
-          
         }
-        
       })
       // alert(e.lnglat.lng+","+e.lnglat.lat);
     },
@@ -3970,14 +4028,15 @@ export default {
     // 排口
     onOutlet() {
       if (this.outlet) {
-        let point = []
-        for (const item of this.dischargeDrawPage) {
+        let point1 = []
+        let point2 = []
+        for (const item of this.outletPoints) {
           if (item.locationType.code == 'point') {
             item.latlng = {
               lng: item.point[0],
               lat: item.point[1]
             }
-            point.push(item)
+            point1.push(item)
           }
           if (item.locationType.code == 'line') {
             this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
@@ -3996,50 +4055,57 @@ export default {
             )
           }
         }
-        if (point.length > 0) {
-          if (this.sharedChecked || this.swipeChecked) {
-            this.rightOutletPoints = JSON.parse(JSON.stringify(point))
-          } else {
-            this.outletPoints = point
-          }
-          this.spotDraw(this.outletPoints)
-          // 双球开关
-          if (this.sharedChecked) {
-            console.log('双球')
-            for (const item of this.outletPoints) {
-              this.olSharedSurveyPoint(
-                item.latlng,
-                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
-                item.id,
-                'olMap1'
-              )
+        if (point1.length > 0) {
+          this.spotDraw(point1)
+        }
+        // 双球开关
+        if (this.sharedChecked || this.swipeChecked) {
+          for (const item of this.outletPointsRight) {
+            if (item.locationType.code == 'point') {
+              item.latlng = {
+                lng: item.point[0],
+                lat: item.point[1]
+              }
+              point2.push(item)
             }
-            for (const item of this.rightOutletPoints) {
-              this.olSharedSurveyPoint(
-                item.latlng,
-                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
-                item.id,
-                'olMap2'
-              )
+            if (item.locationType.code == 'line') {
+            }
+            if (item.locationType.code == 'polygon') {
             }
           }
-          // 卷帘开关
-          if (this.swipeChecked) {
-            for (const item of outletPoints) {
-              this.olSwipeSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
-            }
+          for (const item of point1) {
+            this.olSharedSurveyPoint(
+              item.latlng,
+              'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+              item.id,
+              'olMap1'
+            )
+          }
+          for (const item of point2) {
+            this.olSharedSurveyPoint(
+              item.latlng,
+              'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+              item.id,
+              'olMap2'
+            )
+          }
+        }
+        // 卷帘开关
+        if (this.swipeChecked) {
+          for (const item of point1) {
+            this.olSwipeSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
           }
         }
       } else {
-        this.removeOverLays(this.dischargeDrawPage)
+        this.removeOverLays(this.outletPoints)
         // 双球开关排口关闭
         if (this.sharedChecked) {
-          this.olRemoveLayer(this.dischargeDrawPage, 'olMap1')
-          this.olRemoveLayer(this.dischargeDrawPage, 'olMap2')
+          this.olRemoveLayer(this.outletPoints, 'olMap1')
+          this.olRemoveLayer(this.outletPointsRight, 'olMap2')
         }
         // 卷帘开关排口关闭
         if (this.swipeChecked) {
-          for (const item of this.dischargeDrawPage) {
+          for (const item of this.outletPoints) {
             for (const layer of this.lmap.getLayers().array_) {
               if (layer.values_.id == item.id) {
                 this.lmap.removeLayer(layer)
@@ -4164,7 +4230,7 @@ export default {
       // 双球开关风险源关闭
       if (this.sharedChecked) {
         for (const item of this.riverRiskPoints) {
-        if (item.drawType.id == id) {
+          if (item.drawType.id == id) {
             data1.push(item)
           }
         }
@@ -4377,7 +4443,7 @@ export default {
           marker.addEventListener('click', this.taskPointClick)
         }
         // 双球开关
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.swipeChecked) {
           console.log('双球')
           for (const item of this.surveyPointPoints) {
             this.olSharedSurveyPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id, 'olMap1')
@@ -4782,12 +4848,11 @@ export default {
       }
     },
     //关闭无人机照片弹窗
-    UAVPhotosOk(){
-      
+    UAVPhotosOk() {
       this.UAVPhotosModal = false
       this.UAVPhotosCoordinate = ''
       this.uavPhotoList = []
-    },
+    }
   }
 }
 </script>
