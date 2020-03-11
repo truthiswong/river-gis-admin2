@@ -60,12 +60,45 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="左岸" has-feedback>
-              <a-button block style="width:150px">上传KMZ</a-button>
+              <el-upload
+                class="upload-demo"
+                ref="upload"
+                :data="spotList"
+                name="leftBankKmz"
+                :headers="headers"
+                action="/server/data/admin/river/save"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :on-success="handleSuccess"
+                :show-file-list="true"
+                :file-list="fileList"
+                accept=".kmz, .kml"
+                :limit="1"
+                :auto-upload="false"
+              >
+                <a-button block style="margin-top: 10px;">上传KMZ</a-button>
+              </el-upload>
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="右岸" has-feedback>
-              <a-button block style="width:150px">上传KMZ</a-button>
+              <el-upload
+                class="upload-demo"
+                ref="upload1"
+                :data="spotList"
+                name="rightBankKmz"
+                :headers="headers"
+                action="/server/data/admin/river/save"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :show-file-list="true"
+                :file-list="fileList1"
+                accept=".kmz, .kml"
+                :limit="1"
+                :auto-upload="false"
+              >
+                <a-button block style="margin-top: 10px;">上传KMZ</a-button>
+              </el-upload>
             </a-form-item>
           </a-col>
         </a-row>
@@ -253,6 +286,8 @@
 <script>
 const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters']
 import { informationRiver, regionList, getSaveRiver } from '@/api/login'
+import Vue from 'vue'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
 export default {
   props: {
     inputName: String,
@@ -260,6 +295,16 @@ export default {
   },
   data() {
     return {
+      fileList:[],
+      fileList1:[],
+      headers: {
+        Authorization: Vue.ls.get(ACCESS_TOKEN),
+        'X-TENANT-ID': this.$store.state.tenantId
+      },
+      spotList:{
+        id: '',
+        projectId: this.$store.state.id,
+      },
       list: {
         id: '',
         projectId: this.$store.state.id,
@@ -377,6 +422,9 @@ export default {
       if (this.save == '1') {
         getSaveRiver(data)
           .then(res => {
+            console.log(res);
+            this.spotList.id = res.data.info.id
+            this.submitUpload()
             this.$message.success('保存成功')
             this.$parent.getList()
             this.handleCancel()
@@ -386,7 +434,7 @@ export default {
           })
       } else {
         this.$parent.uploadSave(data)
-        this.handleCancel()
+        
       }
     },
     //省市选择
@@ -586,11 +634,66 @@ export default {
     },
     filter(inputValue, path) {
       return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1)
+    },
+    submitUpload(id){
+      this.spotList.id = id
+      this.$refs.upload.submit()
+      this.$refs.upload1.submit()
+      this.list.id = ''
+      this.list.name = ''
+      this.list.length1 = ''
+      this.list.dimension = ''
+      this.list.code = ''
+      this.list.priority = ''
+      this.list.destAddress = ''
+      this.list.lat = ''
+      this.list.lng = ''
+      this.list.startAddress = ''
+      this.list.lat1 = ''
+      this.list.lng1 = ''
+      this.list.areaId = ''
+      this.list.areaId1 = ''
+      this.list.areaId2 = ''
+      this.list.areaId3 = ''
+      this.list.areaId4 = ''
+      this.list.areaId5 = ''
+      this.list.averageDepth = ''
+      this.list.highWaterLevel = ''
+      this.list.maxDepth = ''
+      this.list.maxMouthWidth = ''
+      this.list.minMouthWidth = ''
+      this.list.mouthDimension = ''
+      this.list.normalWaterLevel = ''
+      this.list.cityList = []
+      this.list.areaList = []
+      this.list.cityList1 = []
+      this.list.areaList1 = []
+      this.coordinate = []
+      this.visible = false
+      
+    },
+    handleSuccess(response, file, fileList) {
+      this.fileList = []
+      this.fileList1 = []
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
     }
   }
 }
 </script>
-<style scoped>
+<style scoped  lang="less">
+.ant-spin-container {
+  .ant-list-item:hover {
+    background-color: #eee;
+  }
+  .active_item {
+    background-color: #eee;
+  }
+}
 .ant-form-item {
   margin-bottom: 0;
 }

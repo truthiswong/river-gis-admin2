@@ -372,6 +372,7 @@
             <a-select-option value="mix">混合</a-select-option>
             <a-select-option value="industrial">工业</a-select-option>
             <a-select-option value="powerplant">电厂温排水</a-select-option>
+            <a-select-option value="other">其他</a-select-option>
           </a-select>
         </a-collapse-panel>
       </a-collapse>
