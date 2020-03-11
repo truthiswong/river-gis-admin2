@@ -70,10 +70,10 @@
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="创建时间">
               <a-date-picker
+                disabled
                 style="width:100%;"
-                :showTime="{ format: 'HH:mm' }"
-                format="YYYY-MM-DD HH:mm"
-                :value="moment(list.discoveryTime, 'YYYY-MM-DD HH:mm')"
+                format="YYYY-MM-DD"
+                :value="moment(list.createTime, 'YYYY-MM-DD')"
                 placeholder="选择日期"
                 @change="onChange"
               />
@@ -125,7 +125,7 @@ export default {
         riverId: '',
         streetId: '',
         currentArea: '',
-        discoveryTime: moment(new Date()).format('YYYY-MM-DD HH:mm'),
+        createTime: '',
         remark: ''
       },
       visible: false,
@@ -160,14 +160,14 @@ export default {
         this.list.riverId = arr.river.id
         this.list.streetId = arr.street.id
         // this.list.currentArea=
-        console.log(moment(arr.timeCreated).format('YYYY-MM-DD HH:mm'))
-        this.list.discoveryTime = moment(arr.timeCreated).format('YYYY-MM-DD HH:mm')
+        this.list.createTime = moment(arr.createTime).format('YYYY-MM-DD')
         this.list.remark = arr.remark
       })
       this.visible = true
     },
-    add(id, currentArea, result) {
+    add(id, currentArea, result,defaultTime) {
       // console.log(id,currentArea,result);
+      this.list.createTime = defaultTime
       this.getList()
       this.list.drawId = id
       this.list.address = result.formatted_address
@@ -188,7 +188,7 @@ export default {
     },
     onChange(date, dateString) {
       console.log(date, dateString)
-      this.list.discoveryTime = dateString
+      this.list.createTime = dateString
     },
     handleSubmit() {
       const {
@@ -217,7 +217,7 @@ export default {
         riverId: '',
         streetId: '',
         currentArea: '',
-        discoveryTime: moment(new Date()).format('YYYY-MM-DD HH:mm'),
+        createTime: '',
         remark: ''
       }
     },
