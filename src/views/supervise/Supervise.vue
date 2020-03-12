@@ -2512,10 +2512,10 @@ export default {
     },
     // 设置时间段显隐
     setTimeShow(index) {
-      if (!this.historyData) {
-        this.$message.warning('请先开启 查看历史数据 后再选择日期')
-        this.timeSetShow = false
-      }
+      // if (!this.historyData) {
+      //   this.$message.warning('请先开启 查看历史数据 后再选择日期')
+      //   this.timeSetShow = false
+      // }
     },
     // 设置时间段
     setTime(date, dateString) {
