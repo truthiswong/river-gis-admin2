@@ -372,6 +372,7 @@
             <a-select-option value="mix">混合</a-select-option>
             <a-select-option value="industrial">工业</a-select-option>
             <a-select-option value="powerplant">电厂温排水</a-select-option>
+            <a-select-option value="other">其他</a-select-option>
           </a-select>
         </a-collapse-panel>
       </a-collapse>
@@ -1895,11 +1896,18 @@ export default {
     },
     //获取排口绘制数据
     getDischargeMapDrawPage() {
-      var dischargeLevel = qs.stringify({ riskSourceLevel: this.dischargeLevel }, { indices: false })
+      console.log(this.dischargeLevel);
+      
+      if (this.dischargeLevel.length>0) {
+        var dischargeLevel = this.dischargeLevel.join(',')
+      }else{
+        var dischargeLevel=''
+      }
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
+          dischargeType:dischargeLevel,
           endDate: this.endDate,
           innerType: 'discharge'
         }
@@ -1908,13 +1916,14 @@ export default {
         var picker = time.split('-')
         var data = {
           projectId: this.$store.state.id,
+          dischargeType:dischargeLevel,
           year: picker[0],
           month: picker[1],
           day: picker[2],
           innerType: 'discharge'
         }
       }
-      mapdrawPageRiskSource(data, dischargeLevel).then(res => {
+      mapdrawPage(data).then(res => {
         let arr = res.data
         let ar = []
         arr.forEach(v => {
@@ -1936,11 +1945,16 @@ export default {
     },
     //右侧获取排口绘制数据
     getDischargeMapDrawPageRight() {
-      var dischargeLevel = qs.stringify({ riskSourceLevel: this.dischargeLevel }, { indices: false })
+      if (this.dischargeLevel.length>0) {
+        var dischargeLevel = this.dischargeLevel.join(',')
+      }else{
+        var dischargeLevel=''
+      }
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
+          dischargeType:dischargeLevel,
           endDate: this.endDate,
           innerType: 'discharge'
         }
@@ -1949,13 +1963,14 @@ export default {
         var picker = time.split('-')
         var data = {
           projectId: this.$store.state.id,
+          dischargeType:dischargeLevel,
           year: picker[0],
           month: picker[1],
           day: picker[2],
           innerType: 'discharge'
         }
       }
-      mapdrawPageRiskSource(data, dischargeLevel).then(res => {
+      mapdrawPage(data).then(res => {
         let arr = res.data
         let ar = []
         arr.forEach(v => {
@@ -2311,18 +2326,20 @@ export default {
         this.polygon.setFillOpacity(this.fullOpacity / 100)
         this.polygon.addEventListener('click', this.polygonClick)
       }
-
       // this.getDrawId()
     },
     //风险源，排口弹窗
     searchResult(result) {
+      // this.removeOverLays(this.toolIndexPointData)
+      // this.removeOverLays(this.toolIndexLineData)
+      // this.removeOverLays(this.toolIndexPolygonData)
       if (result.status == 0) {
         if (this.drawTypeId == '5da8374dea6c157d2d61007c') {
           this.$refs.addRisk.add(this.mapdrawId, this.currentArea, result)
         } else if (this.drawTypeId == '5da8389eea6c157d2d61007f') {
           this.$refs.addOutlet.add(this.mapdrawId, result)
         } else if (this.drawTypeId == '5dafe6c8ea6c159999a0549c') {
-          this.$refs.AddFloatage.add(this.mapdrawId, this.currentArea, result)
+          this.$refs.AddFloatage.add(this.mapdrawId, this.currentArea, result,this.defaultTime)
         }
         this.drawTypeId = ''
       } else {

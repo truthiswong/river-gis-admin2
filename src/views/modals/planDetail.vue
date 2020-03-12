@@ -27,7 +27,7 @@
     <a-spin size="large" :spinning="spinning">
       <div class="modal-body">
         <a-tabs type="card" :animated="true">
-          <a-tab-pane v-for="option in planTab" :tab="option.name" :key="option.id">
+          <a-tab-pane v-for="(option,i) in planTab" :tab="option.name" :key="i">
             <div class="card-info">
               <a-form :form="planForm">
                 <div>
@@ -36,8 +36,8 @@
                     :label="item.name+' ('+item.amount+'人)'"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol"
-                    v-for="item in option.roles"
-                    :key="item.id"
+                    v-for="(item,index) in option.roles"
+                    :key="index"
                   >
                     <a-checkbox-group v-model="item.workerId">
                       <a-checkbox
@@ -51,20 +51,49 @@
                 <div>
                   <span style="font-size:16px;font-weight:500;color: #1F1F1F;">设备:</span>
                   <a-form-item
-                    :label="item.name"
+                    :label="add.name"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol"
-                    v-for="item in option.devices"
-                    :key="item.id"
+                    v-for="(add,jj) in option.devices"
+                    :key="jj"
                   >
                     <a-checkbox-group
-                      v-model="item.workerId"
+                      v-model="add.workerId"
                       @change="sadsadasdsa()"
                       style="width:100%;display:flex"
                     >
                       <div
                         style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between"
-                        v-for="devi in item.devices"
+                        v-for="devi in add.devices"
+                        :key="devi.device.id"
+                      >
+                        <a-checkbox disabled :value="devi.device.id">{{devi.device.name}}</a-checkbox>
+                        <a-input-number
+                          class="changeNumber"
+                          :min="devi.amount1"
+                          v-model="devi.amount"
+                        />
+                      </div>
+                    </a-checkbox-group>
+                  </a-form-item>
+                </div>
+                <div>
+                  <span style="font-size:16px;font-weight:500;color: #1F1F1F;">额外设备:</span>
+                  <a-form-item
+                    :label="add.name"
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol"
+                    v-for="(add,jj) in option.devices"
+                    :key="jj"
+                  >
+                    <a-checkbox-group
+                      v-model="add.workerId"
+                      @change="sadsadasdsa()"
+                      style="width:100%;display:flex"
+                    >
+                      <div
+                        style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between"
+                        v-for="devi in add.devices"
                         :key="devi.device.id"
                       >
                         <a-checkbox disabled :value="devi.device.id">{{devi.device.name}}</a-checkbox>
@@ -135,7 +164,7 @@ export default {
         for (const item of arr) {
           item.roles = []
           item.devices = []
-
+          item.additional = []
           devicePage(item.id).then(res => {
             var device = res.data.data
             deviceInspectPage(item.id).then(res => {
@@ -147,9 +176,16 @@ export default {
                 for (const item of v.devices) {
                   v.workerId.push(item.device.id)
                   for (const qq of device) {
-                    if (item.device.id == qq.device.id) {
-                      item.amount1 = qq.amount
+                    if (qq.device) {
+                      if (item.device.id == qq.device.id) {
+                        item.amount1 = qq.amount
+                      }
+                    }else{
+                      // console.log(qq);
+                      // let jj = qq
+                      // item.additional.push(jj)
                     }
+                    
                   }
                 }
               })
@@ -175,6 +211,8 @@ export default {
             })
           })
         }
+        console.log(arr);
+        
         this.planTab = arr
         this.spinning = false
       })
@@ -233,19 +271,14 @@ export default {
                   this.numvis = false
                 })
               }
-              if (this.numvis == true) {
-                planPublish(this.id).then(res => {
-                  this.$message.success('成功')
-                  this.spinning = true
-                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
-                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
-                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
-                })
-                this.visible = false
-              } else {
-                this.$message.error('请全部选择')
-                this.numvis = true
-              }
+              planPublish(this.id).then(res => {
+                this.$message.success('成功')
+                this.spinning = true
+                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
+                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
+                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+              })
+              this.visible = false
             }
           }else{
             if (item.roles[i].workerId.length  == 0) {

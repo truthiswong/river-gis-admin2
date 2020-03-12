@@ -261,18 +261,14 @@ export default {
                     this.numvis = false
                   })
               }
-              if (this.numvis == true) {
-                planPublish(this.id).then(res => {
-                  this.$message.success('成功')
-                  this.spinning = true
-                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
-                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
-                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
-                })
-                this.visible = false
-              } else {
-                this.$message.error('请全部选择')
-              }
+              planPublish(this.id).then(res => {
+                this.$message.success('成功')
+                this.spinning = true
+                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
+                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
+                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+              })
+              this.visible = false
             }
           }else{
             if (item.roles[i].workerId.length  == 0) {

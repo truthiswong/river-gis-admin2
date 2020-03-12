@@ -582,12 +582,19 @@ export default {
       this.spotList.startZoneId = data.startZoneId
       this.spotList.destZoneId = data.destZoneId
       this.$refs.upload.submit()
+      
+      
     },
     del1() {
       this.upload = '0'
       this.fileList = []
     },
     handleSuccess(response, file, fileList) {
+      console.log(this.$refs);
+      
+      this.$refs.addRiver.submitUpload(response.data.info.id)
+      console.log(response.data.info.id)
+
       this.getList()
       this.$message.success('保存成功')
       this.fileList = []
@@ -709,5 +716,10 @@ export default {
 }
 .ant-col-6 {
   text-align: right;
+}
+</style>
+<style >
+.ant-form input[type='file']{
+  display:none
 }
 </style>
