@@ -1342,7 +1342,7 @@ export default {
     let wordLabel = `http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
     this.mapLayerWord = new T.TileLayer(wordLabel, { minZoom: 4, maxZoom: 18, zIndex: 15 })
     // 正射影像
-    this.mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&Authorization=${token}`
+    this.mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${this.$store.state.id}&Authorization=${token}`
     this.mapLayerImage = new T.TileLayer(this.mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
     this.map = new T.Map('map', {
       minZoom: 4,
@@ -2512,10 +2512,10 @@ export default {
     },
     // 设置时间段显隐
     setTimeShow(index) {
-      if (!this.historyData) {
-        this.$message.warning('请先开启 查看历史数据 后再选择日期')
-        this.timeSetShow = false
-      }
+      // if (!this.historyData) {
+      //   this.$message.warning('请先开启 查看历史数据 后再选择日期')
+      //   this.timeSetShow = false
+      // }
     },
     // 设置时间段
     setTime(date, dateString) {
@@ -2626,7 +2626,7 @@ export default {
           picker[0]
         }&month=${picker[1]}&day=${picker[2]}&x={x}&y={y}&z={z}&X-TENANT-ID=${
           this.$store.state.tenantId
-        }&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
+        }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
         this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
         this.map.addLayer(this.mapLayerImage)
       })
@@ -2755,7 +2755,7 @@ export default {
               this.mapYear
             }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
               this.$store.state.tenantId
-            }&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
+            }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
             this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
             this.map.addLayer(this.mapLayerImage)
             item.clicked = true
