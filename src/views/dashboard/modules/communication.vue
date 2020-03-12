@@ -28,7 +28,7 @@
       <div class="player">
         <!-- <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :options="item.playerOptions" :playsinline="true"></video-player> -->
         <img :src="item.media" alt style="width:100%" />
-        <a-button @click="audioBut(item.media)" v-show="audioSHow">播放</a-button>
+        <a-button @click="audioBut(item.media)" v-show="item.audioSHow==true">播放</a-button>
         <!-- <audio :src="item.media" controls="controls"></audio> -->
       </div>
     </div>
@@ -116,14 +116,21 @@ export default {
       }
       dataManual(data).then(res => {
         let arr = res.data.data
+        console.log(arr);
+        
         // arr.forEach(v => {
         //     v.media =
         // });  
         this.list = arr
         if (arr.length>0) {
-          if (arr.media) {
-            this.audioSHow =true
-          }
+          arr.forEach(v => {
+            v.audioSHow=false
+            if (v.media) {
+              v.audioSHow =true
+            }else{
+              v.audioSHow=false
+            }
+          });  
         }
       })
 

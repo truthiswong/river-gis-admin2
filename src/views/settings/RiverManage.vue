@@ -439,8 +439,9 @@ export default {
           this.map.clearOverLays()
           this.$message.success('删除成功')
           this.getList()
-        })
-        .catch(err => {})
+        }).catch(err => {
+            this.$message.error(err.response.data.message)
+          })
       this.defaultRiver = null
     },
     cancelDelete(e) {

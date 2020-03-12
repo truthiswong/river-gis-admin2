@@ -56,7 +56,10 @@
                     </a-form-item>
                   </div>
                   <div>
-                    <span style="font-size:16px;font-weight:500;color: #1F1F1F;">设备:</span>
+                   <span style="font-size:16px;font-weight:500;color: #1F1F1F;margin:10px 0" >设备: <span>
+                      <a-input  style="margin:0 10px 0 30px;width:150px" placeholder="请输入名称" v-model="nameAdditional"/>
+                      <a-button block style="width:70px" @click="additionalClick(option.id)">添加</a-button>
+                    </span></span>
                     <a-form-item
                       :label="item.name"
                       :label-col="labelCol"
@@ -83,6 +86,28 @@
                         </div>
                       </a-checkbox-group>
                     </a-form-item>
+                     <a-form-item
+                    label="额外设备"
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol"
+                  >
+                    <a-checkbox-group
+                      v-model="option.additionalList"
+                      style="width:100%;display:flex"
+                    >
+                      <div
+                        style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between"
+                        v-for="(ew,cc) in option.additional"
+                        :key="cc"
+                      >
+                        <a-checkbox :value="ew.extraDevice">{{ew.extraDevice}}</a-checkbox>
+                        <a-input-number
+                          class="changeNumber"
+                          v-model="ew.extraDeviceAmount"
+                        />
+                      </div>
+                    </a-checkbox-group>
+                  </a-form-item>
                   </div>
                 </a-form>
               </div>
@@ -121,6 +146,7 @@ export default {
   name: 'planList',
   data() {
     return {
+      nameAdditional:'',
       spinning: true,
       teamId: '',
       checkedKeys: ['0-1-0-0'],
@@ -165,6 +191,8 @@ export default {
           for (const item of arr) {
             item.roles = []
             item.devices = []
+            item.additional = []
+            item.additionalList =[]
             deviceInspectPage(item.id)
               .then(res => {
                 var arrr = res.data
@@ -216,6 +244,7 @@ export default {
     submitPlan(e) {
       var worker = ''
       var amount = ''
+      var extraDeviceAmount = ''
       for (const item of this.planTab) {
         for (let i=0;i<item.roles.length;i++) {
           if (i + 1 == item.roles.length) {
@@ -226,6 +255,7 @@ export default {
               for (const item of this.planTab) {
                 worker = ''
                 amount = ''
+                extraDeviceAmount = ''
                 for (const role of item.roles) {
                   var data = {
                     id: '',
@@ -249,11 +279,20 @@ export default {
                     // amount.push(devi.amount)
                   }
                 }
+                for (const numadd of item.additional) {
+                  for (const addnum of item.additionalList) {
+                    if (numadd.extraDevice == addnum) {
+                      extraDeviceAmount=extraDeviceAmount + numadd.extraDeviceAmount+','
+                    }
+                  }
+                }
                 var arr = {
                   id: '',
                   teamId: item.id,
                   deviceId: worker,
-                  amount: amount
+                  amount: amount,
+                  extraDevice:item.additionalList.join(','),
+                  extraDeviceAmount:extraDeviceAmount
                 }
                 equipmentRiverSave(arr)
                   .then(res => {})
@@ -280,6 +319,16 @@ export default {
           }
         }
         
+      }
+    },
+    additionalClick(id){
+      for (const item of this.planTab) {
+        if (item.id == id) {
+          item.additional.push({extraDevice:this.nameAdditional,extraDeviceAmount:'1'})
+          item.additionalList.push(this.nameAdditional)
+          this.nameAdditional=''
+          break
+        }
       }
     },
     //人员修改

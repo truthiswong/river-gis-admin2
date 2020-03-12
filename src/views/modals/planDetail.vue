@@ -49,7 +49,10 @@
                   </a-form-item>
                 </div>
                 <div>
-                  <span style="font-size:16px;font-weight:500;color: #1F1F1F;">设备:</span>
+                  <span style="font-size:16px;font-weight:500;color: #1F1F1F;margin:10px 0" >设备: <span>
+                      <a-input  style="margin:0 10px 0 30px;width:150px" placeholder="请输入名称" v-model="nameAdditional"/>
+                      <a-button block style="width:70px" @click="additionalClick(option.id)">添加</a-button>
+                    </span></span>
                   <a-form-item
                     :label="add.name"
                     :label-col="labelCol"
@@ -76,31 +79,24 @@
                       </div>
                     </a-checkbox-group>
                   </a-form-item>
-                </div>
-                <div>
-                  <span style="font-size:16px;font-weight:500;color: #1F1F1F;">额外设备:</span>
                   <a-form-item
-                    :label="add.name"
+                    label="额外设备"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol"
-                    v-for="(add,jj) in option.devices"
-                    :key="jj"
                   >
                     <a-checkbox-group
-                      v-model="add.workerId"
-                      @change="sadsadasdsa()"
+                      v-model="option.additionalList"
                       style="width:100%;display:flex"
                     >
                       <div
                         style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between"
-                        v-for="devi in add.devices"
-                        :key="devi.device.id"
+                        v-for="(ew,cc) in option.additional"
+                        :key="cc"
                       >
-                        <a-checkbox disabled :value="devi.device.id">{{devi.device.name}}</a-checkbox>
+                        <a-checkbox :value="ew.extraDevice">{{ew.extraDevice}}</a-checkbox>
                         <a-input-number
                           class="changeNumber"
-                          :min="devi.amount1"
-                          v-model="devi.amount"
+                          v-model="ew.extraDeviceAmount"
                         />
                       </div>
                     </a-checkbox-group>
@@ -130,6 +126,7 @@ export default {
   name: 'planDetail',
   data() {
     return {
+      nameAdditional:'',
       spinning: true,
       date: '',
       name: '',
@@ -165,10 +162,20 @@ export default {
           item.roles = []
           item.devices = []
           item.additional = []
+          item.additionalList =[]
           devicePage(item.id).then(res => {
             var device = res.data.data
             deviceInspectPage(item.id).then(res => {
               var arrr = res.data
+              var ddd = []
+              var suc = []
+              for (const qq of device) {
+                if (qq.device) {
+                }else{
+                  ddd.push(qq)
+                  suc.push(qq.extraDevice)
+                }
+              }
               arrr.forEach(v => {
                 v.workerId = []
                 v.name = v.deviceType.name
@@ -180,15 +187,12 @@ export default {
                       if (item.device.id == qq.device.id) {
                         item.amount1 = qq.amount
                       }
-                    }else{
-                      // console.log(qq);
-                      // let jj = qq
-                      // item.additional.push(jj)
                     }
-                    
                   }
                 }
               })
+              item.additional = ddd
+              item.additionalList =suc
               item.devices = arrr
             })
           })
@@ -225,6 +229,7 @@ export default {
     submitPlan(e) {
       var worker = ''
       var amount = ''
+      var extraDeviceAmount = ''
       console.log(this.planTab);
       for (const item of this.planTab) {
         for (let i=0;i<item.roles.length;i++) {
@@ -236,6 +241,7 @@ export default {
               for (const item of this.planTab) {
                 worker = ''
                 amount = ''
+                extraDeviceAmount=''
                 for (const role of item.roles) {
                   var data = {
                     id: '',
@@ -259,11 +265,20 @@ export default {
                     // amount.push(devi.amount)
                   }
                 }
+                for (const numadd of item.additional) {
+                  for (const addnum of item.additionalList) {
+                    if (numadd.extraDevice == addnum) {
+                      extraDeviceAmount=extraDeviceAmount + numadd.extraDeviceAmount+','
+                    }
+                  }
+                }
                 var arr = {
                   id: '',
                   teamId: item.id,
                   deviceId: worker,
-                  amount: amount
+                  amount: amount,
+                  extraDevice:item.additionalList.join(','),
+                  extraDeviceAmount:extraDeviceAmount
                 }
                 equipmentRiverSave(arr).then(res => {
 
@@ -290,6 +305,16 @@ export default {
           }
         }
         
+      }
+    },
+    additionalClick(id){
+      for (const item of this.planTab) {
+        if (item.id == id) {
+          item.additional.push({extraDevice:this.nameAdditional,extraDeviceAmount:'1'})
+          item.additionalList.push(this.nameAdditional)
+          this.nameAdditional=''
+          break
+        }
       }
     },
     cancleBtn() {

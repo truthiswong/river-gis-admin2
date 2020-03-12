@@ -227,6 +227,7 @@
         <h3 style="margin-top: 10px;">
           督办单
           <a-button size="small" style="margin-left:10px;" @click="addSheet()">添加</a-button>
+          <a-button size="small" style="margin-left:10px;" @click="exportExcel ()">导出</a-button>
         </h3>
         <div v-show="sheet" style="margin-bottom:20px;">
           <a-select
@@ -251,7 +252,7 @@
             <a-button type="primary" @click="addSelectSheet">确定</a-button>
           </div>
         </div>
-        <a-table bordered size="small" :dataSource="dataSource" :columns="columns">
+        <a-table bordered size="small" :dataSource="dataSource" :columns="columns" id="exportTab">
           <template slot="operation" slot-scope="text, record">
             <a-popconfirm
               @confirm="confirm(record.id)"
@@ -282,10 +283,14 @@
 </template>
 
 <script>
+import XLSX from 'xlsx'
+import FileSaver from 'file-saver'
 import moment from 'moment'
 const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters']
 import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
+
+
 import {
   mapdrawDetail,
   getRiverList,
@@ -690,7 +695,23 @@ export default {
         }
       }
     },
-    cancelDelete() {}
+    cancelDelete() {},
+    exportExcel () {
+      /* generate workbook object from table */
+      var xlsxParam = { raw: true } // 导出的内容只做解析，不进行格式转换
+      var wb = XLSX.utils.table_to_book(document.querySelector('#exportTab'), xlsxParam)
+
+      /* get binary string as output */
+      var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+      try {
+        FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '督办单.xlsx')
+      } catch (e) {
+        if (typeof console !== 'undefined') {
+          console.log(e, wbout)
+        }
+      }
+      return wbout
+    }
   }
 }
 </script>

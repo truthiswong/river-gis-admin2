@@ -775,7 +775,7 @@
                           <span>{{item.plan.name}}</span>
                         </a-col>
                         <a-col :span="16">
-                          <a-progress :percent="70" />
+                         <a-progress :percent="item.plan.percentage" />
                         </a-col>
                       </a-row>
                     </template>
@@ -792,7 +792,7 @@
                                 <span>{{index.team.name}}</span>
                               </a-col>
                               <a-col :span="16">
-                                <a-progress :percent="70" />
+                                <a-progress :percent="index.team.percentage" />
                               </a-col>
                             </a-row>
                           </template>
