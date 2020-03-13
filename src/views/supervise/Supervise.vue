@@ -2253,6 +2253,7 @@ export default {
     },
     // 水质监测点
     waterQualityChange(value) {
+      this.removeOverLays(this.outletPoints)
       this.getDischargeMapDrawPage()
     },
     // 水质监测点过滤

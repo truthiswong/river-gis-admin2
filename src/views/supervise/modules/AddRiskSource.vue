@@ -490,7 +490,7 @@ export default {
         innerCode: this.list.innerCode,
         innerName: this.list.innerName,
         billId: this.dataSourceId.join(','),
-        coordindate:this.list.lat+','+this.list.lng
+        coordinate:this.list.lat+','+this.list.lng
       }
       mapdrawRiskSave(data)
         .then(res => {
@@ -554,6 +554,10 @@ export default {
         
         if (arr.level) {
           this.list.level = arr.level.code
+        }
+        if (arr.coordinate) {
+          this.list.lat=arr.coordinate[0]
+          this.list.lng=arr.coordinate[1]
         }
         // this.list.supervisoryLevel=arr.
         // this.list.controller=arr.

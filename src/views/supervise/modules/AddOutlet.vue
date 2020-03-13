@@ -536,6 +536,10 @@ export default {
         } else if (arr.river.priority == false) {
           this.list.priority = '非重点'
         }
+        if (arr.coordinate) {
+          this.list.lat=arr.coordinate[0]
+          this.list.lng=arr.coordinate[1]
+        }
         this.list.tworiver = arr.street.controller
         this.list.address = arr.address
         this.list.standardCode = arr.standardCode
@@ -690,6 +694,7 @@ export default {
     },
     saveClick() {
       let data = this.list
+      data.coordinate=this.list.lat+','+this.list.lng
       data.billId = this.dataSourceId.join(',')
       mapdrawDischargeSave(data)
         .then(res => {
