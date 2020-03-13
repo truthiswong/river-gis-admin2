@@ -64,7 +64,7 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="面积(m²)">
-              <a-input placeholder v-model="list.currentArea" disabled />
+              <a-input placeholder v-model="list.polygonSize" disabled />
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -124,7 +124,7 @@ export default {
         address: '',
         riverId: '',
         streetId: '',
-        currentArea: '',
+        polygonSize: '',
         createTime: '',
         remark: ''
       },
@@ -157,6 +157,7 @@ export default {
         var arr = res.data
         this.list.innerName = arr.innerName
         this.list.address = arr.address
+        this.list.polygonSize = arr.polygonSize
         this.list.riverId = arr.river.id
         this.list.streetId = arr.street.id
         // this.list.currentArea=
@@ -171,7 +172,7 @@ export default {
       this.getList()
       this.list.drawId = id
       this.list.address = result.formatted_address
-      this.list.currentArea = currentArea
+      this.list.polygonSize = currentArea
       this.visible = true
     },
     saveClick() {

@@ -958,6 +958,7 @@ export default {
   },
   data() {
     return {
+      otherPoints:[],//其他绘制数据
       drawNameShow: false,
       riskSourceLevel: [], //风险源风险等级
       UAVPhotosModal: false, //无人机照片弹窗
@@ -1409,6 +1410,9 @@ export default {
         //获取风险源绘制数据
         this.removeOverLays(this.riverRiskPoints)
         this.getRiskSourceMapDrawPage(true)
+        //其他绘制数据
+        this.removeOverLays(this.otherPoints)
+        this.getOtherMapDrawPage(true)
         //获取排口绘制数据
         this.removeOverLays(this.outletPoints)
         this.getDischargeMapDrawPage()
@@ -1719,6 +1723,133 @@ export default {
           this.onWaterQuality()
         })
         .catch(err => {})
+    },
+    //其他绘制数据
+    getOtherMapDrawPage(){
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType: 'other'
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType: 'other'
+        }
+      }
+      mapdrawPage(data,).then(res => {
+        let arr = res.data
+        let ar = []
+        arr.forEach(v => {
+          v.shapePellucidity = v.shapePellucidity / 100
+          v.framePellucidity = v.framePellucidity / 100
+          if (v.drawType == undefined) {
+            v.drawType = {
+              code: '',
+              id: ''
+            }
+          }
+          if (v.innerType != undefined) {
+            ar.push(v)
+          }
+        })
+        this.otherPoints = ar
+        // 点击切换重新绘制触发
+        for (const item of this.otherList) {
+          if (item.clicked==true) {
+            this.onWaterLandLoss(item.id, true)
+          }
+        }
+        // if (riskSourceType == true) {
+        //   for (const risk of this.riskSourceList) {
+        //     if (risk.clicked == true) {
+        //       let point = []
+        //       for (const item of this.riverRiskPoints) {
+        //         if (item.drawType.id == risk.id) {
+        //           if (item.locationType.code == 'point') {
+        //             item.latlng = {
+        //               lng: item.point[0],
+        //               lat: item.point[1]
+        //             }
+        //             point.push(item)
+        //           }
+        //           if (item.locationType.code == 'line') {
+        //             this.lineDraw(
+        //               item.line,
+        //               item.frameColor,
+        //               3,
+        //               item.framePellucidity,
+        //               item.id,
+        //               '',
+        //               item.innerType.code
+        //             )
+        //             let markerTool
+        //             if (item.drawType.icon) {
+        //               let icon = new T.Icon({
+        //                 iconUrl: item.drawType.icon,
+        //                 iconSize: new T.Point(41, 40),
+        //                 iconAnchor: new T.Point(21, 40)
+        //               })
+        //               markerTool = new T.Marker(item.line[0], {
+        //                 icon: icon,
+        //                 id: item.id,
+        //                 title: item.innerName,
+        //                 code: item.innerType.code
+        //               })
+        //               this.map.addOverLay(markerTool)
+        //             } else {
+        //               markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+        //               this.map.addOverLay(markerTool)
+        //             }
+        //             // markerTool.addEventListener('click', this.panoramaPointClick)
+        //           }
+        //           if (item.locationType.code == 'polygon') {
+        //             this.noodlesDraw(
+        //               item.polygon,
+        //               item.frameColor,
+        //               3,
+        //               item.framePellucidity,
+        //               item.shapeColor,
+        //               item.shapePellucidity,
+        //               '',
+        //               item.id,
+        //               item.innerType.code
+        //             )
+        //             let markerTool
+        //             if (item.drawType.icon) {
+        //               let icon = new T.Icon({
+        //                 iconUrl: item.drawType.icon,
+        //                 iconSize: new T.Point(41, 40),
+        //                 iconAnchor: new T.Point(21, 40)
+        //               })
+        //               markerTool = new T.Marker(item.polygon[0], {
+        //                 icon: icon,
+        //                 id: item.id,
+        //                 title: item.innerName,
+        //                 code: item.innerType.code
+        //               })
+        //               this.map.addOverLay(markerTool)
+        //             } else {
+        //               // markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
+        //               // this.map.addOverLay(markerTool)
+        //               markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+        //               this.map.addOverLay(markerTool)
+        //             }
+        //           }
+        //         }
+        //       }
+        //       this.spotDraw(point)
+        //     }
+        //   }
+        // }
+      })
     },
     //风险源绘制数据
     getRiskSourceMapDrawPage(riskSourceType) {
@@ -2190,6 +2321,13 @@ export default {
         if (this.drawNameShow == true) {
           data.innerName = this.drawName
         }
+        if (
+          this.drawTypeId != '5da8374dea6c157d2d61007c' &&
+          this.drawTypeId != '5da8389eea6c157d2d61007f' &&
+          this.drawTypeId != '5dafe6c8ea6c159999a0549c'
+        ) {
+          data.innerType ='other'
+        }
         mapdrawSave(data)
           .then(res => {
             this.$message.success('保存成功')
@@ -2198,7 +2336,14 @@ export default {
               this.drawName = ''
               this.drawNameShow = false
             }
-
+            if (
+              this.drawTypeId != '5da8374dea6c157d2d61007c' &&
+              this.drawTypeId != '5da8389eea6c157d2d61007f' &&
+              this.drawTypeId != '5dafe6c8ea6c159999a0549c'
+            ) {
+              this.removeOverLays(this.otherPoints)
+              this.getOtherMapDrawPage()
+            }
             let result = this.toolIndexPointData.findIndex(item => {
               return this.toolIndexId == item.id
             })
@@ -2237,12 +2382,27 @@ export default {
         if (this.drawNameShow == true) {
           data.innerName = this.drawName
         }
+        if (
+          this.drawTypeId != '5da8374dea6c157d2d61007c' &&
+          this.drawTypeId != '5da8389eea6c157d2d61007f' &&
+          this.drawTypeId != '5dafe6c8ea6c159999a0549c'
+        ) {
+          data.innerType ='other'
+        }
         mapdrawSave(data)
           .then(res => {
             this.$message.success('保存成功')
             if (this.drawNameShow == true) {
               this.drawName = ''
               this.drawNameShow = false
+            }
+            if (
+              this.drawTypeId != '5da8374dea6c157d2d61007c' &&
+              this.drawTypeId != '5da8389eea6c157d2d61007f' &&
+              this.drawTypeId != '5dafe6c8ea6c159999a0549c'
+            ) {
+              this.removeOverLays(this.otherPoints)
+             this.getOtherMapDrawPage()
             }
             this.mapdrawId = res.data.id
             let geocode = new T.Geocoder()
@@ -2293,12 +2453,27 @@ export default {
         if (this.drawNameShow == true) {
           data.innerName = this.drawName
         }
+        if (
+          this.drawTypeId != '5da8374dea6c157d2d61007c' &&
+          this.drawTypeId != '5da8389eea6c157d2d61007f' &&
+          this.drawTypeId != '5dafe6c8ea6c159999a0549c'
+        ) {
+          data.innerType ='other'
+        }
         mapdrawSave(data)
           .then(res => {
             this.$message.success('保存成功')
             if (this.drawNameShow == true) {
               this.drawName = ''
               this.drawNameShow = false
+            }
+            if (
+              this.drawTypeId != '5da8374dea6c157d2d61007c' &&
+              this.drawTypeId != '5da8389eea6c157d2d61007f' &&
+              this.drawTypeId != '5dafe6c8ea6c159999a0549c'
+            ) {
+              this.removeOverLays(this.otherPoints)
+             this.getOtherMapDrawPage()
             }
             this.mapdrawId = res.data.id
             // 获取地理位置
@@ -3484,6 +3659,8 @@ export default {
           this.UAVPhotosCoordinate = e.lnglat.lng + ',' + e.lnglat.lat
           this.uavPhotoList = arr
           this.UAVPhotosModal = true
+        }else{
+          this.$message.success('坐标'+e.lnglat.lng + ',' + e.lnglat.lat+'处没有无人机照片')
         }
       })
       // alert(e.lnglat.lng+","+e.lnglat.lat);
@@ -4387,11 +4564,11 @@ export default {
         }
       }
     },
-    // 水土流失
+    // 其他
     onWaterLandLoss(id, clicked) {
       if (clicked) {
         let point = []
-        for (const item of this.drawPage) {
+        for (const item of this.otherPoints) {
           if (item.drawType.id == id) {
             if (item.locationType.code == 'point') {
               item.latlng = {
@@ -4421,7 +4598,7 @@ export default {
         this.spotDraw(point)
       } else {
         let data = []
-        for (const item of this.drawPage) {
+        for (const item of this.otherPoints) {
           if (item.drawType.id == id) {
             data.push(item)
           }

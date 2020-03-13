@@ -76,7 +76,7 @@
                 :limit="1"
                 :auto-upload="false"
               >
-                <a-button block style="margin-top: 10px;">上传KMZ</a-button>
+                <a-button block style="margin-top: 10px;">{{leftKmz}}</a-button>
               </el-upload>
             </a-form-item>
           </a-col>
@@ -97,7 +97,7 @@
                 :limit="1"
                 :auto-upload="false"
               >
-                <a-button block style="margin-top: 10px;">上传KMZ</a-button>
+                <a-button block style="margin-top: 10px;">{{rightKmz}}</a-button>
               </el-upload>
             </a-form-item>
           </a-col>
@@ -295,6 +295,8 @@ export default {
   },
   data() {
     return {
+      leftKmz:'上传kmz',
+      rightKmz:'上传kmz',
       fileList:[],
       fileList1:[],
       headers: {
@@ -424,7 +426,7 @@ export default {
           .then(res => {
             console.log(res);
             this.spotList.id = res.data.info.id
-            this.submitUpload()
+            this.submitUpload1()
             this.$message.success('保存成功')
             this.$parent.getList()
             this.handleCancel()
@@ -513,6 +515,12 @@ export default {
             this.list.areaId5 = area[2]
           }
           //基础信息
+          if (arr.info.leftBankRegion.length>0) {
+            this.leftKmz='已上传'
+          }
+          if (arr.info.rightBankRegion.length>0) {
+            this.rightKmz='已上传'
+          }
           this.list.id = arr.info.id
           this.list.name = arr.info.name
           this.list.length1 = arr.info.length
@@ -634,6 +642,10 @@ export default {
     },
     filter(inputValue, path) {
       return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1)
+    },
+    submitUpload1(){
+      this.$refs.upload.submit()
+      this.$refs.upload1.submit()
     },
     submitUpload(id){
       this.spotList.id = id
