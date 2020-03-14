@@ -43,6 +43,16 @@
                     </a-col>
                   </a-row>
                 </a-list-item>
+                <a-list-item>
+                  <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                    <a-col :span="18">
+                      <p style="margin:0;">左右岸</p>
+                    </a-col>
+                    <a-col :span="6">
+                      <a-switch size="small" v-model="leftRight" />
+                    </a-col>
+                  </a-row>
+                </a-list-item>
               </a-list>
             </template>
             <template slot="title">
@@ -159,6 +169,7 @@ export default {
       peopleDetection: false, // 人工监测点
       riverShow: false, // 河道
       streetShow: false, // 街道
+      leftRight:false,
       once: 0, // 移入次数
       riverShowList: [], // 河道
       streetShowList: [], //街道
@@ -228,7 +239,10 @@ export default {
     },
     streetShow() {
       this.watchAllSwitch()
-    }
+    },
+    leftRight(){
+      this.leftRightSwitch()
+    },
   },
   mounted() {
     let token = Vue.ls.get(ACCESS_TOKEN)
@@ -268,7 +282,18 @@ export default {
           arr.forEach(v => {
             v.lineData = v.region
             v.clicked = false
+             let points = []
+            for (const point of v.leftBankRegion) {
+              points.push(new T.LngLat(point[0], point[1]))
+            }
+            v.leftBankRegion = points
+            let points1 = []
+            for (const point of v.rightBankRegion) {
+              points1.push(new T.LngLat(point[0], point[1]))
+            }
+            v.rightBankRegion = points1
           })
+         
           this.riverShowList = arr
           this.defaultRiver = this.riverShowList[0].name
           this.drawAllRiver()
@@ -299,13 +324,61 @@ export default {
         .then(res => {
           let arr = res.data.data
           arr.forEach(v => {
-            v.lineData = v.region
+            if (v.region==null) {
+               v.lineData = []
+            }else{
+               v.lineData = v.region
+            }
             v.clicked = false
           })
           this.streetShowList = arr
           conosle.log(this.streetShowList)
         })
         .catch(err => {})
+    },
+    leftRightSwitch(){
+      if (this.leftRight) {
+        for (const item of this.riverShowList) {
+          if (item.leftBankRegion.length>0) {
+            let polygonStreet = new T.Polygon(item.leftBankRegion, {
+              color: 'yellow', //线颜色
+              weight: 3, //线宽
+              opacity: 0.5, //透明度
+              fillColor: '#FFFFFF', //填充颜色
+              fillOpacity: 0, // 填充透明度
+              title: item.name, // 名字
+              id: item.id+'1' // id
+            })
+            //向地图上添加线
+            this.map.addOverLay(polygonStreet)
+          }
+          if (item.rightBankRegion.length>0) {
+            
+            let polygonStreet1 = new T.Polygon(item.rightBankRegion, {
+              color: 'yellow', //线颜色
+              weight: 3, //线宽
+              opacity: 0.5, //透明度
+              fillColor: '#FFFFFF', //填充颜色
+              fillOpacity: 0, // 填充透明度
+              title: item.name, // 名字
+              id: item.id+'2' // id
+            })
+            //向地图上添加线
+            this.map.addOverLay(polygonStreet1)
+          }
+        }
+      } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.riverShowList) {
+            if (item.id+'1' == overlay.options.id) { 
+              this.map.removeOverLay(overlay)
+            }
+            if (item.id+'2' == overlay.options.id) { 
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
+      }
     },
     // 检测所有开关
     watchAllSwitch() {
@@ -332,7 +405,7 @@ export default {
       } else {
         for (const overlay of this.map.getOverlays()) {
           for (const item of this.streetShowList) {
-            if (item.id == overlay.options.id) {
+            if (item.id == overlay.options.id) { 
               this.map.removeOverLay(overlay)
             }
           }

@@ -484,6 +484,16 @@
                   </a-col>
                 </a-row>
               </a-list-item>
+              <a-list-item v-show="listItemLeftRight==true">
+                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                  <a-col :span="18">
+                    <p style="margin:0;">左右岸</p>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-switch size="small" v-model="leftRight" @click="leftRightSwitch" />
+                  </a-col>
+                </a-row>
+              </a-list-item>
               <a-list-item>
                 <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                   <a-col :span="18">
@@ -856,6 +866,13 @@
         </viewer>
       </div>
     </a-modal>
+    <a-modal title="绘制数据" :visible="otherModal" @ok="otherOk" @cancel="otherCancel">
+      <a-form class="from">
+        <a-form-item label="名称" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-input placeholder  v-model="otherModalList.innerName" style="width:200px"/>
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
@@ -958,6 +975,11 @@ export default {
   },
   data() {
     return {
+      otherModal:false,//其他绘制弹窗
+      otherModalList:{
+        id:'',
+        innerName:'',
+      },
       otherPoints:[],//其他绘制数据
       drawNameShow: false,
       riskSourceLevel: [], //风险源风险等级
@@ -1126,6 +1148,14 @@ export default {
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.22344, lng: 121.47892 } },
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.20649, lng: 121.47712 } }
       ],
+      labelCol: {
+        xs: { span: 18 },
+        sm: { span: 6 }
+      },
+      wrapperCol: {
+        xs: { span: 18 },
+        sm: { span: 16 }
+      },
       panoramaData: {
         id: '',
         panoramaPoints: []
@@ -1244,6 +1274,8 @@ export default {
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.2645, lng: 121.49356 } }
       ],
       drawPage: [],
+      listItemLeftRight:false,
+      leftRight:false,
       screenshotdataUrl: ''
     }
   },
@@ -1651,6 +1683,16 @@ export default {
             } else {
               v.lineData = v.region
             }
+            let points = []
+            for (const point of v.leftBankRegion) {
+              points.push(new T.LngLat(point[0], point[1]))
+            }
+            v.leftBankRegion = points
+            let points1 = []
+            for (const point of v.rightBankRegion) {
+              points1.push(new T.LngLat(point[0], point[1]))
+            }
+            v.rightBankRegion = points1
             v.clicked = false
           })
           this.riverShowList = arr
@@ -3508,6 +3550,7 @@ export default {
     // 河道显示
     onRiverShow() {
       if (this.riverShow) {
+        this.listItemLeftRight=true
         for (const item of this.riverShowList) {
           let polygon = new T.Polygon(item.lineData, {
             color: 'blue', //线颜色
@@ -3526,7 +3569,65 @@ export default {
           polygon.addEventListener('mouseout', this.polygonMouseout)
         }
       } else {
+        if (this.leftRight==true) {
+          for (const overlay of this.map.getOverlays()) {
+            for (const item of this.riverShowList) {
+              if (item.id+'1' == overlay.options.id) { 
+                this.map.removeOverLay(overlay)
+              }
+              if (item.id+'2' == overlay.options.id) { 
+                this.map.removeOverLay(overlay)
+              }
+            }
+          }
+          this.leftRight=false
+        }
+        this.listItemLeftRight=false
         this.removeOverLays(this.riverShowList)
+      }
+    },
+    leftRightSwitch(){
+      if (this.leftRight) {
+        for (const item of this.riverShowList) {
+          if (item.leftBankRegion.length>0) {
+            let polygonStreet = new T.Polygon(item.leftBankRegion, {
+              color: 'yellow', //线颜色
+              weight: 3, //线宽
+              opacity: 0.5, //透明度
+              fillColor: '#FFFFFF', //填充颜色
+              fillOpacity: 0, // 填充透明度
+              title: item.name, // 名字
+              id: item.id+'1' // id
+            })
+            //向地图上添加线
+            this.map.addOverLay(polygonStreet)
+          }
+          if (item.rightBankRegion.length>0) {
+            
+            let polygonStreet1 = new T.Polygon(item.rightBankRegion, {
+              color: 'yellow', //线颜色
+              weight: 3, //线宽
+              opacity: 0.5, //透明度
+              fillColor: '#FFFFFF', //填充颜色
+              fillOpacity: 0, // 填充透明度
+              title: item.name, // 名字
+              id: item.id+'2' // id
+            })
+            //向地图上添加线
+            this.map.addOverLay(polygonStreet1)
+          }
+        }
+      } else {
+        for (const overlay of this.map.getOverlays()) {
+          for (const item of this.riverShowList) {
+            if (item.id+'1' == overlay.options.id) { 
+              this.map.removeOverLay(overlay)
+            }
+            if (item.id+'2' == overlay.options.id) { 
+              this.map.removeOverLay(overlay)
+            }
+          }
+        }
       }
     },
     // 多边形点击事件
@@ -4338,6 +4439,8 @@ export default {
           markerTool.addEventListener('click', this.sourceRiskClick)
         } else if (item.innerType.code == 'floatage') {
           markerTool.addEventListener('click', this.floatageClick)
+        }else if (item.innerType.code == 'other') {
+          markerTool.addEventListener('click', this.otherClick)
         }
       }
     },
@@ -4348,7 +4451,7 @@ export default {
         weight: weight, //线宽
         opacity: opacity, //透明度
         id: id,
-        name: name,
+        title: name,
         code: code
       })
       //向地图上添加线
@@ -4361,6 +4464,9 @@ export default {
       }
       if (code == 'floatage') {
         line.addEventListener('click', this.floatageClick)
+      }
+      if (code== 'other') {
+        line.addEventListener('click', this.otherClick)
       }
     },
     // 绘制面
@@ -4386,6 +4492,9 @@ export default {
       if (code == 'floatage') {
         polygon.addEventListener('click', this.floatageClick)
       }
+      if (code== 'other') {
+        polygon.addEventListener('click', this.otherClick)
+      }
     },
     //排口水面漂浮物风险源弹窗
     sourceRiskClick(row) {
@@ -4396,6 +4505,12 @@ export default {
     },
     floatageClick(row) {
       this.$refs.AddFloatage.detailList(row)
+    },
+    otherClick(row){
+      console.log(row);
+      this.otherModalList.id= row.target.options.id
+      this.otherModalList.innerName= row.target.options.title
+      this.otherModal=true
     },
     // 河岸风险源
     onRiverRisk() {
@@ -4579,9 +4694,19 @@ export default {
               point.push(item)
             }
             if (item.locationType.code == 'line') {
-              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+              if (item.innerName) {
+                
+              }else{
+                item.innerName=''
+              }
+              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, item.innerName, item.innerType.code)
             }
             if (item.locationType.code == 'polygon') {
+              if (item.innerName) {
+                
+              }else{
+                item.innerName=''
+              }
               this.noodlesDraw(
                 item.polygon,
                 item.frameColor,
@@ -4589,7 +4714,7 @@ export default {
                 item.framePellucidity,
                 item.shapeColor,
                 item.shapePellucidity,
-                '',
+                item.innerName,
                 item.id,
                 item.innerType.code
               )
@@ -5047,7 +5172,21 @@ export default {
       this.UAVPhotosModal = false
       this.UAVPhotosCoordinate = ''
       this.uavPhotoList = []
-    }
+    },
+    //其他名称编辑
+    otherOk(){
+      mapdrawSave(this.otherModalList).then(res=>{
+        this.$message.success('保存成功')
+        this.otherModal=false
+        this.removeOverLays(this.otherPoints)
+        this.getOtherMapDrawPage()
+      }).catch(err => {
+        this.$message.error(err.response.data.message)
+      })
+    },
+    otherCancel(){
+       this.otherModal=false
+    },
   }
 }
 </script>

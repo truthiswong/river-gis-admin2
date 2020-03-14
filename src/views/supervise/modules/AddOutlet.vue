@@ -520,7 +520,10 @@ export default {
         this.dataSource = arr.bill
         if (arr.river) {
           this.list.riverId = arr.river.id
-          this.list.supervisoryLevel = arr.river.supervisoryLevel.name
+          if (arr.river.supervisoryLevel) {
+            this.list.supervisoryLevel = arr.river.supervisoryLevel.name
+          }
+          
         }
         if (arr.street) {
           this.list.streetId = arr.street.id

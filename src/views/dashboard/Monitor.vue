@@ -468,7 +468,7 @@
                           <a-button
                             class="addTask_btn commBtn"
                             icon="plus"
-                            @click="addTaskBtn(item.objectId,item.objectName,item.code)"
+                            @click="addTaskBtn(item.objectId,item.objectName,item.code,item)"
                             v-show="item.isShow == false"
                           >追加任务</a-button>
                         </div>
@@ -601,7 +601,7 @@
                                       <a-row type="flex" justify="space-between" align="middle">
                                         <a-col :span="16">
                                           <div
-                                            @click="choosePointTask1(targetId.target.id)"
+                                            @click="choosePointTask1(targetId.target.id,targetId)"
                                           >{{targetId.target.objectName}}</div>
                                         </a-col>
                                         <a-col :span="8" v-if="hidingJudgment3 == true">
@@ -661,7 +661,7 @@
                                       <a-button
                                         class="addTask_btn commBtn"
                                         icon="plus"
-                                        @click="addTaskBtnDay(item.plan.id,targetId.target.objectId,targetId.target.objectName,targetId.target.object.code,index.team.id,index.team.id)"
+                                        @click="addTaskBtnDay(item.plan.id,targetId.target.objectId,targetId.target.objectName,targetId.target.object.code,index.team.id,index.team.id,targetId)"
                                         v-if="targetId.isShow == false"
                                       >追加任务</a-button>
                                       <div class="addTask_info" v-show="targetId.isShow">
@@ -1394,6 +1394,7 @@ export default {
       spinning: true,
       defaultLineTask: '',
       hidingJudgment3: false,
+      appendLatlngList:[],//追加任务坐标点
       isShow:false,
       riskMapPoints: [
         { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.23493, lng: 121.51566 } },
@@ -1549,7 +1550,6 @@ export default {
         day: picker[2]
       }
       recommendFangan(data).then(res => {
-        console.log(res.data)
         this.patrolPlanInfo = res.data
       })
     },
@@ -1674,6 +1674,8 @@ export default {
                     v.code = v.status.code
                     arr[a].taskChoose.push(v.id)
                   })
+                  
+                  
                   arr[a].taskPage = ar
                   this.spinning = false
                 })
@@ -1682,16 +1684,17 @@ export default {
                   this.$message.error('加载数据失败')
                 })
             }
-
+            this.riverMontion = arr
             if (this.noTitleKey == 'nowPlan') {
               this.planDayDraw()
             } else {
               this.judgeDate()
             }
           } else {
+            this.riverMontion = arr
             this.spinning = false
           }
-          this.riverMontion = arr
+          
         })
         .catch(err => {
           this.spinning = false
@@ -1701,6 +1704,8 @@ export default {
     //显示河道或调查点
     judgeDate() {
       this.map.clearOverLays() //将之前绘制的清除
+      console.log(this.riverMontion);
+      
       var sss = this.riverMontion
       for (var i = 0; i < sss.length; i++) {
         var code = sss[i].code
@@ -1714,6 +1719,7 @@ export default {
     },
     //绘制目标调查点
     renderingTarget(task) {
+      console.log(task);
       let icon = new T.Icon({
         iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
         iconSize: new T.Point(19, 27),
@@ -1732,6 +1738,8 @@ export default {
         })
         circle.disableEdit()
         this.map.addOverLay(circle)
+        console.log(task.taskPage);
+        
         this.pointTarget(task.taskPage)
       } else {
         let circle = new T.Circle(task.latlng, 1000, {
@@ -1744,6 +1752,8 @@ export default {
         })
         circle.disableEdit()
         this.map.addOverLay(circle)
+        console.log(task.taskPage);
+        this.pointTarget(task.taskPage)
       }
       // this.pointTarget(data.taskPage)
     },
@@ -2066,8 +2076,6 @@ export default {
       this.hidingJudgment1 = tab1(this.picker)
       this.hidingJudgment2 = tab2(this.picker, formatDate(new Date()))
       this.hidingJudgment3 = tab(this.picker)
-      console.log(this.hidingJudgment3);
-      
       this.planListPage = []
       planPage(data)
         .then(res => {
@@ -2149,7 +2157,6 @@ export default {
           }
           this.spinning = false
           this.planListPage = arr
-          console.log(this.planListPage);
           if (this.planListPage.length == 0 && hidingJudgment == true) {
             this.hidingJudgment = true
           } else {
@@ -2495,6 +2502,7 @@ export default {
       targetDel(id)
         .then(res => {
           this.$message.success('删除成功')
+          this.map.clearOverLays() 
           this.getinspectPointPage()
         })
         .catch(err => {
@@ -2503,10 +2511,13 @@ export default {
     },
     //当日计划显示河道调查点
     choosePointTask1(id) {
+      
       for (const item of this.planListPage) {
         for (const a of item.teams) {
           for (const b of a.targets) {
             if (b.target.id == id) {
+              
+              
               b.clicked = true
               if (b.code == 'point') {
                 let arr = []
@@ -2527,6 +2538,7 @@ export default {
     choosePointTask(id) {
       for (const item of this.riverMontion) {
         if (item.id === id) {
+          console.log(item);
           if (item.code == 'point') {
             let arr = []
             arr.push(item.latlng)
@@ -2599,7 +2611,8 @@ export default {
         fillColor: '#FFFFFF', //填充颜色
         fillOpacity: fillOpacity, // 填充透明度
         title: title,
-        id: id
+        id: id,
+        lineData:lineData
       })
       //向地图上添加面
       this.map.addOverLay(this.polygon, {})
@@ -2730,7 +2743,13 @@ export default {
     },
     //选中巡河方案
     selectPatrol() {},
-    addTaskBtn(id, name, code) {
+    addTaskBtn(id, name, code,aa) {
+      this.appendLatlngList=[]
+      if (aa.code=="point") {
+        this.appendLatlngList.push(aa.latlng) 
+      }else{
+        this.appendLatlngList=aa.latlng
+      }
       for(const item of this.riverMontion){
         if (item.objectId == id) {
           item.isShow =true
@@ -2745,7 +2764,15 @@ export default {
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
-    addTaskBtnDay(planId, id, name, code,teaid,teamid) {
+    addTaskBtnDay(planId, id, name, code,teaid,teamid,aa) {
+      // console.log(aa);
+      
+      // this.appendLatlngList=[]
+      // if (latlng.code=="point") {
+      //   this.appendLatlngList.push(aa.latlng) 
+      // }else{
+      //   this.appendLatlngList=aa.latlng
+      // }
       this.addTaskCode = '2'
       for(const item of this.planListPage){
         for (const a of item.teams) {
@@ -2920,7 +2947,8 @@ export default {
       targetSave(ar)
         .then(res => {
           this.$message.success('成功')
-          console.log(res.data)
+          this.map.setViewport(this.asasd.lineData)
+          this.map.setZoom('14')
           this.infoVisible = false
           this.handleCancel()
         })
@@ -3262,6 +3290,8 @@ export default {
     },
     //追加任务画线
     addLineTool(clickLine) {
+      this.map.setViewport(this.appendLatlngList)
+      this.map.setZoom('16')
       this.clickLine = clickLine
       if (this.lineTool && this.clickLine == false) {
         this.lineTool.clear()
@@ -3345,7 +3375,8 @@ export default {
     },
     //画点
     addPoint(clickPoint, num) {
-      console.log(num)
+      this.map.setViewport(this.appendLatlngList)
+      this.map.setZoom('16')
       this.clickPoint = clickPoint
       if (this.markerTool && this.clickPoint == false) {
         this.markerTool.clear()
@@ -3362,7 +3393,8 @@ export default {
     },
     //画面
     addPolygonTool(clickPolygon) {
-      console.log('hhhhhhhhhh')
+      this.map.setViewport(this.appendLatlngList)
+      this.map.setZoom('16')
       this.clickPolygon = clickPolygon
       if (this.polygonTool && this.clickPolygon == false) {
         this.polygonTool.clear()
