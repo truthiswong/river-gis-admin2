@@ -293,7 +293,7 @@ export default {
             }
             v.rightBankRegion = points1
           })
-         
+         this.leftRightSwitch()
           this.riverShowList = arr
           this.defaultRiver = this.riverShowList[0].name
           this.drawAllRiver()
