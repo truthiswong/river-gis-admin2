@@ -14,8 +14,8 @@
           </viewer>
         </template>
         <template slot="operation" slot-scope="row">
-          <div v-if="row.name !='风险源'&&row.name !='排口'&&row.name !='水面漂浮物' ">
-             <a @click="add(row.id)">编辑</a>
+          <div>
+             <a @click="add(row.id,row.name)">编辑</a>
               <a-divider type="vertical" />
               <a-popconfirm
                 title="是否确认删除?"
@@ -24,7 +24,7 @@
                 okText="确认"
                 cancelText="取消"
               >
-                <a @click="del(row.id)">删除</a>
+                <a @click="del(row.id)" v-show="row.name !='风险源'&&row.name !='排口'&&row.name !='水面漂浮物'">删除</a>
                </a-popconfirm>
           </div>
         </template>
@@ -37,6 +37,37 @@
       <a-form>
         <a-form-item label="绘制类型名称" :label-col="{ span: 7 }" :wrapper-col="{ span: 16 }">
           <a-input placeholder="请输入绘制类型名称" v-model="list.name"/>
+        </a-form-item>
+        <a-form-item label="图标" :label-col="{ span: 7 }" :wrapper-col="{ span: 16 }">
+          <el-upload
+            class="upload-demo"
+            ref="upload"
+            :data="list"
+            name="icon"
+            :headers="headers"
+            action="/server/data/admin/param/save"
+            :on-preview="handlePreview"
+            :on-success="handleSuccess"
+            :on-change="handleChange"
+            :on-remove="handleRemove"
+            :file-list="fileList"
+            :limit='1'
+            :auto-upload="false">
+            <a-button type="primary" icon="plus" >添加</a-button>
+          </el-upload>
+          <viewer >
+            <img  :src="attachmentJpg" alt="" style="height:70px;">
+          </viewer >
+        </a-form-item>
+      </a-form>
+    </a-modal>
+    <a-modal title="添加/编辑绘制" v-model="visible1"
+      @ok="submitUpload"
+      @cancel="handleCancel" 
+    >
+      <a-form>
+        <a-form-item label="绘制类型名称" :label-col="{ span: 7 }" :wrapper-col="{ span: 16 }">
+          <a-input placeholder="请输入绘制类型名称" v-model="list.name" disabled />
         </a-form-item>
         <a-form-item label="图标" :label-col="{ span: 7 }" :wrapper-col="{ span: 16 }">
           <el-upload
@@ -104,6 +135,7 @@ export default {
         name: [{ required: true, message: '不能为空', trigger: 'blur' }]
       },
       visible: false,
+      visible1:false,
       columns,
       data: [
        
@@ -139,13 +171,14 @@ export default {
     },
     handleCancel(e) {
       this.visible = false
+      this.visible1 = false
       this.file = false
       this.fileList=[]
       this.list.id=''
       this.list.name=''
       this.attachmentJpg=''
     },
-    add(id){
+    add(id,name){
       for (let i = 0; i < this.data.length; i++) {
         if (this.data[i].id==id) {
           this.list.name =this.data[i].name
@@ -154,7 +187,12 @@ export default {
         }  
       }
       this.list.id=id
-      this.visible=true
+      if (name !='风险源'&&name !='排口'&&name !='水面漂浮物') {
+        this.visible=true
+      }else{
+        this.visible1=true
+      }
+      
     },
     del(id){
       this.id=id
@@ -180,6 +218,7 @@ export default {
           paramSave(data).then(res => {
               this.$message.success('保存成功');
               this.visible = false
+              this.visible1 = false
               this.list.id=''
               this.list.name=''
               this.attachmentJpg=''
@@ -198,6 +237,7 @@ export default {
     handleSuccess(response, file, fileList){
       this.attachmentJpg=''
       this.visible = false;
+      this.visible1 = false
       this.$message.success('保存成功');
       this.list.id=''
       this.list.name=''

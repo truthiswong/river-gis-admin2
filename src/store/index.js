@@ -25,6 +25,7 @@ export default new Vuex.Store({
       lng: 121.43489, // 经度
       lat: 31.15053 // 纬度
     },
+    weatherId:'',
     projectInfo: {}, //项目信息
     permissionLists: [
       [
@@ -153,6 +154,9 @@ export default new Vuex.Store({
     },
     SET_DEFAUT_PROJECT: (state, index) => {
       state.defautProject = index
+    },
+    weather: (state, index) => {
+      state.weatherId = index
     },
     getDefaultRoutePath: (state, index) => {
       state.defaultRoutePath = index

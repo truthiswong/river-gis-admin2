@@ -76,14 +76,18 @@ export default {
           id = value[1]
         }
         this.$store.commit('show', value[1])
-        console.log(value)
+        console.log(this.$store.state.projectInfo)
         this.$store.commit('SET_DEFAUT_PROJECT', value)
         for (const item of this.$store.state.projectInfo) {
           if (value[0] == item.id) {
             for (const project of item.children) {
+              
               if (value[1] == project.id) {
                 console.log(project.coordinate)
                 this.$store.commit('projectCoordinateFn', project.coordinate)
+                console.log(project.locationId);
+                
+                this.$store.commit('weather', project.locationId)
               }
             }
           }

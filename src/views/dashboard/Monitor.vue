@@ -1930,11 +1930,12 @@ export default {
       var date =  this.picker.split('-')
       let data = {
         date:date[0]+date[1]+date[2],
-        coor:'31.15847:121.43429',
+        locationId:this.$store.state.weatherId
       }
+      console.log(data);
+      
       weatherList(data).then(res=>{
         let arr = res.data
-        console.log(arr);
         if (arr.code ==0) {
           this.weatherData.img =  require('../supervise/img/weather/0.png')
         }else if(arr.code ==1){

@@ -216,6 +216,8 @@ const user = {
                   commit('show', arr[0].children[0].id)
                   // 默认项目中心点
                   commit('projectCoordinateFn', arr[0].children[0].coordinate)
+                  // 默认天气
+                  commit('weather', arr[0].children[0].locationId)
                   // 默认项目选择第一项
                   let defautProject = []
                   defautProject.push(arr[0].id)

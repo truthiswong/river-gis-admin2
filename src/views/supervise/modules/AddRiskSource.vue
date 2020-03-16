@@ -272,6 +272,8 @@
             >
               <a>删除</a>
             </a-popconfirm>
+            <a-divider type="vertical" />
+            <a :href="record.attachment"  target="_blank">导出</a>
           </template>
         </a-table>
       </a-form>

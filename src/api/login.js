@@ -975,7 +975,7 @@ export function weatherList(data) {
     method: 'get',
     params: {
       date: data.date,
-      coor: data.coor,
+      locationId: data.locationId,
     }
   })
 }

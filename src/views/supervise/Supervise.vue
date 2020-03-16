@@ -2860,7 +2860,7 @@ export default {
       var date = this.defaultTime.split('-')
       let data = {
         date: date[0] + date[1] + date[2],
-        coor: `${this.$store.state.projectCoordinate.lat}:${this.$store.state.projectCoordinate.lng}`
+        locationId:this.$store.state.weatherId
       }
       weatherList(data)
         .then(res => {
