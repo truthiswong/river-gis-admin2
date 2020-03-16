@@ -2311,25 +2311,67 @@ export default {
     },
     // 工具
     toolsShowFun() {
+      if (this.toolsCard) {
+        if (this.markerTool) {
+          this.markerTool.clear()
+        }
+        if (this.lineTool) {
+          this.lineTool.clear()
+        }
+        if (this.polygonTool) {
+          this.polygonTool.clear()
+        }
+      }
       this.toolsCard = !this.toolsCard
+      this.toolCard = false
     },
     // 工具
     toolIndexFun(index) {
+      // 切换工具清除上一次的本地绘制
+      if (this.toolsCard) {
+        if (this.markerTool) {
+          this.markerTool.clear()
+          this.markerTool.close()
+        }
+        if (this.lineTool) {
+          this.lineTool.clear()
+          this.lineTool.close()
+        }
+        if (this.polygonTool) {
+          this.polygonTool.clear()
+          this.polygonTool.close()
+        }
+        if (this.polygonToolNum) {
+          this.polygonToolNum.close()
+        }
+        if (this.lineToolNum) {
+          this.lineToolNum.close()
+        }
+      }
       this.toolIndex = index
       this.editIndex = 'tool'
       if (index === 1) {
         // 工具-点
+        if (this.markerTool) {
+          this.markerTool.clear()
+        }
         this.markerTool = new T.MarkTool(this.map, { follow: true })
         this.markerTool.open()
         this.markerTool.addEventListener('mouseup', this.toolDrawn)
       } else if (index === 2) {
         // 工具-线
+        if (this.lineTool) {
+          this.lineTool.clear()
+        }
         this.lineTool = new T.PolylineTool(this.map)
         this.lineTool.open()
         this.lineTool.setTips(`<p style="padding:0px;">单击确认起点, 双击结束绘制</p>`)
         this.lineTool.addEventListener('draw', this.toolDrawn)
       } else if (index === 3) {
         // 工具-面
+        if (this.polygonTool) {
+          this.polygonTool.clear()
+        }
         this.polygonTool = new T.PolygonTool(this.map)
         this.polygonTool.open()
         this.polygonTool.addEventListener('draw', this.toolDrawn)
@@ -2346,6 +2388,18 @@ export default {
     },
     // 绘制保存
     toolCradSave() {
+      // 保存之前先清除地图本地绘制
+      if (this.toolsCard) {
+        if (this.markerTool) {
+          this.markerTool.clear()
+        }
+        if (this.lineTool) {
+          this.lineTool.clear()
+        }
+        if (this.polygonTool) {
+          this.polygonTool.clear()
+        }
+      }
       this.toolCard = false
       var time = this.defaultTime
       var picker = time.split('-')
@@ -2566,6 +2620,7 @@ export default {
     },
     // 绘制取消
     toolCradCancel() {
+      console.log("55555")
       if (this.drawNameShow == true) {
         this.drawName = ''
         this.drawNameShow = false
@@ -2603,6 +2658,26 @@ export default {
         // 工具-测距
         this.lineToolNum.clear()
       }
+    },
+    toolRemoveDraw() {
+      // 工具-点
+      this.markerTool.clear()
+      this.toolIndexPointData.splice(
+        this.toolIndexPointData.findIndex(item => item.id === this.toolIndexId),
+        1
+      )
+      // 工具-线
+      this.lineTool.clear()
+      this.toolIndexLineData.splice(
+        this.toolIndexLineData.findIndex(item => item.id === this.toolIndexId),
+        1
+      )
+      // 工具-面
+      this.polygonTool.clear()
+      this.toolIndexPolygonData.splice(
+        this.toolIndexPolygonData.findIndex(item => item.id === this.toolIndexId),
+        1
+      )
     },
     // 添加风险源回调
     riskSourceCancel() {
