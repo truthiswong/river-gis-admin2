@@ -160,74 +160,16 @@
                 </a-popover>
               </li>
               <li class="popMore">
-                <a-popover title="更多" placement="leftBottom" arrowPointAtCenter trigger="click">
-                  <template slot="content">
-                    <a-list type="small">
+                <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
+                  <template slot="content" style="overflow-y: scroll;">
+                    <a-list size="small">
                       <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
                         <template slot="content">
                           <a-list size="small">
                             <a-list-item>
-                              <a-row
-                                type="flex"
-                                justify="space-around"
-                                align="middle"
-                                style="width:100%;"
-                              >
+                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <span>风险地图</span>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                            <a-list-item>
-                              <a-row
-                                type="flex"
-                                justify="space-around"
-                                align="middle"
-                                style="width:100%;"
-                              >
-                                <a-col :span="18">
-                                  <span>水质</span>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch
-                                    size="small"
-                                    v-model="waterQuality"
-                                    @click="onWaterQuality"
-                                  />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                            <a-list-item>
-                              <a-row
-                                type="flex"
-                                justify="space-around"
-                                align="middle"
-                                style="width:100%;"
-                              >
-                                <a-col :span="18">
-                                  <span>水面漂浮物</span>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch
-                                    size="small"
-                                    v-model="waterFlotage"
-                                    @click="onWaterFlotage"
-                                  />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                            <a-list-item>
-                              <a-row
-                                type="flex"
-                                justify="space-around"
-                                align="middle"
-                                style="width:100%;"
-                              >
-                                <a-col :span="18">
-                                  <span>河岸风险源</span>
+                                  <p style="margin:0;">河岸风险源</p>
                                 </a-col>
                                 <a-col :span="6">
                                   <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
@@ -235,55 +177,52 @@
                               </a-row>
                             </a-list-item>
                             <a-list-item>
-                              <a-row
-                                type="flex"
-                                justify="space-around"
-                                align="middle"
-                                style="width:100%;"
-                              >
+                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <span>水土流失</span>
+                                  <p style="margin:0;">风险地图</p>
                                 </a-col>
                                 <a-col :span="6">
-                                  <a-switch
-                                    size="small"
-                                    v-model="waterLandLoss"
-                                    @click="onWaterLandLoss"
-                                  />
+                                  <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
                                 </a-col>
                               </a-row>
                             </a-list-item>
                             <a-list-item>
-                              <a-row
-                                type="flex"
-                                justify="space-around"
-                                align="middle"
-                                style="width:100%;"
-                              >
+                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <span>水面率</span>
+                                  <p style="margin:0;">水质数据</p>
                                 </a-col>
                                 <a-col :span="6">
-                                  <a-switch
-                                    size="small"
-                                    v-model="waterRatio"
-                                    @click="onWaterRatio"
-                                  />
+                                  <a-switch size="small" v-model="waterQuality" @click="onWaterQuality" />
                                 </a-col>
                               </a-row>
                             </a-list-item>
                             <a-list-item>
-                              <a-row
-                                type="flex"
-                                justify="space-around"
-                                align="middle"
-                                style="width:100%;"
-                              >
+                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <span>底泥</span>
+                                  <p style="margin:0;">水面漂浮物</p>
                                 </a-col>
                                 <a-col :span="6">
-                                  <a-switch size="small" v-model="bottomMud" @click="onBottomMud" />
+                                  <a-switch size="small" v-model="waterFlotage" @click="onWaterFlotage" />
+                                </a-col>
+                              </a-row>
+                            </a-list-item>
+                            <a-list-item>
+                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                                <a-col :span="18">
+                                  <p style="margin:0;">排口</p>
+                                </a-col>
+                                <a-col :span="6">
+                                  <a-switch size="small" v-model="outlet" @click="onOutlet" />
+                                </a-col>
+                              </a-row>
+                            </a-list-item>
+                            <a-list-item>
+                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                                <a-col :span="18">
+                                  <p style="margin:0;">专项调查点</p>
+                                </a-col>
+                                <a-col :span="6">
+                                  <a-switch size="small" v-model="surveyPoint" @click="onSurveyPoint"/>
                                 </a-col>
                               </a-row>
                             </a-list-item>
@@ -293,103 +232,101 @@
                           <span>风险管理</span>
                         </template>
                         <a-list-item>
-                          <a-row type="flex" justify="space-between" style="width:100%;">
-                            <a-col :span="18">
-                              <span>风险管理</span>
-                            </a-col>
-                          </a-row>
+                          <p style="margin:0;">风险管理</p>
                         </a-list-item>
                       </a-popover>
                       <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
                         <template slot="content">
                           <a-list size="small">
-                            <a-list-item>
-                              <a-row
-                                type="flex"
-                                justify="space-around"
-                                align="middle"
-                                style="width:100%;"
-                              >
+                            <a-list-item v-for="item in otherList" :key="item.id">
+                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <span>Ⅰ-红色</span>
+                                  <p style="margin:0;">{{item.name}}</p>
                                 </a-col>
                                 <a-col :span="6">
                                   <a-switch
                                     size="small"
-                                    v-model="waterRatio"
-                                    @click="onWaterRatio"
+                                    v-model="item.clicked"
+                                    @click="onWaterLandLoss(item.id,item.clicked)"
                                   />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                            <a-list-item>
-                              <a-row
-                                type="flex"
-                                justify="space-around"
-                                align="middle"
-                                style="width:100%;"
-                              >
-                                <a-col :span="18">
-                                  <span>Ⅱ-橙色</span>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch size="small" v-model="bottomMud" @click="onBottomMud" />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                            <a-list-item>
-                              <a-row
-                                type="flex"
-                                justify="space-around"
-                                align="middle"
-                                style="width:100%;"
-                              >
-                                <a-col :span="18">
-                                  <span>Ⅲ-黄色</span>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch
-                                    size="small"
-                                    v-model="waterLandLoss"
-                                    @click="onWaterLandLoss"
-                                  />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                            <a-list-item>
-                              <a-row
-                                type="flex"
-                                justify="space-around"
-                                align="middle"
-                                style="width:100%;"
-                              >
-                                <a-col :span="18">
-                                  <span>Ⅳ-蓝色</span>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
                                 </a-col>
                               </a-row>
                             </a-list-item>
                           </a-list>
                         </template>
                         <template slot="title">
-                          <span>风险等级</span>
+                          <span>其他</span>
                         </template>
                         <a-list-item>
-                          <a-row type="flex" justify="space-between" style="width:100%;">
-                            <a-col :span="18">
-                              <span>风险等级</span>
-                            </a-col>
-                          </a-row>
+                          <p style="margin:0;">其他</p>
                         </a-list-item>
                       </a-popover>
                     </a-list>
                   </template>
-                  <img src="../../assets/more.png" alt="更多" />
+                  <template slot="title">
+                    <span>更多</span>
+                  </template>
+                  <img src="../../assets/more.png" alt="更多" title="更多"  />
                 </a-popover>
               </li>
             </ul>
+          </div>
+          <div
+            class="accordion_alert"
+            v-show=" riskMap || waterQuality || riverRisk || outlet"
+          >
+            <a-collapse accordion class="custom_collapse" v-model="accordionAlertKey">
+              <a-collapse-panel
+                header="河岸风险源"
+                :style="customStyle"
+                v-show="riverRisk"
+                class="custom_list"
+                key="riverRisk"
+              >
+                <a-select
+                  showSearch
+                  mode="tags"
+                  :allowClear="true"
+                  placeholder="请选择河岸风险源等级"
+                  optionFilterProp="children"
+                  style="width: 100%"
+                  @change="riverRiskChange"
+                  v-model="riskSourceLevel"
+                  :filterOption="riverRiskFilterOption"
+                >
+                  <a-select-option value="one">Ⅰ级</a-select-option>
+                  <a-select-option value="two">Ⅱ级</a-select-option>
+                  <a-select-option value="three">Ⅲ级</a-select-option>
+                  <a-select-option value="four">Ⅳ级</a-select-option>
+                </a-select>
+              </a-collapse-panel>
+              <a-collapse-panel
+                header="排口"
+                :style="customStyle"
+                v-show="outlet"
+                class="custom_list"
+                key="outlet"
+              >
+                <a-select
+                  showSearch
+                  mode="tags"
+                  :allowClear="true"
+                  placeholder="请选择排口类别"
+                  optionFilterProp="children"
+                  style="width: 100%"
+                  @change="waterQualityChange"
+                  :filterOption="waterQualityFilterOption"
+                  v-model="dischargeLevel"
+                >
+                  <a-select-option value="rainwater">雨水</a-select-option>
+                  <a-select-option value="life">生活</a-select-option>
+                  <a-select-option value="mix">混合</a-select-option>
+                  <a-select-option value="industrial">工业</a-select-option>
+                  <a-select-option value="powerplant">电厂温排水</a-select-option>
+                  <a-select-option value="other">其他</a-select-option>
+                </a-select>
+              </a-collapse-panel>
+            </a-collapse>
           </div>
           <search-river ref="selectPatrol" class="riverSearchModal"></search-river>
           <add-survey ref="addSurvey" class="riverSearchModal"></add-survey>
@@ -1004,7 +941,25 @@
     <sitution-info ref="situtionInfo"></sitution-info>
     <update-time ref="updateTime"></update-time>
     <communication ref="communication"></communication>
-
+    <!-- 河岸风险源 -->
+    <div class="river_risk_alert" v-show="riverRisk">
+      <a-list size="small" style="padding:0 10px; max-height:240px; overflow: auto;">
+        <a-list-item v-for="item in riskSourceList" :key="item.id">
+          <a-row style="width:100%" type="flex" justify="space-between" align="middle">
+            <a-col :span="18">
+              <p style="margin:0;">{{item.name}}</p>
+            </a-col>
+            <a-col :span="6">
+              <a-switch
+                size="small"
+                v-model="item.clicked"
+                @click="onDrawType(item.id,item.clicked)"
+              />
+            </a-col>
+          </a-row>
+        </a-list-item>
+      </a-list>
+    </div>
     <!-- 河道信息弹框 -->
     <a-modal
       :visible="infoVisible"
@@ -1110,7 +1065,12 @@ import {
   inspectTaskDetail,
   recommendFangan,
   roleList,
-  inspectTaskSave
+  inspectTaskSave,
+  mapdrawPage,
+  mapdrawPageRiskSource,
+  paramList,
+  inspectPointPageRiver,
+  getWaterStation 
 } from '@/api/login'
 import 'ol/ol.css'
 // import Map from "ol/Map"
@@ -1134,6 +1094,7 @@ import communication from './modules/communication'
 import waterquality from '../supervise/modules/waterQualityData'
 import '../../assets/css/monitor.less'
 import Vue from 'vue'
+import qs from 'qs'
 // token
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
@@ -1265,6 +1226,7 @@ export default {
   },
   data() {
     return {
+      accordionAlertKey: ['phonePhoto'], // 手风琴
       akakak:'/iii.amr',
       confirmLoading: false,
       hidingJudgment: true, //计划显示方案
@@ -1278,6 +1240,7 @@ export default {
       taskId: '',
       inspectPointId: false,
       picker: '',
+      customStyle: 'background: #fff;margin: 0;overflow: hidden', // 折叠面板样式
       planCard: [
         {
           key: 'addPlan',
@@ -1403,21 +1366,15 @@ export default {
       ],
       waterQuality: false, // 水质
       waterQualityPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.24235, lng: 121.52235 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.25335, lng: 121.50335 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.23435, lng: 121.50445 } }
+
       ],
       waterFlotage: false, // 水质漂浮物
       waterFlotagePoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.22222, lng: 121.52222 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.23555, lng: 121.50555 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.22333, lng: 121.51333 } }
+
       ],
       riverRisk: false, // 河岸风险源
       riverRiskPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.20333, lng: 121.49999 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.21666, lng: 121.48666 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.22999, lng: 121.47333 } }
+
       ],
       waterLandLoss: false, // 水土流失
       waterLandLossPoints: [
@@ -1441,7 +1398,26 @@ export default {
       patrolPlanInfo: [],
       riverList: [],
       asasd: {},
-      newTaskObj: {} // 新建计划传值
+      newTaskObj: {}, // 新建计划传值
+      outlet: false, // 排口
+      dischargeLevel: [], //排口绘制等级
+      outletPoints: [], //排口数据
+      surveyPoint: false, // 专项调查点
+      moreLoadOnce:'1',
+      surveyPointPoints: [
+        // {
+        //   id: 0,
+        //   name: '专项调查点1',
+        //   clicked: false,
+        //   imgUrl: require('./img/surveyPointIcon.png'),
+        //   latlng: { lat: 31.22041, lng: 121.50384 }
+        // }
+      ],
+      otherList: [], //其他
+      otherPoints:[],//其他绘制数据
+      riskSourceList: [], //河岸风险源
+      riskPolygonData: [], // 风险地图数据
+      riskSourceLevel: [], //风险源风险等级
     }
   },
   watch: {
@@ -1455,36 +1431,7 @@ export default {
     },
     //选中树节点
     checkedKeys(val) {
-      console.log('onCheck', val)
     },
-    // 风险地图
-    riskMap() {
-      this.watchAllSwitch()
-    },
-    // 水质
-    waterQuality() {
-      this.watchAllSwitch()
-    },
-    // 水质漂浮物
-    waterFlotage() {
-      this.watchAllSwitch()
-    },
-    // 河岸风险源
-    riverRisk() {
-      this.watchAllSwitch()
-    },
-    // 水土流失
-    waterLandLoss() {
-      this.watchAllSwitch()
-    },
-    // 水面率
-    waterRatio() {
-      this.watchAllSwitch()
-    },
-    // 底泥
-    bottomMud() {
-      this.watchAllSwitch()
-    }
   },
   mounted() {
     let year = new Date().getFullYear() //取得4位数的年份
@@ -1517,12 +1464,13 @@ export default {
     this.map.centerAndZoom(this.$store.state.projectCoordinate, zoom)
     //添加比例尺控件
     this.map.addControl(new T.Control.Scale())
-
+    this.getMapPageData()
     this.getPicker()
     this.getTask()
     this.getList()
     this.getPage()
     this.getRecommendFangan()
+    this.getParamList()
   },
   methods: {
     getplanPageList() {
@@ -1535,8 +1483,41 @@ export default {
         day: picker[2]
       }
       planPageList(data).then(res => {
-        console.log(res)
         this.planExisting = res.data
+      })
+    },
+    //获取绘制类型
+    getParamList() {
+      let data = {
+        type: 'draw_type'
+      }
+      paramList(data)
+        .then(res => {
+          this.paramPage = res.data
+          let arr = []
+          for (const item of res.data) {
+            this.$set(item, 'clicked', false)
+            if (
+              item.id != '5da8374dea6c157d2d61007c' &&
+              item.id != '5da8389eea6c157d2d61007f' &&
+              item.id != '5dafe6c8ea6c159999a0549c'
+            ) {
+              arr.push(item)
+            }
+          }
+          this.otherList = arr
+        })
+        .catch(err => {
+          this.$message.warning('绘制类型数据加载失败')
+        })
+      var datarisk = {
+        type: 'risk_source_type'
+      }
+      paramList(datarisk).then(res => {
+        res.data.forEach(v => {
+          v.clicked = false
+        })
+        this.riskSourceList = res.data
       })
     },
     //-----------------------------------------------推荐巡河方案*-------------------------------------------------------
@@ -1704,8 +1685,6 @@ export default {
     //显示河道或调查点
     judgeDate() {
       this.map.clearOverLays() //将之前绘制的清除
-      console.log(this.riverMontion);
-      
       var sss = this.riverMontion
       for (var i = 0; i < sss.length; i++) {
         var code = sss[i].code
@@ -1719,7 +1698,6 @@ export default {
     },
     //绘制目标调查点
     renderingTarget(task) {
-      console.log(task);
       let icon = new T.Icon({
         iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
         iconSize: new T.Point(19, 27),
@@ -1738,8 +1716,6 @@ export default {
         })
         circle.disableEdit()
         this.map.addOverLay(circle)
-        console.log(task.taskPage);
-        
         this.pointTarget(task.taskPage)
       } else {
         let circle = new T.Circle(task.latlng, 1000, {
@@ -1752,7 +1728,6 @@ export default {
         })
         circle.disableEdit()
         this.map.addOverLay(circle)
-        console.log(task.taskPage);
         this.pointTarget(task.taskPage)
       }
       // this.pointTarget(data.taskPage)
@@ -1796,7 +1771,6 @@ export default {
       }
     },
     showSurverPoint1(arr) {
-      console.log(arr)
       let icon = new T.Icon({
         iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
         iconSize: new T.Point(19, 27),
@@ -1871,7 +1845,6 @@ export default {
         if (e.lnglat.lat == item.latlng.lat && e.lnglat.lng == item.latlng.lng) {
           item.clicked = true
           point = item
-          console.log(item)
           this.taskId = item.taskPage[0].title
           this.inspectPointId = true
           this.inspectVisible = true
@@ -1881,8 +1854,6 @@ export default {
         this.judgeDate()
       }
       // this.showSurverPoint(point)
-
-      console.log('***************')
     },
     //获取当前时间
     getPicker() {
@@ -1932,8 +1903,6 @@ export default {
         date:date[0]+date[1]+date[2],
         locationId:this.$store.state.weatherId
       }
-      console.log(data);
-      
       weatherList(data).then(res=>{
         let arr = res.data
         if (arr.code ==0) {
@@ -2045,8 +2014,6 @@ export default {
         return year + '-' + month + '-' + date
       }
       function tab(date1) {
-        console.log(date1);
-        
         var oDate1 = new Date(date1)
         var oDate2 = new Date()
         if (oDate1.getTime() > oDate2.getTime()) {
@@ -2234,7 +2201,6 @@ export default {
     },
     showPosition(marker, riverData) {
       inspectTaskDetail(riverData.id).then(res => {
-        console.log(res.data);
         marker.addEventListener('click', function() {
           var html =
             "<div style='margin:0px;'>" +
@@ -2394,7 +2360,6 @@ export default {
     },
     //当日计划绘制河道，调查点内的任务点击事件
     planDayDrawClick(arr) {
-      console.log(arr)
       this.$refs.situtionInfo.show(arr.target.options.id)
     },
     //当日计划绘制河道
@@ -2434,7 +2399,6 @@ export default {
         day: picker[2]
       }
       planSave(data).then(res => {
-          // console.log(res.data.id);
           this.planList1.id = res.data.id
           this.planList1.name = res.data.name
           this.getinspectPointPage()
@@ -2539,7 +2503,6 @@ export default {
     choosePointTask(id) {
       for (const item of this.riverMontion) {
         if (item.id === id) {
-          console.log(item);
           if (item.code == 'point') {
             let arr = []
             arr.push(item.latlng)
@@ -2621,10 +2584,8 @@ export default {
     },
     // 选中河流
     chooseRiver(id) {
-      console.log(id)
       for (const item of this.riverList) {
         if (item.id == id) {
-          console.log(item)
           item.clicked = true
           this.map.setViewport(item.lineData)
           // this.map.zoomOut()
@@ -2637,7 +2598,6 @@ export default {
     },
     //多边形点击事件
     polylineClick(index) {
-      console.log(index)
       for (var item of this.riverMontion) {
         if (item.id == index.target.options.id) {
           item.clicked = true
@@ -2678,7 +2638,6 @@ export default {
     },
     //选中添加河道或今日计划面板
     onTabChange(key, type) {
-      console.log(key)
       this[type] = key
       if (key == 'addPlan') {
         this.SamedayAndNewlybuild = 'addPlan'
@@ -2719,9 +2678,7 @@ export default {
         //默认全部选中  当页面渲染完成时执行
         setTimeout(function() {
           var cbArr = document.getElementsByClassName('checkboxClass')
-          console.log('长度啊啊啊啊啊', cbArr.length)
           for (var i = 0; i < cbArr.length; i++) {
-            console.log(cbArr[i])
             cbArr[i].click()
           }
         }, 500)
@@ -2740,8 +2697,11 @@ export default {
       } else {
         this.loadPoint()
       }
+      this.moreLoadOnce = '1'
+      this.getMapPageData()
       this.getWeatherList()
     },
+
     //选中巡河方案
     selectPatrol() {},
     addTaskBtn(id, name, code,aa) {
@@ -2751,6 +2711,8 @@ export default {
       }else{
         this.appendLatlngList=aa.latlng
       }
+      this.map.setViewport(this.appendLatlngList)
+      this.map.setZoom('16')
       for(const item of this.riverMontion){
         if (item.objectId == id) {
           item.isShow =true
@@ -2825,7 +2787,6 @@ export default {
       // this.$refs.planList.getstaffInspectPage(this.planList1.id)
     },
     showPlanJudge(list) {
-      console.log(list);
       let arr =  false
       if (list.length != 0) {
         for (let i = 0; i < list.length; i++) {
@@ -2847,8 +2808,6 @@ export default {
           
         }
       } else {
-        console.log('111');
-        
         this.$message.warning('请先创建分组')
       }
     },
@@ -2892,7 +2851,6 @@ export default {
       }
     },
     changeInfo(key) {
-      console.log(key)
     },
     searchItme(id) {
       this.$refs.situtionInfo.show(id)
@@ -2962,12 +2920,10 @@ export default {
       this.infoVisible = false
       // var arrInfo =  this.asasd
       // arrInfo.clicked = false
-      // console.log(arrInfo)
       // this.drawOneRiver(arrInfo)
     },
     //轨迹模块人员点击事件
     onChange(checkedValues) {
-      console.log('checked = ', checkedValues)
       this.checkPoint(checkedValues)
     },
     checkPoint(vals) {
@@ -2998,8 +2954,6 @@ export default {
           }
         }
       }
-      console.log('当前markers=================：', this.mapMarkers.keys())
-      console.log('当前markers000000000000000000：', this.mapMarkers.values())
     },
     isExistInArr(arr, item) {
       for (var i = 0; i < arr.length; i++) {
@@ -3015,7 +2969,6 @@ export default {
     compass() {},
     // 复位
     setCenter() {
-      console.log(this.$store.state.projectCoordinate)
       this.map.panTo(this.$store.state.projectCoordinate, 14)
     },
     // 放大
@@ -3026,71 +2979,36 @@ export default {
     mapZoomOut() {
       this.map.zoomOut()
     },
-    // 风险地图
-    onRiskMap() {
-      if (this.riskMap) {
-        this.allPointTask(this.riskMapPoints)
-      }
-    },
-    // 水质
-    onWaterQuality() {
-      if (this.waterQuality) {
-        this.allPointTask(this.waterQualityPoints)
-      }
-    },
-    // 水质漂浮物
-    onWaterFlotage() {
-      if (this.waterFlotage) {
-        this.allPointTask(this.waterFlotagePoints)
-      }
-    },
-    // 河岸风险源
-    onRiverRisk() {
-      if (this.riverRisk) {
-        this.allPointTask(this.riverRiskPoints)
-      }
-    },
-    // 水土流失
-    onWaterLandLoss() {
-      if (this.waterLandLoss) {
-        this.allPointTask(this.waterLandLossPoints)
-      }
-    },
-    // 水面率
-    onWaterRatio() {
-      if (this.waterRatio) {
-        this.allPointTask(this.waterRatioPoints)
-      }
-    },
-    // 底泥
-    onBottomMud() {
-      // console.log(this.bottomMud)
-      if (this.bottomMud) {
-        this.allPointTask(this.bottomMudPoints)
-      }
-    },
     allPointTask(pointLists, tool) {
       for (const item of pointLists) {
         this.drawAllPoint(item.latlng, tool)
       }
     },
     // 监听所有的开关属性
+    // 监听所有的开关属性
     watchAllSwitch() {
-      this.map.clearOverLays()
       // 风险地图
       this.onRiskMap()
-      // 水质
+      // 水质数据
       this.onWaterQuality()
       // 水质漂浮物
       this.onWaterFlotage()
+      // 排口
+      this.onOutlet()
       // 河岸风险源
       this.onRiverRisk()
       // 水土流失
-      this.onWaterLandLoss()
+      // this.onWaterLandLoss()
       // 水面率
       this.onWaterRatio()
       // 底泥
       this.onBottomMud()
+      // 专项调查点
+      this.onSurveyPoint()
+      // 河道连通性
+      this.onRiverLink()
+      // 水陆分布
+      this.onLandAndWater()
     },
     // 添加标注图片
     drawAllPoint(latlng, tool) {
@@ -3143,7 +3061,6 @@ export default {
       }
       dataManual(data).then(res => {
         var arr = res.data.data
-        console.log(arr)
         for (const item of arr) {
           var marker = new T.Marker(item.coordinate, { id: item.id, coordinate: item.coordinate })
           this.map.addOverLay(marker)
@@ -3171,7 +3088,6 @@ export default {
         status: 'publish'
       }
       locusManual(data).then(res => {
-        console.log(res.data)
         var arr = res.data
         var k = 0
         for (const item of arr) {
@@ -3215,7 +3131,6 @@ export default {
     },
     //添加任务点
     addTaskPoint(riverData) {
-      console.log(riverData)
       if (riverData.region.length != undefined) {
         for (var i = 0; i < riverData.region.length; i++) {
           var lnglat = new T.LngLat(riverData.region[i].lng, riverData.region[i].lat)
@@ -3223,8 +3138,6 @@ export default {
           this.showPosition(marker, riverData)
         }
       } else {
-        console.log(riverData.lng, riverData.lat)
-
         var lnglat = new T.LngLat(riverData.lng, riverData.lat)
         
         var marker = new T.Marker(lnglat)
@@ -3266,8 +3179,6 @@ export default {
     },
     //河道计划点击事件
     onSelect(selectedKeys, info) {
-      console.log(selectedKeys, info)
-
       this.selectedKeys = selectedKeys
       this.treeinfo = info.node.dataRef
       var info = info.node.dataRef
@@ -3305,8 +3216,6 @@ export default {
     },
     //获取绘制线坐标
     getLineDate(e) {
-      console.log(e)
-      console.log(e.currentLnglats)
       this.lineLnglats = e.currentLnglats
     },
     //取消追加任务
@@ -3341,7 +3250,6 @@ export default {
     },
     // 添加调查点后
     addPointed(e) {
-      console.log(e)
       let circle = new T.Circle(e.currentLnglat, 1000, {
         color: 'blue',
         weight: 2,
@@ -3360,7 +3268,6 @@ export default {
         radius: '1'
       }
       taskSpotList(data).then(res => {
-        console.log(res.data, '周围的点')
         var arr = res.data
         arr.forEach(v => {
           v.latlng = v.coordinate
@@ -3389,7 +3296,6 @@ export default {
       // this.markerTool.addEventListener('mouseup', this.addPointed)
     },
     addPointDate(e) {
-      console.log(e.currentLnglat)
       this.markLnglat = e.currentLnglat
     },
     //画面
@@ -3611,12 +3517,766 @@ export default {
       this.listAppend.region = ''
       this.listAppend.roleId = []
     },
+    onOutlet() {
+      if (this.outlet) {
+        let point1 = []
+        let point2 = []
+        for (const item of this.outletPoints) {
+          if (item.locationType.code == 'point') {
+            item.latlng = {
+              lng: item.point[0],
+              lat: item.point[1]
+            }
+            point1.push(item)
+          }
+          if (item.locationType.code == 'line') {
+            this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+          }
+          if (item.locationType.code == 'polygon') {
+            this.noodlesDraw(
+              item.polygon,
+              item.frameColor,
+              3,
+              item.framePellucidity,
+              item.shapeColor,
+              item.shapePellucidity,
+              item.innerName,
+              item.id,
+              item.innerType.code
+            )
+          }
+        }
+        if (point1.length > 0) {
+          this.spotDraw(point1)
+        }
+      } else {
+        this.removeOverLays(this.outletPoints)
+      }
+    },
+    // 河岸风险源
+    onRiverRisk() {
+      if (this.riverRisk) {
+      } else {
+        this.riskSourceList.forEach(v => {
+          v.clicked = false
+        })
+        this.removeOverLays(this.riverRiskPoints)
+      }
+    },
+    // 河岸风险源子栏
+    onDrawType(id, clicked) {
+      // 点击时间轴切换先清除上一次的地图数据
+      let data1 = []
+      let data2 = []
+      // 双球开关风险源关闭
+      if (this.sharedChecked) {
+        for (const item of this.riverRiskPoints) {
+          if (item.drawType.id == id) {
+            data1.push(item)
+          }
+        }
+        for (const item of this.riverRiskPointsRight) {
+          if (item.drawType.id == id) {
+            data2.push(item)
+          }
+        }
+      }
+      let point = []
+      let point2 = []
+      if (clicked) {
+        for (const item of this.riverRiskPoints) {
+          if (item.drawType.id == id) {
+            if (item.locationType.code == 'point') {
+              item.latlng = {
+                lng: item.point[0],
+                lat: item.point[1]
+              }
+              point.push(item)
+            }
+            if (item.locationType.code == 'line') {
+              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+              let markerTool
+              if (item.drawType.icon) {
+                let icon = new T.Icon({
+                  iconUrl: item.drawType.icon,
+                  iconSize: new T.Point(41, 40),
+                  iconAnchor: new T.Point(21, 40)
+                })
+                markerTool = new T.Marker(item.line[0], {
+                  icon: icon,
+                  id: item.id,
+                  title: item.innerName,
+                  code: item.innerType.code
+                })
+                this.map.addOverLay(markerTool)
+              } else {
+                markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+                this.map.addOverLay(markerTool)
+              }
+              // markerTool.addEventListener('click', this.panoramaPointClick)
+            }
+            if (item.locationType.code == 'polygon') {
+              this.noodlesDraw(
+                item.polygon,
+                item.frameColor,
+                3,
+                item.framePellucidity,
+                item.shapeColor,
+                item.shapePellucidity,
+                '',
+                item.id,
+                item.innerType.code
+              )
+              let markerTool
+              if (item.drawType.icon) {
+                let icon = new T.Icon({
+                  iconUrl: item.drawType.icon,
+                  iconSize: new T.Point(41, 40),
+                  iconAnchor: new T.Point(21, 40)
+                })
+                markerTool = new T.Marker(item.polygon[0], {
+                  icon: icon,
+                  id: item.id,
+                  title: item.innerName,
+                  code: item.innerType.code
+                })
+                this.map.addOverLay(markerTool)
+              } else {
+                // markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
+                // this.map.addOverLay(markerTool)
+                markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+                this.map.addOverLay(markerTool)
+              }
+            }
+          }
+        }
+        this.spotDraw(point)
+        // 双球开关
+      } else {
+        let data1 = []
+        let data2 = []
+        for (const item of this.riverRiskPoints) {
+          if (item.drawType.id == id) {
+            data1.push(item)
+          }
+        }
+        this.removeOverLays(data1)
+      }
+    },
+    // 风险地图
+    onRiskMap() {
+      this.removeOverLays(this.riskPolygonData)
+      if (this.riskMap) {
+        // 风险地图绘制的面
+        if (this.riskPolygonData.length != 0) {
+          for (const item of this.riskPolygonData) {
+            this.setRiskPolyline(
+              item.lineData,
+              item.borderColor,
+              3,
+              item.borderOpacity,
+              item.fullColor,
+              item.fullOpacity,
+              '',
+              item.id
+            )
+          }
+        }
+      }
+    },
+    // 获取风险地图
+    getRiskMapList() {
+      // this.removeOverLays(this.riskPolygonData)
+      var time = this.picker
+      var picker = time.split('-')
+      var data = {
+        projectId: this.$store.state.id,
+        year: picker[0],
+        month: picker[1],
+        day: picker[2],
+        innerType: 'riskMap'
+      }
+      mapdrawPage(data).then(res => {
+        let arr = res.data
+        let ar = []
+        for (const item of arr) {
+          item.borderColor = item.frameColor
+          item.borderOpacity = item.framePellucidity / 100
+          item.fullColor = item.shapeColor
+          item.fullOpacity = item.shapePellucidity / 100
+          item.id = item.id
+          item.lineData = item.polygon
+          ar.push(item)
+        }
+        this.riskPolygonData = []
+        this.riskPolygonData = ar
+        this.onRiskMap()
+      })
+    },
+    // 获取水质数据
+    getWaterQualityPoints() {
+      // var picker = time.split('-')
+      var data = {
+        projectId: this.$store.state.id,
+        date: this.picker
+        // year: picker[0],
+        // month: picker[1],
+        // day: picker[2]
+        // year: '2019',
+        // month: '12',
+        // day: '25',
+      }
+      getWaterStation(data)
+        .then(res => {
+          let arr = res.data
+          this.waterQualityPoints = arr
+          this.onWaterQuality()
+        })
+        .catch(err => {})
+    },
+    // 水质数据
+    onWaterQuality() {
+      this.removeOverLays(this.waterQualityPoints)
+      if (this.waterQuality) {
+        if (this.waterQualityPoints.length > 0) {
+          for (const item of this.waterQualityPoints) {
+            this.waterQualityMarker = new T.Marker(item.coordinate, { item: item, id: item.id, title: item.name })
+            this.map.addOverLay(this.waterQualityMarker)
+            if (this.historyData) {
+              this.waterQualityMarker.addEventListener('click', this.waterQualityHistoryClick)
+            } else {
+              this.waterQualityMarker.addEventListener('click', this.waterQualityClick)
+              // this.waterQualityMarker.addEventListener("click",function(e){
+              //   let point = item.coordinate;
+              //   that.waterQualityMarker = new T.Marker(point);// 创建标注
+              //   let markerInfoWin = new T.InfoWindow(item.name,{offset:new T.Point(0,-30)}); // 创建信息窗口对象
+              //   that.map.openInfoWindow(markerInfoWin,point); //开启信息窗口
+              // });
+            }
+          }
+        }
+      } else {
+      }
+    },
+    // 水面漂浮物
+    onWaterFlotage() {
+      if (this.waterFlotage) {
+        let point = []
+        let point2 = []
+        for (const item of this.waterFlotagePoints) {
+          if (item.locationType.code == 'point') {
+            item.latlng = {
+              lat: item.point[1],
+              lng: item.point[0]
+            }
+            point.push(item)
+          }
+          if (item.locationType.code == 'line') {
+            this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+          }
+          if (item.locationType.code == 'polygon') {
+            this.noodlesDraw(
+              item.polygon,
+              item.frameColor,
+              3,
+              item.framePellucidity,
+              item.shapeColor,
+              item.shapePellucidity,
+              item.innerName,
+              item.id,
+              item.innerType.code
+            )
+          }
+        }
+        if (point.length > 0) {
+          this.spotDraw(point)
+        }
+      } else {
+        this.removeOverLays(this.waterFlotagePoints)
+      }
+    },
+    // 获取专项调查点
+    getSurveyPointPoints() {
+      var picker = this.picker.split('-')
+      var data = {
+        projectId: this.$store.state.id,
+        year: picker[0],
+        month: picker[1],
+        day: picker[2],
+        mediaType: 'image'
+      }
+      inspectPointPageRiver(data).then(res => {
+        let arr = res.data.data
+        arr.forEach(v => {
+          v.clicked = false
+        })
+        this.surveyPointPoints = arr
+        this.onSurveyPoint()
+      })
+    },
+    //水面漂浮物绘制数据
+    getFloatageMapDrawPage() {
+      var time = this.picker
+      var picker = time.split('-')
+      var data = {
+        projectId: this.$store.state.id,
+        year: picker[0],
+        month: picker[1],
+        day: picker[2],
+        innerType: 'floatage'
+      }
+      mapdrawPage(data).then(res => {
+        let arr = res.data
+        let ar = []
+        arr.forEach(v => {
+          v.shapePellucidity = v.shapePellucidity / 100
+          v.framePellucidity = v.framePellucidity / 100
+          if (v.drawType == undefined) {
+            v.drawType = {
+              code: '',
+              id: ''
+            }
+          }
+          if (v.innerType != undefined) {
+            ar.push(v)
+          }
+        })
+        this.waterFlotagePoints = ar
+        this.onWaterFlotage()
+      })
+    },
+    // 河岸风险源过滤
+    riverRiskFilterOption(input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    },
+    // 河岸风险源
+    riverRiskChange(value) {
+      this.removeOverLays(this.riverRiskPoints)
+      this.getRiskSourceMapDrawPage(true)
+    },
+    //其他绘制数据
+    getOtherMapDrawPage(){
+      var time = this.picker
+      var picker = time.split('-')
+      var data = {
+        projectId: this.$store.state.id,
+        year: picker[0],
+        month: picker[1],
+        day: picker[2],
+        innerType: 'other'
+      }
+      mapdrawPage(data,).then(res => {
+        let arr = res.data
+        let ar = []
+        arr.forEach(v => {
+          v.shapePellucidity = v.shapePellucidity / 100
+          v.framePellucidity = v.framePellucidity / 100
+          if (v.drawType == undefined) {
+            v.drawType = {
+              code: '',
+              id: ''
+            }
+          }
+          if (v.innerType != undefined) {
+            ar.push(v)
+          }
+        })
+        this.otherPoints = ar
+        // 点击切换重新绘制触发
+        for (const item of this.otherList) {
+          if (item.clicked==true) {
+            this.onWaterLandLoss(item.id, true)
+          }
+        }
+      })
+    },
+    //专项调查点
+    onSurveyPoint() {
+      this.removeOverLays(this.surveyPointPoints)
+      if (this.surveyPoint) {
+        for (const item of this.surveyPointPoints) {
+          let icon = new T.Icon({
+            iconUrl: require('./img/surveyPointIcon.png'),
+            iconSize: new T.Point(41, 40),
+            iconAnchor: new T.Point(21, 40)
+          })
+          let marker = new T.Marker(item.coordinate, { icon: icon, id: item.id, title: item.name })
+          this.map.addOverLay(marker)
+          // marker.addEventListener('click', this.taskPointClick)
+        }
+      } else {
+      }
+    },
+    // 其他
+    onWaterLandLoss(id, clicked) {
+      if (clicked) {
+        let point = []
+        for (const item of this.otherPoints) {
+          if (item.drawType.id == id) {
+            if (item.locationType.code == 'point') {
+              item.latlng = {
+                lng: item.point[0],
+                lat: item.point[1]
+              }
+              point.push(item)
+            }
+            if (item.locationType.code == 'line') {
+              if (item.innerName) {
+                
+              }else{
+                item.innerName=''
+              }
+              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, item.innerName, item.innerType.code)
+            }
+            if (item.locationType.code == 'polygon') {
+              if (item.innerName) {
+                
+              }else{
+                item.innerName=''
+              }
+              this.noodlesDraw(
+                item.polygon,
+                item.frameColor,
+                3,
+                item.framePellucidity,
+                item.shapeColor,
+                item.shapePellucidity,
+                item.innerName,
+                item.id,
+                item.innerType.code
+              )
+            }
+          }
+        }
+        this.spotDraw(point)
+      } else {
+        let data = []
+        for (const item of this.otherPoints) {
+          if (item.drawType.id == id) {
+            data.push(item)
+          }
+        }
+        this.removeOverLays(data)
+      }
+    },
+    // 设置绘制的多边形
+    setRiskPolyline(lineData, color, weight, opacity, fillColor, fillOpacity, title, id) {
+      let polygon = new T.Polygon(lineData, {
+        color: color, //线颜色
+        weight: weight, //线宽
+        opacity: opacity, //透明度
+        fillColor: fillColor, //填充颜色
+        fillOpacity: fillOpacity, // 填充透明度
+        title: title, // 名字
+        id: id // id
+      })
+      //向地图上添加面
+      this.map.addOverLay(polygon)
+      // polygon.addEventListener('click', this.riskPolygonClick)
+    },
+    //风险源绘制数据
+    getRiskSourceMapDrawPage(riskSourceType) {
+      var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
+      var time = this.picker
+      var picker = time.split('-')
+      var data = {
+        projectId: this.$store.state.id,
+        year: picker[0],
+        month: picker[1],
+        day: picker[2],
+        innerType: 'riskSource'
+      }
+      mapdrawPageRiskSource(data, riskSourceLevel).then(res => {
+        let arr = res.data
+        let ar = []
+        arr.forEach(v => {
+          v.shapePellucidity = v.shapePellucidity / 100
+          v.framePellucidity = v.framePellucidity / 100
+          if (v.drawType == undefined) {
+            v.drawType = {
+              code: '',
+              id: ''
+            }
+          }
+          if (v.innerType != undefined) {
+            ar.push(v)
+          }
+        })
+        this.riverRiskPoints = ar
+        // 点击切换重新绘制触发
+        for (const item of this.riskSourceList) {
+          if (item.clicked) {
+            this.onDrawType(item.id, true)
+          }
+        }
+        if (riskSourceType == true) {
+          for (const risk of this.riskSourceList) {
+            if (risk.clicked == true) {
+              let point = []
+              for (const item of this.riverRiskPoints) {
+                if (item.drawType.id == risk.id) {
+                  if (item.locationType.code == 'point') {
+                    item.latlng = {
+                      lng: item.point[0],
+                      lat: item.point[1]
+                    }
+                    point.push(item)
+                  }
+                  if (item.locationType.code == 'line') {
+                    this.lineDraw(
+                      item.line,
+                      item.frameColor,
+                      3,
+                      item.framePellucidity,
+                      item.id,
+                      '',
+                      item.innerType.code
+                    )
+                    let markerTool
+                    if (item.drawType.icon) {
+                      let icon = new T.Icon({
+                        iconUrl: item.drawType.icon,
+                        iconSize: new T.Point(41, 40),
+                        iconAnchor: new T.Point(21, 40)
+                      })
+                      markerTool = new T.Marker(item.line[0], {
+                        icon: icon,
+                        id: item.id,
+                        title: item.innerName,
+                        code: item.innerType.code
+                      })
+                      this.map.addOverLay(markerTool)
+                    } else {
+                      markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+                      this.map.addOverLay(markerTool)
+                    }
+                    // markerTool.addEventListener('click', this.panoramaPointClick)
+                  }
+                  if (item.locationType.code == 'polygon') {
+                    this.noodlesDraw(
+                      item.polygon,
+                      item.frameColor,
+                      3,
+                      item.framePellucidity,
+                      item.shapeColor,
+                      item.shapePellucidity,
+                      '',
+                      item.id,
+                      item.innerType.code
+                    )
+                    let markerTool
+                    if (item.drawType.icon) {
+                      let icon = new T.Icon({
+                        iconUrl: item.drawType.icon,
+                        iconSize: new T.Point(41, 40),
+                        iconAnchor: new T.Point(21, 40)
+                      })
+                      markerTool = new T.Marker(item.polygon[0], {
+                        icon: icon,
+                        id: item.id,
+                        title: item.innerName,
+                        code: item.innerType.code
+                      })
+                      this.map.addOverLay(markerTool)
+                    } else {
+                      // markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
+                      // this.map.addOverLay(markerTool)
+                      markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+                      this.map.addOverLay(markerTool)
+                    }
+                  }
+                }
+              }
+              this.spotDraw(point)
+            }
+          }
+        }
+      })
+    },
+    //获取排口绘制数据
+    getDischargeMapDrawPage() {
+      if (this.dischargeLevel.length>0) {
+        var dischargeLevel = this.dischargeLevel.join(',')
+      }else{
+        var dischargeLevel=''
+      }
+      var time = this.picker
+      var picker = time.split('-')
+      var data = {
+        projectId: this.$store.state.id,
+        dischargeType:dischargeLevel,
+        year: picker[0],
+        month: picker[1],
+        day: picker[2],
+        innerType: 'discharge'
+      }
+      mapdrawPage(data).then(res => {
+        let arr = res.data
+        let ar = []
+        arr.forEach(v => {
+          v.shapePellucidity = v.shapePellucidity / 100
+          v.framePellucidity = v.framePellucidity / 100
+          if (v.drawType == undefined) {
+            v.drawType = {
+              code: '',
+              id: ''
+            }
+          }
+          if (v.innerType != undefined) {
+            ar.push(v)
+          }
+        })
+        this.outletPoints = ar
+        this.onOutlet()
+      })
+    },
+    // 水质监测点过滤
+    waterQualityFilterOption(input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    },
+    // 水质监测点
+    waterQualityChange(value) {
+      this.removeOverLays(this.outletPoints)
+      this.getDischargeMapDrawPage()
+    },
+    removeOverLays(itemList) {
+      for (const overlay of this.map.getOverlays()) {
+        for (const item of itemList) {
+          if (item.id == overlay.options.id) {
+            this.map.removeOverLay(overlay)
+          }
+        }
+      }
+    },
+    //绘制点
+    spotDraw(pointLists) {
+      let markerTool
+      for (const item of pointLists) {
+        if (item.drawType.icon) {
+          let icon = new T.Icon({
+            iconUrl: item.drawType.icon,
+            iconSize: new T.Point(41, 40),
+            iconAnchor: new T.Point(21, 40)
+          })
+          markerTool = new T.Marker(item.latlng, {
+            icon: icon,
+            id: item.id,
+            title: item.innerName,
+            code: item.innerType.code
+          })
+          this.map.addOverLay(markerTool)
+        } else {
+          markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
+          this.map.addOverLay(markerTool)
+        }
+        // if (item.innerType.code == 'riskSource') {
+        //   markerTool.addEventListener('click', this.sourceRiskClick)
+        // } else if (item.innerType.code == 'discharge') {
+        //   markerTool.addEventListener('click', this.sourceRiskClick)
+        // } else if (item.innerType.code == 'floatage') {
+        //   markerTool.addEventListener('click', this.floatageClick)
+        // }else if (item.innerType.code == 'other') {
+        //   markerTool.addEventListener('click', this.otherClick)
+        // }
+      }
+    },
+    //绘制线
+    lineDraw(points, color, weight, opacity, id, name, code) {
+      let line = new T.Polyline(points, {
+        color: color, //线颜色
+        weight: weight, //线宽
+        opacity: opacity, //透明度
+        id: id,
+        title: name,
+        code: code
+      })
+      //向地图上添加线
+      this.map.addOverLay(line)
+      // if (code == 'riskSource') {
+      //   line.addEventListener('click', this.sourceRiskClick)
+      // }
+      // if (code == 'discharge') {
+      //   line.addEventListener('click', this.sourceRiskClick)
+      // }
+      // if (code == 'floatage') {
+      //   line.addEventListener('click', this.floatageClick)
+      // }
+      // if (code== 'other') {
+      //   line.addEventListener('click', this.otherClick)
+      // }
+    },
+    // 绘制面
+    noodlesDraw(lineData, color, weight, opacity, fillColor, fillOpacity, title, id, code) {
+      let polygon = new T.Polygon(lineData, {
+        color: color, //线颜色
+        weight: weight, //线宽
+        opacity: opacity, //透明度
+        fillColor: fillColor, //填充颜色
+        fillOpacity: fillOpacity, // 填充透明度
+        title: title, // 名字
+        id: id, // id
+        code: code
+      })
+      //向地图上添加面
+      this.map.addOverLay(polygon)
+      // if (code == 'riskSource') {
+      //   polygon.addEventListener('click', this.sourceRiskClick)
+      // }
+      // if (code == 'discharge') {
+      //   polygon.addEventListener('click', this.sourceRiskClick)
+      // }
+      // if (code == 'floatage') {
+      //   polygon.addEventListener('click', this.floatageClick)
+      // }
+      // if (code== 'other') {
+      //   polygon.addEventListener('click', this.otherClick)
+      // }
+    },
+    // 获取当前页面数据
+    getMapPageData() {
+      if (this.moreLoadOnce == '1') {
+        //获取风险源绘制数据
+        this.removeOverLays(this.riverRiskPoints)
+        this.getRiskSourceMapDrawPage(true)
+        //其他绘制数据
+        this.removeOverLays(this.otherPoints)
+        this.getOtherMapDrawPage(true)
+        //获取排口绘制数据
+        this.removeOverLays(this.outletPoints)
+        this.getDischargeMapDrawPage()
+        //获取漂浮物绘制数据
+        this.removeOverLays(this.waterFlotagePoints)
+        this.getFloatageMapDrawPage()
+        // 获取专项调查点
+        this.removeOverLays(this.surveyPointPoints)
+        this.getSurveyPointPoints()
+        // 获取风险地图
+        this.removeOverLays(this.riskPolygonData)
+        this.getRiskMapList()
+        // 获取水质数据
+        this.removeOverLays(this.waterQualityPoints)
+        this.getWaterQualityPoints()
+        this.onSurveyPoint()
+        // this.getUavPhoto()//无人机照片
+        this.moreLoadOnce = '2'
+      }
+    },
   }
 }
 </script>
 
 <style lang="less" scoped>
 // @import '../../assets/css/monitor.less';
+.river_risk_alert {
+  position: absolute;
+  right: 404px;
+  top: 75px;
+  width: 180px;
+  background-color: white;
+  z-index: 889;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.5);
+}
 .mouse_alert {
   position: absolute;
   z-index: 999;
