@@ -435,7 +435,15 @@
                 <span>道路标注</span>
               </a-col>
               <a-col :span="8" style="text-align: right;">
-                <a-switch size="small" v-model="roadWordChange" @click="onChangeSwitch" />
+                <a-switch size="small" v-model="roadWordChange" @click="onRoadChangeSwitch" />
+              </a-col>
+            </a-row>
+            <a-row style="width: 100%; margin-top: 8px;">
+              <a-col :span="16">
+                <span>正射开关</span>
+              </a-col>
+              <a-col :span="8" style="text-align: right;">
+                <a-switch size="small" v-model="layerImageChange" @click="onLayerImageSwitch" />
               </a-col>
             </a-row>
           </template>
@@ -1099,6 +1107,7 @@ export default {
       mapDay: '', // 地图日
       mapType: 'b',
       roadWordChange: true, // 道路标注显隐
+      layerImageChange: true, // 正射影像显隐
       sharedChecked: false, // 双球
       sharedOnce: 1, // 加载一次
       swipeChecked: false, // 卷帘
@@ -3272,11 +3281,19 @@ export default {
       }
     },
     // 道路开关
-    onChangeSwitch() {
+    onRoadChangeSwitch() {
       if (this.roadWordChange) {
         this.map.addLayer(this.mapLayerWord)
       } else {
         this.map.removeLayer(this.mapLayerWord)
+      }
+    },
+    // 正射开关
+    onLayerImageSwitch() {
+      if (this.layerImageChange) {
+        this.map.addLayer(this.mapLayerImage)
+      } else {
+        this.map.removeLayer(this.mapLayerImage)
       }
     },
     printImage() {
