@@ -435,7 +435,15 @@
                 <span>道路标注</span>
               </a-col>
               <a-col :span="8" style="text-align: right;">
-                <a-switch size="small" v-model="roadWordChange" @click="onChangeSwitch" />
+                <a-switch size="small" v-model="roadWordChange" @click="onRoadChangeSwitch" />
+              </a-col>
+            </a-row>
+            <a-row style="width: 100%; margin-top: 8px;">
+              <a-col :span="16">
+                <span>正射开关</span>
+              </a-col>
+              <a-col :span="8" style="text-align: right;">
+                <a-switch size="small" v-model="layerImageChange" @click="onLayerImageSwitch" />
               </a-col>
             </a-row>
           </template>
@@ -1099,6 +1107,7 @@ export default {
       mapDay: '', // 地图日
       mapType: 'b',
       roadWordChange: true, // 道路标注显隐
+      layerImageChange: true, // 正射影像显隐
       sharedChecked: false, // 双球
       sharedOnce: 1, // 加载一次
       swipeChecked: false, // 卷帘
@@ -2311,25 +2320,67 @@ export default {
     },
     // 工具
     toolsShowFun() {
+      if (this.toolsCard) {
+        if (this.markerTool) {
+          this.markerTool.clear()
+        }
+        if (this.lineTool) {
+          this.lineTool.clear()
+        }
+        if (this.polygonTool) {
+          this.polygonTool.clear()
+        }
+      }
       this.toolsCard = !this.toolsCard
+      this.toolCard = false
     },
     // 工具
     toolIndexFun(index) {
+      // 切换工具清除上一次的本地绘制
+      if (this.toolsCard) {
+        if (this.markerTool) {
+          this.markerTool.clear()
+          this.markerTool.close()
+        }
+        if (this.lineTool) {
+          this.lineTool.clear()
+          this.lineTool.close()
+        }
+        if (this.polygonTool) {
+          this.polygonTool.clear()
+          this.polygonTool.close()
+        }
+        if (this.polygonToolNum) {
+          this.polygonToolNum.close()
+        }
+        if (this.lineToolNum) {
+          this.lineToolNum.close()
+        }
+      }
       this.toolIndex = index
       this.editIndex = 'tool'
       if (index === 1) {
         // 工具-点
+        if (this.markerTool) {
+          this.markerTool.clear()
+        }
         this.markerTool = new T.MarkTool(this.map, { follow: true })
         this.markerTool.open()
         this.markerTool.addEventListener('mouseup', this.toolDrawn)
       } else if (index === 2) {
         // 工具-线
+        if (this.lineTool) {
+          this.lineTool.clear()
+        }
         this.lineTool = new T.PolylineTool(this.map)
         this.lineTool.open()
         this.lineTool.setTips(`<p style="padding:0px;">单击确认起点, 双击结束绘制</p>`)
         this.lineTool.addEventListener('draw', this.toolDrawn)
       } else if (index === 3) {
         // 工具-面
+        if (this.polygonTool) {
+          this.polygonTool.clear()
+        }
         this.polygonTool = new T.PolygonTool(this.map)
         this.polygonTool.open()
         this.polygonTool.addEventListener('draw', this.toolDrawn)
@@ -2346,6 +2397,18 @@ export default {
     },
     // 绘制保存
     toolCradSave() {
+      // 保存之前先清除地图本地绘制
+      if (this.toolsCard) {
+        if (this.markerTool) {
+          this.markerTool.clear()
+        }
+        if (this.lineTool) {
+          this.lineTool.clear()
+        }
+        if (this.polygonTool) {
+          this.polygonTool.clear()
+        }
+      }
       this.toolCard = false
       var time = this.defaultTime
       var picker = time.split('-')
@@ -2566,6 +2629,7 @@ export default {
     },
     // 绘制取消
     toolCradCancel() {
+      console.log("55555")
       if (this.drawNameShow == true) {
         this.drawName = ''
         this.drawNameShow = false
@@ -2603,6 +2667,26 @@ export default {
         // 工具-测距
         this.lineToolNum.clear()
       }
+    },
+    toolRemoveDraw() {
+      // 工具-点
+      this.markerTool.clear()
+      this.toolIndexPointData.splice(
+        this.toolIndexPointData.findIndex(item => item.id === this.toolIndexId),
+        1
+      )
+      // 工具-线
+      this.lineTool.clear()
+      this.toolIndexLineData.splice(
+        this.toolIndexLineData.findIndex(item => item.id === this.toolIndexId),
+        1
+      )
+      // 工具-面
+      this.polygonTool.clear()
+      this.toolIndexPolygonData.splice(
+        this.toolIndexPolygonData.findIndex(item => item.id === this.toolIndexId),
+        1
+      )
     },
     // 添加风险源回调
     riskSourceCancel() {
@@ -3197,11 +3281,19 @@ export default {
       }
     },
     // 道路开关
-    onChangeSwitch() {
+    onRoadChangeSwitch() {
       if (this.roadWordChange) {
         this.map.addLayer(this.mapLayerWord)
       } else {
         this.map.removeLayer(this.mapLayerWord)
+      }
+    },
+    // 正射开关
+    onLayerImageSwitch() {
+      if (this.layerImageChange) {
+        this.map.addLayer(this.mapLayerImage)
+      } else {
+        this.map.removeLayer(this.mapLayerImage)
       }
     },
     printImage() {

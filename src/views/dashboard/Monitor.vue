@@ -149,7 +149,15 @@
                         <span>道路标注</span>
                       </a-col>
                       <a-col :span="8" style="text-align: right;">
-                        <a-switch size="small" v-model="roadWordChange" @click="onChangeSwitch" />
+                        <a-switch size="small" v-model="roadWordChange" @click="onRoadChangeSwitch" />
+                      </a-col>
+                    </a-row>
+                    <a-row style="width: 100%; margin-top: 8px;">
+                      <a-col :span="16">
+                        <span>正射开关</span>
+                      </a-col>
+                      <a-col :span="8" style="text-align: right;">
+                        <a-switch size="small" v-model="layerImageChange" @click="onLayerImageSwitch" />
                       </a-col>
                     </a-row>
                   </template>
@@ -1326,6 +1334,7 @@ export default {
       mapLayerSatellite: '', // 卫星影像图
       mapLayerWord: '', // 道路标注
       roadWordChange: true, // 道路标注
+      layerImageChange: false, // 正射影像显隐
       mapLayerImage: '', // 正射影像
       layer: [],
       // 地图节点对象（里面含节点对象、区域对象、任务弹窗对象）
@@ -1459,7 +1468,7 @@ export default {
     this.map = new T.Map('map', {
       minZoom: 4,
       maxZoom: 23,
-      layers: [this.mapLayerSatellite, this.mapLayerWord, this.mapLayerImage]
+      layers: [this.mapLayerSatellite, this.mapLayerWord]
     })
     this.map.centerAndZoom(this.$store.state.projectCoordinate, zoom)
     //添加比例尺控件
@@ -3037,11 +3046,19 @@ export default {
       }
     },
     // 道路开关
-    onChangeSwitch() {
+    onRoadChangeSwitch() {
       if (this.roadWordChange) {
         this.map.addLayer(this.mapLayerWord)
       } else {
         this.map.removeLayer(this.mapLayerWord)
+      }
+    },
+    // 正射开关
+    onLayerImageSwitch() {
+      if (this.layerImageChange) {
+        this.map.addLayer(this.mapLayerImage)
+      } else {
+        this.map.removeLayer(this.mapLayerImage)
       }
     },
     //任务模块任务点
