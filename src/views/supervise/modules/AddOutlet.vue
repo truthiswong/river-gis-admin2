@@ -703,7 +703,7 @@ export default {
       data.billId = this.dataSourceId.join(',')
       mapdrawDischargeSave(data)
         .then(res => {
-          this.$message.success('保存成功')
+          this.$message.success('保存成功,请打开排口按钮查看')
           this.$parent.drawSaveRefresh('discharge')
           this.handleCancel()
         })

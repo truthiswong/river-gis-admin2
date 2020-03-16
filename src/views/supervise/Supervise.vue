@@ -1904,6 +1904,7 @@ export default {
     },
     //风险源绘制数据
     getRiskSourceMapDrawPage(riskSourceType) {
+      this.removeOverLays(this.riverRiskPoints)
       var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
       if (this.historyData) {
         var data = {
@@ -2079,7 +2080,7 @@ export default {
     //获取排口绘制数据
     getDischargeMapDrawPage() {
       console.log(this.dischargeLevel);
-      
+      this.removeOverLays(this.outletPoints)
       if (this.dischargeLevel.length>0) {
         var dischargeLevel = this.dischargeLevel.join(',')
       }else{
@@ -2174,6 +2175,7 @@ export default {
     },
     //水面漂浮物绘制数据
     getFloatageMapDrawPage() {
+      this.removeOverLays(this.waterFlotagePoints)
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,

@@ -496,7 +496,7 @@ export default {
       }
       mapdrawRiskSave(data)
         .then(res => {
-          this.$message.success('保存成功')
+          this.$message.success('保存成功,请打开风险源按钮查看')
           this.$parent.drawSaveRefresh('riskSource')
           this.handleCancel()
           this.$emit('confirm')

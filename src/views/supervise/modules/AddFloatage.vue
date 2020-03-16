@@ -179,7 +179,7 @@ export default {
       let data = this.list
       floatageSave(data)
         .then(res => {
-          this.$message.success('保存成功')
+          this.$message.success('保存成功,请打开漂浮物按钮查看')
           this.$parent.drawSaveRefresh('floatage')
           this.handleCancel()
         })
