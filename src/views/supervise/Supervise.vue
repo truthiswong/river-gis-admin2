@@ -879,13 +879,13 @@
       </a-form>
       <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
         <a-col :span="3">
-          <a-button block @click="otherOk">取消</a-button>
+          <a-button block @click="otherCancel">取消</a-button>
         </a-col>
         <a-col :span="3">
           <a-button block @click="otherDel">删除</a-button>
         </a-col>
         <a-col :span="3">
-          <a-button block @click="otherCancel">保存</a-button>
+          <a-button block @click="otherOk">保存</a-button>
         </a-col>
       </a-row>
     </a-modal>
