@@ -32,61 +32,61 @@
         <a-input placeholder="计划A" style="width:150px;margin-left:20px;" />
       </span>
       <a-spin size="large" :spinning="spinning">
-        <div class="modal-body">
-          <a-tabs type="card" :animated="true">
-            <a-tab-pane v-for="option in planTab" :tab="option.name" :key="option.id">
-              <div class="card-info">
-                <a-form :form="planForm">
-                  <div>
-                    <span style="font-size:16px;font-weight:500;color: #1F1F1F;">人员:</span>
-                    <a-form-item
-                      :label="item.name+' ('+item.amount+'人)'"
-                      :label-col="labelCol"
-                      :wrapper-col="wrapperCol"
-                      v-for="item in option.roles"
-                      :key="item.id"
-                    >
-                      <a-checkbox-group v-model="item.workerId">
-                        <a-checkbox
-                          v-for="chec in item.users"
-                          :key="chec.id"
-                          :value="chec.id"
-                        >{{chec.name}}</a-checkbox>
-                      </a-checkbox-group>
-                    </a-form-item>
-                  </div>
-                  <div>
-                   <span style="font-size:16px;font-weight:500;color: #1F1F1F;margin:10px 0" >设备: <span>
+      <div class="modal-body">
+        <a-tabs type="card" :animated="true">
+          <a-tab-pane v-for="(option,i) in planTab" :tab="option.name" :key="i">
+            <div class="card-info">
+              <a-form :form="planForm">
+                <div>
+                  <span style="font-size:16px;font-weight:500;color: #1F1F1F;">人员:</span>
+                  <a-form-item
+                    :label="item.name+' ('+item.amount+'人)'"
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol"
+                    v-for="(item,index) in option.roles"
+                    :key="index"
+                  >
+                    <a-checkbox-group v-model="item.workerId">
+                      <a-checkbox
+                        v-for="chec in item.users"
+                        :key="chec.id"
+                        :value="chec.id"
+                      >{{chec.name}}</a-checkbox>
+                    </a-checkbox-group>
+                  </a-form-item>
+                </div>
+                <div>
+                  <span style="font-size:16px;font-weight:500;color: #1F1F1F;margin:10px 0" >设备: <span>
                       <a-input  style="margin:0 10px 0 30px;width:150px" placeholder="请输入名称" v-model="nameAdditional"/>
                       <a-button block style="width:70px" @click="additionalClick(option.id)">添加</a-button>
                     </span></span>
-                    <a-form-item
-                      :label="item.name"
-                      :label-col="labelCol"
-                      :wrapper-col="wrapperCol"
-                      v-for="item in option.devices"
-                      :key="item.id"
+                  <a-form-item
+                    :label="add.name"
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol"
+                    v-for="(add,jj) in option.devices"
+                    :key="jj"
+                  >
+                    <a-checkbox-group
+                      v-model="add.workerId"
+                      @change="sadsadasdsa()"
+                      style="width:100%;display:flex"
                     >
-                      <a-checkbox-group
-                        v-model="item.workerId"
-                        @change="sadsadasdsa()"
-                        style="width:100%;display:flex"
+                      <div
+                        style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between"
+                        v-for="devi in add.devices"
+                        :key="devi.device.id"
                       >
-                        <div
-                          style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between"
-                          v-for="devi in item.devices"
-                          :key="devi.device.id"
-                        >
-                          <a-checkbox disabled :value="devi.device.id">{{devi.device.name}}</a-checkbox>
-                          <a-input-number
-                            class="changeNumber"
-                            :min="devi.amount1"
-                            v-model="devi.amount"
-                          />
-                        </div>
-                      </a-checkbox-group>
-                    </a-form-item>
-                     <a-form-item
+                        <a-checkbox disabled :value="devi.device.id">{{devi.device.name}}</a-checkbox>
+                        <a-input-number
+                          class="changeNumber"
+                          :min="devi.amount1"
+                          v-model="devi.amount"
+                        />
+                      </div>
+                    </a-checkbox-group>
+                  </a-form-item>
+                  <a-form-item
                     label="额外设备"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol"
@@ -108,13 +108,13 @@
                       </div>
                     </a-checkbox-group>
                   </a-form-item>
-                  </div>
-                </a-form>
-              </div>
-            </a-tab-pane>
-          </a-tabs>
-        </div>
-      </a-spin>
+                </div>
+              </a-form>
+            </div>
+          </a-tab-pane>
+        </a-tabs>
+      </div>
+    </a-spin>
     </a-modal>
   </div>
 </template>
@@ -127,7 +127,9 @@ import {
   deviceInspectPage,
   memberRiverSave,
   equipmentRiverSave,
-  planPublish
+  planPublish,
+  devicePage,
+  staffPage
 } from '@/api/login'
 const treeData = [
   {
@@ -185,48 +187,70 @@ export default {
         projectId: this.$store.state.id,
         id: this.id
       }
-      groupingPage(sdsd)
-        .then(res => {
-          var arr = res.data
-          for (const item of arr) {
-            item.roles = []
-            item.devices = []
-            item.additional = []
-            item.additionalList =[]
-            deviceInspectPage(item.id)
-              .then(res => {
-                var arrr = res.data
-                arrr.forEach(v => {
-                  v.workerId = []
-                  v.name = v.deviceType.name
-                  v.id = v.deviceType.id
-                  for (const item of v.devices) {
-                    item.amount1 = item.amount
-                    v.workerId.push(item.device.id)
+      groupingPage(sdsd).then(res => {
+        var arr = res.data
+        for (const item of arr) {
+          item.roles = []
+          item.devices = []
+          item.additional = []
+          item.additionalList =[]
+          devicePage(item.id).then(res => {
+            var device = res.data.data
+            deviceInspectPage(item.id).then(res => {
+              var arrr = res.data
+              var ddd = []
+              var suc = []
+              for (const qq of device) {
+                if (qq.device) {
+                }else{
+                  ddd.push(qq)
+                  suc.push(qq.extraDevice)
+                }
+              }
+              arrr.forEach(v => {
+                v.workerId = []
+                v.name = v.deviceType.name
+                v.id = v.deviceType.id
+                for (const item of v.devices) {
+                  v.workerId.push(item.device.id)
+                  for (const qq of device) {
+                    if (qq.device) {
+                      if (item.device.id == qq.device.id) {
+                        item.amount1 = qq.amount
+                      }
+                    }
                   }
-                })
-                item.devices = arrr
-                this.spinning = false
+                }
               })
-              .catch(err => {
-                this.spinning = false
-                // this.$message.error('加载数据失败')
-              })
+              item.additional = ddd
+              item.additionalList =suc
+              item.devices = arrr
+            })
+          })
+          staffPage(item.id).then(res => {
+            var staff = res.data.data
             staffInspectPage(item.id).then(res => {
               var ar = res.data
               ar.forEach(v => {
                 v.workerId = []
                 v.name = v.role.name
+                
+                for (const ss of staff) {
+                  v.id = ss.id
+                  if (v.role.id == ss.role.id) {
+                    v.workerId.push(ss.worker.id)
+                  }
+                }
               })
               item.roles = ar
             })
-          }
-          this.planTab = arr
-        })
-        .catch(err => {
-          this.spinning = false
-          this.$message.error('加载数据失败')
-        })
+          })
+        }
+        console.log(arr);
+        
+        this.planTab = arr
+        this.spinning = false
+      })
       this.teamId = id
     },
     onSelect(selectedKeys, info) {
