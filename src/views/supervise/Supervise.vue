@@ -793,9 +793,6 @@
             <a-select-option :value="item.id" v-for="item in paramPage" :key="item.id">{{item.name}}</a-select-option>
           </a-select>
         </a-col>
-        <a-col :span="24" style="margin:8px 0" v-show="drawNameShow">
-          <a-input placeholder="请输入名称" v-model="drawName" />
-        </a-col>
       </a-row>
       <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-between">
         <a-col :span="10">
@@ -874,12 +871,23 @@
         </viewer>
       </div>
     </a-modal>
-    <a-modal title="绘制数据" :visible="otherModal" @ok="otherOk" @cancel="otherCancel">
+    <a-modal title="其他绘制数据" :visible="otherModal" :footer="null">
       <a-form class="from">
         <a-form-item label="名称" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-input placeholder v-model="otherModalList.innerName" style="width:200px" />
         </a-form-item>
       </a-form>
+      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
+        <a-col :span="3">
+          <a-button block @click="otherOk">取消</a-button>
+        </a-col>
+        <a-col :span="3">
+          <a-button block @click="otherDel">删除</a-button>
+        </a-col>
+        <a-col :span="3">
+          <a-button block @click="otherCancel">保存</a-button>
+        </a-col>
+      </a-row>
     </a-modal>
   </div>
 </template>
@@ -990,7 +998,6 @@ export default {
         innerName: ''
       },
       otherPoints: [], //其他绘制数据
-      drawNameShow: false,
       riskSourceLevel: [], //风险源风险等级
       UAVPhotosModal: false, //无人机照片弹窗
       uavPhotoList: [], //无人机照片
@@ -2427,9 +2434,6 @@ export default {
           pointRadius: '0.4',
           drawTypeId: this.drawTypeId
         }
-        if (this.drawNameShow == true) {
-          data.innerName = this.drawName
-        }
         if (
           this.drawTypeId != '5da8374dea6c157d2d61007c' &&
           this.drawTypeId != '5da8389eea6c157d2d61007f' &&
@@ -2441,17 +2445,9 @@ export default {
           .then(res => {
             this.$message.success('保存成功')
             this.mapdrawId = res.data.id
-            if (this.drawNameShow == true) {
-              this.drawName = ''
-              this.drawNameShow = false
-            }
-            if (
-              this.drawTypeId != '5da8374dea6c157d2d61007c' &&
-              this.drawTypeId != '5da8389eea6c157d2d61007f' &&
-              this.drawTypeId != '5dafe6c8ea6c159999a0549c'
-            ) {
-              this.removeOverLays(this.otherPoints)
-              this.getOtherMapDrawPage()
+            if (data.innerType=='other') {
+              this.otherModalList.id = res.data.id
+              this.otherModal  = true 
             }
             let result = this.toolIndexPointData.findIndex(item => {
               return this.toolIndexId == item.id
@@ -2488,9 +2484,6 @@ export default {
           framePellucidity: this.borderOpacity,
           drawTypeId: this.drawTypeId
         }
-        if (this.drawNameShow == true) {
-          data.innerName = this.drawName
-        }
         if (
           this.drawTypeId != '5da8374dea6c157d2d61007c' &&
           this.drawTypeId != '5da8389eea6c157d2d61007f' &&
@@ -2501,19 +2494,11 @@ export default {
         mapdrawSave(data)
           .then(res => {
             this.$message.success('保存成功')
-            if (this.drawNameShow == true) {
-              this.drawName = ''
-              this.drawNameShow = false
-            }
-            if (
-              this.drawTypeId != '5da8374dea6c157d2d61007c' &&
-              this.drawTypeId != '5da8389eea6c157d2d61007f' &&
-              this.drawTypeId != '5dafe6c8ea6c159999a0549c'
-            ) {
-              this.removeOverLays(this.otherPoints)
-              this.getOtherMapDrawPage()
-            }
             this.mapdrawId = res.data.id
+            if (data.innerType=='other') {
+              this.otherModalList.id = res.data.id
+              this.otherModal  = true 
+            }
             let geocode = new T.Geocoder()
             geocode.getLocation(this.toolIndexLineData[result].lineData[0], this.searchResult)
             if (this.isToolEdit) {
@@ -2559,9 +2544,6 @@ export default {
           framePellucidity: this.borderOpacity,
           drawTypeId: this.drawTypeId
         }
-        if (this.drawNameShow == true) {
-          data.innerName = this.drawName
-        }
         if (
           this.drawTypeId != '5da8374dea6c157d2d61007c' &&
           this.drawTypeId != '5da8389eea6c157d2d61007f' &&
@@ -2572,19 +2554,11 @@ export default {
         mapdrawSave(data)
           .then(res => {
             this.$message.success('保存成功')
-            if (this.drawNameShow == true) {
-              this.drawName = ''
-              this.drawNameShow = false
-            }
-            if (
-              this.drawTypeId != '5da8374dea6c157d2d61007c' &&
-              this.drawTypeId != '5da8389eea6c157d2d61007f' &&
-              this.drawTypeId != '5dafe6c8ea6c159999a0549c'
-            ) {
-              this.removeOverLays(this.otherPoints)
-              this.getOtherMapDrawPage()
-            }
             this.mapdrawId = res.data.id
+            if (data.innerType=='other') {
+              this.otherModalList.id = res.data.id
+              this.otherModal  = true 
+            }
             // 获取地理位置
             let geocode = new T.Geocoder()
             geocode.getLocation(this.toolIndexPolygonData[result].lineData[0], this.searchResult)
@@ -2632,10 +2606,6 @@ export default {
     },
     // 绘制取消
     toolCradCancel() {
-      if (this.drawNameShow == true) {
-        this.drawName = ''
-        this.drawNameShow = false
-      }
       this.toolCard = false
       this.drawTypeId = ''
       if (this.isToolEdit) {
@@ -5262,16 +5232,7 @@ export default {
     },
     //选择绘制类型
     choiceDrawChange(value) {
-      console.log(`selected ${value}`)
-      if (
-        (value != '5da8374dea6c157d2d61007c') &
-        (value != '5da8389eea6c157d2d61007f') &
-        (value != '5dafe6c8ea6c159999a0549c')
-      ) {
-        this.drawNameShow = true
-      } else {
-        this.drawNameShow = false
-      }
+
     },
     //关闭无人机照片弹窗
     UAVPhotosOk() {
@@ -5284,6 +5245,19 @@ export default {
       mapdrawSave(this.otherModalList)
         .then(res => {
           this.$message.success('保存成功')
+          this.otherModal = false
+          this.removeOverLays(this.otherPoints)
+          this.getOtherMapDrawPage()
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
+    },
+    //其他绘制删除
+    otherDel() {
+      mapdrawDelete(this.otherModalList.id)
+        .then(res => {
+          this.$message.success('删除成功')
           this.otherModal = false
           this.removeOverLays(this.otherPoints)
           this.getOtherMapDrawPage()
