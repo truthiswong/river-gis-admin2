@@ -324,7 +324,7 @@
             </a-row>
           </a-card>
           <div class="color_wrap" v-show="colorAlertShow">
-            <chrome-picker class v-model="riskMapColor" @input="changeColor(riskMapColor)"></chrome-picker>
+            <compact-picker style="width:125px" v-model="riskMapColor" @input="changeColor(riskMapColor)"></compact-picker>
           </div>
         </a-collapse-panel>
         <a-collapse-panel
@@ -806,7 +806,7 @@
         </a-col>
       </a-row>
       <div class="color_wrap" v-show="colorAlertShow">
-        <chrome-picker class v-model="riskMapColor" @input="changeColor(riskMapColor)"></chrome-picker>
+        <compact-picker style="width:125px" v-model="riskMapColor" @input="changeColor(riskMapColor)"></compact-picker>
       </div>
     </a-card>
     <a-card size="small" v-show="toolsCard" class="custom_card tools_card">
@@ -952,7 +952,8 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 // 截图
 import htmlToImage from 'html-to-image'
 // 颜色拾取器
-import { Chrome } from 'vue-color'
+import { Compact } from 'vue-color'
+// import { Chrome } from 'vue-color'
 
 // import { debounce } from '../../utils/utilsTool'
 
@@ -977,7 +978,7 @@ export default {
     'image-editor': ImageEditor,
     'add-outlet': AddOutlet,
     'look-panorama': LookPanorama,
-    'chrome-picker': Chrome,
+    'compact-picker': Compact,
     'add-floatage': AddFloatage,
     'v-tour': Vtour
   },
@@ -3397,7 +3398,8 @@ export default {
       var cva_c = this.getTdLayer('cva_w') //道路标注
       var img_c = this.getTdLayer('img_w') //卫星图
       let veclayerGroup = new LayerGroup({
-        layers: [vec_c]
+        layers: [img_c]
+        // layers: [vec_c]
         // layers: [img_c, cva_c]
       })
       let imglayerGroup = new LayerGroup({
@@ -3416,9 +3418,11 @@ export default {
         view: view
       })
       console.log(this.olMap1)
+      //以Dom渲染方式初始化地图
       this.olMap2 = new Map({
         target: 'aerialMap',
         layers: [imglayerGroup],
+        renderer:'dom',
         view: view
       })
     },
@@ -3642,6 +3646,17 @@ export default {
     },
     // 河道显示
     onRiverShow() {
+      this.removeOverLays(this.riverShowList)
+      for (const overlay of this.map.getOverlays()) {
+        for (const item of this.riverShowList) {
+          if (item.id + '1' == overlay.options.id) {
+            this.map.removeOverLay(overlay)
+          }
+          if (item.id + '2' == overlay.options.id) {
+            this.map.removeOverLay(overlay)
+          }
+        }
+      }
       if (this.riverShow) {
         this.listItemLeftRight = true
         for (const item of this.riverShowList) {
@@ -3662,23 +3677,12 @@ export default {
           polygon.addEventListener('mouseout', this.polygonMouseout)
         }
       } else {
-        if (this.leftRight == true) {
-          for (const overlay of this.map.getOverlays()) {
-            for (const item of this.riverShowList) {
-              if (item.id + '1' == overlay.options.id) {
-                this.map.removeOverLay(overlay)
-              }
-              if (item.id + '2' == overlay.options.id) {
-                this.map.removeOverLay(overlay)
-              }
-            }
-          }
-          this.leftRight = false
-        }
+        this.leftRight = false
         this.listItemLeftRight = false
-        this.removeOverLays(this.riverShowList)
       }
+      this.leftRightSwitch()
     },
+    // 左右岸
     leftRightSwitch() {
       if (this.leftRight) {
         for (const item of this.riverShowList) {
@@ -3751,10 +3755,11 @@ export default {
     },
     // 街道显示
     onStreetShow() {
+      this.removeOverLays(this.streetShowList)
       if (this.streetShow) {
         for (const item of this.streetShowList) {
           let polygon = new T.Polygon(item.lineData, {
-            color: 'blue', //线颜色
+            color: 'red', //线颜色
             weight: 3, //线宽
             opacity: 0.5, //透明度
             fillColor: '#FFFFFF', //填充颜色
@@ -3769,8 +3774,6 @@ export default {
           polygon.addEventListener('mousemove', this.polygonStreetMousemove)
           polygon.addEventListener('mouseout', this.polygonStreetMouseout)
         }
-      } else {
-        this.removeOverLays(this.streetShowList)
       }
     },
     // 多边形点击事件
@@ -5635,7 +5638,7 @@ export default {
 
 .color_wrap {
   position: absolute;
-  right: 210px;
+  right: 200px;
   top: 2px;
 }
 .time_quantum {
