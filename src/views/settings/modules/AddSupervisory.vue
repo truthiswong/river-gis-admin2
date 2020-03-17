@@ -14,6 +14,12 @@
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="督办单名称">
           <a-input placeholder="请输入督办单名称" v-model="list.name" />
         </a-form-item>
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="官方编号">
+          <a-input placeholder="请输入官方编号" v-model="list.officialCode" />
+        </a-form-item>
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="内部编号">
+          <a-input placeholder="请输入内部编号" v-model="list.innerCode" />
+        </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="所属街道" has-feedback>
           <a-select
             showSearch
@@ -139,6 +145,8 @@ export default {
         streetId: '',
         riverId: '',
         type: '',
+        officialCode: '',
+        innerCode: '',
         surveyDate: '',
         remark: '',
         tags: ''
@@ -192,6 +200,14 @@ export default {
           this.list.name = arr.name
           this.list.surveyDate = formatDate(new Date(arr.surveyDate))
           this.list.id = arr.id
+          if (arr.innerCode) {
+            this.list.innerCode = arr.innerCode
+          }
+          if (arr.officialCode) {
+            this.list.officialCode = arr.officialCode
+          }
+          
+          
           arr.tags1 = ''
           if (arr.tags != null) {
             arr.tags.forEach(v => {
@@ -262,6 +278,8 @@ export default {
       this.list.id = ''
       this.list.name = ''
       this.list.streetId = ''
+      this.list.officialCode = ''
+      this.list.innerCode = ''
       this.list.riverId = ''
       this.streetId = []
       this.riverId = []

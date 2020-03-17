@@ -1236,6 +1236,7 @@ export default {
     return {
       accordionAlertKey: ['phonePhoto'], // 手风琴
       akakak:'/iii.amr',
+      threePicker:'',
       confirmLoading: false,
       hidingJudgment: true, //计划显示方案
       hidingJudgment1: true,
@@ -1473,13 +1474,13 @@ export default {
     this.map.centerAndZoom(this.$store.state.projectCoordinate, zoom)
     //添加比例尺控件
     this.map.addControl(new T.Control.Scale())
-    this.getMapPageData()
     this.getPicker()
     this.getTask()
     this.getList()
     this.getPage()
     this.getRecommendFangan()
     this.getParamList()
+    this.getMapPageData()
   },
   methods: {
     getplanPageList() {
@@ -1879,6 +1880,9 @@ export default {
         return year + '-' + month + '-' + day
       }
       this.picker = formatDate(new Date())
+      var d= new Date()
+      d.setMonth(d.getMonth() - 3)
+      this.threePicker = d.toLocaleDateString()
       this.getWeatherList()
       this.getPlanSave()
     },
@@ -2695,6 +2699,11 @@ export default {
     },
     //日期选择
     selectData(date) {
+      let e = this.picker.split('-')
+      // let d = new Date(e[0]+'/'+e[1]+'/'+e[2])
+      let d = new Date(this.picker)
+      d.setMonth(d.getMonth() - 3)
+      this.threePicker = d.toLocaleDateString()
       this.spinning = true
       this.map.clearOverLays() //将之前绘制的清除
       this.riverMontion = []
@@ -3704,13 +3713,12 @@ export default {
     // 获取风险地图
     getRiskMapList() {
       // this.removeOverLays(this.riskPolygonData)
-      var time = this.picker
-      var picker = time.split('-')
+      var time = this.threePicker
+      var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        year: picker[0],
-        month: picker[1],
-        day: picker[2],
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
         innerType: 'riskMap'
       }
       mapdrawPage(data).then(res => {
@@ -3732,16 +3740,12 @@ export default {
     },
     // 获取水质数据
     getWaterQualityPoints() {
-      // var picker = time.split('-')
+      var time = this.threePicker
+      var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        date: this.picker
-        // year: picker[0],
-        // month: picker[1],
-        // day: picker[2]
-        // year: '2019',
-        // month: '12',
-        // day: '25',
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
       }
       getWaterStation(data)
         .then(res => {
@@ -3814,12 +3818,12 @@ export default {
     },
     // 获取专项调查点
     getSurveyPointPoints() {
-      var picker = this.picker.split('-')
+      var time = this.threePicker
+      var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        year: picker[0],
-        month: picker[1],
-        day: picker[2],
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
         mediaType: 'image'
       }
       inspectPointPageRiver(data).then(res => {
@@ -3833,13 +3837,12 @@ export default {
     },
     //水面漂浮物绘制数据
     getFloatageMapDrawPage() {
-      var time = this.picker
-      var picker = time.split('-')
+      var time = this.threePicker
+      var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        year: picker[0],
-        month: picker[1],
-        day: picker[2],
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
         innerType: 'floatage'
       }
       mapdrawPage(data).then(res => {
@@ -3873,13 +3876,12 @@ export default {
     },
     //其他绘制数据
     getOtherMapDrawPage(){
-      var time = this.picker
-      var picker = time.split('-')
+      var time = this.threePicker
+      var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        year: picker[0],
-        month: picker[1],
-        day: picker[2],
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
         innerType: 'other'
       }
       mapdrawPage(data,).then(res => {
@@ -3994,13 +3996,12 @@ export default {
     //风险源绘制数据
     getRiskSourceMapDrawPage(riskSourceType) {
       var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
-      var time = this.picker
-      var picker = time.split('-')
+      var time = this.threePicker
+      var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        year: picker[0],
-        month: picker[1],
-        day: picker[2],
+        // startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        // endDate: this.picker,
         innerType: 'riskSource'
       }
       mapdrawPageRiskSource(data, riskSourceLevel).then(res => {
@@ -4117,14 +4118,13 @@ export default {
       }else{
         var dischargeLevel=''
       }
-      var time = this.picker
-      var picker = time.split('-')
+      var time = this.threePicker
+      var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
         dischargeType:dischargeLevel,
-        year: picker[0],
-        month: picker[1],
-        day: picker[2],
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
         innerType: 'discharge'
       }
       mapdrawPage(data).then(res => {

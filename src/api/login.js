@@ -494,10 +494,11 @@ export function testingDel(id) {
   })
 }
 //督办单分页
-export function SupervisePage(id) {
+export function SupervisePage(data) {
   return axios({
-    url: '/server/data/admin/supervision/page?projectId=' + id,
+    url: '/server/data/admin/supervision/page',
     method: 'get',
+    params:data
   })
 }
 //督办单保存
@@ -1018,7 +1019,7 @@ export function commentMapdrawSave(data) {
     params: data
   })
 }
-//绘制评论保存
+//水质数据
 export function waterPage(data) {
   return axios({
     url: '/server/data/admin/regulator/water/page',

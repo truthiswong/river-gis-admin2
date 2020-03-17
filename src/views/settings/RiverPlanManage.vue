@@ -733,7 +733,8 @@ export default {
           this.lineTaskList = arr
         })
         .catch(err => {})
-      taskSpotList(this.defaultRiver)
+      
+      taskSpotList({id:this.defaultRiver})
         .then(res => {
           var arr = res.data
           this.spotList = arr

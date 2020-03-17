@@ -236,7 +236,6 @@
         <h3 style="margin-top: 10px;">
           督办单
           <a-button size="small" style="margin-left:10px;" @click="addSheet()">添加</a-button>
-          <a-button size="small" style="margin-left:10px;" @click="exportExcel ()">导出</a-button>
         </h3>
         <div v-show="sheet" style="margin-bottom:20px;">
           <a-select
@@ -273,7 +272,7 @@
               <a>删除</a>
             </a-popconfirm>
             <a-divider type="vertical" />
-            <a :href="record.attachment"  target="_blank">导出</a>
+            <a :href="record.attachment"  target="_blank">下载</a>
           </template>
         </a-table>
       </a-form>
@@ -387,11 +386,11 @@ export default {
         },
         {
           title: '内部编号',
-          dataIndex: 'insideNum'
+          dataIndex: 'innerCode'
         },
         {
           title: '官方编号',
-          dataIndex: 'officialNum'
+          dataIndex: 'officialCode'
         },
         {
           title: '调查日期',

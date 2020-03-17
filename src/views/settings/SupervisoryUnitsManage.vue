@@ -13,7 +13,7 @@
               <a-input v-model="queryParam.id" placeholder />
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
+          <!-- <a-col :md="8" :sm="24">
             <a-form-item label="所属街道">
               <a-select v-model="queryParam.type" placeholder="请选择" default-value="0">
                 <a-select-option value="0">全部</a-select-option>
@@ -21,35 +21,26 @@
                 <a-select-option value="2">运行中</a-select-option>
               </a-select>
             </a-form-item>
-          </a-col>
+          </a-col> -->
           <template v-if="advanced">
-            <a-col :md="8" :sm="24">
+            <!-- <a-col :md="8" :sm="24">
               <a-form-item label="所属河道">
                 <a-input-number v-model="queryParam.rivers" style="width: 100%" />
               </a-form-item>
-            </a-col>
+            </a-col> -->
             <a-col :md="8" :sm="24">
               <a-form-item label="类型">
-                <a-select v-model="queryParam.useStatus" placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">关闭</a-select-option>
-                  <a-select-option value="2">运行中</a-select-option>
-                </a-select>
+                <a-input v-model="queryParam.type" placeholder />
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
+            <!-- <a-col :md="8" :sm="24">
               <a-form-item label="调查日期">
-                <!-- <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入查询日期"/> -->
                 <a-range-picker style="width: 100%" @change="onChange" />
               </a-form-item>
-            </a-col>
+            </a-col> -->
             <a-col :md="8" :sm="24">
               <a-form-item label="标签搜索">
-                <a-select placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">关闭</a-select-option>
-                  <a-select-option value="2">运行中</a-select-option>
-                </a-select>
+                <a-input v-model="queryParam.tag" placeholder />
               </a-form-item>
             </a-col>
           </template>
@@ -58,8 +49,8 @@
               class="table-page-search-submitButtons"
               :style="advanced && { float: 'right', overflow: 'hidden' } || {} "
             >
-              <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
-              <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+              <a-button type="primary" @click="getPage">查询</a-button>
+              <!-- <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button> -->
               <a @click="toggleAdvanced" style="margin-left: 8px">
                 {{ advanced ? '收起' : '展开' }}
                 <a-icon :type="advanced ? 'up' : 'down'" />
@@ -131,7 +122,10 @@ export default {
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
-      queryParam: {},
+      queryParam: {
+        type:'',
+        tag:'',
+      },
       // 表头
       columns: [
         {
@@ -156,8 +150,13 @@ export default {
           dataIndex: 'type'
         },
         {
-          title: '编辑人',
-          dataIndex: 'editor',
+          title: '内部编号',
+          dataIndex: 'innerCode',
+          sorter: true
+        },
+        {
+          title: '官方编号',
+          dataIndex: 'officialCode',
           sorter: true
         },
         {
@@ -208,8 +207,12 @@ export default {
   },
   methods: {
     getPage() {
-      SupervisePage(this.$store.state.id)
-        .then(res => {
+      var data = {
+        projectId:this.$store.state.id,
+        type:this.queryParam.type,
+        tag:this.queryParam.tag
+      }
+      SupervisePage(data).then(res => {
           function formatDate(now) {
             var year = now.getFullYear() //取得4位数的年份
             var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
