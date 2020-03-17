@@ -85,7 +85,12 @@ export default {
           this.panoramaMap.setViewport(arr)
           this.panoramaMap.setZoom(14)
         } else {
-          markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+         let icon = new T.Icon({
+          iconUrl: require('../img/360.png'),
+          iconSize: new T.Point(41, 40),
+          iconAnchor: new T.Point(21, 40)
+        })
+        markerTool = new T.Marker(item.latlng, { icon:icon,title: item.name, id: item.id })
         }
         this.panoramaMap.addOverLay(markerTool)
         markerTool.addEventListener('click', this.panoramaPointClick)
@@ -101,7 +106,12 @@ export default {
     onPanorama() {
       let markerTool
       for (const item of this.panoramaPoints) {
-        markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+        let icon = new T.Icon({
+          iconUrl: require('../img/360.png'),
+          iconSize: new T.Point(41, 40),
+          iconAnchor: new T.Point(21, 40)
+        })
+        markerTool = new T.Marker(item.latlng, { icon:icon,title: item.name, id: item.id })
         this.panoramaMap.addOverLay(markerTool)
         markerTool.addEventListener('click', this.panoramaPointClick)
         if (this.panoramaId == item.id) {
@@ -137,7 +147,12 @@ export default {
             })
           }
         } else {
-          markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+          let icon = new T.Icon({
+            iconUrl: require('../img/360.png'),
+            iconSize: new T.Point(41, 40),
+            iconAnchor: new T.Point(21, 40)
+          })
+          markerTool = new T.Marker(item.latlng, { icon:icon,title: item.name, id: item.id })
         }
         this.panoramaMap.addOverLay(markerTool)
         markerTool.addEventListener('click', this.panoramaPointClick)

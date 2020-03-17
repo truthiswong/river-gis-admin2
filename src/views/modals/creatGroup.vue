@@ -13,7 +13,7 @@
               </a-col>
             </a-row>
           </div>
-          <draggable class="list-group" :list="nothingTaskList" group="people" @change="log">
+          <draggable class="list-group" :list="nothingTaskList" group="people" @change="log"  onmouseout="normalImg">
             <div
               class="list-group-item listItem"
               v-for="element in nothingTaskList"
@@ -21,33 +21,54 @@
             >{{element.objectName}}</div>
           </draggable>
         </div>
-        <div style="width:100%;" v-for="item in groupingList" :key="item.id">
-          <div class="group_title">
-            <a-row type="flex" justify="space-between" align="middle">
-              <a-col :span="8">
-                <span class="group_font">{{item.name}}</span>
-              </a-col>
-              <a-col :span="3">
-                <a-popconfirm
-                  title="是否确认删除?"
-                  @confirm="getGroupingDel(item.id)"
-                  @cancel="cancel"
-                  okText="确认"
-                  cancelText="取消"
-                >
-                  <a-button shape="circle" icon="close" style="font-size:8px;"></a-button>
-                </a-popconfirm>
-              </a-col>
-            </a-row>
-          </div>
-          <draggable class="list-group" :list="item.taskList" group="people" @change="log">
-            <div
-              class="list-group-item listItem"
-              v-for="element in item.taskList"
-              :key="element.id"
-            >{{element.objectName}}</div>
-          </draggable>
-        </div>
+        <a-collapse >
+          <a-collapse-panel v-for="item in groupingList" :key="item.id"  >
+            <template slot="header">
+              <a-row style="width:100%">
+                <a-col :span="9">{{item.name}}</a-col>
+                <a-col :span="14" style="text-align:right;" :pull="1">
+                  <a-popconfirm
+                    title="是否确认删除?"
+                    @confirm="getGroupingDel(item.id)"
+                    @cancel="cancel"
+                    okText="确认"
+                    cancelText="取消"
+                  >
+                    <a-button shape="circle" icon="close" style="font-size:8px;"></a-button>
+                  </a-popconfirm>
+                </a-col>
+              </a-row>
+            </template>
+            <div style="width:100%;" >
+              <!-- <div class="group_title">
+                <a-row type="flex" justify="space-between" align="middle">
+                  <a-col :span="8">
+                    <span class="group_font">{{item.name}}</span>
+                  </a-col>
+                  <a-col :span="3">
+                    <a-popconfirm
+                      title="是否确认删除?"
+                      @confirm="getGroupingDel(item.id)"
+                      @cancel="cancel"
+                      okText="确认"
+                      cancelText="取消"
+                    >
+                      <a-button shape="circle" icon="close" style="font-size:8px;"></a-button>
+                    </a-popconfirm>
+                  </a-col>
+                </a-row>
+              </div> -->
+              <draggable class="list-group" :list="item.taskList" group="people" @change="log">
+                <div
+                  class="list-group-item listItem"
+                  v-for="element in item.taskList"
+                  :key="element.id"
+                >{{element.objectName}}</div>
+              </draggable>
+            </div>
+          </a-collapse-panel>
+        </a-collapse>
+        
       </div>
     </div>
   </div>
@@ -73,6 +94,14 @@ export default {
     }
   },
   methods: {
+    normalImg(){
+      console.log('111');
+      
+    },
+    akaiaiaiai(event){
+      console.log(event);
+      
+    },
     //生成计划
     planGeneration(id) {
       this.id = id
