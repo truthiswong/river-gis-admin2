@@ -10,7 +10,7 @@
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <a-form-item label="督办单名称">
-              <a-input v-model="queryParam.id" placeholder />
+              <a-input v-model="queryParam.name" placeholder />
             </a-form-item>
           </a-col>
           <!-- <a-col :md="8" :sm="24">
@@ -123,6 +123,7 @@ export default {
       advanced: false,
       // 查询参数
       queryParam: {
+        name:'',
         type:'',
         tag:'',
       },
@@ -210,6 +211,7 @@ export default {
       var data = {
         projectId:this.$store.state.id,
         type:this.queryParam.type,
+        name:this.queryParam.name,
         tag:this.queryParam.tag
       }
       SupervisePage(data).then(res => {

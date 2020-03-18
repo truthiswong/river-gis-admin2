@@ -871,7 +871,7 @@
         </viewer>
       </div>
     </a-modal>
-    <a-modal title="其他绘制数据" :visible="otherModal" :footer="null">
+    <a-modal :title="otherModalList.title+'绘制数据'" :visible="otherModal" :footer="null">
       <a-form class="from">
         <a-form-item label="名称" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-input placeholder v-model="otherModalList.innerName" style="width:200px" />
@@ -994,6 +994,7 @@ export default {
     return {
       otherModal: false, //其他绘制弹窗
       otherModalList: {
+        title:'',
         id: '',
         innerName: ''
       },
@@ -2443,11 +2444,15 @@ export default {
         }
         mapdrawSave(data)
           .then(res => {
-            this.$message.success('保存成功')
+            
             this.mapdrawId = res.data.id
             if (data.innerType=='other') {
+              this.$message.success('保存成功,请打开'+res.data.drawType.name+'查看')
               this.otherModalList.id = res.data.id
+              this.otherModalList.title = res.data.drawType.name
               this.otherModal  = true 
+            }else{
+              this.$message.success('保存成功')
             }
             let result = this.toolIndexPointData.findIndex(item => {
               return this.toolIndexId == item.id
@@ -2493,11 +2498,15 @@ export default {
         }
         mapdrawSave(data)
           .then(res => {
-            this.$message.success('保存成功')
+            
             this.mapdrawId = res.data.id
             if (data.innerType=='other') {
+              this.$message.success('保存成功,请打开'+res.data.drawType.name+'查看')
               this.otherModalList.id = res.data.id
+              this.otherModalList.title = res.data.drawType.name
               this.otherModal  = true 
+            }else{
+              this.$message.success('保存成功')
             }
             let geocode = new T.Geocoder()
             geocode.getLocation(this.toolIndexLineData[result].lineData[0], this.searchResult)
@@ -2553,11 +2562,14 @@ export default {
         }
         mapdrawSave(data)
           .then(res => {
-            this.$message.success('保存成功')
             this.mapdrawId = res.data.id
             if (data.innerType=='other') {
+              this.$message.success('保存成功,请打开'+res.data.drawType.name+'查看')
               this.otherModalList.id = res.data.id
+              this.otherModalList.title = res.data.drawType.name
               this.otherModal  = true 
+            }else{
+              this.$message.success('保存成功')
             }
             // 获取地理位置
             let geocode = new T.Geocoder()
@@ -4496,7 +4508,8 @@ export default {
             icon: icon,
             id: item.id,
             title: item.innerName,
-            code: item.innerType.code
+            code: item.innerType.code,
+            drawType:item.drawType.name
           })
           this.map.addOverLay(markerTool)
         } else {
@@ -4515,14 +4528,15 @@ export default {
       }
     },
     //绘制线
-    lineDraw(points, color, weight, opacity, id, name, code) {
+    lineDraw(points, color, weight, opacity, id, name, code,drawType) {
       let line = new T.Polyline(points, {
         color: color, //线颜色
         weight: weight, //线宽
         opacity: opacity, //透明度
         id: id,
         title: name,
-        code: code
+        code: code,
+        drawType:drawType
       })
       //向地图上添加线
       this.map.addOverLay(line)
@@ -4540,7 +4554,7 @@ export default {
       }
     },
     // 绘制面
-    noodlesDraw(lineData, color, weight, opacity, fillColor, fillOpacity, title, id, code) {
+    noodlesDraw(lineData, color, weight, opacity, fillColor, fillOpacity, title, id, code,drawType) {
       let polygon = new T.Polygon(lineData, {
         color: color, //线颜色
         weight: weight, //线宽
@@ -4549,7 +4563,8 @@ export default {
         fillOpacity: fillOpacity, // 填充透明度
         title: title, // 名字
         id: id, // id
-        code: code
+        code: code,
+        drawType:drawType
       })
       //向地图上添加面
       this.map.addOverLay(polygon)
@@ -4580,6 +4595,7 @@ export default {
       console.log(row)
       this.otherModalList.id = row.target.options.id
       this.otherModalList.innerName = row.target.options.title
+      this.otherModalList.title=row.target.options.drawType
       this.otherModal = true
     },
     // 河岸风险源
@@ -4775,7 +4791,8 @@ export default {
                 item.framePellucidity,
                 item.id,
                 item.innerName,
-                item.innerType.code
+                item.innerType.code,
+                item.drawType.name
               )
             }
             if (item.locationType.code == 'polygon') {
@@ -4792,7 +4809,8 @@ export default {
                 item.shapePellucidity,
                 item.innerName,
                 item.id,
-                item.innerType.code
+                item.innerType.code,
+                item.drawType.name
               )
             }
           }
@@ -5244,7 +5262,7 @@ export default {
     otherOk() {
       mapdrawSave(this.otherModalList)
         .then(res => {
-          this.$message.success('保存成功')
+          this.$message.success('保存成功,请打开'+res.data.drawType.name+'查看')
           this.otherModal = false
           this.removeOverLays(this.otherPoints)
           this.getOtherMapDrawPage()
