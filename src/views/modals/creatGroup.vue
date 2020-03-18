@@ -21,8 +21,8 @@
             >{{element.objectName}}</div>
           </draggable>
         </div>
-        <a-collapse >
-          <a-collapse-panel v-for="item in groupingList" :key="item.id"  >
+        <a-collapse v-model="collapse">
+          <a-collapse-panel v-for="(item,index)  in groupingList" :key="index"  >
             <template slot="header">
               <a-row style="width:100%">
                 <a-col :span="9">{{item.name}}</a-col>
@@ -83,6 +83,7 @@ export default {
   name: 'creatGroup',
   data() {
     return {
+      collapse:'1',
       data,
       dataTwo,
       id: '',
