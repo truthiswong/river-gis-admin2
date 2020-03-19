@@ -4123,7 +4123,12 @@ export default {
         console.log(this.waterQualityPoints)
         if (this.waterQualityPoints.length > 0) {
           for (const item of this.waterQualityPoints) {
-            this.waterQualityMarker = new T.Marker(item.coordinate, { item: item, id: item.id, title: item.name })
+            var icon = new T.Icon({
+            iconUrl: require('./img/onWaterQuality.png'),
+            iconSize: new T.Point(41, 40),
+            iconAnchor: new T.Point(21, 40)
+          })
+            this.waterQualityMarker = new T.Marker(item.coordinate, { icon: icon,item: item, id: item.id, title: item.name })
             this.map.addOverLay(this.waterQualityMarker)
             if (this.historyData) {
               this.waterQualityMarker.addEventListener('click', this.waterQualityHistoryClick)

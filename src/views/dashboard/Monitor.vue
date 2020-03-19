@@ -3761,19 +3761,24 @@ export default {
       if (this.waterQuality) {
         if (this.waterQualityPoints.length > 0) {
           for (const item of this.waterQualityPoints) {
-            this.waterQualityMarker = new T.Marker(item.coordinate, { item: item, id: item.id, title: item.name })
+            var icon = new T.Icon({
+              iconUrl: require('./img/onWaterQuality.png'),
+              iconSize: new T.Point(41, 40),
+              iconAnchor: new T.Point(21, 40)
+            })
+            this.waterQualityMarker = new T.Marker(item.coordinate, { icon: icon,item: item, id: item.id, title: item.name })
             this.map.addOverLay(this.waterQualityMarker)
-            if (this.historyData) {
-              this.waterQualityMarker.addEventListener('click', this.waterQualityHistoryClick)
-            } else {
-              this.waterQualityMarker.addEventListener('click', this.waterQualityClick)
-              // this.waterQualityMarker.addEventListener("click",function(e){
-              //   let point = item.coordinate;
-              //   that.waterQualityMarker = new T.Marker(point);// 创建标注
-              //   let markerInfoWin = new T.InfoWindow(item.name,{offset:new T.Point(0,-30)}); // 创建信息窗口对象
-              //   that.map.openInfoWindow(markerInfoWin,point); //开启信息窗口
-              // });
-            }
+            // if (this.historyData) {
+            //   this.waterQualityMarker.addEventListener('click', this.waterQualityHistoryClick)
+            // } else {
+            //   this.waterQualityMarker.addEventListener('click', this.waterQualityClick)
+            //   // this.waterQualityMarker.addEventListener("click",function(e){
+            //   //   let point = item.coordinate;
+            //   //   that.waterQualityMarker = new T.Marker(point);// 创建标注
+            //   //   let markerInfoWin = new T.InfoWindow(item.name,{offset:new T.Point(0,-30)}); // 创建信息窗口对象
+            //   //   that.map.openInfoWindow(markerInfoWin,point); //开启信息窗口
+            //   // });
+            // }
           }
         }
       } else {

@@ -11,6 +11,7 @@
       <div>外勤反馈</div>
       <!-- <span style="background-color:#EBF5FF;border:1px solid #e8e8e8;border-radius: 50%;padding:8px 10px;">张</span> -->
     </template>
+    <div style="font-size: 16px;">经度：{{lng}},纬度：{{lat}}</div>
     <div style="margin-top:20px;border-top:1px solid #e8e8e8;" v-for="item in list" :key="item.id">
       <div class="header">
         <a-row>
@@ -56,6 +57,8 @@ export default {
   name: '',
   data() {
     return {
+      lng:'',
+      lat:'',
       visible: false,
       audioSHow:false,
       playerOptions: {
@@ -103,6 +106,8 @@ export default {
       });
     },
     show(index, picker) {
+      this.lng = index.target.options.coordinate.lng
+      this.lat = index.target.options.coordinate.lat
       var data = {
         projectId: this.$store.state.id,
         coordinate: index.target.options.coordinate.lng + ',' + index.target.options.coordinate.lat,
