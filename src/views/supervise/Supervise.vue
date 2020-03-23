@@ -1956,88 +1956,6 @@ export default {
             this.onDrawType(item.id, true)
           }
         }
-        if (riskSourceType == true) {
-          for (const risk of this.riskSourceList) {
-            if (risk.clicked == true) {
-              let point = []
-              for (const item of this.riverRiskPoints) {
-                if (item.drawType.id == risk.id) {
-                  if (item.locationType.code == 'point') {
-                    item.latlng = {
-                      lng: item.point[0],
-                      lat: item.point[1]
-                    }
-                    point.push(item)
-                  }
-                  if (item.locationType.code == 'line') {
-                    this.lineDraw(
-                      item.line,
-                      item.frameColor,
-                      3,
-                      item.framePellucidity,
-                      item.id,
-                      '',
-                      item.innerType.code
-                    )
-                    let markerTool
-                    if (item.drawType.icon) {
-                      let icon = new T.Icon({
-                        iconUrl: item.drawType.icon,
-                        iconSize: new T.Point(41, 40),
-                        iconAnchor: new T.Point(21, 40)
-                      })
-                      markerTool = new T.Marker(item.line[0], {
-                        icon: icon,
-                        id: item.id,
-                        title: item.innerName,
-                        code: item.innerType.code
-                      })
-                      this.map.addOverLay(markerTool)
-                    } else {
-                      markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
-                      this.map.addOverLay(markerTool)
-                    }
-                    // markerTool.addEventListener('click', this.panoramaPointClick)
-                  }
-                  if (item.locationType.code == 'polygon') {
-                    this.noodlesDraw(
-                      item.polygon,
-                      item.frameColor,
-                      3,
-                      item.framePellucidity,
-                      item.shapeColor,
-                      item.shapePellucidity,
-                      '',
-                      item.id,
-                      item.innerType.code
-                    )
-                    let markerTool
-                    if (item.drawType.icon) {
-                      let icon = new T.Icon({
-                        iconUrl: item.drawType.icon,
-                        iconSize: new T.Point(41, 40),
-                        iconAnchor: new T.Point(21, 40)
-                      })
-                      markerTool = new T.Marker(item.polygon[0], {
-                        icon: icon,
-                        id: item.id,
-                        title: item.innerName,
-                        code: item.innerType.code
-                      })
-                      this.map.addOverLay(markerTool)
-                    } else {
-                      // markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
-                      // this.map.addOverLay(markerTool)
-                      markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
-                      this.map.addOverLay(markerTool)
-                    }
-                  }
-                }
-              }
-              this.spotDraw(point)
-            }
-          }
-        }
       })
     },
     //右侧风险源绘制数据
@@ -4315,6 +4233,26 @@ export default {
           }
           if (item.locationType.code == 'line') {
             this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+            let markerTool
+              if (item.drawType.icon) {
+                let icon = new T.Icon({
+                  iconUrl: item.drawType.icon,
+                  iconSize: new T.Point(41, 40),
+                  iconAnchor: new T.Point(21, 40)
+                })
+                markerTool = new T.Marker(item.line[0], {
+                  icon: icon,
+                  id: item.id,
+                  title: item.innerName,
+                  code: item.innerType.code
+                })
+                markerTool.addEventListener('click', this.floatageClick)
+                this.map.addOverLay(markerTool)
+              } else {
+                markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+                markerTool.addEventListener('click', this.floatageClick)
+                this.map.addOverLay(markerTool)
+              }
           }
           if (item.locationType.code == 'polygon') {
             this.noodlesDraw(
@@ -4328,6 +4266,26 @@ export default {
               item.id,
               item.innerType.code
             )
+            let markerTool
+              if (item.drawType.icon) {
+              let icon = new T.Icon({
+                iconUrl: item.drawType.icon,
+                iconSize: new T.Point(41, 40),
+                iconAnchor: new T.Point(21, 40)
+              })
+              markerTool = new T.Marker(item.polygon[0], {
+                icon: icon,
+                id: item.id,
+                title: item.innerName,
+                code: item.innerType.code
+              })
+              markerTool.addEventListener('click', this.floatageClick)
+              this.map.addOverLay(markerTool)
+            } else {
+              markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+              markerTool.addEventListener('click', this.floatageClick)
+              this.map.addOverLay(markerTool)
+            }
           }
         }
         if (point.length > 0) {
@@ -4423,6 +4381,26 @@ export default {
           }
           if (item.locationType.code == 'line') {
             this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+            let markerTool
+            if (item.drawType.icon) {
+              let icon = new T.Icon({
+                iconUrl: item.drawType.icon,
+                iconSize: new T.Point(41, 40),
+                iconAnchor: new T.Point(21, 40)
+              })
+              markerTool = new T.Marker(item.line[0], {
+                icon: icon,
+                id: item.id,
+                title: item.innerName,
+                code: item.innerType.code
+              })
+              markerTool.addEventListener('click', this.sourceRiskClick)
+              this.map.addOverLay(markerTool)
+            } else {
+              markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+              markerTool.addEventListener('click', this.sourceRiskClick)
+              this.map.addOverLay(markerTool)
+            }
           }
           if (item.locationType.code == 'polygon') {
             this.noodlesDraw(
@@ -4436,6 +4414,26 @@ export default {
               item.id,
               item.innerType.code
             )
+            let markerTool
+              if (item.drawType.icon) {
+                let icon = new T.Icon({
+                  iconUrl: item.drawType.icon,
+                  iconSize: new T.Point(41, 40),
+                  iconAnchor: new T.Point(21, 40)
+                })
+                markerTool = new T.Marker(item.polygon[0], {
+                  icon: icon,
+                  id: item.id,
+                  title: item.innerName,
+                  code: item.innerType.code
+                })
+                markerTool.addEventListener('click', this.sourceRiskClick)
+                this.map.addOverLay(markerTool)
+              } else {
+                markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+                markerTool.addEventListener('click', this.sourceRiskClick)
+                this.map.addOverLay(markerTool)
+              }
           }
         }
         if (point1.length > 0) {
@@ -4672,12 +4670,13 @@ export default {
                   title: item.innerName,
                   code: item.innerType.code
                 })
+                markerTool.addEventListener('click', this.sourceRiskClick)
                 this.map.addOverLay(markerTool)
               } else {
                 markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+                markerTool.addEventListener('click', this.sourceRiskClick)
                 this.map.addOverLay(markerTool)
               }
-              // markerTool.addEventListener('click', this.panoramaPointClick)
             }
             if (item.locationType.code == 'polygon') {
               this.noodlesDraw(
@@ -4704,11 +4703,11 @@ export default {
                   title: item.innerName,
                   code: item.innerType.code
                 })
+                markerTool.addEventListener('click', this.sourceRiskClick)
                 this.map.addOverLay(markerTool)
               } else {
-                // markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
-                // this.map.addOverLay(markerTool)
                 markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+                markerTool.addEventListener('click', this.sourceRiskClick)
                 this.map.addOverLay(markerTool)
               }
             }
