@@ -941,6 +941,7 @@ import Layer from 'ol/layer/Layer'
 
 import Point from 'ol/geom/Point' //点
 import Circle from 'ol/geom/Circle' //圆
+// import {Polyline} from 'ol/format/Polyline'; //线
 import Polygon from 'ol/geom/Polygon' //面
 import { fromLonLat } from 'ol/proj'
 import TileJSON from 'ol/source/TileJSON'
@@ -3297,16 +3298,34 @@ export default {
       var vec_c = this.getTdLayer('vec_w') //2d图
       var cva_c = this.getTdLayer('cva_w') //道路标注
       var img_c = this.getTdLayer('img_w') //卫星图
-      let veclayerGroup = new LayerGroup({
-        layers: [img_c]
-        // layers: [vec_c]
-        // layers: [img_c, cva_c]
-      })
-      let imglayerGroup = new LayerGroup({
-        layers: [img_c]
-        // layers: [img_c, cva_c]
-      })
-
+      // 道路标注
+      var roadLayerWord = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        })
+      });
+      // 左边卫星图
+      var roadLayer = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        })
+      });
+      var roadLayer2d = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        })
+      });
+      // 右边卫星图
+      var aerialLayer = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        })
+      });
+      
       var view = new View({
         projection: 'EPSG:4326',
         center: [this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat],
@@ -3314,14 +3333,17 @@ export default {
       })
       this.olMap1 = new Map({
         target: 'roadMap',
-        layers: [veclayerGroup],
+        layers: [roadLayer],
+        // layers: [roadLayer, roadLayerWord],
+        renderer: 'webgl',
         view: view
       })
       console.log(this.olMap1)
       //以Dom渲染方式初始化地图
       this.olMap2 = new Map({
         target: 'aerialMap',
-        layers: [imglayerGroup],
+        layers: [aerialLayer],
+        // layers: [aerialLayer, roadLayerWord],
         renderer:'dom',
         view: view
       })
@@ -3404,71 +3426,7 @@ export default {
       this.moreLoadOnce = 1
       this.getMapPageData()
       if (this.historyData) {
-        return
-        var vectorSource = new VectorSource({
-          features: [iconFeature]
-        })
-
-        var vectorLayer = new VectorLayer({
-          source: vectorSource
-        })
-
-        this.olMap1.addOverlay(vectorSource)
-        // var view = new View({
-        //   projection: 'EPSG:4326',
-        //   center: [this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat],
-        //   zoom: 14
-        // })
-        // this.olMap1 = new Map({
-        //   target: 'roadMap',
-        //   layers: [veclayerGroup, vectorLayer],
-        //   view: view
-        // })
-        return
-
-        var vectorSource = new VectorSource({})
-        //创建图标特性
-        var iconFeature = new Feature({
-          geometry: new Point([121.42025, 31.26963], 'XY'),
-          name: 'my Icon',
-          id: '123456'
-        })
-        //将图标特性添加进矢量中
-        vectorSource.addFeature(iconFeature)
-
-        //创建图标样式
-        var iconStyle = new Style({
-          image: new Icon({
-            opacity: 0.75,
-            src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
-          })
-        })
-        //创建矢量层
-        var vectorLayer = new VectorSource({
-          source: vectorSource,
-          style: iconStyle
-        })
-        //添加进map层
-        this.olMap1.addLayer(vectorLayer)
-        return
-        var iconFeature = new Feature({
-          geometry: new Point([121.42025, 31.26963]),
-          name: 'Null Island',
-          population: 4000,
-          rainfall: 500
-        })
-        var iconStyle = new Style({
-          image: new Icon({
-            anchor: [0.5, 46],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'pixels',
-            src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
-          })
-        })
-        iconFeature.setStyle(iconStyle)
-        var vectorSource = new VectorSource({
-          features: [iconFeature]
-        })
+        
       }
     },
     // openlayers 绘制点
@@ -3499,45 +3457,6 @@ export default {
       this.olMap1.addLayer(vectorLayer)
       this.olMap2.addLayer(vectorLayer)
     },
-    init() {
-      var iconFeature = new Feature({
-        geometry: new Point([121.43025, 31.16963]),
-        name: 'Null Island',
-        population: 4000,
-        rainfall: 500
-      })
-      var iconStyle = new Style({
-        image: new Icon({
-          anchor: [0.5, 46],
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'pixels',
-          src: 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png'
-        })
-      })
-      iconFeature.setStyle(iconStyle)
-      var vectorSource = new VectorSource({
-        features: [iconFeature]
-      })
-      var vectorLayer = new VectorLayer({
-        source: vectorSource
-      })
-      // var rasterLayer = new TileLayer({
-      //   source: new TileJSON({
-      //     url: 'https://a.tiles.mapbox.com/v3/aj.1x1-degrees.json',
-      //     crossOrigin: ''
-      //   })
-      // });
-      this.olMap1 = new Map({
-        layers: [vectorLayer],
-        target: document.getElementById('roadMap'),
-        view: new View({
-          projection: 'EPSG:4326',
-          center: [121.43025, 31.16963],
-          zoom: 3
-        })
-      })
-    },
-
     // 添加标注
     drawAllPoint(latlng, index, id) {
       let markerTool = new T.Marker(latlng, { title: index, id: id })
@@ -3814,6 +3733,44 @@ export default {
               item.id
             )
           }
+          // 双球开关
+          if (this.sharedChecked) {
+            for (const item of this.riskPolygonData) {
+              let points = []
+              for (const point of item.lineData) {
+                points.push(new T.LngLat(point[0], point[1]))
+              }
+              item.pointsData = points
+            }
+            for (const item of this.riskPolygonData) {
+              this.olSharedDrawPolygon(item.pointsData,item.fullColor, item.borderOpacity, item.id, 'olMap1')
+            }
+            for (const item of this.riskPolygonData) {
+              this.olSharedDrawPolygon(item.pointsData,item.fullColor, item.borderOpacity, item.id, 'olMap2')
+            }
+          }
+          // 卷帘开关
+          if (this.swipeChecked) {
+            for (const item of this.riskPolygonData) {
+              // this.olSharedDrawPolygon(item.coordinate, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+            }
+          }
+        }
+      } else {
+        // 双球开关水质数据关闭
+        if (this.sharedChecked) {
+          this.olRemoveLayer(this.riskPolygonData, 'olMap1')
+          this.olRemoveLayer(this.riskPolygonData, 'olMap2')
+        }
+        // 卷帘开关水质数据关闭
+        if (this.swipeChecked) {
+          for (const item of this.riskPolygonData) {
+            for (const layer of this.lmap.getLayers().array_) {
+              if (layer.values_.id == item.id) {
+                this.lmap.removeLayer(layer)
+              }
+            }
+          }
         }
       }
     },
@@ -4063,7 +4020,7 @@ export default {
           // 双球开关
           if (this.sharedChecked) {
             for (const item of this.waterQualityPoints) {
-              this.olSharedSurveyPoint(
+              this.olSharedDrawPoint(
                 item.coordinate,
                 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
                 item.id,
@@ -4071,7 +4028,7 @@ export default {
               )
             }
             for (const item of this.rightWaterQualityPoints) {
-              this.olSharedSurveyPoint(
+              this.olSharedDrawPoint(
                 item.coordinate,
                 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
                 item.id,
@@ -4082,7 +4039,7 @@ export default {
           // 卷帘开关
           if (this.swipeChecked) {
             for (const item of this.waterQualityPoints) {
-              this.olSwipeSurveyPoint(item.coordinate, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+              this.olSwipeDrawPoint(item.coordinate, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
             }
           }
         }
@@ -4322,7 +4279,7 @@ export default {
           }
           if (point.length > 0) {
             for (const item of point) {
-              this.olSharedSurveyPoint(
+              this.olSharedDrawPoint(
                 item.latlng,
                 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
                 item.id,
@@ -4332,7 +4289,7 @@ export default {
           }
           if (point2.length > 0) {
             for (const item of point2) {
-              this.olSharedSurveyPoint(
+              this.olSharedDrawPoint(
                 item.latlng,
                 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
                 item.id,
@@ -4344,7 +4301,7 @@ export default {
         // 卷帘开关
         if (this.swipeChecked) {
           for (const item of point) {
-            this.olSwipeSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+            this.olSwipeDrawPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
           }
         }
       } else {
@@ -4455,7 +4412,7 @@ export default {
             }
           }
           for (const item of point1) {
-            this.olSharedSurveyPoint(
+            this.olSharedDrawPoint(
               item.latlng,
               'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
               item.id,
@@ -4463,7 +4420,7 @@ export default {
             )
           }
           for (const item of point2) {
-            this.olSharedSurveyPoint(
+            this.olSharedDrawPoint(
               item.latlng,
               'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
               item.id,
@@ -4474,7 +4431,7 @@ export default {
         // 卷帘开关
         if (this.swipeChecked) {
           for (const item of point1) {
-            this.olSwipeSurveyPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+            this.olSwipeDrawPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
           }
         }
       } else {
@@ -4733,7 +4690,7 @@ export default {
             }
           }
           for (const item of point) {
-            this.olSharedSurveyPoint(
+            this.olSharedDrawPoint(
               item.latlng,
               'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
               item.id,
@@ -4741,7 +4698,7 @@ export default {
             )
           }
           for (const item of point2) {
-            this.olSharedSurveyPoint(
+            this.olSharedDrawPoint(
               item.latlng,
               'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
               item.id,
@@ -4907,10 +4864,10 @@ export default {
         if (this.sharedChecked || this.swipeChecked) {
           console.log('双球')
           for (const item of this.surveyPointPoints) {
-            this.olSharedSurveyPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id, 'olMap1')
+            this.olSharedDrawPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id, 'olMap1')
           }
           for (const item of this.rightSurveyPointPoints) {
-            this.olSharedSurveyPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id, 'olMap2')
+            this.olSharedDrawPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id, 'olMap2')
           }
         }
       } else {
@@ -4921,7 +4878,8 @@ export default {
         }
       }
     },
-    olSharedSurveyPoint(lnglat, imgUrl, id, map) {
+    // 双球绘制点
+    olSharedDrawPoint(lnglat, imgUrl, id, map) {
       let iconFeature = new Feature({
         geometry: new Point([lnglat.lng, lnglat.lat]),
         name: '',
@@ -4950,7 +4908,35 @@ export default {
         this.olMap2.addLayer(surveyPointLayer)
       }
     },
-    olSwipeSurveyPoint(lnglat, imgUrl, id) {
+    // 双球绘制面
+    olSharedDrawPolygon(polygonData, fillColor, lineColor, id, map) {
+      var feature = new Feature({
+          geometry: new Polygon([polygonData]),
+      });
+      let vectorSource = new VectorSource({
+        features: [feature]
+      })
+      let vectorLayer = new VectorLayer({
+        source: vectorSource,
+        style: new Style({
+          fill: new Fill({
+            color: 'rgba(255, 255, 255, 0.1)'
+          }),
+          stroke: new Stroke({//地图连线的样式
+            color: 'red',//颜色
+            width: 10//宽度
+          })
+        })
+      })
+      vectorLayer.set('id', id)
+      if (map == 'olMap1') {
+        this.olMap1.addLayer(vectorLayer)
+      } else if (map == 'olMap2') {
+        this.olMap2.addLayer(vectorLayer)
+      }
+    },
+    // 卷帘绘制点
+    olSwipeDrawPoint(lnglat, imgUrl, id) {
       let iconFeature = new Feature({
         geometry: new Point([lnglat.lng, lnglat.lat]),
         name: '',
@@ -4974,8 +4960,8 @@ export default {
       })
       surveyPointLayer.set('id', id)
       this.lmap.addLayer(surveyPointLayer)
-      // this.olMap2.addLayer(surveyPointLayer)
     },
+    // 双球卷帘移除图层
     olRemoveLayer(data, map) {
       if (map == 'olMap1') {
         for (const item of data) {
