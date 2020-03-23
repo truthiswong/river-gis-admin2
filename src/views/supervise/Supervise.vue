@@ -4798,8 +4798,30 @@ export default {
                 item.innerType.code,
                 item.drawType.name
               )
+              let markerTool
+              if (item.drawType.icon) {
+                let icon = new T.Icon({
+                  iconUrl: item.drawType.icon,
+                  iconSize: new T.Point(41, 40),
+                  iconAnchor: new T.Point(21, 40)
+                })
+                markerTool = new T.Marker(item.line[0], {
+                  icon: icon,
+                  id: item.id,
+                  title: item.innerName,
+                  code: item.innerType.code,
+                  drawType: item.drawType.name
+                })
+                markerTool.addEventListener('click', this.otherClick)
+                this.map.addOverLay(markerTool)
+              } else {
+                markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id, drawType: item.drawType.name })
+                markerTool.addEventListener('click', this.otherClick)
+                this.map.addOverLay(markerTool)
+              }
             }
             if (item.locationType.code == 'polygon') {
+              console.log(item)
               if (item.innerName) {
               } else {
                 item.innerName = ''
@@ -4816,6 +4838,27 @@ export default {
                 item.innerType.code,
                 item.drawType.name
               )
+              let markerTool
+              if (item.drawType.icon) {
+                let icon = new T.Icon({
+                  iconUrl: item.drawType.icon,
+                  iconSize: new T.Point(41, 40),
+                  iconAnchor: new T.Point(21, 40)
+                })
+                markerTool = new T.Marker(item.polygon[0], {
+                  icon: icon,
+                  id: item.id,
+                  title: item.innerName,
+                  code: item.innerType.code,
+                  drawType: item.drawType.name
+                })
+                markerTool.addEventListener('click', this.otherClick)
+                this.map.addOverLay(markerTool)
+              } else {
+                markerTool = new T.Marker(item.polygon[0], { title: innerName, id: item.id, drawType: item.drawType.name })
+                markerTool.addEventListener('click', this.otherClick)
+                this.map.addOverLay(markerTool)
+              }
             }
           }
         }
@@ -4857,8 +4900,8 @@ export default {
             iconAnchor: new T.Point(21, 40)
           })
           let marker = new T.Marker(item.coordinate, { icon: icon, id: item.id, title: item.name })
-          this.map.addOverLay(marker)
           marker.addEventListener('click', this.taskPointClick)
+          this.map.addOverLay(marker)
         }
         // 双球开关
         if (this.sharedChecked || this.swipeChecked) {
