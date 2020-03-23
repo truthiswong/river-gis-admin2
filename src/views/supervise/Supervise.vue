@@ -4022,7 +4022,7 @@ export default {
             for (const item of this.waterQualityPoints) {
               this.olSharedDrawPoint(
                 item.coordinate,
-                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+                require('./img/waterQualityIcon1.png'),
                 item.id,
                 'olMap1'
               )
@@ -4030,7 +4030,7 @@ export default {
             for (const item of this.rightWaterQualityPoints) {
               this.olSharedDrawPoint(
                 item.coordinate,
-                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+                require('./img/waterQualityIcon1.png'),
                 item.id,
                 'olMap2'
               )
@@ -4039,7 +4039,7 @@ export default {
           // 卷帘开关
           if (this.swipeChecked) {
             for (const item of this.waterQualityPoints) {
-              this.olSwipeDrawPoint(item.coordinate, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+              this.olSwipeDrawPoint(item.coordinate, require('./img/waterQualityIcon1.png'), item.id)
             }
           }
         }
@@ -4281,7 +4281,7 @@ export default {
             for (const item of point) {
               this.olSharedDrawPoint(
                 item.latlng,
-                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+                item.drawType.icon,
                 item.id,
                 'olMap1'
               )
@@ -4291,7 +4291,7 @@ export default {
             for (const item of point2) {
               this.olSharedDrawPoint(
                 item.latlng,
-                'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+                item.drawType.icon,
                 item.id,
                 'olMap2'
               )
@@ -4414,7 +4414,7 @@ export default {
           for (const item of point1) {
             this.olSharedDrawPoint(
               item.latlng,
-              'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+              item.drawType.icon,
               item.id,
               'olMap1'
             )
@@ -4422,7 +4422,7 @@ export default {
           for (const item of point2) {
             this.olSharedDrawPoint(
               item.latlng,
-              'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+              item.drawType.icon,
               item.id,
               'olMap2'
             )
@@ -4431,7 +4431,7 @@ export default {
         // 卷帘开关
         if (this.swipeChecked) {
           for (const item of point1) {
-            this.olSwipeDrawPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+            this.olSwipeDrawPoint(item.latlng, item.drawType.icon, item.id)
           }
         }
       } else {
@@ -4692,7 +4692,7 @@ export default {
           for (const item of point) {
             this.olSharedDrawPoint(
               item.latlng,
-              'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+              item.drawType.icon,
               item.id,
               'olMap1'
             )
@@ -4700,7 +4700,7 @@ export default {
           for (const item of point2) {
             this.olSharedDrawPoint(
               item.latlng,
-              'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png',
+              item.drawType.icon,
               item.id,
               'olMap2'
             )
