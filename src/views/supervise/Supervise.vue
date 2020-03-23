@@ -184,8 +184,8 @@
             action="/server/data/admin/regulator/manual/data/save"
             :on-error="phonePhotoError"
             :on-success="phonePhotoSuccess"
+            :multiple="true"
             :file-list="fileList"
-            :limit="1"
           >
             <a-button style="width:198px;" block>
               <a-icon type="upload" />上传照片
