@@ -3207,7 +3207,7 @@ export default {
         if (this.sharedChecked) {
           // 双球道路标注
           this.olMap1.addLayer(this.roadLayerWord)
-          this.olMap2.addLayer(this.roadLayerWord)
+          this.olMap2.addLayer(this.aerialLayerWord)
         } else {
           // 天地图道路标注
           this.map.addLayer(this.mapLayerWord)
@@ -3216,7 +3216,7 @@ export default {
         if (this.sharedChecked) {
           // 双球道路标注
           this.olMap1.removeLayer(this.roadLayerWord)
-          this.olMap2.removeLayer(this.roadLayerWord)
+          this.olMap2.removeLayer(this.aerialLayerWord)
         } else {
           // 天地图道路标注
           this.map.removeLayer(this.mapLayerWord)
@@ -3344,14 +3344,21 @@ export default {
       var vec_c = this.getTdLayer('vec_w') //2d图
       var cva_c = this.getTdLayer('cva_w') //道路标注
       var img_c = this.getTdLayer('img_w') //卫星图
-      this.roadWordChange = !this.roadWordChange
-      this.layerImageChange = !this.layerImageChange
-      // 道路标注
+      // 左边道路标注
       this.roadLayerWord = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
-        })
+        }),
+        zIndex: 15
+      });
+      // 右边道路标注
+      this.aerialLayerWord = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        }),
+        zIndex: 15
       });
       // 左边卫星图
       this.roadLayer = new TileLayer({
@@ -3387,14 +3394,16 @@ export default {
         source: new XYZ({
           url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
           maxZoom: 18
-        })
+        }),
+        zIndex: 10
       });
       // 右边正射
       this.aerialLayerImage = new TileLayer({
         source: new XYZ({
           url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
           maxZoom: 18
-        })
+        }),
+        zIndex: 10
       });
       
       var view = new View({
@@ -3424,6 +3433,8 @@ export default {
       console.log(!this.sharedChecked && !this.swipeChecked)
       if (this.sharedChecked) {
         this.swipeChecked = false
+        this.roadWordChange = false
+        this.layerImageChange = false
         if (this.sharedOnce == 1) {
           this.$nextTick(() => {
             this.showMap() //双球init
@@ -3433,6 +3444,8 @@ export default {
         }
         this.sharedOnce = 2
       } else {
+        this.roadWordChange = true
+        this.layerImageChange = true
       }
     },
     // 卷帘
