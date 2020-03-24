@@ -59,7 +59,10 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="水体名称">
-              <a-input v-model="list.waterName" placeholder="水体名称" />
+              <!-- <a-input v-model="list.waterName" placeholder="水体名称" /> -->
+              <a-select placeholder="水体名称" v-model="list.riverId"  @change="riverChange">
+                <a-select-option v-for="(item, index) in riverShowList" :key="index" :value="item.id">{{item.name}}</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -88,7 +91,9 @@
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="所在街道">
-              <a-input v-model="list.town" placeholder="所在街道" />
+              <a-select placeholder="所在街道" v-model="list.streetId">
+                <a-select-option v-for="(item, index) in streetShowList" :key="index" :value="item.id">{{item.name}}</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
         </a-row>
@@ -172,7 +177,9 @@ export default {
         department: '',
         originalCode: '',
         remark: '',
-        address: ''
+        address: '',
+        streetId:'',
+        riverId:''
       },
       labelCol: {
         xs: { span: 18 },
@@ -184,7 +191,8 @@ export default {
       },
       visible: false,
       confirmLoading: false,
-
+      riverShowList:[],
+      streetShowList:[],
       selectedItems: [] //风险源类型
     }
   },
@@ -195,8 +203,9 @@ export default {
   },
   mounted() {},
   methods: {
-    add(e, type) {
-      console.log(e, type)
+    add(e, type,riverShowList,streetShowList) {
+      this.riverShowList = riverShowList
+      this.streetShowList = streetShowList
       if (type == 1) {
         this.list.type = 'fixed'
       } else {
@@ -206,7 +215,9 @@ export default {
       this.list.lat = e.lat
       this.visible = true
     },
-    add1(id) {
+    add1(id,riverShowList,streetShowList) {
+      this.riverShowList = riverShowList
+      this.streetShowList = streetShowList
       testingDetail(id)
         .then(res => {
           var arr = res.data
@@ -219,8 +230,14 @@ export default {
           this.list.address = arr.address
           this.list.level = arr.level
           this.list.section = arr.section
-          this.list.waterName = arr.waterName
-          this.list.waterCode = arr.waterCode
+          // this.list.waterName = arr.waterName
+          if (arr.river) {
+            this.list.riverId = arr.river.id
+            this.list.waterCode = arr.river.code
+          }
+          if (arr.street) {
+            this.list.streetId = arr.street.id
+          }
           this.list.manageLevel = arr.manageLevel
           this.list.waterType = arr.waterType
           this.list.area = arr.area
@@ -295,7 +312,23 @@ export default {
       this.list.originalCode = ''
       this.list.remark = ''
       this.list.address = ''
+      this.list.riverId = ''
+      this.list.streetId = ''
       this.$emit('cancel')
+    },
+    riverChange(value){
+      for (const item of this.riverShowList) {
+        if (value==item.id) {
+          this.list.waterCode = item.code
+          if (item.supervisoryLevel !=null) {
+            this.list.manageLevel = item.supervisoryLevel.name
+          }else{
+             this.list.manageLevel =''
+          }
+          
+          break
+        }
+      }
     },
     filter(inputValue, path) {
       return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1)

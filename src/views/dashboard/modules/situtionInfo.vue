@@ -155,9 +155,10 @@ export default {
       waterDetail: {}
     }
   },
-  methods: {
+  methods: { 
     show(id) {
-      inspectTaskDetail(id).then(res => {
+      console.log('111');
+        inspectTaskDetail(id).then(res => {
         var arr = res.data
         console.log(arr)
 
@@ -190,8 +191,10 @@ export default {
           }
           this.waterDetail = arr.waterDetail
         }
+        
       })
       this.visible = true
+     
     },
     handleOk() {
       this.visible = false

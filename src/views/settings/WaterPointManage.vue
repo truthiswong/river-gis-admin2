@@ -342,7 +342,7 @@ export default {
           if (e.target.options.id === item.id) {
             item.clicked = true
             this.pointInfo = item
-            this.$refs.addWaterPoint.add1(item.id)
+            this.$refs.addWaterPoint.add1(item.id, this.riverShowList, this.streetShowList)
           } else {
             item.clicked = false
           }
@@ -351,7 +351,7 @@ export default {
         for (const item of this.peoplePointList) {
           if (e.target.options.id === item.id) {
             item.clicked = true
-            this.$refs.addWaterPoint.add1(item.id)
+            this.$refs.addWaterPoint.add1(item.id, this.riverShowList, this.streetShowList)
             this.pointInfo = item
           } else {
             item.clicked = false
@@ -372,7 +372,7 @@ export default {
       this.markerTool.addEventListener('mouseup', this.addTaskFixedPointed)
     },
     addTaskFixedPointed(e) {
-      this.$refs.addWaterPoint.add(e.currentLnglat, this.type)
+      this.$refs.addWaterPoint.add(e.currentLnglat, this.type, this.riverShowList, this.streetShowList )
       console.log(e)
     },
     // 注册添加固定监测点击事件
