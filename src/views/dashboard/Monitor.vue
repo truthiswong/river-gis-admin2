@@ -582,13 +582,9 @@
                                         >
                                           <template slot="custom" slot-scope="item">
                                             <span class>
-                                              <a-button
-                                                class=""
-                                                @click="searchItme(item.id)"
-                                              >查看</a-button>
+                                              <a-button @click="searchItme(item.id)">查看</a-button>
                                             </span>
                                             <span>{{ item.name }}</span>
-                                            
                                           </template>
                                         </a-tree>
                                       </div>
@@ -2214,36 +2210,6 @@ export default {
       }
       this.planDayDrawSpot(task)
     },
-    showPosition(marker, riverData) {
-      inspectTaskDetail(riverData.id).then(res => {
-        marker.addEventListener('click', function() {
-          var html =
-            "<div style='margin:0px;'>" +
-            "<div style='line-height:30px;font-size:18px;margin-bottom:5px'>" +
-            riverData.name +
-            '</div>' +
-            "<div style='line-height:25px;'>" +
-            "<div><span style='color:;'>任务名称</span>：" +
-            res.data.name +
-            '</div>' +
-            '<div>任务内容：' +
-            res.data.content +
-            '</div>'
-          // +'<div>位置信息：上海市徐汇区龙川北路422-5' +
-          // '</div>'
-          // +'<div>备注：' +
-          // '<div>当月计划执行次数：5' +
-          // '</div>' +
-          // '<div>当月待执行次数：2' +
-          // '</div>' +
-          // '</div>' +
-          // '</div>' +
-          // '</div>'
-          var infoWin = new T.InfoWindow(html)
-          marker.openInfoWindow(infoWin)
-        })
-      })
-    },
     //当日计划绘制河道，调查点内的任务
     planDayDrawSpot(taskPage) {
       for (const item of taskPage.anomalous) {
@@ -2873,6 +2839,8 @@ export default {
     changeInfo(key) {
     },
     searchItme(id) {
+      console.log(id);
+      
       this.$refs.situtionInfo.show(id)
     },
     //今日计划模块修改时间
@@ -3205,6 +3173,36 @@ export default {
         })
       })
     },
+    // showPosition(marker, riverData) {
+    //   inspectTaskDetail(riverData.id).then(res => {
+    //     marker.addEventListener('click', function() {
+    //       var html =
+    //         "<div style='margin:0px;'>" +
+    //         "<div style='line-height:30px;font-size:18px;margin-bottom:5px'>" +
+    //         riverData.name +
+    //         '</div>' +
+    //         "<div style='line-height:25px;'>" +
+    //         "<div><span style='color:;'>任务名称</span>：" +
+    //         res.data.name +
+    //         '</div>' +
+    //         '<div>任务内容：' +
+    //         res.data.content +
+    //         '</div>'
+    //       // +'<div>位置信息：上海市徐汇区龙川北路422-5' +
+    //       // '</div>'
+    //       // +'<div>备注：' +
+    //       // '<div>当月计划执行次数：5' +
+    //       // '</div>' +
+    //       // '<div>当月待执行次数：2' +
+    //       // '</div>' +
+    //       // '</div>' +
+    //       // '</div>' +
+    //       // '</div>'
+    //       var infoWin = new T.InfoWindow(html)
+    //       marker.openInfoWindow(infoWin)
+    //     })
+    //   })
+    // },
     //河道计划点击事件
     onSelect(selectedKeys, info) {
       this.selectedKeys = selectedKeys

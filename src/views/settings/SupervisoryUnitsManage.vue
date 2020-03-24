@@ -229,13 +229,17 @@ export default {
           var arr = res.data.data
           for (let i = 0; i < arr.length; i++) {
             arr[i].key = i + 1
-            arr[i].street = arr[i].street.name
-            arr[i].updatedAt = formatDate(new Date(arr[i].surveyDate))
-            arr[i].riverStr = ''
-            for (let a = 0; a < arr[i].rivers.length; a++) {
-              arr[i].riverStr = arr[i].riverStr + arr[i].rivers[a].name + ', '
+            if (arr[i].street) {
+              arr[i].street = arr[i].street.name
             }
-            arr[i].riverStr = arr[i].riverStr.substring(0, arr[i].riverStr.length - 2)
+            arr[i].updatedAt = formatDate(new Date(arr[i].surveyDate))
+             arr[i].riverStr = ''
+            if ( arr[i].rivers) {
+              for (let a = 0; a < arr[i].rivers.length; a++) {
+                arr[i].riverStr = arr[i].riverStr + arr[i].rivers[a].name + ', '
+              }
+              arr[i].riverStr = arr[i].riverStr.substring(0, arr[i].riverStr.length - 2)
+            }
             arr[i].type = arr[i].type
           }
           this.loadData = arr
