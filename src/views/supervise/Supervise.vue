@@ -3176,27 +3176,73 @@ export default {
     // 图像
     onMapChange(e) {
       if (e.target.value == 'a') {
-        this.map.addLayer(this.mapLayer2d)
-        this.map.removeLayer(this.mapLayerSatellite)
+        if (this.sharedChecked) {
+          // 双球2d
+          this.olMap1.addLayer(this.roadLayer2d)
+          this.olMap2.addLayer(this.aerialLayer2d)
+          this.olMap1.removeLayer(this.roadLayer)
+          this.olMap2.removeLayer(this.aerialLayer)
+        } else {
+          // 天地图2d
+          this.map.addLayer(this.mapLayer2d)
+          this.map.removeLayer(this.mapLayerSatellite)
+        }
       } else if (e.target.value == 'b') {
-        this.map.addLayer(this.mapLayerSatellite)
-        this.map.removeLayer(this.mapLayer2d)
+        if (this.sharedChecked) {
+          // 双球卫星
+          this.olMap1.addLayer(this.roadLayer)
+          this.olMap2.addLayer(this.aerialLayer)
+          this.olMap1.removeLayer(this.roadLayer2d)
+          this.olMap2.removeLayer(this.aerialLayer2d)
+        } else {
+          // 天地图卫星
+          this.map.addLayer(this.mapLayerSatellite)
+          this.map.removeLayer(this.mapLayer2d)
+        }
       }
     },
     // 道路开关
     onRoadChangeSwitch() {
       if (this.roadWordChange) {
-        this.map.addLayer(this.mapLayerWord)
+        if (this.sharedChecked) {
+          // 双球道路标注
+          this.olMap1.addLayer(this.roadLayerWord)
+          this.olMap2.addLayer(this.aerialLayerWord)
+        } else {
+          // 天地图道路标注
+          this.map.addLayer(this.mapLayerWord)
+        }
       } else {
-        this.map.removeLayer(this.mapLayerWord)
+        if (this.sharedChecked) {
+          // 双球道路标注
+          this.olMap1.removeLayer(this.roadLayerWord)
+          this.olMap2.removeLayer(this.aerialLayerWord)
+        } else {
+          // 天地图道路标注
+          this.map.removeLayer(this.mapLayerWord)
+        }
       }
     },
     // 正射开关
     onLayerImageSwitch() {
       if (this.layerImageChange) {
-        this.map.addLayer(this.mapLayerImage)
+        if (this.sharedChecked) {
+          // 双球正射
+          this.olMap1.addLayer(this.roadLayerImage)
+          this.olMap2.addLayer(this.aerialLayerImage)
+        } else {
+          // 天地图正射
+          this.map.addLayer(this.mapLayerImage)
+        }
       } else {
-        this.map.removeLayer(this.mapLayerImage)
+        if (this.sharedChecked) {
+          // 双球正射
+          this.olMap1.removeLayer(this.roadLayerImage)
+          this.olMap2.removeLayer(this.aerialLayerImage)
+        } else {
+          // 天地图正射
+          this.map.removeLayer(this.mapLayerImage)
+        }
       }
     },
     printImage() {
@@ -3298,32 +3344,66 @@ export default {
       var vec_c = this.getTdLayer('vec_w') //2d图
       var cva_c = this.getTdLayer('cva_w') //道路标注
       var img_c = this.getTdLayer('img_w') //卫星图
-      // 道路标注
-      var roadLayerWord = new TileLayer({
+      // 左边道路标注
+      this.roadLayerWord = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
-        })
+        }),
+        zIndex: 15
+      });
+      // 右边道路标注
+      this.aerialLayerWord = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        }),
+        zIndex: 15
       });
       // 左边卫星图
-      var roadLayer = new TileLayer({
+      this.roadLayer = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
         })
       });
-      var roadLayer2d = new TileLayer({
+      
+      // 右边卫星图
+      this.aerialLayer = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        })
+      });
+      // 左边2d
+      this.roadLayer2d = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
         })
       });
-      // 右边卫星图
-      var aerialLayer = new TileLayer({
+      // 右边2d
+      this.aerialLayer2d = new TileLayer({
         source: new XYZ({
-          url: `http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          url: `http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
         })
+      });
+      // 左边正射
+      this.roadLayerImage = new TileLayer({
+        source: new XYZ({
+          url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
+          maxZoom: 18
+        }),
+        zIndex: 10
+      });
+      // 右边正射
+      this.aerialLayerImage = new TileLayer({
+        source: new XYZ({
+          url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
+          maxZoom: 18
+        }),
+        zIndex: 10
       });
       
       var view = new View({
@@ -3333,7 +3413,7 @@ export default {
       })
       this.olMap1 = new Map({
         target: 'roadMap',
-        layers: [roadLayer],
+        layers: [this.roadLayer],
         // layers: [roadLayer, roadLayerWord],
         renderer: 'webgl',
         view: view
@@ -3342,7 +3422,7 @@ export default {
       //以Dom渲染方式初始化地图
       this.olMap2 = new Map({
         target: 'aerialMap',
-        layers: [aerialLayer],
+        layers: [this.aerialLayer],
         // layers: [aerialLayer, roadLayerWord],
         renderer:'dom',
         view: view
@@ -3353,6 +3433,8 @@ export default {
       console.log(!this.sharedChecked && !this.swipeChecked)
       if (this.sharedChecked) {
         this.swipeChecked = false
+        this.roadWordChange = false
+        this.layerImageChange = false
         if (this.sharedOnce == 1) {
           this.$nextTick(() => {
             this.showMap() //双球init
@@ -3362,6 +3444,8 @@ export default {
         }
         this.sharedOnce = 2
       } else {
+        this.roadWordChange = true
+        this.layerImageChange = true
       }
     },
     // 卷帘
@@ -4910,6 +4994,46 @@ export default {
     },
     // 双球绘制面
     olSharedDrawPolygon(polygonData, fillColor, lineColor, id, map) {
+      return
+      var styles = [
+        new Style({
+          stroke: new Stroke({
+            color: 'blue',
+            width: 3
+          }),
+          fill: new Fill({
+            color: 'rgba(0, 0, 255, 0.1)'
+          })
+        })
+      ];
+
+      var geojsonObject = {
+        'type': 'FeatureCollection',
+        'crs': {
+          'type': 'name',
+          'properties': {
+            'name': 'EPSG:4326'
+          }
+        },
+        'features': [{
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Polygon',
+            'coordinates': [[[-5e6, 6e6], [-5e6, 8e6], [-3e6, 8e6],
+              [-3e6, 6e6], [-5e6, 6e6]]]
+          }
+        }]
+      };
+      var source = new VectorSource({
+        features: (new GeoJSON()).readFeatures(geojsonObject)
+      });
+      var layer = new VectorLayer({
+        source: source,
+        style: styles
+      });
+      this.olMap1.addLayer(vectorLayer)
+      return
+
       var feature = new Feature({
           geometry: new Polygon([polygonData]),
       });
