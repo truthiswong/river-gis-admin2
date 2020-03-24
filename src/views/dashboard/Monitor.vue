@@ -581,13 +581,14 @@
                                           class="tree_succ"
                                         >
                                           <template slot="custom" slot-scope="item">
-                                            <span>{{ item.name }}</span>
                                             <span class>
                                               <a-button
-                                                class="but_type"
+                                                class=""
                                                 @click="searchItme(item.id)"
                                               >查看</a-button>
                                             </span>
+                                            <span>{{ item.name }}</span>
+                                            
                                           </template>
                                         </a-tree>
                                       </div>
@@ -786,10 +787,11 @@
                                       class="tree_succ"
                                     >
                                       <template slot="custom" slot-scope="item">
-                                        <span>{{ item.name }}</span>
                                         <span class>
-                                          <a-button class="but_type" @click="searchItme(item.id)">查看</a-button>
+                                          <a-button class="" @click="searchItme(item.id)">查看</a-button>
                                         </span>
+                                        <span>{{ item.name }}</span>
+                                        
                                       </template>
                                     </a-tree>
                                   </div>
