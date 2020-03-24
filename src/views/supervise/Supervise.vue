@@ -872,9 +872,13 @@
       </div>
     </a-modal>
     <a-modal :title="otherModalList.title+'绘制数据'" :visible="otherModal" :footer="null">
-      <a-form class="from">
+      <span style="margin: 0 0 0 80px;">坐标: {{otherLatlng.lat}},{{otherLatlng.lng}}</span>
+      <a-form class="from" style="margin-top:20px">
         <a-form-item label="名称" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-input placeholder v-model="otherModalList.innerName" style="width:200px" />
+        </a-form-item>
+        <a-form-item label="位置信息" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-input placeholder v-model="otherModalList.locationName" style="width:200px" />
         </a-form-item>
       </a-form>
       <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
@@ -997,7 +1001,8 @@ export default {
       otherModalList: {
         title:'',
         id: '',
-        innerName: ''
+        innerName: '',
+        locationName:''
       },
       otherPoints: [], //其他绘制数据
       riskSourceLevel: [], //风险源风险等级
@@ -1292,6 +1297,7 @@ export default {
         { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24304, lng: 121.49392 } },
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.2645, lng: 121.49356 } }
       ],
+      otherLatlng:{},
       drawPage: [],
       listItemLeftRight: false,
       leftRight: false,
@@ -2363,21 +2369,25 @@ export default {
         }
         mapdrawSave(data)
           .then(res => {
-            
+            let result = this.toolIndexPointData.findIndex(item => {
+              return this.toolIndexId == item.id
+            })
             this.mapdrawId = res.data.id
             if (data.innerType=='other') {
               this.$message.success('保存成功,请打开'+res.data.drawType.name+'查看')
               this.otherModalList.id = res.data.id
+              let geocode = new T.Geocoder()
+              geocode.getLocation(this.toolIndexPointData[result].latlng, aaa=>{
+                this.otherModalList.locationName=aaa.formatted_address
+              })
               this.otherModalList.title = res.data.drawType.name
               this.otherModal  = true 
             }else{
+              let geocode = new T.Geocoder()
+              geocode.getLocation(this.toolIndexPointData[result].latlng, this.searchResult)
               this.$message.success('保存成功')
             }
-            let result = this.toolIndexPointData.findIndex(item => {
-              return this.toolIndexId == item.id
-            })
-            let geocode = new T.Geocoder()
-            geocode.getLocation(this.toolIndexPointData[result].latlng, this.searchResult)
+            
           })
           .catch(err => {
             this.$message.error(err.response.data.message)
@@ -2422,13 +2432,18 @@ export default {
             if (data.innerType=='other') {
               this.$message.success('保存成功,请打开'+res.data.drawType.name+'查看')
               this.otherModalList.id = res.data.id
+              let geocode = new T.Geocoder()
+              geocode.getLocation(this.toolIndexLineData[result].lineData[0], aaa=>{
+                this.otherModalList.locationName=aaa.formatted_address
+              })
               this.otherModalList.title = res.data.drawType.name
               this.otherModal  = true 
             }else{
+              let geocode = new T.Geocoder()
+               geocode.getLocation(this.toolIndexLineData[result].lineData[0], this.searchResult)
               this.$message.success('保存成功')
             }
-            let geocode = new T.Geocoder()
-            geocode.getLocation(this.toolIndexLineData[result].lineData[0], this.searchResult)
+            
             if (this.isToolEdit) {
               this.watchAllSwitch()
               return
@@ -2485,14 +2500,19 @@ export default {
             if (data.innerType=='other') {
               this.$message.success('保存成功,请打开'+res.data.drawType.name+'查看')
               this.otherModalList.id = res.data.id
+               let geocode = new T.Geocoder()
+              geocode.getLocation(this.toolIndexPolygonData[result].lineData[0], aaa=>{
+                this.otherModalList.locationName=aaa.formatted_address
+              })
               this.otherModalList.title = res.data.drawType.name
               this.otherModal  = true 
             }else{
+              let geocode = new T.Geocoder()
+              geocode.getLocation(this.toolIndexPolygonData[result].lineData[0], this.searchResult)
               this.$message.success('保存成功')
             }
             // 获取地理位置
-            let geocode = new T.Geocoder()
-            geocode.getLocation(this.toolIndexPolygonData[result].lineData[0], this.searchResult)
+           
             if (this.isToolEdit) {
               this.watchAllSwitch()
               return
@@ -4540,7 +4560,6 @@ export default {
     //绘制点
     spotDraw(pointLists) {
       let markerTool
-      console.log(pointLists)
       for (const item of pointLists) {
         if (item.drawType.icon) {
           let icon = new T.Icon({
@@ -4553,7 +4572,8 @@ export default {
             id: item.id,
             title: item.innerName,
             code: item.innerType.code,
-            drawType:item.drawType.name
+            drawType:item.drawType.name,
+            latlng:item.latlng
           })
           this.map.addOverLay(markerTool)
         } else {
@@ -4572,7 +4592,7 @@ export default {
       }
     },
     //绘制线
-    lineDraw(points, color, weight, opacity, id, name, code,drawType) {
+    lineDraw(points, color, weight, opacity, id, name, code,drawType,locationName,latlng) {
       let line = new T.Polyline(points, {
         color: color, //线颜色
         weight: weight, //线宽
@@ -4580,7 +4600,9 @@ export default {
         id: id,
         title: name,
         code: code,
-        drawType:drawType
+        drawType:drawType,
+         locationName:locationName,
+         latlng:latlng
       })
       //向地图上添加线
       this.map.addOverLay(line)
@@ -4598,7 +4620,7 @@ export default {
       }
     },
     // 绘制面
-    noodlesDraw(lineData, color, weight, opacity, fillColor, fillOpacity, title, id, code,drawType) {
+    noodlesDraw(lineData, color, weight, opacity, fillColor, fillOpacity, title, id, code,drawType,locationName,latlng) {
       let polygon = new T.Polygon(lineData, {
         color: color, //线颜色
         weight: weight, //线宽
@@ -4608,7 +4630,9 @@ export default {
         title: title, // 名字
         id: id, // id
         code: code,
-        drawType:drawType
+        drawType:drawType,
+        locationName:locationName,
+        latlng:latlng
       })
       //向地图上添加面
       this.map.addOverLay(polygon)
@@ -4640,6 +4664,8 @@ export default {
       this.otherModalList.id = row.target.options.id
       this.otherModalList.innerName = row.target.options.title
       this.otherModalList.title=row.target.options.drawType
+      this.otherModalList.locationName=row.target.options.locationName
+      this.otherLatlng = row.target.options.latlng
       this.otherModal = true
     },
     // 河岸风险源
@@ -4837,7 +4863,9 @@ export default {
                 item.id,
                 item.innerName,
                 item.innerType.code,
-                item.drawType.name
+                item.drawType.name,
+                item.locationName,
+                item.line[0]
               )
               let markerTool
               if (item.drawType.icon) {
@@ -4851,12 +4879,14 @@ export default {
                   id: item.id,
                   title: item.innerName,
                   code: item.innerType.code,
-                  drawType: item.drawType.name
+                  drawType: item.drawType.name,
+                  locationName:item.locationName,
+                  latlng:item.line[0]
                 })
                 markerTool.addEventListener('click', this.otherClick)
                 this.map.addOverLay(markerTool)
               } else {
-                markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id, drawType: item.drawType.name })
+                markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id, drawType: item.drawType.name,locationName:item.locationName,latlng:item.line[0] })
                 markerTool.addEventListener('click', this.otherClick)
                 this.map.addOverLay(markerTool)
               }
@@ -4877,7 +4907,9 @@ export default {
                 item.innerName,
                 item.id,
                 item.innerType.code,
-                item.drawType.name
+                item.drawType.name,
+                item.locationName,
+                item.polygon[0]
               )
               let markerTool
               if (item.drawType.icon) {
@@ -4891,12 +4923,14 @@ export default {
                   id: item.id,
                   title: item.innerName,
                   code: item.innerType.code,
-                  drawType: item.drawType.name
+                  drawType: item.drawType.name,
+                  locationName:item.locationName,
+                  latlng:item.polygon[0]
                 })
                 markerTool.addEventListener('click', this.otherClick)
                 this.map.addOverLay(markerTool)
               } else {
-                markerTool = new T.Marker(item.polygon[0], { title: innerName, id: item.id, drawType: item.drawType.name })
+                markerTool = new T.Marker(item.polygon[0], { title: innerName, id: item.id, drawType: item.drawType.name,locationName:item.locationName, latlng:item.polygon[0]})
                 markerTool.addEventListener('click', this.otherClick)
                 this.map.addOverLay(markerTool)
               }
@@ -5442,6 +5476,10 @@ export default {
         })
     },
     otherCancel() {
+      this.otherModalList.title=''
+      this.otherModalList.id=''
+      this.otherModalList.innerName=''
+      this.otherModalList.locationName=''
       this.otherModal = false
     }
   }
