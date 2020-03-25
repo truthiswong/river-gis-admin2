@@ -1117,6 +1117,7 @@ export default {
       fullOpacity: 50, //填充透明度
 
       riskPolygonData: [], // 风险地图数据
+      riskPolygonDataRight: [], // 右侧风险地图数据
       riskIndexId: null, // 当前绘制id
       isRiskEdit: false, // 是否是编辑状态
       isRiskSaveShow: false, // 是否显示保存取消
@@ -1353,53 +1354,6 @@ export default {
     // 360全景图
     panorama() {
       this.watchAllSwitch()
-    },
-    // 风险地图
-    riskMap() {
-      this.watchAllSwitch()
-    },
-    // 水质数据
-    waterQuality() {
-      this.watchAllSwitch()
-    },
-    // 水质漂浮物
-    waterFlotage() {
-      this.watchAllSwitch()
-    },
-    // 排口
-    outlet() {
-      this.watchAllSwitch()
-    },
-    // 河岸风险源
-    riverRisk() {
-      this.watchAllSwitch()
-    },
-    drawType() {
-      this.watchAllSwitch()
-    },
-    // 水土流失
-    // waterLandLoss() {
-    //   this.watchAllSwitch()
-    // },
-    // 水面率
-    waterRatio() {
-      this.watchAllSwitch()
-    },
-    // 底泥
-    bottomMud() {
-      this.watchAllSwitch()
-    },
-    // 专项调查点
-    surveyPoint() {
-      this.watchAllSwitch()
-    },
-    // 河道连通性
-    riverLink() {
-      this.watchAllSwitch()
-    },
-    // 水陆分布
-    landAndWater() {
-      this.watchAllSwitch()
     }
   },
   mounted() {
@@ -1507,6 +1461,8 @@ export default {
     // 右侧 双球 获取当前页面数据
     getMapPageDataRight() {
       if (this.moreLoadOnce == '1') {
+        // 右侧获取风险地图
+        this.getRiskMapListRight()
         // 右侧获取水面漂浮物
         this.getFloatageMapDrawPageRight()
         // 右侧获取水质数据
@@ -1663,7 +1619,6 @@ export default {
     },
     // 获取风险地图
     getRiskMapList() {
-      // this.removeOverLays(this.riskPolygonData)
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
@@ -1696,6 +1651,43 @@ export default {
         }
         this.riskPolygonData = []
         this.riskPolygonData = ar
+        this.onRiskMap()
+      })
+    },
+    // 右侧获取风险地图
+    getRiskMapListRight() {
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType: 'riskMap'
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType: 'riskMap'
+        }
+      }
+      mapdrawPage(data).then(res => {
+        let arr = res.data
+        let ar = []
+        for (const item of arr) {
+          item.borderColor = item.frameColor
+          item.borderOpacity = item.framePellucidity / 100
+          item.fullColor = item.shapeColor
+          item.fullOpacity = item.shapePellucidity / 100
+          item.id = item.id
+          item.lineData = item.polygon
+          ar.push(item)
+        }
+        this.riskPolygonDataRight = []
+        this.riskPolygonDataRight = ar
         this.onRiskMap()
       })
     },
@@ -3014,6 +3006,8 @@ export default {
         }
         // 风险地图
         if (this.riskMap) {
+          this.olRemoveLayer(this.riskPolygonData, 'olMap1')
+          this.olRemoveLayer(this.riskPolygonDataRight, 'olMap2')
         }
         // 水质数据
         if (this.waterQuality) {
@@ -3090,6 +3084,8 @@ export default {
       }
       // 风险地图
       if (this.riskMap) {
+        this.olRemoveLayer(this.riskPolygonData, 'olMap1')
+        this.olRemoveLayer(this.riskPolygonDataRight, 'olMap2')
       }
       // 水质数据
       if (this.waterQuality) {
@@ -3903,6 +3899,14 @@ export default {
               item.pointsData = []
               item.pointsData.push(points)
             }
+            for (const item of this.riskPolygonDataRight) {
+              let points = []
+              for (const point of item.lineData) {
+                points.push([point.lng, point.lat])
+              }
+              item.pointsData = []
+              item.pointsData.push(points)
+            }
             for (const item of this.riskPolygonData) {
               this.olSharedDrawPolygon(
                 item.pointsData,
@@ -3914,7 +3918,7 @@ export default {
                 item.fullOpacity
               )
             }
-            for (const item of this.riskPolygonData) {
+            for (const item of this.riskPolygonDataRight) {
               this.olSharedDrawPolygon(
                 item.pointsData,
                 item.id,
@@ -3937,7 +3941,7 @@ export default {
         // 双球开关水质数据关闭
         if (this.sharedChecked) {
           this.olRemoveLayer(this.riskPolygonData, 'olMap1')
-          this.olRemoveLayer(this.riskPolygonData, 'olMap2')
+          this.olRemoveLayer(this.riskPolygonDataRight, 'olMap2')
         }
         // 卷帘开关水质数据关闭
         if (this.swipeChecked) {
