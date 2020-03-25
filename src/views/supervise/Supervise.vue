@@ -674,7 +674,7 @@
                           <a-switch
                             size="small"
                             v-model="item.clicked"
-                            @click="onWaterLandLoss(item.id,item.clicked)"
+                            @click="onOther(item.id,item.clicked)"
                           />
                         </a-col>
                       </a-row>
@@ -1013,6 +1013,7 @@ export default {
         locationName:''
       },
       otherPoints: [], //其他绘制数据
+      otherPointsRight: [], //右侧其他绘制数据
       riskSourceLevel: [], //风险源风险等级
       UAVPhotosModal: false, //无人机照片弹窗
       uavPhotoList: [], //无人机照片
@@ -1511,6 +1512,8 @@ export default {
         this.getDischargeMapDrawPageRight()
         // 右侧获取专项调查点
         this.getSurveyPointPointsRight()
+        //其他绘制数据
+        this.getOtherMapDrawPageRight()
         this.moreLoadOnce = '2'
       }
     },
@@ -1840,7 +1843,7 @@ export default {
         // 点击切换重新绘制触发
         for (const item of this.otherList) {
           if (item.clicked == true) {
-            this.onWaterLandLoss(item.id, true)
+            this.onOther(item.id, true)
           }
         }
       })
@@ -1855,7 +1858,7 @@ export default {
           innerType: 'other'
         }
       } else {
-        var time = this.defaultTime
+        var time = this.defaultRightTime
         var picker = time.split('-')
         var data = {
           projectId: this.$store.state.id,
@@ -1881,11 +1884,11 @@ export default {
             ar.push(v)
           }
         })
-        this.otherPointsright = ar
+        this.otherPointsRight = ar
         // 点击切换重新绘制触发
         for (const item of this.otherList) {
           if (item.clicked == true) {
-            this.onWaterLandLoss(item.id, true)
+            this.onOther(item.id, true)
           }
         }
       })
@@ -3042,27 +3045,18 @@ export default {
           this.olRemoveLayer(data1, 'olMap1')
           // this.olRemoveLayer(data2, 'olMap2')
         }
-        if (this.drawType) {
-        }
-        // 水土流失
-        if (this.waterLandLoss) {
-        }
-        // 水面率
-        if (this.waterRatio) {
-        }
-        // 底泥
-        if (this.bottomMud) {
-        }
+        
         // 专项调查点
         if (this.surveyPoint) {
           this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
           this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
         }
-        // 河道连通性
-        if (this.riverLink) {
-        }
-        // 水陆分布
-        if (this.landAndWater) {
+        // 其他
+        for (const item of this.otherList) {
+          if (item.clicked) {
+            this.olRemoveLayer(this.otherPoints, 'olMap1')
+            this.olRemoveLayer(this.otherPointsRight, 'olMap2')
+          }
         }
       }
 
@@ -3085,9 +3079,6 @@ export default {
       }
       // 手机照片
       if (this.phonePhoto) {
-      }
-      // 无人机照片
-      if (this.UAVPhoto) {
       }
       // 360全景图
       if (this.panorama) {
@@ -3130,27 +3121,17 @@ export default {
         // this.olRemoveLayer(data1, 'olMap1')
         this.olRemoveLayer(data2, 'olMap2')
       }
-      if (this.drawType) {
-      }
-      // 水土流失
-      if (this.waterLandLoss) {
-      }
-      // 水面率
-      if (this.waterRatio) {
-      }
-      // 底泥
-      if (this.bottomMud) {
-      }
       // 专项调查点
       if (this.surveyPoint) {
         this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
         this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
       }
-      // 河道连通性
-      if (this.riverLink) {
-      }
-      // 水陆分布
-      if (this.landAndWater) {
+      // 其他
+      for (const item of this.otherList) {
+        if (item.clicked) {
+          this.olRemoveLayer(this.otherPoints, 'olMap1')
+          this.olRemoveLayer(this.otherPointsRight, 'olMap2')
+        }
       }
       this.moreLoadOnce = 1
       this.getMapPageDataRight()
@@ -4908,13 +4889,13 @@ export default {
               }
               if (item.locationType.code == 'line') {
                 let points = []
-                  for (const point of item.line) {
-                    points.push([point.lng, point.lat])
-                  }
-                  item.pointsData = []
-                  item.pointsData.push(points)
-                  this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+                for (const point of item.line) {
+                  points.push([point.lng, point.lat])
                 }
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+              }
               if (item.locationType.code == 'polygon') {
                 let points = []
                 for (const point of item.polygon) {
@@ -4955,7 +4936,7 @@ export default {
       }
     },
     // 其他
-    onWaterLandLoss(id, clicked) {
+    onOther(id, clicked) {
       // 点击时间轴切换先清除上一次的地图数据
       let data1 = []
       let data2 = []
@@ -4977,7 +4958,6 @@ export default {
       let point = []
       let point2 = []
       if (clicked) {
-        let point = []
         for (const item of this.otherPoints) {
           if (item.drawType.id == id) {
             if (item.locationType.code == 'point') {
@@ -5022,6 +5002,15 @@ export default {
                 })
                 markerTool.addEventListener('click', this.otherClick)
                 this.map.addOverLay(markerTool)
+                if (this.sharedChecked) {
+                  let points = []
+                  for (const point of item.line) {
+                    points.push([point.lng, point.lat])
+                  }
+                  item.pointsData = []
+                  item.pointsData.push(points)
+                  this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+                }
               } else {
                 markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id, drawType: item.drawType.name,locationName:item.locationName,latlng:item.line[0] })
                 markerTool.addEventListener('click', this.otherClick)
@@ -5066,6 +5055,15 @@ export default {
                 })
                 markerTool.addEventListener('click', this.otherClick)
                 this.map.addOverLay(markerTool)
+                if (this.sharedChecked) {
+                  let points = []
+                  for (const point of item.polygon) {
+                    points.push([point.lng, point.lat])
+                  }
+                  item.pointsData = []
+                  item.pointsData.push(points)
+                  this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity, item.shapeColor, item.shapePellucidity)
+                }
               } else {
                 markerTool = new T.Marker(item.polygon[0], { title: innerName, id: item.id, drawType: item.drawType.name,locationName:item.locationName, latlng:item.polygon[0]})
                 markerTool.addEventListener('click', this.otherClick)
@@ -5077,8 +5075,7 @@ export default {
         this.spotDraw(point)
         // 双球开关
         if (this.sharedChecked) {
-          console.log(this.riverRiskPointsRight)
-          for (const item of this.riverRiskPointsRight) {
+          for (const item of this.otherPointsRight) {
             if (item.drawType.id == id) {
               if (item.locationType.code == 'point') {
                 item.latlng = {
@@ -5088,14 +5085,18 @@ export default {
                 point2.push(item)
               }
               if (item.locationType.code == 'line') {
-                let points = []
-                  for (const point of item.line) {
-                    points.push([point.lng, point.lat])
-                  }
-                  item.pointsData = []
-                  item.pointsData.push(points)
-                  this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+                if (item.innerName) {
+                } else {
+                  item.innerName = ''
                 }
+                let points = []
+                for (const point of item.line) {
+                  points.push([point.lng, point.lat])
+                }
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+              }
               if (item.locationType.code == 'polygon') {
                 let points = []
                 for (const point of item.polygon) {
@@ -5122,6 +5123,16 @@ export default {
           }
         }
         this.removeOverLays(data)
+        // 双球开关风险源关闭
+        if (this.sharedChecked) {
+          this.olRemoveLayer(data, 'olMap1')
+          for (const item of this.otherPointsRight) {
+            if (item.drawType.id == id) {
+              data2.push(item)
+            }
+          }
+          this.olRemoveLayer(data2, 'olMap2')
+        }
       }
     },
     // 水面率
@@ -5316,8 +5327,6 @@ export default {
     },
     // 双球卷帘移除图层
     olRemoveLayer(data, map) {
-      console.log(this.olMap1.getLayers().array_)
-      console.log(this.olMap2.getLayers().array_)
       if (map == 'olMap1') {
         for (const item of data) {
           for (const layer of this.olMap1.getLayers().array_) {
@@ -5383,18 +5392,8 @@ export default {
       // this.onOutlet()
       // 河岸风险源
       // this.onRiverRisk()
-      // 水土流失
-      // this.onWaterLandLoss()
-      // 水面率
-      // this.onWaterRatio()
-      // 底泥
-      // this.onBottomMud()
       // 专项调查点
       // this.onSurveyPoint()
-      // 河道连通性
-      // this.onRiverLink()
-      // 水陆分布
-      // this.onLandAndWater()
     },
     allPointTask(pointLists) {
       for (const item of pointLists) {
