@@ -324,7 +324,11 @@
             </a-row>
           </a-card>
           <div class="color_wrap" v-show="colorAlertShow">
-            <compact-picker style="width:125px" v-model="riskMapColor" @input="changeColor(riskMapColor)"></compact-picker>
+            <compact-picker
+              style="width:125px"
+              v-model="riskMapColor"
+              @input="changeColor(riskMapColor)"
+            ></compact-picker>
           </div>
         </a-collapse-panel>
         <a-collapse-panel
@@ -803,7 +807,11 @@
         </a-col>
       </a-row>
       <div class="color_wrap" v-show="colorAlertShow">
-        <compact-picker style="width:125px" v-model="riskMapColor" @input="changeColor(riskMapColor)"></compact-picker>
+        <compact-picker
+          style="width:125px"
+          v-model="riskMapColor"
+          @input="changeColor(riskMapColor)"
+        ></compact-picker>
       </div>
     </a-card>
     <a-card size="small" v-show="toolsCard" class="custom_card tools_card">
@@ -945,7 +953,7 @@ import Layer from 'ol/layer/Layer'
 
 import Point from 'ol/geom/Point' //点
 import Circle from 'ol/geom/Circle' //圆
-// import {Polyline} from 'ol/format/Polyline'; //线
+import Polyline from 'ol/format/Polyline' //线
 import Polygon from 'ol/geom/Polygon' //面
 import { fromLonLat } from 'ol/proj'
 import TileJSON from 'ol/source/TileJSON'
@@ -999,7 +1007,7 @@ export default {
     return {
       otherModal: false, //其他绘制弹窗
       otherModalList: {
-        title:'',
+        title: '',
         id: '',
         innerName: '',
         locationName:''
@@ -1389,6 +1397,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.colorToRgba('#74c449', 0.3))
     let token = Vue.ls.get(ACCESS_TOKEN)
     // 初始化地图控件
     let zoom = 14
@@ -2373,8 +2382,8 @@ export default {
               return this.toolIndexId == item.id
             })
             this.mapdrawId = res.data.id
-            if (data.innerType=='other') {
-              this.$message.success('保存成功,请打开'+res.data.drawType.name+'查看')
+            if (data.innerType == 'other') {
+              this.$message.success('保存成功,请打开' + res.data.drawType.name + '查看')
               this.otherModalList.id = res.data.id
               let geocode = new T.Geocoder()
               geocode.getLocation(this.toolIndexPointData[result].latlng, aaa=>{
@@ -2427,10 +2436,9 @@ export default {
         }
         mapdrawSave(data)
           .then(res => {
-            
             this.mapdrawId = res.data.id
-            if (data.innerType=='other') {
-              this.$message.success('保存成功,请打开'+res.data.drawType.name+'查看')
+            if (data.innerType == 'other') {
+              this.$message.success('保存成功,请打开' + res.data.drawType.name + '查看')
               this.otherModalList.id = res.data.id
               let geocode = new T.Geocoder()
               geocode.getLocation(this.toolIndexLineData[result].lineData[0], aaa=>{
@@ -2497,8 +2505,8 @@ export default {
         mapdrawSave(data)
           .then(res => {
             this.mapdrawId = res.data.id
-            if (data.innerType=='other') {
-              this.$message.success('保存成功,请打开'+res.data.drawType.name+'查看')
+            if (data.innerType == 'other') {
+              this.$message.success('保存成功,请打开' + res.data.drawType.name + '查看')
               this.otherModalList.id = res.data.id
                let geocode = new T.Geocoder()
               geocode.getLocation(this.toolIndexPolygonData[result].lineData[0], aaa=>{
@@ -3371,7 +3379,7 @@ export default {
           maxZoom: 18
         }),
         zIndex: 15
-      });
+      })
       // 右边道路标注
       this.aerialLayerWord = new TileLayer({
         source: new XYZ({
@@ -3379,53 +3387,61 @@ export default {
           maxZoom: 18
         }),
         zIndex: 15
-      });
+      })
       // 左边卫星图
       this.roadLayer = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
         })
-      });
-      
+      })
+
       // 右边卫星图
       this.aerialLayer = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
         })
-      });
+      })
       // 左边2d
       this.roadLayer2d = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
         })
-      });
+      })
       // 右边2d
       this.aerialLayer2d = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
         })
-      });
+      })
       // 左边正射
       this.roadLayerImage = new TileLayer({
         source: new XYZ({
-          url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
+          url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
+            this.mapYear
+          }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
+            this.$store.state.tenantId
+          }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
           maxZoom: 18
         }),
         zIndex: 10
-      });
+      })
       // 右边正射
       this.aerialLayerImage = new TileLayer({
         source: new XYZ({
-          url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
+          url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
+            this.mapYear
+          }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
+            this.$store.state.tenantId
+          }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
           maxZoom: 18
         }),
         zIndex: 10
-      });
-      
+      })
+
       var view = new View({
         projection: 'EPSG:4326',
         center: [this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat],
@@ -3444,7 +3460,7 @@ export default {
         target: 'aerialMap',
         layers: [this.aerialLayer],
         // layers: [aerialLayer, roadLayerWord],
-        renderer:'dom',
+        renderer: 'dom',
         view: view
       })
     },
@@ -3530,7 +3546,6 @@ export default {
       this.moreLoadOnce = 1
       this.getMapPageData()
       if (this.historyData) {
-        
       }
     },
     // openlayers 绘制点
@@ -3796,7 +3811,7 @@ export default {
             iconSize: new T.Point(41, 40),
             iconAnchor: new T.Point(21, 40)
           })
-          markerTool = new T.Marker(item.latlng, { icon:icon,title: item.name, id: item.id })
+          markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
           markerTool.addEventListener('click', this.panoramaPointClick)
         }
@@ -3842,15 +3857,16 @@ export default {
             for (const item of this.riskPolygonData) {
               let points = []
               for (const point of item.lineData) {
-                points.push(new T.LngLat(point[0], point[1]))
+                points.push([point.lng, point.lat])
               }
-              item.pointsData = points
+              item.pointsData = []
+              item.pointsData.push(points)
             }
             for (const item of this.riskPolygonData) {
-              this.olSharedDrawPolygon(item.pointsData,item.fullColor, item.borderOpacity, item.id, 'olMap1')
+              this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.borderColor, item.borderOpacity, item.fullColor, item.fullOpacity)
             }
             for (const item of this.riskPolygonData) {
-              this.olSharedDrawPolygon(item.pointsData,item.fullColor, item.borderOpacity, item.id, 'olMap2')
+              this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.borderColor, item.borderOpacity, item.fullColor, item.fullOpacity)
             }
           }
           // 卷帘开关
@@ -4103,11 +4119,16 @@ export default {
         if (this.waterQualityPoints.length > 0) {
           for (const item of this.waterQualityPoints) {
             var icon = new T.Icon({
-            iconUrl: require('./img/onWaterQuality.png'),
-            iconSize: new T.Point(41, 40),
-            iconAnchor: new T.Point(21, 40)
-          })
-            this.waterQualityMarker = new T.Marker(item.coordinate, { icon: icon,item: item, id: item.id, title: item.name })
+              iconUrl: require('./img/onWaterQuality.png'),
+              iconSize: new T.Point(41, 40),
+              iconAnchor: new T.Point(21, 40)
+            })
+            this.waterQualityMarker = new T.Marker(item.coordinate, {
+              icon: icon,
+              item: item,
+              id: item.id,
+              title: item.name
+            })
             this.map.addOverLay(this.waterQualityMarker)
             if (this.historyData) {
               this.waterQualityMarker.addEventListener('click', this.waterQualityHistoryClick)
@@ -4124,20 +4145,10 @@ export default {
           // 双球开关
           if (this.sharedChecked) {
             for (const item of this.waterQualityPoints) {
-              this.olSharedDrawPoint(
-                item.coordinate,
-                require('./img/waterQualityIcon1.png'),
-                item.id,
-                'olMap1'
-              )
+              this.olSharedDrawPoint(item.coordinate, require('./img/waterQualityIcon1.png'), item.id, 'olMap1')
             }
             for (const item of this.rightWaterQualityPoints) {
-              this.olSharedDrawPoint(
-                item.coordinate,
-                require('./img/waterQualityIcon1.png'),
-                item.id,
-                'olMap2'
-              )
+              this.olSharedDrawPoint(item.coordinate, require('./img/waterQualityIcon1.png'), item.id, 'olMap2')
             }
           }
           // 卷帘开关
@@ -4295,25 +4306,25 @@ export default {
           if (item.locationType.code == 'line') {
             this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
             let markerTool
-              if (item.drawType.icon) {
-                let icon = new T.Icon({
-                  iconUrl: item.drawType.icon,
-                  iconSize: new T.Point(41, 40),
-                  iconAnchor: new T.Point(21, 40)
-                })
-                markerTool = new T.Marker(item.line[0], {
-                  icon: icon,
-                  id: item.id,
-                  title: item.innerName,
-                  code: item.innerType.code
-                })
-                markerTool.addEventListener('click', this.floatageClick)
-                this.map.addOverLay(markerTool)
-              } else {
-                markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
-                markerTool.addEventListener('click', this.floatageClick)
-                this.map.addOverLay(markerTool)
-              }
+            if (item.drawType.icon) {
+              let icon = new T.Icon({
+                iconUrl: item.drawType.icon,
+                iconSize: new T.Point(41, 40),
+                iconAnchor: new T.Point(21, 40)
+              })
+              markerTool = new T.Marker(item.line[0], {
+                icon: icon,
+                id: item.id,
+                title: item.innerName,
+                code: item.innerType.code
+              })
+              markerTool.addEventListener('click', this.floatageClick)
+              this.map.addOverLay(markerTool)
+            } else {
+              markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+              markerTool.addEventListener('click', this.floatageClick)
+              this.map.addOverLay(markerTool)
+            }
           }
           if (item.locationType.code == 'polygon') {
             this.noodlesDraw(
@@ -4328,7 +4339,7 @@ export default {
               item.innerType.code
             )
             let markerTool
-              if (item.drawType.icon) {
+            if (item.drawType.icon) {
               let icon = new T.Icon({
                 iconUrl: item.drawType.icon,
                 iconSize: new T.Point(41, 40),
@@ -4366,6 +4377,20 @@ export default {
             }
             if (item.locationType.code == 'line') {
               this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+              // for (const item of this.waterFlotagePointsRight) {
+              //   let points = []
+              //   for (const point of item.line) {
+              //     points.push([point.lng, point.lat])
+              //   }
+              //   item.pointsData = []
+              //   item.pointsData.push(points)
+              // }
+              // for (const item of this.waterFlotagePointsRight) {
+              //   this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.borderColor, item.borderOpacity, item.fullColor, item.fullOpacity)
+              // }
+              // for (const item of this.waterFlotagePointsRight) {
+              //   this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.borderColor, item.borderOpacity, item.fullColor, item.fullOpacity)
+              // }
             }
             if (item.locationType.code == 'polygon') {
               this.noodlesDraw(
@@ -4379,26 +4404,30 @@ export default {
                 item.id,
                 item.innerType.code
               )
+              // for (const item of this.riskPolygonData) {
+              //   let points = []
+              //   for (const point of item.polygon) {
+              //     points.push([point.lng, point.lat])
+              //   }
+              //   item.pointsData = []
+              //   item.pointsData.push(points)
+              // }
+              // for (const item of this.riskPolygonData) {
+              //   this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.borderColor, item.borderOpacity, item.fullColor, item.fullOpacity)
+              // }
+              // for (const item of this.riskPolygonData) {
+              //   this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.borderColor, item.borderOpacity, item.fullColor, item.fullOpacity)
+              // }
             }
           }
           if (point.length > 0) {
             for (const item of point) {
-              this.olSharedDrawPoint(
-                item.latlng,
-                item.drawType.icon,
-                item.id,
-                'olMap1'
-              )
+              this.olSharedDrawPoint(item.latlng, item.drawType.icon, item.id, 'olMap1')
             }
           }
           if (point2.length > 0) {
             for (const item of point2) {
-              this.olSharedDrawPoint(
-                item.latlng,
-                item.drawType.icon,
-                item.id,
-                'olMap2'
-              )
+              this.olSharedDrawPoint(item.latlng, item.drawType.icon, item.id, 'olMap2')
             }
           }
         }
@@ -4476,25 +4505,25 @@ export default {
               item.innerType.code
             )
             let markerTool
-              if (item.drawType.icon) {
-                let icon = new T.Icon({
-                  iconUrl: item.drawType.icon,
-                  iconSize: new T.Point(41, 40),
-                  iconAnchor: new T.Point(21, 40)
-                })
-                markerTool = new T.Marker(item.polygon[0], {
-                  icon: icon,
-                  id: item.id,
-                  title: item.innerName,
-                  code: item.innerType.code
-                })
-                markerTool.addEventListener('click', this.sourceRiskClick)
-                this.map.addOverLay(markerTool)
-              } else {
-                markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
-                markerTool.addEventListener('click', this.sourceRiskClick)
-                this.map.addOverLay(markerTool)
-              }
+            if (item.drawType.icon) {
+              let icon = new T.Icon({
+                iconUrl: item.drawType.icon,
+                iconSize: new T.Point(41, 40),
+                iconAnchor: new T.Point(21, 40)
+              })
+              markerTool = new T.Marker(item.polygon[0], {
+                icon: icon,
+                id: item.id,
+                title: item.innerName,
+                code: item.innerType.code
+              })
+              markerTool.addEventListener('click', this.sourceRiskClick)
+              this.map.addOverLay(markerTool)
+            } else {
+              markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+              markerTool.addEventListener('click', this.sourceRiskClick)
+              this.map.addOverLay(markerTool)
+            }
           }
         }
         if (point1.length > 0) {
@@ -4516,20 +4545,10 @@ export default {
             }
           }
           for (const item of point1) {
-            this.olSharedDrawPoint(
-              item.latlng,
-              item.drawType.icon,
-              item.id,
-              'olMap1'
-            )
+            this.olSharedDrawPoint(item.latlng, item.drawType.icon, item.id, 'olMap1')
           }
           for (const item of point2) {
-            this.olSharedDrawPoint(
-              item.latlng,
-              item.drawType.icon,
-              item.id,
-              'olMap2'
-            )
+            this.olSharedDrawPoint(item.latlng, item.drawType.icon, item.id, 'olMap2')
           }
         }
         // 卷帘开关
@@ -4801,20 +4820,10 @@ export default {
             }
           }
           for (const item of point) {
-            this.olSharedDrawPoint(
-              item.latlng,
-              item.drawType.icon,
-              item.id,
-              'olMap1'
-            )
+            this.olSharedDrawPoint(item.latlng, item.drawType.icon, item.id, 'olMap1')
           }
           for (const item of point2) {
-            this.olSharedDrawPoint(
-              item.latlng,
-              item.drawType.icon,
-              item.id,
-              'olMap2'
-            )
+            this.olSharedDrawPoint(item.latlng, item.drawType.icon, item.id, 'olMap2')
           }
         }
       } else {
@@ -5007,9 +5016,16 @@ export default {
       })
       let iconStyle = new Style({
         image: new Icon({
-          anchor: [0.5, 1],
-          // anchorXUnits: 'fraction',
-          // anchorYUnits: 'pixels',
+          // anchor: [0.5, 1],
+          // // anchorXUnits: 'fraction',
+          // // anchorYUnits: 'pixels',
+          // src: imgUrl
+          anchor: [0.5, 40],
+          anchorOrigin: 'bottom-right',
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          scale: 1,
+          size: [40, 40],
           src: imgUrl
         })
       })
@@ -5018,7 +5034,8 @@ export default {
         features: [iconFeature]
       })
       let surveyPointLayer = new VectorLayer({
-        source: vectorSource
+        source: vectorSource,
+        zIndex: 20
       })
       surveyPointLayer.set('id', id)
       if (map == 'olMap1') {
@@ -5028,62 +5045,24 @@ export default {
       }
     },
     // 双球绘制面
-    olSharedDrawPolygon(polygonData, fillColor, lineColor, id, map) {
-      return
-      var styles = [
-        new Style({
-          stroke: new Stroke({
-            color: 'blue',
-            width: 3
-          }),
-          fill: new Fill({
-            color: 'rgba(0, 0, 255, 0.1)'
-          })
-        })
-      ];
-
-      var geojsonObject = {
-        'type': 'FeatureCollection',
-        'crs': {
-          'type': 'name',
-          'properties': {
-            'name': 'EPSG:4326'
-          }
-        },
-        'features': [{
-          'type': 'Feature',
-          'geometry': {
-            'type': 'Polygon',
-            'coordinates': [[[-5e6, 6e6], [-5e6, 8e6], [-3e6, 8e6],
-              [-3e6, 6e6], [-5e6, 6e6]]]
-          }
-        }]
-      };
-      var source = new VectorSource({
-        features: (new GeoJSON()).readFeatures(geojsonObject)
-      });
-      var layer = new VectorLayer({
-        source: source,
-        style: styles
-      });
-      this.olMap1.addLayer(vectorLayer)
-      return
-
+    olSharedDrawPolygon(pointsData, id, map, borderColor, borderOpacity, fullColor, fullOpacity) {
       var feature = new Feature({
-          geometry: new Polygon([polygonData]),
-      });
+        geometry: new Polygon(pointsData)
+      })
       let vectorSource = new VectorSource({
         features: [feature]
       })
       let vectorLayer = new VectorLayer({
         source: vectorSource,
+        zIndex: 20,
         style: new Style({
-          fill: new Fill({
-            color: 'rgba(255, 255, 255, 0.1)'
+          stroke: new Stroke({
+            //地图连线的样式
+            color: this.colorToRgba(borderColor, borderOpacity), //颜色
+            width: 2 //宽度
           }),
-          stroke: new Stroke({//地图连线的样式
-            color: 'red',//颜色
-            width: 10//宽度
+          fill: new Fill({
+            color: this.colorToRgba(fullColor, fullOpacity)
           })
         })
       })
@@ -5093,6 +5072,55 @@ export default {
       } else if (map == 'olMap2') {
         this.olMap2.addLayer(vectorLayer)
       }
+    },
+    // 双球绘制线
+    olSharedDrawLine(pointsData, id, map, borderColor, borderOpacity, fullColor, fullOpacity) {
+      var polyline = [[121.23, 31.12],[121.33, 31.22],[121.12, 31.32],[121.53, 31.43]];
+      var feature = new Feature({
+        geometry: new Polyline(polyline)
+      })
+      let vectorSource = new VectorSource({
+        features: [feature]
+      })
+      let vectorLayer = new VectorLayer({
+        source: vectorSource,
+        zIndex: 20,
+        style: new Style({
+          stroke: new Stroke({
+            //地图连线的样式
+            color: this.colorToRgba(borderColor, borderOpacity), //颜色
+            width: 2 //宽度
+          })
+        })
+      })
+      vectorLayer.set('id', id)
+      if (map == 'olMap1') {
+        this.olMap1.addLayer(vectorLayer)
+      } else if (map == 'olMap2') {
+        this.olMap2.addLayer(vectorLayer)
+      }
+    },
+    colorToRgba(sColor, opacity) {
+      sColor = sColor.toLowerCase()
+      //十六进制颜色值的正则表达式
+      var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/
+      // 如果是16进制颜色
+      if (sColor && reg.test(sColor)) {
+        if (sColor.length === 4) {
+          var sColorNew = '#'
+          for (var i = 1; i < 4; i += 1) {
+            sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1))
+          }
+          sColor = sColorNew
+        }
+        //处理六位的颜色值
+        var sColorChange = []
+        for (var i = 1; i < 7; i += 2) {
+          sColorChange.push(parseInt('0x' + sColor.slice(i, i + 2)))
+        }
+        return `rgba(${sColorChange.join(',')},${opacity})`
+      }
+      return sColor
     },
     // 卷帘绘制点
     olSwipeDrawPoint(lnglat, imgUrl, id) {
@@ -5441,9 +5469,7 @@ export default {
       this.$message.error(JSON.parse(err.message).message)
     },
     //选择绘制类型
-    choiceDrawChange(value) {
-
-    },
+    choiceDrawChange(value) {},
     //关闭无人机照片弹窗
     UAVPhotosOk() {
       this.UAVPhotosModal = false
@@ -5454,7 +5480,7 @@ export default {
     otherOk() {
       mapdrawSave(this.otherModalList)
         .then(res => {
-          this.$message.success('保存成功,请打开'+res.data.drawType.name+'查看')
+          this.$message.success('保存成功,请打开' + res.data.drawType.name + '查看')
           this.otherModal = false
           this.removeOverLays(this.otherPoints)
           this.getOtherMapDrawPage()
