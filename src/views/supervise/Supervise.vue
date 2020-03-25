@@ -879,7 +879,7 @@
         </viewer>
       </div>
     </a-modal>
-    <a-modal :title="otherModalList.title+'绘制数据'" :visible="otherModal" :footer="null">
+    <a-modal :title="otherModalList.title+'绘制数据'" :visible="otherModal" :footer="null" onOk="otherCancel">
       <span style="margin: 0 0 0 80px;">坐标: {{otherLatlng.lat}},{{otherLatlng.lng}}</span>
       <a-form class="from" style="margin-top:20px">
         <a-form-item label="名称" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -900,7 +900,7 @@
           <a-button block @click="otherOk">保存</a-button>
         </a-col>
       </a-row>
-    </a-modal>
+  </a-modal>
   </div>
 </template>
 
@@ -4682,6 +4682,7 @@ export default {
             title: item.innerName,
             code: item.innerType.code,
             drawType:item.drawType.name,
+            locationName:item.locationName,
             latlng:item.latlng
           })
           this.map.addOverLay(markerTool)
