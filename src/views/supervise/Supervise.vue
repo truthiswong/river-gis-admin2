@@ -649,7 +649,7 @@
                           <p style="margin:0;">专项调查点</p>
                         </a-col>
                         <a-col :span="6">
-                          <a-switch size="small" v-model="surveyPoint" />
+                          <a-switch size="small" v-model="surveyPoint" @click="onSurveyPoint"/>
                         </a-col>
                       </a-row>
                     </a-list-item>
@@ -1843,88 +1843,51 @@ export default {
             this.onWaterLandLoss(item.id, true)
           }
         }
-        // if (riskSourceType == true) {
-        //   for (const risk of this.riskSourceList) {
-        //     if (risk.clicked == true) {
-        //       let point = []
-        //       for (const item of this.riverRiskPoints) {
-        //         if (item.drawType.id == risk.id) {
-        //           if (item.locationType.code == 'point') {
-        //             item.latlng = {
-        //               lng: item.point[0],
-        //               lat: item.point[1]
-        //             }
-        //             point.push(item)
-        //           }
-        //           if (item.locationType.code == 'line') {
-        //             this.lineDraw(
-        //               item.line,
-        //               item.frameColor,
-        //               3,
-        //               item.framePellucidity,
-        //               item.id,
-        //               '',
-        //               item.innerType.code
-        //             )
-        //             let markerTool
-        //             if (item.drawType.icon) {
-        //               let icon = new T.Icon({
-        //                 iconUrl: item.drawType.icon,
-        //                 iconSize: new T.Point(41, 40),
-        //                 iconAnchor: new T.Point(21, 40)
-        //               })
-        //               markerTool = new T.Marker(item.line[0], {
-        //                 icon: icon,
-        //                 id: item.id,
-        //                 title: item.innerName,
-        //                 code: item.innerType.code
-        //               })
-        //               this.map.addOverLay(markerTool)
-        //             } else {
-        //               markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
-        //               this.map.addOverLay(markerTool)
-        //             }
-        //             // markerTool.addEventListener('click', this.panoramaPointClick)
-        //           }
-        //           if (item.locationType.code == 'polygon') {
-        //             this.noodlesDraw(
-        //               item.polygon,
-        //               item.frameColor,
-        //               3,
-        //               item.framePellucidity,
-        //               item.shapeColor,
-        //               item.shapePellucidity,
-        //               '',
-        //               item.id,
-        //               item.innerType.code
-        //             )
-        //             let markerTool
-        //             if (item.drawType.icon) {
-        //               let icon = new T.Icon({
-        //                 iconUrl: item.drawType.icon,
-        //                 iconSize: new T.Point(41, 40),
-        //                 iconAnchor: new T.Point(21, 40)
-        //               })
-        //               markerTool = new T.Marker(item.polygon[0], {
-        //                 icon: icon,
-        //                 id: item.id,
-        //                 title: item.innerName,
-        //                 code: item.innerType.code
-        //               })
-        //               this.map.addOverLay(markerTool)
-        //             } else {
-        //               // markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
-        //               // this.map.addOverLay(markerTool)
-        //               markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
-        //               this.map.addOverLay(markerTool)
-        //             }
-        //           }
-        //         }
-        //       }
-        //       this.spotDraw(point)
-        //     }
-        //   }
-        // }
+      })
+    },
+    //右侧其他绘制数据
+    getOtherMapDrawPageRight() {
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType: 'other'
+        }
+      } else {
+        var time = this.defaultTime
+        var picker = time.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType: 'other'
+        }
+      }
+      mapdrawPage(data).then(res => {
+        let arr = res.data
+        let ar = []
+        arr.forEach(v => {
+          v.shapePellucidity = v.shapePellucidity / 100
+          v.framePellucidity = v.framePellucidity / 100
+          if (v.drawType == undefined) {
+            v.drawType = {
+              code: '',
+              id: ''
+            }
+          }
+          if (v.innerType != undefined) {
+            ar.push(v)
+          }
+        })
+        this.otherPointsright = ar
+        // 点击切换重新绘制触发
+        for (const item of this.otherList) {
+          if (item.clicked == true) {
+            this.onWaterLandLoss(item.id, true)
+          }
+        }
       })
     },
     //风险源绘制数据
@@ -3708,17 +3671,19 @@ export default {
         }
       } else {
         // 双球卷帘移除图层
-        for (const item of this.riverShowList) {
-          for (const layer of this.olMap1.getLayers().array_) {
-            if (layer.values_.id == item.id+1) {
-              this.olMap1.removeLayer(layer)
-              this.olMap2.removeLayer(layer)
+        if (this.sharedChecked) {
+          for (const item of this.riverShowList) {
+            for (const layer of this.olMap1.getLayers().array_) {
+              if (layer.values_.id == item.id+1) {
+                this.olMap1.removeLayer(layer)
+                this.olMap2.removeLayer(layer)
+              }
             }
-          }
-          for (const layer of this.olMap2.getLayers().array_) {
-            if (layer.values_.id == item.id+2) {
-              this.olMap1.removeLayer(layer)
-              this.olMap2.removeLayer(layer)
+            for (const layer of this.olMap2.getLayers().array_) {
+              if (layer.values_.id == item.id+2) {
+                this.olMap1.removeLayer(layer)
+                this.olMap2.removeLayer(layer)
+              }
             }
           }
         }
@@ -4410,6 +4375,15 @@ export default {
               })
               markerTool.addEventListener('click', this.floatageClick)
               this.map.addOverLay(markerTool)
+              if (this.sharedChecked) {
+                let points = []
+                for (const point of item.line) {
+                  points.push([point.lng, point.lat])
+                }
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+              }
             } else {
               markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
               markerTool.addEventListener('click', this.floatageClick)
@@ -4443,10 +4417,15 @@ export default {
               })
               markerTool.addEventListener('click', this.floatageClick)
               this.map.addOverLay(markerTool)
-            } else {
-              markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
-              markerTool.addEventListener('click', this.floatageClick)
-              this.map.addOverLay(markerTool)
+              if (this.sharedChecked) {
+                let points = []
+                for (const point of item.polygon) {
+                  points.push([point.lng, point.lat])
+                }
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity, item.shapeColor, item.shapePellucidity)
+              }
             }
           }
         }
@@ -4466,48 +4445,22 @@ export default {
               point2.push(item)
             }
             if (item.locationType.code == 'line') {
-              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
-              // for (const item of this.waterFlotagePointsRight) {
-              //   let points = []
-              //   for (const point of item.line) {
-              //     points.push([point.lng, point.lat])
-              //   }
-              //   item.pointsData = []
-              //   item.pointsData.push(points)
-              // }
-              // for (const item of this.waterFlotagePointsRight) {
-              //   this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.borderColor, item.borderOpacity, item.fullColor, item.fullOpacity)
-              // }
-              // for (const item of this.waterFlotagePointsRight) {
-              //   this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.borderColor, item.borderOpacity, item.fullColor, item.fullOpacity)
-              // }
-            }
+              let points = []
+                for (const point of item.line) {
+                  points.push([point.lng, point.lat])
+                }
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+              }
             if (item.locationType.code == 'polygon') {
-              this.noodlesDraw(
-                item.polygon,
-                item.frameColor,
-                3,
-                item.framePellucidity,
-                item.shapeColor,
-                item.shapePellucidity,
-                item.innerName,
-                item.id,
-                item.innerType.code
-              )
-              // for (const item of this.riskPolygonData) {
-              //   let points = []
-              //   for (const point of item.polygon) {
-              //     points.push([point.lng, point.lat])
-              //   }
-              //   item.pointsData = []
-              //   item.pointsData.push(points)
-              // }
-              // for (const item of this.riskPolygonData) {
-              //   this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.borderColor, item.borderOpacity, item.fullColor, item.fullOpacity)
-              // }
-              // for (const item of this.riskPolygonData) {
-              //   this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.borderColor, item.borderOpacity, item.fullColor, item.fullOpacity)
-              // }
+              let points = []
+              for (const point of item.polygon) {
+                points.push([point.lng, point.lat])
+              }
+              item.pointsData = []
+              item.pointsData.push(points)
+              this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.shapeColor, item.shapePellucidity)
             }
           }
           if (point.length > 0) {
@@ -4576,6 +4529,15 @@ export default {
               })
               markerTool.addEventListener('click', this.sourceRiskClick)
               this.map.addOverLay(markerTool)
+              if (this.sharedChecked) {
+                let points = []
+                for (const point of item.line) {
+                  points.push([point.lng, point.lat])
+                }
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+              }
             } else {
               markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
               markerTool.addEventListener('click', this.sourceRiskClick)
@@ -4609,6 +4571,15 @@ export default {
               })
               markerTool.addEventListener('click', this.sourceRiskClick)
               this.map.addOverLay(markerTool)
+              if (this.sharedChecked) {
+                let points = []
+                for (const point of item.polygon) {
+                  points.push([point.lng, point.lat])
+                }
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity, item.shapeColor, item.shapePellucidity)
+              }
             } else {
               markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
               markerTool.addEventListener('click', this.sourceRiskClick)
@@ -4630,8 +4601,22 @@ export default {
               point2.push(item)
             }
             if (item.locationType.code == 'line') {
-            }
+              let points = []
+                for (const point of item.line) {
+                  points.push([point.lng, point.lat])
+                }
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+              }
             if (item.locationType.code == 'polygon') {
+              let points = []
+              for (const point of item.polygon) {
+                points.push([point.lng, point.lat])
+              }
+              item.pointsData = []
+              item.pointsData.push(points)
+              this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.shapeColor, item.shapePellucidity)
             }
           }
           for (const item of point1) {
@@ -4849,6 +4834,15 @@ export default {
                 })
                 markerTool.addEventListener('click', this.sourceRiskClick)
                 this.map.addOverLay(markerTool)
+                if (this.sharedChecked) {
+                  let points = []
+                  for (const point of item.line) {
+                    points.push([point.lng, point.lat])
+                  }
+                  item.pointsData = []
+                  item.pointsData.push(points)
+                  this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+                }
               } else {
                 markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
                 markerTool.addEventListener('click', this.sourceRiskClick)
@@ -4882,6 +4876,15 @@ export default {
                 })
                 markerTool.addEventListener('click', this.sourceRiskClick)
                 this.map.addOverLay(markerTool)
+                if (this.sharedChecked) {
+                  let points = []
+                  for (const point of item.polygon) {
+                    points.push([point.lng, point.lat])
+                  }
+                  item.pointsData = []
+                  item.pointsData.push(points)
+                  this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity, item.shapeColor, item.shapePellucidity)
+                }
               } else {
                 markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
                 markerTool.addEventListener('click', this.sourceRiskClick)
@@ -4904,8 +4907,22 @@ export default {
                 point2.push(item)
               }
               if (item.locationType.code == 'line') {
-              }
+                let points = []
+                  for (const point of item.line) {
+                    points.push([point.lng, point.lat])
+                  }
+                  item.pointsData = []
+                  item.pointsData.push(points)
+                  this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+                }
               if (item.locationType.code == 'polygon') {
+                let points = []
+                for (const point of item.polygon) {
+                  points.push([point.lng, point.lat])
+                }
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.shapeColor, item.shapePellucidity)
               }
             }
           }
@@ -4939,6 +4956,26 @@ export default {
     },
     // 其他
     onWaterLandLoss(id, clicked) {
+      // 点击时间轴切换先清除上一次的地图数据
+      let data1 = []
+      let data2 = []
+      // 双球开关风险源关闭
+      if (this.sharedChecked) {
+        for (const item of this.riverRiskPoints) {
+          if (item.drawType.id == id) {
+            data1.push(item)
+          }
+        }
+        for (const item of this.riverRiskPointsRight) {
+          if (item.drawType.id == id) {
+            data2.push(item)
+          }
+        }
+        this.olRemoveLayer(data1, 'olMap1')
+        this.olRemoveLayer(data2, 'olMap2')
+      }
+      let point = []
+      let point2 = []
       if (clicked) {
         let point = []
         for (const item of this.otherPoints) {
@@ -5038,6 +5075,45 @@ export default {
           }
         }
         this.spotDraw(point)
+        // 双球开关
+        if (this.sharedChecked) {
+          console.log(this.riverRiskPointsRight)
+          for (const item of this.riverRiskPointsRight) {
+            if (item.drawType.id == id) {
+              if (item.locationType.code == 'point') {
+                item.latlng = {
+                  lng: item.point[0],
+                  lat: item.point[1]
+                }
+                point2.push(item)
+              }
+              if (item.locationType.code == 'line') {
+                let points = []
+                  for (const point of item.line) {
+                    points.push([point.lng, point.lat])
+                  }
+                  item.pointsData = []
+                  item.pointsData.push(points)
+                  this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.frameColor, item.framePellucidity)
+                }
+              if (item.locationType.code == 'polygon') {
+                let points = []
+                for (const point of item.polygon) {
+                  points.push([point.lng, point.lat])
+                }
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity, item.shapeColor, item.shapePellucidity)
+              }
+            }
+          }
+          for (const item of point) {
+            this.olSharedDrawPoint(item.latlng, item.drawType.icon, item.id, 'olMap1')
+          }
+          for (const item of point2) {
+            this.olSharedDrawPoint(item.latlng, item.drawType.icon, item.id, 'olMap2')
+          }
+        }
       } else {
         let data = []
         for (const item of this.otherPoints) {
@@ -5240,6 +5316,8 @@ export default {
     },
     // 双球卷帘移除图层
     olRemoveLayer(data, map) {
+      console.log(this.olMap1.getLayers().array_)
+      console.log(this.olMap2.getLayers().array_)
       if (map == 'olMap1') {
         for (const item of data) {
           for (const layer of this.olMap1.getLayers().array_) {
@@ -5296,27 +5374,27 @@ export default {
       // 360全景图
       this.onPanorama()
       // 风险地图
-      this.onRiskMap()
+      // this.onRiskMap()
       // 水质数据
-      this.onWaterQuality()
+      // this.onWaterQuality()
       // 水质漂浮物
-      this.onWaterFlotage()
+      // this.onWaterFlotage()
       // 排口
-      this.onOutlet()
+      // this.onOutlet()
       // 河岸风险源
-      this.onRiverRisk()
+      // this.onRiverRisk()
       // 水土流失
       // this.onWaterLandLoss()
       // 水面率
-      this.onWaterRatio()
+      // this.onWaterRatio()
       // 底泥
-      this.onBottomMud()
+      // this.onBottomMud()
       // 专项调查点
-      this.onSurveyPoint()
+      // this.onSurveyPoint()
       // 河道连通性
-      this.onRiverLink()
+      // this.onRiverLink()
       // 水陆分布
-      this.onLandAndWater()
+      // this.onLandAndWater()
     },
     allPointTask(pointLists) {
       for (const item of pointLists) {
