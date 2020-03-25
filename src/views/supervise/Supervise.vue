@@ -420,7 +420,7 @@
       <li @click="setCenter">
         <img src="../../assets/img/restoration.png" alt="复位" title="复位" />
       </li>
-      <li @click="toolsShowFun">
+      <li @click="toolsShowFun" v-show="!(this.sharedChecked || this.swipeChecked)">
         <img src="../../assets/img/draw.png" alt="工具" title="工具" />
       </li>
       <li>
@@ -476,7 +476,7 @@
         <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
           <template slot="content" style="overflow-y: scroll;">
             <a-list size="small">
-              <a-list-item>
+              <a-list-item v-show="!(this.sharedChecked || this.swipeChecked)">
                 <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                   <a-col :span="18">
                     <p style="margin:0;">查看历史数据</p>
@@ -561,7 +561,7 @@
                         </a-col>
                       </a-row>
                     </a-list-item>
-                    <a-list-item>
+                    <a-list-item v-show="!(this.sharedChecked || this.swipeChecked)">
                       <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                         <a-col :span="18">
                           <p style="margin:0;">无人机照片</p>
@@ -3614,9 +3614,31 @@ export default {
           polygon.addEventListener('mousemove', this.polygonMousemove)
           polygon.addEventListener('mouseout', this.polygonMouseout)
         }
+        // 双球开关
+        if (this.sharedChecked) {
+          for (const item of this.riverShowList) {
+            let points = []
+            for (const point of item.lineData) {
+              points.push([point.lng, point.lat])
+            }
+            item.pointsData = []
+            item.pointsData.push(points)
+          }
+          for (const item of this.riverShowList) {
+            this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', "#0000ff", 0.5, '#FFFFFF', 0)
+          }
+          for (const item of this.riverShowList) {
+            this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', "#0000ff", 0.5, '#FFFFFF', 0)
+          }
+        }
       } else {
         this.leftRight = false
         this.listItemLeftRight = false
+        // 双球开关水质数据关闭
+        if (this.sharedChecked) {
+          this.olRemoveLayer(this.riverShowList, 'olMap1')
+          this.olRemoveLayer(this.riverShowList, 'olMap2')
+        }
       }
       this.leftRightSwitch()
     },
@@ -3651,7 +3673,55 @@ export default {
             this.map.addOverLay(polygonStreet1)
           }
         }
+        // 双球开关
+        if (this.sharedChecked) {
+          // 左岸
+          for (const item of this.riverShowList) {
+            let points = []
+            for (const point of item.leftBankRegion) {
+              points.push([point.lng, point.lat])
+            }
+            item.pointsDataLeft = []
+            item.pointsDataLeft.push(points)
+          }
+          for (const item of this.riverShowList) {
+            this.olSharedDrawPolygon(item.pointsDataLeft, item.id+1, 'olMap1', "#0000ff", 0.5, '#FFFFFF', 0)
+          }
+          for (const item of this.riverShowList) {
+            this.olSharedDrawPolygon(item.pointsDataLeft, item.id+1, 'olMap2', "#0000ff", 0.5, '#FFFFFF', 0)
+          }
+          // 右岸
+          for (const item of this.riverShowList) {
+            let points = []
+            for (const point of item.rightBankRegion) {
+              points.push([point.lng, point.lat])
+            }
+            item.pointsDataRight = []
+            item.pointsDataRight.push(points)
+          }
+          for (const item of this.riverShowList) {
+            this.olSharedDrawPolygon(item.pointsDataRight, item.id+2, 'olMap1', "#0000ff", 0.5, '#FFFFFF', 0)
+          }
+          for (const item of this.riverShowList) {
+            this.olSharedDrawPolygon(item.pointsDataRight, item.id+2, 'olMap2', "#0000ff", 0.5, '#FFFFFF', 0)
+          }
+        }
       } else {
+        // 双球卷帘移除图层
+        for (const item of this.riverShowList) {
+          for (const layer of this.olMap1.getLayers().array_) {
+            if (layer.values_.id == item.id+1) {
+              this.olMap1.removeLayer(layer)
+              this.olMap2.removeLayer(layer)
+            }
+          }
+          for (const layer of this.olMap2.getLayers().array_) {
+            if (layer.values_.id == item.id+2) {
+              this.olMap1.removeLayer(layer)
+              this.olMap2.removeLayer(layer)
+            }
+          }
+        }
         for (const overlay of this.map.getOverlays()) {
           for (const item of this.riverShowList) {
             if (item.id + '1' == overlay.options.id) {
@@ -3711,6 +3781,26 @@ export default {
           polygon.addEventListener('mouseover', this.polygonStreetMouseover)
           polygon.addEventListener('mousemove', this.polygonStreetMousemove)
           polygon.addEventListener('mouseout', this.polygonStreetMouseout)
+        }
+        // 双球开关
+        if (this.sharedChecked) {
+          for (const item of this.streetShowList) {
+            let points = []
+            for (const point of item.lineData) {
+              points.push([point.lng, point.lat])
+            }
+            item.pointsData = []
+            item.pointsData.push(points)
+          }
+          for (const item of this.streetShowList) {
+            this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap1', "#ff0000", 0.5, '#FFFFFF', 0)
+            this.olSharedDrawPolygon(item.pointsData, item.id, 'olMap2', "#ff0000", 0.5, '#FFFFFF', 0)
+          }
+        }
+      } else {
+        if (this.sharedChecked) {
+          this.olRemoveLayer(this.streetShowList, 'olMap1')
+          this.olRemoveLayer(this.streetShowList, 'olMap2')
         }
       }
     },
@@ -5289,19 +5379,6 @@ export default {
           this.imageEditorData.url = item.imgUrl
         }
       }
-      // this.$router.push({
-      //   path: '/supervise/ImageEditor',
-      //   // query: {
-      //   //   id: e.target.options.id,
-      //   //   panoramaPoints: this.panoramaPoints
-      //   // }
-      // })
-      // for (const item of this.historyPoints) {
-      //   if (index.lnglat.lat === item.latlng.lat && index.lnglat.lng === item.latlng.lng) {
-      //     console.log(index.lnglat.lat, index.lnglat.lng)
-      //     this.$refs.riskInfo.riskInfo()
-      //   }
-      // }
     },
     // 照片编辑关闭
     closeImageEditor() {
