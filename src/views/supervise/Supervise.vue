@@ -26,12 +26,12 @@
             <div class="line_style">
               <div
                 class="line"
-                :class="{'time_bg_red':day.level == 0,'time_bg_blue':day.level == 1,'time_bg_gray':day.level == 2}"
+                :class="{'time_bg_red':day.level == 1,'time_bg_blue':day.level == 0,'time_bg_gray':day.level == 2}"
               ></div>
             </div>
             <p>
               <span
-                :class="{'time_bg_red':day.level == 0,'time_bg_blue':day.level == 1,'time_bg_gray':day.level == 2}"
+                :class="{'time_bg_red':day.level == 1,'time_bg_blue':day.level == 0,'time_bg_gray':day.level == 2}"
               >{{day.title}}</span>
             </p>
           </a-tooltip>
@@ -77,12 +77,12 @@
             <div class="line_style">
               <div
                 class="line"
-                :class="{'time_bg_red':day.level == 0,'time_bg_blue':day.level == 1,'time_bg_gray':day.level == 2}"
+                 :class="{'time_bg_red':day.level == 1,'time_bg_blue':day.level == 0,'time_bg_gray':day.level == 2}"
               ></div>
             </div>
             <p>
               <span
-                :class="{'time_bg_red':day.level == 0,'time_bg_blue':day.level == 1,'time_bg_gray':day.level == 2}"
+                 :class="{'time_bg_red':day.level == 1,'time_bg_blue':day.level == 0,'time_bg_gray':day.level == 2}"
               >{{day.title}}</span>
             </p>
           </a-tooltip>
@@ -879,7 +879,7 @@
         </viewer>
       </div>
     </a-modal>
-    <a-modal :title="otherModalList.title+'绘制数据'" :visible="otherModal" :footer="null" onOk="otherCancel">
+    <a-modal :title="otherModalList.title+'绘制数据'" :visible="otherModal" :footer="null" @cancel="otherCancel">
       <span style="margin: 0 0 0 80px;">坐标: {{otherLatlng.lat}},{{otherLatlng.lng}}</span>
       <a-form class="from" style="margin-top:20px">
         <a-form-item label="名称" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -2808,6 +2808,7 @@ export default {
             this.defaultRightTime = this.endDate
           }
         }
+        
         this.timeData = res.data
         this.timeDataRight = JSON.parse(JSON.stringify(this.timeData))
         this.getWeatherList()

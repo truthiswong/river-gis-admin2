@@ -203,6 +203,7 @@ export default {
     }
   },
   mounted() {
+    
     this.getPage()
     this.getType()
   },

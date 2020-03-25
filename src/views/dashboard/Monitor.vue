@@ -1742,7 +1742,8 @@ export default {
     },
     pointTarget(taskPage) {
       for (const item of taskPage) {
-
+        console.log(item);
+        
         if (item.type.code == 'dot') {
           let markerTool = new T.Marker(item.region[0], { title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
@@ -2213,6 +2214,8 @@ export default {
     //当日计划绘制河道，调查点内的任务
     planDayDrawSpot(taskPage) {
       for (const item of taskPage.anomalous) {
+        console.log(item);
+        
         if (item.region.length == 1) {
           let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
           this.map.addOverLay(markerTool)
@@ -2483,6 +2486,8 @@ export default {
     },
     choosePointTask(id) {
       for (const item of this.riverMontion) {
+        console.log(item);
+        
         if (item.id === id) {
           if (item.code == 'point') {
             let arr = []
@@ -3053,7 +3058,8 @@ export default {
         // day: '28'
         year: picker[0],
         month: picker[1],
-        day: picker[2]
+        day: picker[2],
+        from:'app'
       }
       dataManual(data).then(res => {
         var arr = res.data.data
