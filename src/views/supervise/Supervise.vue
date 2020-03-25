@@ -457,7 +457,7 @@
           <img src="../../assets/img/map.png" alt="图像" title="图像" />
         </a-popover>
       </li>
-      <li>
+      <li v-show="!(this.sharedChecked || this.swipeChecked)">
         <img
           src="../../assets/img/screenshot.png"
           id="export-png"
@@ -948,7 +948,6 @@ import Overlay from 'ol/Overlay' // 覆盖物
 import OSM from 'ol/source/OSM'
 import LayerGroup from 'ol/layer/Group'
 import XYZ from 'ol/source/XYZ'
-import { Icon, Style } from 'ol/style'
 import { toSize } from 'ol/size'
 import Text from 'ol/style/Text'
 
@@ -958,15 +957,16 @@ import Layer from 'ol/layer/Layer'
 
 import Point from 'ol/geom/Point' //点
 import Circle from 'ol/geom/Circle' //圆
-import Polyline from 'ol/format/Polyline' //线
+import LineString from 'ol/geom/LineString'; //线
 import Polygon from 'ol/geom/Polygon' //面
 import { fromLonLat } from 'ol/proj'
 import TileJSON from 'ol/source/TileJSON'
 import VectorSource from 'ol/source/Vector'
 
+import { Icon, Style, Stroke, Circle as CircleStyle, Fill } from "ol/style";
+
 import GeoJSON from 'ol/format/GeoJSON'
 import MultiPoint from 'ol/geom/MultiPoint'
-import { Circle as CircleStyle, Fill, Stroke } from 'ol/style'
 
 // 拖拽缩放
 // import { defaults as defaultInteractions, DragRotateAndZoom } from 'ol/interaction'
@@ -4386,14 +4386,11 @@ export default {
                 for (const point of item.line) {
                   points.push([point.lng, point.lat])
                 }
-                item.pointsData = []
-                item.pointsData.push(points)
-                this.olSharedDrawPolygon(
+                item.pointsData = points
+                this.olSharedDrawLine(
                   item.pointsData,
                   item.id,
                   'olMap1',
-                  item.frameColor,
-                  item.framePellucidity,
                   item.frameColor,
                   item.framePellucidity
                 )
@@ -4471,14 +4468,11 @@ export default {
               for (const point of item.line) {
                 points.push([point.lng, point.lat])
               }
-              item.pointsData = []
-              item.pointsData.push(points)
-              this.olSharedDrawPolygon(
+              item.pointsData = points
+              this.olSharedDrawLine(
                 item.pointsData,
                 item.id,
-                'olMap2',
-                item.frameColor,
-                item.framePellucidity,
+                'olMap1',
                 item.frameColor,
                 item.framePellucidity
               )
@@ -4572,14 +4566,11 @@ export default {
                 for (const point of item.line) {
                   points.push([point.lng, point.lat])
                 }
-                item.pointsData = []
-                item.pointsData.push(points)
-                this.olSharedDrawPolygon(
+                item.pointsData = points
+                this.olSharedDrawLine(
                   item.pointsData,
                   item.id,
                   'olMap1',
-                  item.frameColor,
-                  item.framePellucidity,
                   item.frameColor,
                   item.framePellucidity
                 )
@@ -4659,14 +4650,11 @@ export default {
               for (const point of item.line) {
                 points.push([point.lng, point.lat])
               }
-              item.pointsData = []
-              item.pointsData.push(points)
-              this.olSharedDrawPolygon(
+              item.pointsData = points
+              this.olSharedDrawLine(
                 item.pointsData,
                 item.id,
                 'olMap2',
-                item.frameColor,
-                item.framePellucidity,
                 item.frameColor,
                 item.framePellucidity
               )
@@ -4922,14 +4910,11 @@ export default {
                   for (const point of item.line) {
                     points.push([point.lng, point.lat])
                   }
-                  item.pointsData = []
-                  item.pointsData.push(points)
-                  this.olSharedDrawPolygon(
+                  item.pointsData = points
+                  this.olSharedDrawLine(
                     item.pointsData,
                     item.id,
                     'olMap1',
-                    item.frameColor,
-                    item.framePellucidity,
                     item.frameColor,
                     item.framePellucidity
                   )
@@ -5010,14 +4995,11 @@ export default {
                 for (const point of item.line) {
                   points.push([point.lng, point.lat])
                 }
-                item.pointsData = []
-                item.pointsData.push(points)
-                this.olSharedDrawPolygon(
+                item.pointsData = points
+                this.olSharedDrawLine(
                   item.pointsData,
                   item.id,
                   'olMap2',
-                  item.frameColor,
-                  item.framePellucidity,
                   item.frameColor,
                   item.framePellucidity
                 )
@@ -5141,14 +5123,11 @@ export default {
                   for (const point of item.line) {
                     points.push([point.lng, point.lat])
                   }
-                  item.pointsData = []
-                  item.pointsData.push(points)
-                  this.olSharedDrawPolygon(
+                  item.pointsData = points
+                  this.olSharedDrawLine(
                     item.pointsData,
                     item.id,
                     'olMap1',
-                    item.frameColor,
-                    item.framePellucidity,
                     item.frameColor,
                     item.framePellucidity
                   )
@@ -5255,14 +5234,11 @@ export default {
                 for (const point of item.line) {
                   points.push([point.lng, point.lat])
                 }
-                item.pointsData = []
-                item.pointsData.push(points)
-                this.olSharedDrawPolygon(
+                item.pointsData = points
+                this.olSharedDrawLine(
                   item.pointsData,
                   item.id,
                   'olMap2',
-                  item.frameColor,
-                  item.framePellucidity,
                   item.frameColor,
                   item.framePellucidity
                 )
@@ -5414,7 +5390,7 @@ export default {
           stroke: new Stroke({
             //地图连线的样式
             color: this.colorToRgba(borderColor, borderOpacity), //颜色
-            width: 2 //宽度
+            width: 3 //宽度
           }),
           fill: new Fill({
             color: this.colorToRgba(fullColor, fullOpacity)
@@ -5429,15 +5405,9 @@ export default {
       }
     },
     // 双球绘制线
-    olSharedDrawLine(pointsData, id, map, borderColor, borderOpacity, fullColor, fullOpacity) {
-      var polyline = [
-        [121.23, 31.12],
-        [121.33, 31.22],
-        [121.12, 31.32],
-        [121.53, 31.43]
-      ]
+    olSharedDrawLine(pointsData, id, map, borderColor, borderOpacity) {
       var feature = new Feature({
-        geometry: new Polyline(polyline)
+        geometry: new LineString(pointsData)
       })
       let vectorSource = new VectorSource({
         features: [feature]
@@ -5449,7 +5419,7 @@ export default {
           stroke: new Stroke({
             //地图连线的样式
             color: this.colorToRgba(borderColor, borderOpacity), //颜色
-            width: 2 //宽度
+            width: 3 //宽度
           })
         })
       })
