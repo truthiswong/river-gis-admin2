@@ -1726,7 +1726,7 @@ export default {
       if (this.streetShow) {
         for (const item of this.streetShowList) {
           let polygon = new T.Polygon(item.lineData, {
-            color: 'blue', //线颜色
+            color: 'red', //线颜色
             weight: 3, //线宽
             opacity: 0.5, //透明度
             fillColor: '#FFFFFF', //填充颜色
