@@ -2954,6 +2954,24 @@ export default {
             }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
             this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
             this.map.addLayer(this.mapLayerImage)
+
+            if (this.sharedChecked && this.layerImageChange) {
+              // 双球左边正射
+              this.olMap1.removeLayer(this.roadLayerImage)
+              this.roadLayerImage = new TileLayer({
+                source: new XYZ({
+                  url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
+                    this.mapYear
+                  }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
+                    this.$store.state.tenantId
+                  }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
+                  maxZoom: 23
+                }),
+                zIndex: 10
+              })
+              this.olMap1.addLayer(this.roadLayerImage)
+            }
+
             item.clicked = true
             this.timeLineChange() //时间轴切换
           } else {
@@ -2973,6 +2991,25 @@ export default {
           // if (item.level != 2) {
           if (item.date == mouth) {
             this.defaultRightTime = mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8)
+            this.mapYear = mouth.substring(0, 4)
+            this.mapMonth = mouth.substring(4, 6)
+            this.mapDay = mouth.substring(6, 8)
+            if (this.sharedChecked && this.layerImageChange) {
+              // 双球右边正射
+              this.olMap2.removeLayer(this.aerialLayerImage)
+              this.aerialLayerImage = new TileLayer({
+                source: new XYZ({
+                  url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
+                    this.mapYear
+                  }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
+                    this.$store.state.tenantId
+                  }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
+                  maxZoom: 23
+                }),
+                zIndex: 10
+              })
+              this.olMap2.addLayer(this.aerialLayerImage)
+            }
             item.clicked = true
             this.rightTimeLineChange() //右侧时间轴切换
           } else {
