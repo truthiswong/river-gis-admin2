@@ -381,7 +381,8 @@
                       <div class="riverInfo" v-for="item in riverMontion" :key="item.value">
                         <div class="river_info">
                           <a-row type="flex" justify="space-between" align="middle">
-                            <a-col :span="8" @click="choosePointTask(item.id)">{{item.objectName}}</a-col>
+                            <a-col :span="8" >{{item.objectName}}</a-col>
+                            <!-- @click="choosePointTask(item.id)" -->
                             <a-col :span="10">
                               <!-- <a-select defaultValue @change="handleChange" style="width:100%;">
                             <a-select-option value="jack">Jack</a-select-option>
@@ -1656,6 +1657,7 @@ export default {
               taskInspectPage(data)
                 .then(res => {
                   var ar = res.data.data
+                  this.newlyBuildTask(ar)
                   ar.forEach(v => {
                     v.key = v.id
                     v.title = v.name
@@ -1670,7 +1672,7 @@ export default {
                 })
                 .catch(err => {
                   this.spinning = false
-                  this.$message.error('加载数据失败')
+                  this.$message.error('加载任务数据失败')
                 })
             }
             this.riverMontion = arr
@@ -1689,6 +1691,22 @@ export default {
           this.spinning = false
           this.$message.error('加载数据失败')
         })
+    },
+    newlyBuildTask(item){
+      for (const key of item) {
+        if (key.locationType.code=='point') {
+          var markerTool = new T.Marker(key.region[0],{})
+          this.map.addOverLay(markerTool)
+         
+        }else{
+          let line = new T.Polyline(key.region,{})
+          //向地图上添加线
+          this.map.addOverLay(line)
+        }
+      }
+      // for (const key in item) {
+        
+      // }
     },
     //显示河道或调查点
     judgeDate() {
