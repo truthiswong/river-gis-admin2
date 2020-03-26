@@ -216,8 +216,7 @@
                 <a-button type="primary" icon="plus">上传</a-button>
               </el-upload>
               <div style="display:flex;flex-wrap:wrap">
-                <span v-for="item in attachmentJpg"
-                  :key="item.id">
+                <span v-for="item in attachmentJpg" :key="item.id">
                 <viewer>
                     <img :src="item.media" alt style="width:70px;height:70px;margin:0 4px 4px 0;" />
                 </viewer>
