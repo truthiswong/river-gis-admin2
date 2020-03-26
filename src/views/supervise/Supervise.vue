@@ -3311,6 +3311,7 @@ export default {
       var vec_c = this.getTdLayer('vec_w') //2d图
       var cva_c = this.getTdLayer('cva_w') //道路标注
       var img_c = this.getTdLayer('img_w') //卫星图
+      
       // 左边道路标注
       this.roadLayerWord = new TileLayer({
         source: new XYZ({
@@ -3380,7 +3381,6 @@ export default {
         }),
         zIndex: 10
       })
-
       var view = new View({
         projection: 'EPSG:4326',
         center: [this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat],
@@ -3388,41 +3388,110 @@ export default {
         minZoom: 1,
         maxZoom: 23
       })
+      console.log(this.mapType)
       this.olMap1 = new Map({
         target: 'roadMap',
-        layers: [this.roadLayer],
+        // layers: [this.mapType == 'a'?this.roadLayer2d:this.roadLayer, this.roadWordChange?this.roadLayerWord:'', this.layerImageChange?this.roadLayerImage:''],
         // layers: [roadLayer, roadLayerWord],
         renderer: 'webgl',
         view: view
       })
-      console.log(this.olMap1)
-      //以Dom渲染方式初始化地图
       this.olMap2 = new Map({
         target: 'aerialMap',
-        layers: [this.aerialLayer],
-        // layers: [aerialLayer, roadLayerWord],
+        // layers: [this.mapType == 'a'?this.aerialLayer2d:this.aerialLayer, this.roadWordChange?this.aerialLayerWord:'', this.layerImageChange?this.aerialLayerImage:''],
+        // layers: [this.aerialLayer, this.aerialLayerWord],
         renderer: 'dom',
         view: view
       })
+      // 判断是2d还是卫星
+      if (this.mapType == 'a') {
+        console.log('2d')
+        if (this.sharedOnce == 2) {
+          this.olMap1.removeLayer(this.roadLayer2d)
+          this.olMap2.removeLayer(this.aerialLayer2d)
+        }
+        this.olMap1.addLayer(this.roadLayer2d)
+        this.olMap2.addLayer(this.aerialLayer2d)
+      } else if (this.mapType == 'b') {
+        if (this.sharedOnce == 2) {
+          this.olMap1.removeLayer(this.roadLayer)
+          this.olMap2.removeLayer(this.aerialLayer)
+        }
+        this.olMap1.addLayer(this.roadLayer)
+        this.olMap2.addLayer(this.aerialLayer)
+      }
+      // 判断道路标注是否打开
+      if (this.roadWordChange) {
+        if (this.sharedOnce == 2) {
+          this.olMap1.removeLayer(this.roadLayerWord)
+          this.olMap2.removeLayer(this.aerialLayerWord)
+        }
+        this.olMap1.addLayer(this.roadLayerWord)
+        this.olMap2.addLayer(this.aerialLayerWord)
+      } else {
+        this.olMap1.removeLayer(this.roadLayerWord)
+        this.olMap2.removeLayer(this.aerialLayerWord)
+      }
+      // 判断正射是否打开
+      if (this.layerImageChange) {
+        if (this.sharedOnce == 2) {
+          this.olMap1.removeLayer(this.roadLayerImage)
+          this.olMap2.removeLayer(this.aerialLayerImage)
+        }
+        this.olMap1.addLayer(this.roadLayerImage)
+        this.olMap2.addLayer(this.aerialLayerImage)
+      } else {
+        this.olMap1.removeLayer(this.roadLayerImage)
+        this.olMap2.removeLayer(this.aerialLayerImage)
+      }
+      this.sharedOnce = 2
     },
     // 双球开关
     sharedView() {
       console.log(!this.sharedChecked && !this.swipeChecked)
       if (this.sharedChecked) {
         this.swipeChecked = false
-        this.roadWordChange = false
-        this.layerImageChange = false
         if (this.sharedOnce == 1) {
           this.$nextTick(() => {
             this.showMap() //双球init
             this.moreLoadOnce = 1
             this.getMapPageDataRight()
           })
+        } else {
+          // 判断是2d还是卫星
+          if (this.mapType == 'a') {
+            this.olMap1.removeLayer(this.roadLayer2d)
+            this.olMap2.removeLayer(this.aerialLayer2d)
+            this.olMap1.addLayer(this.roadLayer2d)
+            this.olMap2.addLayer(this.aerialLayer2d)
+          } else if (this.mapType == 'b') {
+            this.olMap1.removeLayer(this.roadLayer)
+            this.olMap2.removeLayer(this.aerialLayer)
+            this.olMap1.addLayer(this.roadLayer)
+            this.olMap2.addLayer(this.aerialLayer)
+          }
+          // 判断道路标注是否打开
+          if (this.roadWordChange) {
+            this.olMap1.removeLayer(this.roadLayerWord)
+            this.olMap2.removeLayer(this.aerialLayerWord)
+            this.olMap1.addLayer(this.roadLayerWord)
+            this.olMap2.addLayer(this.aerialLayerWord)
+          } else {
+            this.olMap1.removeLayer(this.roadLayerWord)
+            this.olMap2.removeLayer(this.aerialLayerWord)
+          }
+          // 判断正射是否打开
+          if (this.layerImageChange) {
+            this.olMap1.removeLayer(this.roadLayerImage)
+            this.olMap2.removeLayer(this.aerialLayerImage)
+            this.olMap1.addLayer(this.roadLayerImage)
+            this.olMap2.addLayer(this.aerialLayerImage)
+          } else {
+            this.olMap1.removeLayer(this.roadLayerImage)
+            this.olMap2.removeLayer(this.aerialLayerImage)
+          }
         }
-        this.sharedOnce = 2
-      } else {
-        this.roadWordChange = true
-        this.layerImageChange = true
+        // this.sharedOnce = 2
       }
     },
     // 卷帘
