@@ -3149,72 +3149,66 @@ export default {
     // 图像
     onMapChange(e) {
       if (e.target.value == 'a') {
+        // 天地图2d
+        this.map.addLayer(this.mapLayer2d)
+        this.map.removeLayer(this.mapLayerSatellite)
         if (this.sharedChecked) {
           // 双球2d
           this.olMap1.addLayer(this.roadLayer2d)
           this.olMap2.addLayer(this.aerialLayer2d)
           this.olMap1.removeLayer(this.roadLayer)
           this.olMap2.removeLayer(this.aerialLayer)
-        } else {
-          // 天地图2d
-          this.map.addLayer(this.mapLayer2d)
-          this.map.removeLayer(this.mapLayerSatellite)
         }
       } else if (e.target.value == 'b') {
+        // 天地图卫星
+        this.map.addLayer(this.mapLayerSatellite)
+        this.map.removeLayer(this.mapLayer2d)
         if (this.sharedChecked) {
           // 双球卫星
           this.olMap1.addLayer(this.roadLayer)
           this.olMap2.addLayer(this.aerialLayer)
           this.olMap1.removeLayer(this.roadLayer2d)
           this.olMap2.removeLayer(this.aerialLayer2d)
-        } else {
-          // 天地图卫星
-          this.map.addLayer(this.mapLayerSatellite)
-          this.map.removeLayer(this.mapLayer2d)
         }
       }
     },
     // 道路开关
     onRoadChangeSwitch() {
       if (this.roadWordChange) {
+        // 天地图道路标注
+        this.map.addLayer(this.mapLayerWord)
         if (this.sharedChecked) {
           // 双球道路标注
           this.olMap1.addLayer(this.roadLayerWord)
           this.olMap2.addLayer(this.aerialLayerWord)
-        } else {
-          // 天地图道路标注
-          this.map.addLayer(this.mapLayerWord)
         }
       } else {
+        // 天地图道路标注
+        this.map.removeLayer(this.mapLayerWord)
         if (this.sharedChecked) {
           // 双球道路标注
           this.olMap1.removeLayer(this.roadLayerWord)
           this.olMap2.removeLayer(this.aerialLayerWord)
-        } else {
-          // 天地图道路标注
-          this.map.removeLayer(this.mapLayerWord)
         }
       }
     },
     // 正射开关
     onLayerImageSwitch() {
       if (this.layerImageChange) {
+        // 天地图正射
+        this.map.addLayer(this.mapLayerImage)
         if (this.sharedChecked) {
           // 双球正射
           this.olMap1.addLayer(this.roadLayerImage)
           this.olMap2.addLayer(this.aerialLayerImage)
-        } else {
-          // 天地图正射
-          this.map.addLayer(this.mapLayerImage)
         }
       } else {
+        // 天地图正射
+        this.map.removeLayer(this.mapLayerImage)
         if (this.sharedChecked) {
           // 双球正射
           this.olMap1.removeLayer(this.roadLayerImage)
           this.olMap2.removeLayer(this.aerialLayerImage)
-        } else {
-          // 天地图正射
-          this.map.removeLayer(this.mapLayerImage)
         }
       }
     },
@@ -3370,7 +3364,7 @@ export default {
           }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
             this.$store.state.tenantId
           }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
-          maxZoom: 18
+          maxZoom: 23
         }),
         zIndex: 10
       })
@@ -3382,7 +3376,7 @@ export default {
           }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
             this.$store.state.tenantId
           }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
-          maxZoom: 18
+          maxZoom: 23
         }),
         zIndex: 10
       })
@@ -3390,7 +3384,9 @@ export default {
       var view = new View({
         projection: 'EPSG:4326',
         center: [this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat],
-        zoom: 14
+        zoom: 14,
+        minZoom: 1,
+        maxZoom: 23
       })
       this.olMap1 = new Map({
         target: 'roadMap',
