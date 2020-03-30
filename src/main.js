@@ -46,6 +46,9 @@ Vue.use(Viewer, {
     zIndex: 9999
   }
 })
+// Viewer.setDefaults({
+//   Options: { 'inline': true, 'button': false, 'navbar': false, 'title': false, 'toolbar': false, 'tooltip': true, 'movable': false, 'zoomable': true, 'rotatable': true, 'scalable': true, 'transition': true, 'fullscreen': true, 'keyboard': true, 'url': 'data-source' }
+// })
 Vue.use(ElementUI);
 Vue.component('split-pane', splitPane);
 Vue.component('draggable', draggable);

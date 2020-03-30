@@ -89,13 +89,13 @@ export const asyncRouterMap = [
             component: () => import('@/views/settings/TaskManage'),
             meta: { title: '任务管理', keepAlive: false, permission: [ 'task' ] }
           },
-          {
-            path: '/settings/RiverPlanManage',
-            name: 'RiverPlanManage',
-            // hidden: false,
-            component: () => import('@/views/settings/RiverPlanManage'),
-            meta: { title: '巡河方案管理', keepAlive: false, permission: [ 'plan' ] }
-          },
+          // {
+          //   path: '/settings/RiverPlanManage',
+          //   name: 'RiverPlanManage',
+          //   // hidden: false,
+          //   component: () => import('@/views/settings/RiverPlanManage'),
+          //   meta: { title: '巡河方案管理', keepAlive: false, permission: [ 'plan' ] }
+          // },
           {
             path: '/settings/WaterPointManage',
             name: 'WaterPointManage',

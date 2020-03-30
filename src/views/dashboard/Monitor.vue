@@ -583,7 +583,7 @@
                                         >
                                           <template slot="custom" slot-scope="item">
                                             <span class>
-                                              <a-button @click="searchItme(item.id)">查看</a-button>
+                                              <a-button @click.stop="searchItme(item.id)">查看</a-button>
                                             </span>
                                             <span>{{ item.name }}</span>
                                           </template>
@@ -785,7 +785,7 @@
                                     >
                                       <template slot="custom" slot-scope="item">
                                         <span class>
-                                          <a-button class="" @click="searchItme(item.id)">查看</a-button>
+                                          <a-button class="" @click.stop="searchItme(item.id)">查看</a-button>
                                         </span>
                                         <span>{{ item.name }}</span>
                                         

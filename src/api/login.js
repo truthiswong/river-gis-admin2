@@ -776,7 +776,7 @@ export function locusManual(data) {
     url: '/server/data/admin/inspect/plan/day/locus',
     method: 'get',
     params: {
-      // projectId:this.$store.state.id,
+      projectId:projectId,
       status: data.status,
       year: data.year,
       month: data.month,
