@@ -130,11 +130,15 @@
         </div>
       </div>
       <div class="weather_right">
-        <!-- <a-icon class="right_icon" type="caret-left" /> -->
+        <a-icon class="right_icon" type="caret-left"  :class="rightIcon == true ? 'right_icon_active':''" @click="rightIconClick"/>
         <!-- 天气弹窗 -->
-        <div class="weather_alert" v-show="false">
+        <div class="weather_alert" v-show="rightIcon">
           <div class="weather_content">
-            <div class="weather_basic">
+             <a-select  style="width: 200px" v-model="itgePortId">
+              <a-select-option v-for="item in tigePage" :key="item.locationId" :value="item.portId">{{item.portName}}</a-select-option>
+            </a-select>
+            <div id="main1"  style="width:500px;height:400px"></div>
+            <!-- <div class="weather_basic">
               <div class="weather_basic_content">
                 <img src="./img/water.png" alt style="margin-right:5px;height:12px;width:12px" />
                 <span></span>
@@ -148,17 +152,17 @@
                 <span>{{weatherData.clouds}}</span>
               </div>
             </div>
-            <div class="weather24">
+            <div class="weather24"> -->
               <!-- <div class="time24" v-for="item in weatherList" :key="item.id">
                 <div>{{item.temperature}}</div>
 
-              </div>-->
+              </div>
               <div class="time24" v-for="item in weatherList" :key="item.id">
                 <div style="text-align:center;">{{item.temperature}}</div>
                 <img src="./img/fine.png" alt style="margin:12px 5px;height:19px;width:19px" />
                 <div style="text-align:center;">{{item.time}}</div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -927,7 +931,8 @@ import {
   dataManual,
   inspectPointPageRiver,
   mapdrawPageRiskSource,
-  uavPhoto
+  uavPhoto,
+  getTigeList
 } from '@/api/login'
 import RiskSourceInfo from './modules/RiskSourceInfo'
 import AddRiskSource from './modules/AddRiskSource'
@@ -1316,7 +1321,10 @@ export default {
       drawPage: [],
       listItemLeftRight: false,
       leftRight: false,
-      screenshotdataUrl: ''
+      screenshotdataUrl: '',
+      itgePortId:'',
+      tigePage:[],//潮汐列表
+      rightIcon:false
     }
   },
   watch: {
@@ -1326,6 +1334,15 @@ export default {
         this.getTimeQuantum() // 获取时间段
         this.getRiverStreeList()
         this.map.panTo(this.$store.state.projectCoordinate, 14)
+      }
+
+    },
+    itgePortId(){
+      for (const item of this.tigePage) {
+        if (item.portId==this.itgePortId) {
+          this.drawLine(item.tide)
+          break
+        }
       }
     },
     accordionAlertKey(key) {
@@ -1388,8 +1405,55 @@ export default {
 
     // this.showMap() //双球init
     // this.showSwipeMap() //卷帘init
+    this.tideList()
   },
   methods: {
+    rightIconClick(){
+      this.rightIcon=!this.rightIcon
+    },
+    tideList(){
+      var picker = this.defaultTime.split('-')
+      var data = {
+        date:picker[0]+picker[1]+picker[2]
+      }
+      this.tigePage=[]
+      getTigeList(data).then(res => {
+        var arr = res.data
+        this.tigePage=arr
+        if (this.tigePage.length>0) {
+          if (this.itgePortId!='') {
+            for (const item of this.tigePage) {
+              if (item.portId==this.itgePortId) {
+                this.drawLine(item.tide)
+                break
+              }
+            }
+          }
+        }else{
+          this.itgePortId=''
+          this.$message.warning('当前日期下无潮汐数据');
+          this.drawLine([])
+        }
+        
+      })
+    },
+     drawLine(date){
+       var myChart = echarts.init(document.getElementById('main1'));
+       myChart.setOption( {
+        xAxis: {
+            type: 'category',
+            data: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','24:00']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: date,
+            type: 'line',
+            smooth: true
+        }]
+      })
+    },
     //获取绘制类型
     getParamList() {
       let data = {
@@ -2773,6 +2837,8 @@ export default {
         end: end
       }
       daydataList(data).then(res => {
+        console.log('1');
+        
         var arr = res.data.reverse()
         for (const item of res.data) {
           if (item.uavTask != 0) {
@@ -2825,6 +2891,7 @@ export default {
         }&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
         this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
         this.map.addLayer(this.mapLayerImage)
+        this.tideList()
       })
     },
     //获取天气
@@ -2982,6 +3049,7 @@ export default {
           item.clicked = false
         }
       }
+      this.tideList()
     },
     // 右侧时间轴
     timeLineItemRight(mouth) {
@@ -6058,28 +6126,38 @@ export default {
       -webkit-transition: 0.5s; /* Safari and Chrome */
     }
   }
-  .weather_right:hover {
-    .weather_alert {
-      display: block;
-    }
-    .right_icon {
-      color: #1890ff;
-      transform: rotate(180deg);
-      -ms-transform: rotate(180deg); /* IE 9 */
-      -moz-transform: rotate(180deg); /* Firefox */
-      -webkit-transform: rotate(180deg); /* Safari 和 Chrome */
-    }
+  // .weather_right:hover {
+  //   .weather_alert {
+  //     display: block;
+  //   }
+  //   .right_icon {
+  //     color: #1890ff;
+  //     transform: rotate(180deg);
+  //     -ms-transform: rotate(180deg); /* IE 9 */
+  //     -moz-transform: rotate(180deg); /* Firefox */
+  //     -webkit-transform: rotate(180deg); /* Safari 和 Chrome */
+  //   }
+  // }
+  .right_icon_active {
+    color: #1890ff;
+    transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    /* IE 9 */
+    -moz-transform: rotate(180deg);
+    /* Firefox */
+    -webkit-transform: rotate(180deg);
+    /* Safari 和 Chrome */
   }
   .weather_alert {
-    display: none;
+    display: block;
     position: absolute;
     left: 50px;
     top: -13px;
     z-index: 888;
     padding-left: 20px;
     .weather_content {
-      width: 320px;
-      height: 300px;
+      width: 500px;
+      height: 500px;
       background: rgba(255, 255, 255, 1);
       box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.4);
       border-radius: 10px;
