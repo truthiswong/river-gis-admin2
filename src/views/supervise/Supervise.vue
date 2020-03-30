@@ -1831,6 +1831,7 @@ export default {
         .then(res => {
           let arr = res.data
           this.waterQualityPoints = arr
+          console.log(this.waterQualityPoints)
           this.onWaterQuality()
         })
         .catch(err => {})
@@ -6363,7 +6364,7 @@ export default {
   top: 10px;
   width: 56px;
   height: 56px;
-  z-index: 888;
+  z-index: 880;
   border-radius: 50%;
   padding: 13px;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
