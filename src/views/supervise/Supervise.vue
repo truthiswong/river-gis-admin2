@@ -944,7 +944,12 @@ import WaterQuality from './modules/waterQualityData'
 import Vtour from './Vtour'
 import qs from 'qs'
 import moment from 'moment' // 时间格式
-
+var echarts = require('echarts/lib/echarts');
+// 引入提示框和标题组件
+require('echarts/lib/chart/line');
+require('echarts/lib/component/tooltip');
+require('echarts/lib/component/dataZoom');
+require('echarts/lib/component/title');
 import 'ol/ol.css'
 import Map from 'ol/Map'
 import View from 'ol/View'
@@ -1339,8 +1344,8 @@ export default {
     },
     itgePortId(){
       for (const item of this.tigePage) {
-        if (item.portId==this.itgePortId) {
-          this.drawLine(item.tide)
+        if (item.portId ==this.itgePortId) {
+          this.drawLineItge(item.tide)
           break
         }
       }
@@ -1405,7 +1410,7 @@ export default {
 
     // this.showMap() //双球init
     // this.showSwipeMap() //卷帘init
-    this.tideList()
+    // this.tideList()
   },
   methods: {
     rightIconClick(){
@@ -1424,7 +1429,7 @@ export default {
           if (this.itgePortId!='') {
             for (const item of this.tigePage) {
               if (item.portId==this.itgePortId) {
-                this.drawLine(item.tide)
+                this.drawLineItge(item.tide)
                 break
               }
             }
@@ -1432,12 +1437,12 @@ export default {
         }else{
           this.itgePortId=''
           this.$message.warning('当前日期下无潮汐数据');
-          this.drawLine([])
+          this.drawLineItge([])
         }
         
       })
     },
-     drawLine(date){
+    drawLineItge(date){
        var myChart = echarts.init(document.getElementById('main1'));
        myChart.setOption( {
         xAxis: {
@@ -1447,11 +1452,17 @@ export default {
         yAxis: {
             type: 'value'
         },
+        // grid: {
+        //     left: '3%',
+        //     right: '4%',
+        //     bottom: '3%',
+        //     containLabel: true
+        // },
         series: [{
             data: date,
             type: 'line',
             smooth: true
-        }]
+        }],
       })
     },
     //获取绘制类型
