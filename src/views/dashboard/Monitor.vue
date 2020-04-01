@@ -1710,7 +1710,10 @@ export default {
               taskInspectPage(data)
                 .then(res => {
                   var ar = res.data.data
-                  this.newlyBuildTask(ar)
+                   if (this.noTitleKey == 'nowPlan') {
+                    } else {
+                      this.newlyBuildTask(ar)
+                    }
                   ar.forEach(v => {
                     v.key = v.id
                     v.title = v.name
@@ -1729,10 +1732,12 @@ export default {
                 })
             }
             this.riverMontion = arr
+
             if (this.noTitleKey == 'nowPlan') {
               this.planDayDraw()
             } else {
               this.judgeDate()
+              
             }
           } else {
             this.riverMontion = arr
@@ -1748,8 +1753,19 @@ export default {
     newlyBuildTask(item){
       for (const key of item) {
         if (key.locationType.code=='point') {
-          var markerTool = new T.Marker(key.region[0],{})
-          this.map.addOverLay(markerTool)
+          if (key.pic) {
+            let icon = new T.Icon({
+              iconUrl: key.pic,
+              iconSize: new T.Point(41, 40),
+              iconAnchor: new T.Point(21, 40)
+            })
+             var markerTool = new T.Marker(key.region[0],{ icon: icon,})
+            this.map.addOverLay(markerTool)
+          }else{
+            var markerTool = new T.Marker(key.region[0],{})
+            this.map.addOverLay(markerTool)
+          }
+         
          
         }else{
           let line = new T.Polyline(key.region,{})
@@ -2284,13 +2300,24 @@ export default {
     },
     //当日计划绘制河道，调查点内的任务
     planDayDrawSpot(taskPage) {
+      console.log(taskPage);
+      
       for (const item of taskPage.anomalous) {
-        console.log(item);
-        
         if (item.region.length == 1) {
-          let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
-          this.map.addOverLay(markerTool)
-          this.showPosition(markerTool, item)
+          if (item.pic) {
+            let icon = new T.Icon({
+              iconUrl: item.pic,
+              iconSize: new T.Point(41, 40),
+              iconAnchor: new T.Point(21, 40)
+            })
+            let markerTool = new T.Marker(item.latlng, {icon: icon, title: item.name, id: item.id })
+            this.map.addOverLay(markerTool)
+            this.showPosition(markerTool, item)
+          }else{
+            let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+            this.map.addOverLay(markerTool)
+            this.showPosition(markerTool, item)
+          }
         } else {
           if (taskPage.clicked == true) {
             let line = new T.Polyline(item.region, {
@@ -2318,9 +2345,20 @@ export default {
       }
       for (const item of taskPage.complete) {
         if (item.region.length == 1) {
-          let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
-          this.map.addOverLay(markerTool)
-          this.showPosition(markerTool, item)
+          if (item.pic) {
+            let icon = new T.Icon({
+              iconUrl: item.pic,
+              iconSize: new T.Point(41, 40),
+              iconAnchor: new T.Point(21, 40)
+            })
+            let markerTool = new T.Marker(item.latlng, {icon: icon, title: item.name, id: item.id })
+            this.map.addOverLay(markerTool)
+            this.showPosition(markerTool, item)
+          }else{
+            let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+            this.map.addOverLay(markerTool)
+            this.showPosition(markerTool, item)
+          }
         } else {
           if (taskPage.clicked == true) {
             let line = new T.Polyline(item.region, {
@@ -2351,9 +2389,21 @@ export default {
       }
       for (const item of taskPage.incomplete) {
         if (item.region.length == 1) {
-          let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
-          this.map.addOverLay(markerTool)
-          this.showPosition(markerTool, item)
+          if (item.pic) {
+            let icon = new T.Icon({
+              iconUrl: item.pic,
+              iconSize: new T.Point(41, 40),
+              iconAnchor: new T.Point(21, 40)
+            })
+            let markerTool = new T.Marker(item.latlng, {icon: icon, title: item.name, id: item.id })
+            this.map.addOverLay(markerTool)
+            this.showPosition(markerTool, item)
+          }else{
+            let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+            this.map.addOverLay(markerTool)
+            this.showPosition(markerTool, item)
+          }
+         
         } else {
           let line = new T.Polyline(item.region, {
             color: 'blue', //线颜色
@@ -2365,53 +2415,8 @@ export default {
           //向地图上添加线
           this.map.addOverLay(line)
           this.showPosition(line, item)
-          // if (taskPage.clicked == true) {
-          //   let line = new T.Polyline(item.region, {
-          //     color: 'bule', //线颜色
-          //     weight: 3, //线宽
-          //     opacity: 0.5, //透明度
-          //     id: item.id,
-          //     name: item.name
-          //   })
-          //   //向地图上添加线
-          //   this.map.addOverLay(line)
-          // } else {
-
-          // }
         }
-        // markerTool.addEventListener('click', this.taskPointClick)
       }
-      // for (const item of taskPage.inprogress) {
-      //   if (item.region.length == 1) {
-      //     let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
-      //     this.map.addOverLay(markerTool)
-      //     markerTool.addEventListener('click', this.planDayDrawClick)
-      //   } else {
-      //     if (taskPage.clicked == true) {
-      //       let line = new T.Polyline(item.region, {
-      //         color: 'blue', //线颜色
-      //         weight: 3, //线宽
-      //         opacity: 0.5, //透明度
-      //         id: item.id,
-      //         name: item.name
-      //       })
-      //       //向地图上添加线
-      //       this.map.addOverLay(line)
-      //     } else {
-      //       let line = new T.Polyline(item.region, {
-      //         color: 'blue', //线颜色
-      //         weight: 3, //线宽
-      //         opacity: 0.5, //透明度
-      //         id: item.id,
-      //         name: item.name
-      //       })
-      //       //向地图上添加线
-      //       this.map.addOverLay(line)
-      //       line.addEventListener('click', this.planDayDrawClick)
-      //     }
-      //   }
-      // markerTool.addEventListener('click', this.taskPointClick)
-      //}
     },
     //当日计划绘制河道，调查点内的任务点击事件
     planDayDrawClick(arr) {

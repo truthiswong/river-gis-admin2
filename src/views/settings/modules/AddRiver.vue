@@ -483,7 +483,7 @@ export default {
         .then(res => {
           let arr = res.data
           if (arr.extra.startZone != null) {
-            var area = arr.extra.startZone.idpath.split(',')
+            var area = arr.extra.startZone.idPath.split(',')
             regionList(area[0])
               .then(res => {
                 this.cityList = res.data
@@ -499,7 +499,7 @@ export default {
             this.list.areaId2 = area[2]
           }
           if (arr.extra.destZone != null) {
-            var area = arr.extra.destZone.idpath.split(',')
+            var area = arr.extra.destZone.idPath.split(',')
             regionList(area[0])
               .then(res => {
                 this.cityList1 = res.data
