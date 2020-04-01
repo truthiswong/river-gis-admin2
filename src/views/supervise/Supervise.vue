@@ -4323,6 +4323,9 @@ export default {
           }
         }
       } else {
+        if (this.markerInfoWin) {
+          this.markerInfoWin.closeInfoWindow()
+        }
         // 双球开关水质数据关闭
         if (this.sharedChecked) {
           this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
@@ -4449,8 +4452,8 @@ export default {
             </div>
           `
           let point = e.target.options.item.coordinate
-          let markerInfoWin = new T.InfoWindow(html, { offset: new T.Point(0, -30) }) // 创建信息窗口对象
-          this.map.openInfoWindow(markerInfoWin, point) //开启信息窗口
+          this.markerInfoWin = new T.InfoWindow(html, { offset: new T.Point(0, -30) }) // 创建信息窗口对象
+          this.map.openInfoWindow(this.markerInfoWin, point) //开启信息窗口
         })
         .catch(err => {})
     },
