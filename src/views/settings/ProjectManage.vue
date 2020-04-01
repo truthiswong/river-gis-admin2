@@ -234,14 +234,18 @@ export default {
       })
     },
     projectCoordinate() {
-      if (this.cp) {
-        this.cp.removeEvent()
+      if (this.markerTool) {
+        this.markerTool.clear()
+        this.markerTool.close()
       }
-      this.cp = new T.CoordinatePickup(this.map, { callback: this.getLngLat })
-      this.cp.addEvent()
+      this.equipmentList.latlng = ''
+      this.markerTool = new T.MarkTool(this.map, {follow: true});
+      this.markerTool.open()
+      this.markerTool.addEventListener('mouseup', this.getLngLat)
     },
-    getLngLat(lnglat) {
-      console.log(lnglat.lng + ', ' + lnglat.lat)
+    getLngLat() {
+      let lnglat = this.markerTool.getMarkControlPoint()
+      // console.log(lnglat.lng + ', ' + lnglat.lat)
       this.equipmentList.latlng = lnglat.lng + ', ' + lnglat.lat
     },
     getList() {
