@@ -291,18 +291,20 @@
                 <a-button type="primary" icon="plus">上传</a-button>
               </el-upload>
               <div style="display:flex;flex-wrap:wrap">
-                <span v-for="item in attachmentJpg"
-                  :key="item.id">
-                <viewer>
-                    <img :src="item.media" alt style="width:70px;height:70px;margin:0 4px 4px 0;" />
-                </viewer>
-                <a-popconfirm
-                  title="确定删除吗？"
-                  @confirm="mediaDelete(item.id)"
-                >
-                  <a-icon slot="icon" type="question-circle-o" style="color: red" />
-                  <a-button type="primary" >删除</a-button>
-                </a-popconfirm>
+                 <span >
+                  <viewer :images="attachmentJpg" >
+                    <img v-for="item in attachmentJpg" :key="item.id" :src="item.media" alt style="width:70px;height:70px;margin:0 4px 4px 0;"  />
+                  </viewer >
+                  <div style="width:70px;margin:0 4px 4px 0;display: inline-block"  v-for="item in attachmentJpg" :key="item.id"> 
+                     <a-popconfirm
+                        title="确定删除吗？"
+                        @confirm="mediaDelete(item.id)"
+                      >
+                        <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                        <a-button type="primary" >删除</a-button>
+                      </a-popconfirm>
+                  </div>
+                 
                 </span>
               </div>
              

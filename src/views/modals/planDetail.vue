@@ -250,7 +250,9 @@ export default {
                     workerId: role.workerId.join(',')
                   }
                   memberRiverSave(data)
-                    .then(res => {})
+                    .then(res => {
+
+                    })
                     .catch(err => {
                       this.numvis = false
                     })
@@ -286,13 +288,17 @@ export default {
                   this.numvis = false
                 })
               }
-              planPublish(this.id).then(res => {
-                this.$message.success('成功')
-                this.spinning = true
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+              Promise.all((resolve, reject) => {
+                planPublish(this.id).then(res => {
+                  this.$message.success('成功')
+                  this.spinning = true
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+                })
               })
+             
+              
               this.visible = false
             }
           }else{
