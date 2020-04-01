@@ -40,11 +40,15 @@
                 
               </div>
               <div class="weather_right">
-                <!-- <a-icon class="right_icon" type="caret-left" /> -->
+                <a-icon class="right_icon" type="caret-left"  :class="rightIcon == true ? 'right_icon_active':''" @click="rightIconClick"/>
                 <!-- 天气弹窗 -->
-                <div class="weather_alert" v-show="false">
+                <div class="weather_alert"  v-show="rightIcon">
                   <div class="weather_content">
-                    <div class="weather_basic">
+                    <a-select  style="width: 200px" v-model="itgePortId">
+                      <a-select-option v-for="item in tigePage" :key="item.locationId" :value="item.portId">{{item.portName}}</a-select-option>
+                    </a-select>
+                     <div id="main1"  style="width:500px;height:400px"></div>
+                    <!-- <div class="weather_basic">
                       <div class="weather_basic_content">
                         <img src="../supervise/img/water.png" alt style="margin-right:5px;height:12px;width:12px" />
                         <span></span>
@@ -59,16 +63,16 @@
                       </div>
                     </div>
                     <div class="weather24">
-                      <!-- <div class="time24" v-for="item in weatherList" :key="item.id">
+                      <div class="time24" v-for="item in weatherList" :key="item.id">
                         <div>{{item.temperature}}</div>
 
-                      </div>-->
-                      <!-- <div class="time24" v-for="item in weatherList" :key="item.id">
+                      </div>
+                      <div class="time24" v-for="item in weatherList" :key="item.id">
                         <div style="text-align:center;">{{item.temperature}}</div>
                         <img src="../supervise/img/fine.png" alt style="margin:12px 5px;height:19px;width:19px" />
                         <div style="text-align:center;">{{item.time}}</div>
-                      </div> -->
-                    </div>
+                      </div>
+                    </div> -->
                   </div>
                 </div>
               </div>
@@ -1077,7 +1081,8 @@ import {
   mapdrawPageRiskSource,
   paramList,
   inspectPointPageRiver,
-  getWaterStation 
+  getWaterStation ,
+  getTigeList
 } from '@/api/login'
 import 'ol/ol.css'
 // import Map from "ol/Map"
@@ -1104,7 +1109,12 @@ import Vue from 'vue'
 import qs from 'qs'
 // token
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-
+var echarts = require('echarts/lib/echarts');
+// 引入提示框和标题组件
+require('echarts/lib/chart/line');
+require('echarts/lib/component/tooltip');
+require('echarts/lib/component/dataZoom');
+require('echarts/lib/component/title');
 const personInfo = [
   {
     id: 1,
@@ -1413,6 +1423,7 @@ export default {
       outletPoints: [], //排口数据
       surveyPoint: false, // 专项调查点
       moreLoadOnce:'1',
+      itgePortId:'',
       surveyPointPoints: [
         // {
         //   id: 0,
@@ -1427,6 +1438,8 @@ export default {
       riskSourceList: [], //河岸风险源
       riskPolygonData: [], // 风险地图数据
       riskSourceLevel: [], //风险源风险等级
+      tigePage:[],//潮汐列表
+      rightIcon:false
     }
   },
   watch: {
@@ -1437,6 +1450,14 @@ export default {
       this.getPage()
       this.getRecommendFangan()
       this.map.panTo(this.$store.state.projectCoordinate, 14)
+    },
+    itgePortId(){
+      for (const item of this.tigePage) {
+        if (item.portId==this.itgePortId) {
+          this.drawLine(item.tide)
+          break
+        }
+      }
     },
     //选中树节点
     checkedKeys(val) {
@@ -1480,8 +1501,39 @@ export default {
     this.getRecommendFangan()
     this.getParamList()
     this.getMapPageData()
+    // this.drawLine()
+    this.tideList()
   },
   methods: {
+    rightIconClick(){
+      this.rightIcon=!this.rightIcon
+    },
+    tideList(){
+      var picker = this.picker.split('-')
+      var data = {
+        date:picker[0]+picker[1]+picker[2]
+      }
+      this.tigePage=[]
+      getTigeList(data).then(res => {
+        var arr = res.data
+        this.tigePage=arr
+        if (this.tigePage.length>0) {
+          if (this.itgePortId!='') {
+            for (const item of this.tigePage) {
+              if (item.portId==this.itgePortId) {
+                this.drawLine(item.tide)
+                break
+              }
+            }
+          }
+        }else{
+          this.itgePortId=''
+          this.$message.warning('当前日期下无潮汐数据');
+          this.drawLine([])
+        }
+        
+      })
+    },
     getplanPageList() {
       var picker = this.picker.split('-')
       var data = {
@@ -2709,6 +2761,7 @@ export default {
       this.moreLoadOnce = '1'
       this.getMapPageData()
       this.getWeatherList()
+      this.tideList()
     },
 
     //选中巡河方案
@@ -4307,6 +4360,23 @@ export default {
         this.moreLoadOnce = '2'
       }
     },
+    drawLine(date){
+       var myChart = echarts.init(document.getElementById('main1'));
+       myChart.setOption( {
+        xAxis: {
+            type: 'category',
+            data: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','24:00']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: date,
+            type: 'line',
+            smooth: true
+        }]
+      })
+    },
   }
 }
 </script>
@@ -4338,15 +4408,15 @@ export default {
   }
 }
 .weather_alert {
-  display: none;
+  display: block;
   position: absolute;
   left: 50px;
   top: -13px;
   z-index: 888;
   padding-left: 20px;
   .weather_content {
-    width: 320px;
-    height: 300px;
+    width: 500px;
+    height: 500px;
     background: rgba(255, 255, 255, 1);
     box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.4);
     border-radius: 10px;

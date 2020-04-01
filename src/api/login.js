@@ -1052,7 +1052,14 @@ export function getUserCurrent() {
     method: 'get'
   })
 }
-
+//潮汐
+export function getTigeList(parameter) {
+  return axios({
+    url: '/server/data/admin/weather/tide4sh',
+    method: 'get',
+    params: parameter
+  })
+}
 export function getSmsCaptcha(parameter) {
   return axios({
     url: api.SendSms,
