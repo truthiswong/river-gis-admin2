@@ -146,7 +146,7 @@
                 :value="item.portId"
               >{{item.portName}}</a-select-option>
             </a-select>
-            <div id="main1" style="width:500px;height:400px"></div>
+            <div id="main1"  style="width:500px;height:450px"></div>
             <!-- <div class="weather_basic">
               <div class="weather_basic_content">
                 <img src="./img/water.png" alt style="margin-right:5px;height:12px;width:12px" />
@@ -886,9 +886,8 @@
     <a-modal title="无人机照片" :visible="UAVPhotosModal" @ok="UAVPhotosOk" @cancel="UAVPhotosOk">
       <div>点击坐标: {{UAVPhotosCoordinate}}</div>
       <div style="margin-top:10px;max-height: 600px;overflow-y: scroll;">
-        <viewer v-for="item in uavPhotoList" :key="item.id" style="margin:5px">
-          <div>名称:{{item.name}}</div>
-          <img :src="item.pic" alt style="width:100%;margin:0 4px 4px 0;" />
+        <viewer style="margin:5px">
+          <img  v-for="item in uavPhotoList" :key="item.id" :src="item.pic" alt style="width:100%;margin:0 4px 4px 0;" />
         </viewer>
       </div>
     </a-modal>
@@ -1453,51 +1452,35 @@ export default {
       var myChart = echarts.init(document.getElementById('main1'))
       myChart.setOption({
         xAxis: {
+          name : '潮时(Hrs)',
+          nameLocation :'center',
+          nameTextStyle:{
+             lineHeight: 56,
+             fontSize:15
+          },
+          axisLabel:{
+             show : true
+          },
           type: 'category',
-          data: [
-            '00:00',
-            '01:00',
-            '02:00',
-            '03:00',
-            '04:00',
-            '05:00',
-            '06:00',
-            '07:00',
-            '08:00',
-            '09:00',
-            '10:00',
-            '11:00',
-            '12:00',
-            '13:00',
-            '14:00',
-            '15:00',
-            '16:00',
-            '17:00',
-            '18:00',
-            '19:00',
-            '20:00',
-            '21:00',
-            '22:00',
-            '23:00',
-            '24:00'
-          ]
+          data: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','24:00']
+        },
+        tooltip: {
+            trigger: 'item',
         },
         yAxis: {
-          type: 'value'
+           nameLocation :'center',
+            nameTextStyle:{
+              lineHeight: 56,
+              fontSize:15
+            },
+            type: 'value',
+            name : '潮高(cm)',
         },
-        // grid: {
-        //     left: '3%',
-        //     right: '4%',
-        //     bottom: '3%',
-        //     containLabel: true
-        // },
-        series: [
-          {
+        series: [{
             data: date,
             type: 'line',
             smooth: true
-          }
-        ]
+        }]
       })
     },
     //获取绘制类型

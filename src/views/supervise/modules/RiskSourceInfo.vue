@@ -47,7 +47,7 @@
             </div>
             <p slot="content" style="ma">{{'管理建议: ' + item.comment}}</p>
             <div class="comment_img" v-show="item.imgList.length > 0">
-              <viewer  >
+              <viewer :images="item.imgList" >
                 <img v-for="img in item.imgList" :key="img" :src="img" :alt="img" />
               </viewer>
             </div>
