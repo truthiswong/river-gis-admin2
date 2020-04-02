@@ -3187,7 +3187,12 @@ export default {
           let aa = 0
           for (const a of item.teams) {
             for (const b of a.staffs) {
-              b.rgb=this.rbgList[aa] 
+              if (aa>9) {
+                 b.rgb=this.rbgList[0] 
+              }else{
+                 b.rgb=this.rbgList[aa] 
+              }
+             
               aa = aa+1
               b.id = b.staff.id
               b.name = b.staff.worker.name
