@@ -3016,8 +3016,8 @@ export default {
           for (const index of reg.teams) {
             for (const staffs of index.staffs) {
               if (v==staffs.id) {
-                if (staffs.locus.length>0) {
-                  let line = new T.Polyline(staffs.locus, {
+                if (staffs.point.length>0) {
+                  let line = new T.Polyline(staffs.point, {
                     color: staffs.rgb, //线颜色
                     weight: 3, //线宽
                     id: staffs.id,
@@ -3025,7 +3025,7 @@ export default {
                   //向地图上添加线
                   this.map.addOverLay(line)
 
-                  let markerTool = new T.Marker(staffs.locus[0], { })
+                  let markerTool = new T.Marker(staffs.point[0], { })
                   this.map.addOverLay(markerTool)
                 }
               }
@@ -3192,12 +3192,15 @@ export default {
               }else{
                  b.rgb=this.rbgList[aa] 
               }
-             
+              var points1 =[]
+              for (const cc of b.locus) {
+                points1.push(new T.LngLat(cc[0], cc[1]))
+              }
               aa = aa+1
               b.id = b.staff.id
               b.name = b.staff.worker.name
               b.role = b.staff.role.name
-              b.point = b.locus
+              b.point = points1
             }
           }
         }
