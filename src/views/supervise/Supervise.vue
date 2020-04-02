@@ -3720,16 +3720,16 @@ export default {
       //   // layers: [img_c, cva_c]
       // })
       var veclayerGroup = new LayerGroup({
-        layers: [this.rightLayer2d, this.leftLayerWord]
+        layers: [this.leftLayer]
         // layers: [vec_c, cva_c]
       })
       var imglayerGroup = new LayerGroup({
-        layers: [this.rightLayer, this.leftLayerWord]
+        layers: [this.rightLayer]
         // layers: [img_c, cva_c]
       })
       this.lmap = new Map({
         target: 'lmap',
-        layers: [veclayerGroup, imglayerGroup],
+        layers: [imglayerGroup, veclayerGroup],
         // layers: [this.rightLayer, this.rightLayer2d],
         view: new View({
           projection: 'EPSG:4326',
@@ -3739,6 +3739,11 @@ export default {
           maxZoom: 23
         })
       })
+
+      // this.$nextTick(()=>{
+      //   this.textttt()
+      // })
+
       var swipe = document.getElementById('swipe')
       this.rightLayer.on('prerender', function(event) {
         var ctx = event.context
@@ -3771,6 +3776,36 @@ export default {
         },
         false
       )
+    },
+    textttt() {
+      let iconFeature = new Feature({
+        geometry: new Point([121.43025, 31.16963]),
+      })
+      let iconStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 40],
+          anchorOrigin: 'bottom-right',
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          scale: 1,
+          size: [40, 40],
+          src: require('../../assets/img/fixedIcon.png')
+        })
+      })
+      iconFeature.setId("9999999999999")
+      iconFeature.setStyle(iconStyle)
+      let vectorSource = new VectorSource({
+        features: [iconFeature]
+      })
+      console.log(222222222)
+      this.rightLayer.setSource(vectorSource)
+      this.rightLayer.setMap(this.lmap)
+      // let surveyPointLayer = new VectorLayer({
+      //   source: vectorSource,
+      //   zIndex: 20
+      // })
+      // surveyPointLayer.set('id', id)
+      
     },
     // 卷帘开关
     layerSwipe() {
