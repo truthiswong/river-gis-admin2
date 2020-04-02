@@ -828,9 +828,9 @@
                         <a-col :span="8">
                           <span>{{item.plan.name}}</span>
                         </a-col>
-                        <a-col :span="16">
+                        <!-- <a-col :span="16">
                           <a-progress :percent="70" />
-                        </a-col>
+                        </a-col> -->
                       </a-row>
                     </template>
                     <div class="planGroup">
@@ -845,9 +845,9 @@
                               <a-col :span="8">
                                 <span>{{index.team.name}}</span>
                               </a-col>
-                              <a-col :span="16">
+                              <!-- <a-col :span="16">
                                 <a-progress :percent="70" />
-                              </a-col>
+                              </a-col> -->
                             </a-row>
                           </template>
                           <div class="plan_personInfo">
