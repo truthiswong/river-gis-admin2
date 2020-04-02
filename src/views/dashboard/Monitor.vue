@@ -3187,9 +3187,6 @@ export default {
           let aa = 0
           for (const a of item.teams) {
             for (const b of a.staffs) {
-              let R = Math.floor(Math.random() * 255);
-              let G = Math.floor(Math.random() * 255);
-              let B = Math.floor(Math.random() * 255);
               b.rgb=this.rbgList[aa] 
               aa = aa+1
               b.id = b.staff.id
