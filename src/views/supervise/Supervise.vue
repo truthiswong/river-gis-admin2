@@ -3294,6 +3294,13 @@ export default {
           this.olMap1.addLayer(this.leftLayer2d)
           this.olMap2.addLayer(this.rightLayer2d)
         }
+        if (this.swipeChecked) {
+          // 卷帘2d
+          this.lmap.removeLayer(this.leftLayer)
+          this.lmap.removeLayer(this.rightLayer)
+          this.lmap.addLayer(this.leftLayer2d)
+          this.lmap.addLayer(this.rightLayer2d)
+        }
       } else if (this.mapType == 'b') {
         // 天地图卫星
         this.map.addLayer(this.mapLayerSatellite)
@@ -3304,6 +3311,13 @@ export default {
           this.olMap2.removeLayer(this.rightLayer2d)
           this.olMap1.addLayer(this.leftLayer)
           this.olMap2.addLayer(this.rightLayer)
+        }
+        if (this.swipeChecked) {
+          // 卷帘卫星
+          this.lmap.removeLayer(this.leftLayer2d)
+          this.lmap.removeLayer(this.rightLayer2d)
+          this.lmap.addLayer(this.leftLayer)
+          this.lmap.addLayer(this.rightLayer)
         }
       }
     },
@@ -3317,6 +3331,11 @@ export default {
           this.olMap1.addLayer(this.leftLayerWord)
           this.olMap2.addLayer(this.rightLayerWord)
         }
+        if (this.swipeChecked) {
+          // 卷帘道路标注
+          this.lmap.addLayer(this.leftLayerWord)
+          this.lmap.addLayer(this.rightLayerWord)
+        }
       } else {
         // 天地图道路标注
         this.map.removeLayer(this.mapLayerWord)
@@ -3324,6 +3343,11 @@ export default {
           // 双球道路标注
           this.olMap1.removeLayer(this.leftLayerWord)
           this.olMap2.removeLayer(this.rightLayerWord)
+        }
+        if (this.swipeChecked) {
+          // 卷帘道路标注
+          this.lmap.removeLayer(this.leftLayerWord)
+          this.lmap.removeLayer(this.rightLayerWord)
         }
       }
     },
@@ -3337,6 +3361,11 @@ export default {
           this.olMap1.addLayer(this.leftLayerImage)
           this.olMap2.addLayer(this.rightLayerImage)
         }
+        if (this.swipeChecked) {
+          // 卷帘正射
+          this.olMap1.addLayer(this.leftLayerImage)
+          this.olMap2.addLayer(this.rightLayerImage)
+        }
       } else {
         // 天地图正射
         this.map.removeLayer(this.mapLayerImage)
@@ -3344,6 +3373,11 @@ export default {
           // 双球正射
           this.olMap1.removeLayer(this.leftLayerImage)
           this.olMap2.removeLayer(this.rightLayerImage)
+        }
+        if (this.swipeChecked) {
+          // 卷帘正射
+          this.lmap.removeLayer(this.leftLayerImage)
+          this.lmap.removeLayer(this.rightLayerImage)
         }
       }
     },
@@ -3720,16 +3754,16 @@ export default {
       //   // layers: [img_c, cva_c]
       // })
       var veclayerGroup = new LayerGroup({
-        layers: [this.rightLayer2d, this.leftLayerWord]
+        layers: [this.leftLayer]
         // layers: [vec_c, cva_c]
       })
       var imglayerGroup = new LayerGroup({
-        layers: [this.rightLayer, this.leftLayerWord]
+        layers: [this.rightLayer]
         // layers: [img_c, cva_c]
       })
       this.lmap = new Map({
         target: 'lmap',
-        layers: [veclayerGroup, imglayerGroup],
+        layers: [imglayerGroup, veclayerGroup],
         // layers: [this.rightLayer, this.rightLayer2d],
         view: new View({
           projection: 'EPSG:4326',
@@ -3739,6 +3773,53 @@ export default {
           maxZoom: 23
         })
       })
+
+      // this.$nextTick(()=>{
+      //   this.textttt()
+      // })
+
+      // 判断是2d还是卫星
+      if (this.mapType == 'a') {
+        if (this.swipeOnce == 2) {
+          this.lmap.removeLayer(this.leftLayer2d)
+          this.lmap.removeLayer(this.rightLayer2d)
+        }
+        this.lmap.addLayer(this.leftLayer2d)
+        this.lmap.addLayer(this.rightLayer2d)
+      } else if (this.mapType == 'b') {
+        if (this.swipeOnce == 2) {
+          this.lmap.removeLayer(this.leftLayer)
+          this.lmap.removeLayer(this.rightLayer)
+        }
+        this.lmap.addLayer(this.leftLayer)
+        this.lmap.addLayer(this.rightLayer)
+      }
+      // 判断道路标注是否打开
+      if (this.roadWordChange) {
+        if (this.swipeOnce == 2) {
+          this.lmap.removeLayer(this.leftLayerWord)
+          this.lmap.removeLayer(this.rightLayerWord)
+        }
+        this.lmap.addLayer(this.leftLayerWord)
+        this.lmap.addLayer(this.rightLayerWord)
+      } else {
+        this.lmap.removeLayer(this.leftLayerWord)
+        this.lmap.removeLayer(this.rightLayerWord)
+      }
+      // 判断正射是否打开
+      if (this.layerImageChange) {
+        if (this.shswipeOncearedOnce == 2) {
+          this.lmap.removeLayer(this.leftLayerImage)
+          this.lmap.removeLayer(this.rightLayerImage)
+        }
+        this.lmap.addLayer(this.leftLayerImage)
+        this.lmap.addLayer(this.rightLayerImage)
+      } else {
+        this.lmap.removeLayer(this.leftLayerImage)
+        this.lmap.removeLayer(this.rightLayerImage)
+      }
+      this.swipeOnce = 2
+
       var swipe = document.getElementById('swipe')
       this.rightLayer.on('prerender', function(event) {
         var ctx = event.context
@@ -3772,6 +3853,36 @@ export default {
         false
       )
     },
+    textttt() {
+      let iconFeature = new Feature({
+        geometry: new Point([121.43025, 31.16963]),
+      })
+      let iconStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 40],
+          anchorOrigin: 'bottom-right',
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          scale: 1,
+          size: [40, 40],
+          src: require('../../assets/img/fixedIcon.png')
+        })
+      })
+      iconFeature.setId("9999999999999")
+      iconFeature.setStyle(iconStyle)
+      let vectorSource = new VectorSource({
+        features: [iconFeature]
+      })
+      console.log(222222222)
+      this.rightLayer.setSource(vectorSource)
+      this.rightLayer.setMap(this.lmap)
+      // let surveyPointLayer = new VectorLayer({
+      //   source: vectorSource,
+      //   zIndex: 20
+      // })
+      // surveyPointLayer.set('id', id)
+      
+    },
     // 卷帘开关
     layerSwipe() {
       if (this.swipeChecked) {
@@ -3780,9 +3891,45 @@ export default {
           this.$nextTick(() => {
             this.showSwipeMap() //卷帘init
           })
+        } else {
+          // 判断是2d还是卫星
+          if (this.mapType == 'a') {
+            this.lmap.removeLayer(this.leftLayer)
+            this.lmap.removeLayer(this.rightLayer)
+            this.lmap.removeLayer(this.leftLayer2d)
+            this.lmap.removeLayer(this.rightLayer2d)
+            this.lmap.addLayer(this.leftLayer2d)
+            this.lmap.addLayer(this.rightLayer2d)
+          } else if (this.mapType == 'b') {
+            this.lmap.removeLayer(this.leftLayer)
+            this.lmap.removeLayer(this.rightLayer)
+            this.lmap.removeLayer(this.leftLayer2d)
+            this.lmap.removeLayer(this.rightLayer2d)
+            this.lmap.addLayer(this.leftLayer)
+            this.lmap.addLayer(this.rightLayer)
+          }
+          // 判断道路标注是否打开
+          if (this.roadWordChange) {
+            this.lmap.removeLayer(this.leftLayerWord)
+            this.lmap.removeLayer(this.rightLayerWord)
+            this.lmap.addLayer(this.leftLayerWord)
+            this.lmap.addLayer(this.rightLayerWord)
+          } else {
+            this.lmap.removeLayer(this.leftLayerWord)
+            this.lmap.removeLayer(this.rightLayerWord)
+          }
+          // 判断正射是否打开
+          if (this.layerImageChange) {
+            this.lmap.removeLayer(this.leftLayerImage)
+            this.lmap.removeLayer(this.rightLayerImage)
+            this.lmap.addLayer(this.leftLayerImage)
+            this.lmap.addLayer(this.rightLayerImage)
+          } else {
+            this.lmap.removeLayer(this.leftLayerImage)
+            this.lmap.removeLayer(this.rightLayerImage)
+          }
         }
-        this.swipeOnce = 2
-      } else {
+        // this.swipeOnce = 2
       }
     },
     // 更多-历史数据
