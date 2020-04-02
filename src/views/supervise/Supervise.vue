@@ -130,12 +130,21 @@
         </div>
       </div>
       <div class="weather_right">
-        <a-icon class="right_icon" type="caret-left"  :class="rightIcon == true ? 'right_icon_active':''" @click="rightIconClick"/>
+        <a-icon
+          class="right_icon"
+          type="caret-left"
+          :class="rightIcon == true ? 'right_icon_active':''"
+          @click="rightIconClick"
+        />
         <!-- 天气弹窗 -->
         <div class="weather_alert" v-show="rightIcon">
           <div class="weather_content">
-             <a-select  style="width: 200px" v-model="itgePortId">
-              <a-select-option v-for="item in tigePage" :key="item.locationId" :value="item.portId">{{item.portName}}</a-select-option>
+            <a-select style="width: 200px" v-model="itgePortId">
+              <a-select-option
+                v-for="item in tigePage"
+                :key="item.locationId"
+                :value="item.portId"
+              >{{item.portName}}</a-select-option>
             </a-select>
             <div id="main1"  style="width:500px;height:450px"></div>
             <!-- <div class="weather_basic">
@@ -152,8 +161,8 @@
                 <span>{{weatherData.clouds}}</span>
               </div>
             </div>
-            <div class="weather24"> -->
-              <!-- <div class="time24" v-for="item in weatherList" :key="item.id">
+            <div class="weather24">-->
+            <!-- <div class="time24" v-for="item in weatherList" :key="item.id">
                 <div>{{item.temperature}}</div>
 
               </div>
@@ -162,7 +171,7 @@
                 <img src="./img/fine.png" alt style="margin:12px 5px;height:19px;width:19px" />
                 <div style="text-align:center;">{{item.time}}</div>
               </div>
-            </div> -->
+            </div>-->
           </div>
         </div>
       </div>
@@ -407,10 +416,10 @@
     <!-- 双球 -->
     <div class="showMap" id="showmap" v-show="sharedChecked">
       <div class="half">
-        <div id="roadMap" class="vmap"></div>
+        <div id="leftMap" class="vmap"></div>
       </div>
       <div class="half">
-        <div id="aerialMap" class="vmap"></div>
+        <div id="rightMap" class="vmap"></div>
       </div>
     </div>
     <!-- 卷帘 -->
@@ -943,12 +952,12 @@ import WaterQuality from './modules/waterQualityData'
 import Vtour from './Vtour'
 import qs from 'qs'
 import moment from 'moment' // 时间格式
-var echarts = require('echarts/lib/echarts');
+var echarts = require('echarts/lib/echarts')
 // 引入提示框和标题组件
-require('echarts/lib/chart/line');
-require('echarts/lib/component/tooltip');
-require('echarts/lib/component/dataZoom');
-require('echarts/lib/component/title');
+require('echarts/lib/chart/line')
+require('echarts/lib/component/tooltip')
+require('echarts/lib/component/dataZoom')
+require('echarts/lib/component/title')
 import 'ol/ol.css'
 import Map from 'ol/Map'
 import View from 'ol/View'
@@ -966,13 +975,13 @@ import Layer from 'ol/layer/Layer'
 
 import Point from 'ol/geom/Point' //点
 import Circle from 'ol/geom/Circle' //圆
-import LineString from 'ol/geom/LineString'; //线
+import LineString from 'ol/geom/LineString' //线
 import Polygon from 'ol/geom/Polygon' //面
 import { fromLonLat } from 'ol/proj'
 import TileJSON from 'ol/source/TileJSON'
 import VectorSource from 'ol/source/Vector'
 
-import { Icon, Style, Stroke, Circle as CircleStyle, Fill } from "ol/style";
+import { Icon, Style, Stroke, Circle as CircleStyle, Fill } from 'ol/style'
 
 import GeoJSON from 'ol/format/GeoJSON'
 import MultiPoint from 'ol/geom/MultiPoint'
@@ -1326,9 +1335,9 @@ export default {
       listItemLeftRight: false,
       leftRight: false,
       screenshotdataUrl: '',
-      itgePortId:'',
-      tigePage:[],//潮汐列表
-      rightIcon:false
+      itgePortId: '',
+      tigePage: [], //潮汐列表
+      rightIcon: false
     }
   },
   watch: {
@@ -1339,11 +1348,10 @@ export default {
         this.getRiverStreeList()
         this.map.panTo(this.$store.state.projectCoordinate, 14)
       }
-
     },
-    itgePortId(){
+    itgePortId() {
       for (const item of this.tigePage) {
-        if (item.portId ==this.itgePortId) {
+        if (item.portId == this.itgePortId) {
           this.drawLineItge(item.tide)
           break
         }
@@ -1412,38 +1420,37 @@ export default {
     // this.tideList()
   },
   methods: {
-    rightIconClick(){
-      this.rightIcon=!this.rightIcon
+    rightIconClick() {
+      this.rightIcon = !this.rightIcon
     },
-    tideList(){
+    tideList() {
       var picker = this.defaultTime.split('-')
       var data = {
-        date:picker[0]+picker[1]+picker[2]
+        date: picker[0] + picker[1] + picker[2]
       }
-      this.tigePage=[]
+      this.tigePage = []
       getTigeList(data).then(res => {
         var arr = res.data
-        this.tigePage=arr
-        if (this.tigePage.length>0) {
-          if (this.itgePortId!='') {
+        this.tigePage = arr
+        if (this.tigePage.length > 0) {
+          if (this.itgePortId != '') {
             for (const item of this.tigePage) {
-              if (item.portId==this.itgePortId) {
+              if (item.portId == this.itgePortId) {
                 this.drawLineItge(item.tide)
                 break
               }
             }
           }
-        }else{
-          this.itgePortId=''
-          this.$message.warning('当前日期下无潮汐数据');
+        } else {
+          this.itgePortId = ''
+          this.$message.warning('当前日期下无潮汐数据')
           this.drawLineItge([])
         }
-        
       })
     },
-    drawLineItge(date){
-       var myChart = echarts.init(document.getElementById('main1'));
-       myChart.setOption( {
+    drawLineItge(date) {
+      var myChart = echarts.init(document.getElementById('main1'))
+      myChart.setOption({
         xAxis: {
           name : '潮时(Hrs)',
           nameLocation :'center',
@@ -2860,8 +2867,8 @@ export default {
         end: end
       }
       daydataList(data).then(res => {
-        console.log('1');
-        
+        console.log('1')
+
         var arr = res.data.reverse()
         for (const item of res.data) {
           if (item.uavTask != 0) {
@@ -3047,8 +3054,8 @@ export default {
 
             if (this.sharedChecked && this.layerImageChange) {
               // 双球左边正射
-              this.olMap1.removeLayer(this.roadLayerImage)
-              this.roadLayerImage = new TileLayer({
+              this.olMap1.removeLayer(this.leftLayerImage)
+              this.leftLayerImage = new TileLayer({
                 source: new XYZ({
                   url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
                     this.mapYear
@@ -3059,7 +3066,7 @@ export default {
                 }),
                 zIndex: 10
               })
-              this.olMap1.addLayer(this.roadLayerImage)
+              this.olMap1.addLayer(this.leftLayerImage)
             }
 
             item.clicked = true
@@ -3087,8 +3094,8 @@ export default {
             this.mapDay = mouth.substring(6, 8)
             if (this.sharedChecked && this.layerImageChange) {
               // 双球右边正射
-              this.olMap2.removeLayer(this.aerialLayerImage)
-              this.aerialLayerImage = new TileLayer({
+              this.olMap2.removeLayer(this.rightLayerImage)
+              this.rightLayerImage = new TileLayer({
                 source: new XYZ({
                   url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
                     this.mapYear
@@ -3099,7 +3106,7 @@ export default {
                 }),
                 zIndex: 10
               })
-              this.olMap2.addLayer(this.aerialLayerImage)
+              this.olMap2.addLayer(this.rightLayerImage)
             }
             item.clicked = true
             this.rightTimeLineChange() //右侧时间轴切换
@@ -3275,28 +3282,28 @@ export default {
       console.log('Trigger Expand')
     },
     // 图像
-    onMapChange(e) {
-      if (e.target.value == 'a') {
+    onMapChange() {
+      if (this.mapType == 'a') {
         // 天地图2d
         this.map.addLayer(this.mapLayer2d)
         this.map.removeLayer(this.mapLayerSatellite)
         if (this.sharedChecked) {
           // 双球2d
-          this.olMap1.addLayer(this.roadLayer2d)
-          this.olMap2.addLayer(this.aerialLayer2d)
-          this.olMap1.removeLayer(this.roadLayer)
-          this.olMap2.removeLayer(this.aerialLayer)
+          this.olMap1.removeLayer(this.leftLayer)
+          this.olMap2.removeLayer(this.rightLayer)
+          this.olMap1.addLayer(this.leftLayer2d)
+          this.olMap2.addLayer(this.rightLayer2d)
         }
-      } else if (e.target.value == 'b') {
+      } else if (this.mapType == 'b') {
         // 天地图卫星
         this.map.addLayer(this.mapLayerSatellite)
         this.map.removeLayer(this.mapLayer2d)
         if (this.sharedChecked) {
           // 双球卫星
-          this.olMap1.addLayer(this.roadLayer)
-          this.olMap2.addLayer(this.aerialLayer)
-          this.olMap1.removeLayer(this.roadLayer2d)
-          this.olMap2.removeLayer(this.aerialLayer2d)
+          this.olMap1.removeLayer(this.leftLayer2d)
+          this.olMap2.removeLayer(this.rightLayer2d)
+          this.olMap1.addLayer(this.leftLayer)
+          this.olMap2.addLayer(this.rightLayer)
         }
       }
     },
@@ -3307,16 +3314,16 @@ export default {
         this.map.addLayer(this.mapLayerWord)
         if (this.sharedChecked) {
           // 双球道路标注
-          this.olMap1.addLayer(this.roadLayerWord)
-          this.olMap2.addLayer(this.aerialLayerWord)
+          this.olMap1.addLayer(this.leftLayerWord)
+          this.olMap2.addLayer(this.rightLayerWord)
         }
       } else {
         // 天地图道路标注
         this.map.removeLayer(this.mapLayerWord)
         if (this.sharedChecked) {
           // 双球道路标注
-          this.olMap1.removeLayer(this.roadLayerWord)
-          this.olMap2.removeLayer(this.aerialLayerWord)
+          this.olMap1.removeLayer(this.leftLayerWord)
+          this.olMap2.removeLayer(this.rightLayerWord)
         }
       }
     },
@@ -3327,16 +3334,16 @@ export default {
         this.map.addLayer(this.mapLayerImage)
         if (this.sharedChecked) {
           // 双球正射
-          this.olMap1.addLayer(this.roadLayerImage)
-          this.olMap2.addLayer(this.aerialLayerImage)
+          this.olMap1.addLayer(this.leftLayerImage)
+          this.olMap2.addLayer(this.rightLayerImage)
         }
       } else {
         // 天地图正射
         this.map.removeLayer(this.mapLayerImage)
         if (this.sharedChecked) {
           // 双球正射
-          this.olMap1.removeLayer(this.roadLayerImage)
-          this.olMap2.removeLayer(this.aerialLayerImage)
+          this.olMap1.removeLayer(this.leftLayerImage)
+          this.olMap2.removeLayer(this.rightLayerImage)
         }
       }
     },
@@ -3439,9 +3446,9 @@ export default {
       var vec_c = this.getTdLayer('vec_w') //2d图
       var cva_c = this.getTdLayer('cva_w') //道路标注
       var img_c = this.getTdLayer('img_w') //卫星图
-      
+
       // 左边道路标注
-      this.roadLayerWord = new TileLayer({
+      this.leftLayerWord = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
@@ -3449,7 +3456,7 @@ export default {
         zIndex: 15
       })
       // 右边道路标注
-      this.aerialLayerWord = new TileLayer({
+      this.rightLayerWord = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
@@ -3457,7 +3464,7 @@ export default {
         zIndex: 15
       })
       // 左边卫星图
-      this.roadLayer = new TileLayer({
+      this.leftLayer = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
@@ -3465,28 +3472,28 @@ export default {
       })
 
       // 右边卫星图
-      this.aerialLayer = new TileLayer({
+      this.rightLayer = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
         })
       })
       // 左边2d
-      this.roadLayer2d = new TileLayer({
+      this.leftLayer2d = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
         })
       })
       // 右边2d
-      this.aerialLayer2d = new TileLayer({
+      this.rightLayer2d = new TileLayer({
         source: new XYZ({
           url: `http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
           maxZoom: 18
         })
       })
       // 左边正射
-      this.roadLayerImage = new TileLayer({
+      this.leftLayerImage = new TileLayer({
         source: new XYZ({
           url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
             this.mapYear
@@ -3498,7 +3505,7 @@ export default {
         zIndex: 10
       })
       // 右边正射
-      this.aerialLayerImage = new TileLayer({
+      this.rightLayerImage = new TileLayer({
         source: new XYZ({
           url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
             this.mapYear
@@ -3518,59 +3525,58 @@ export default {
       })
       console.log(this.mapType)
       this.olMap1 = new Map({
-        target: 'roadMap',
-        // layers: [this.mapType == 'a'?this.roadLayer2d:this.roadLayer, this.roadWordChange?this.roadLayerWord:'', this.layerImageChange?this.roadLayerImage:''],
-        // layers: [roadLayer, roadLayerWord],
+        target: 'leftMap',
+        // layers: [this.mapType == 'a'?this.leftLayer2d:this.leftLayer, this.leftWordChange?this.leftLayerWord:'', this.layerImageChange?this.leftLayerImage:''],
+        // layers: [leftLayer, leftLayerWord],
         renderer: 'webgl',
         view: view
       })
       this.olMap2 = new Map({
-        target: 'aerialMap',
-        // layers: [this.mapType == 'a'?this.aerialLayer2d:this.aerialLayer, this.roadWordChange?this.aerialLayerWord:'', this.layerImageChange?this.aerialLayerImage:''],
-        // layers: [this.aerialLayer, this.aerialLayerWord],
+        target: 'rightMap',
+        // layers: [this.mapType == 'a'?this.rightLayer2d:this.rightLayer, this.leftWordChange?this.rightLayerWord:'', this.layerImageChange?this.rightLayerImage:''],
+        // layers: [this.rightLayer, this.rightLayerWord],
         renderer: 'dom',
         view: view
       })
       // 判断是2d还是卫星
       if (this.mapType == 'a') {
-        console.log('2d')
         if (this.sharedOnce == 2) {
-          this.olMap1.removeLayer(this.roadLayer2d)
-          this.olMap2.removeLayer(this.aerialLayer2d)
+          this.olMap1.removeLayer(this.leftLayer2d)
+          this.olMap2.removeLayer(this.rightLayer2d)
         }
-        this.olMap1.addLayer(this.roadLayer2d)
-        this.olMap2.addLayer(this.aerialLayer2d)
+        this.olMap1.addLayer(this.leftLayer2d)
+        this.olMap2.addLayer(this.rightLayer2d)
       } else if (this.mapType == 'b') {
         if (this.sharedOnce == 2) {
-          this.olMap1.removeLayer(this.roadLayer)
-          this.olMap2.removeLayer(this.aerialLayer)
+          this.olMap1.removeLayer(this.leftLayer)
+          this.olMap2.removeLayer(this.rightLayer)
         }
-        this.olMap1.addLayer(this.roadLayer)
-        this.olMap2.addLayer(this.aerialLayer)
+        this.olMap1.addLayer(this.leftLayer)
+        this.olMap2.addLayer(this.rightLayer)
       }
       // 判断道路标注是否打开
       if (this.roadWordChange) {
         if (this.sharedOnce == 2) {
-          this.olMap1.removeLayer(this.roadLayerWord)
-          this.olMap2.removeLayer(this.aerialLayerWord)
+          this.olMap1.removeLayer(this.leftLayerWord)
+          this.olMap2.removeLayer(this.rightLayerWord)
         }
-        this.olMap1.addLayer(this.roadLayerWord)
-        this.olMap2.addLayer(this.aerialLayerWord)
+        this.olMap1.addLayer(this.leftLayerWord)
+        this.olMap2.addLayer(this.rightLayerWord)
       } else {
-        this.olMap1.removeLayer(this.roadLayerWord)
-        this.olMap2.removeLayer(this.aerialLayerWord)
+        this.olMap1.removeLayer(this.leftLayerWord)
+        this.olMap2.removeLayer(this.rightLayerWord)
       }
       // 判断正射是否打开
       if (this.layerImageChange) {
         if (this.sharedOnce == 2) {
-          this.olMap1.removeLayer(this.roadLayerImage)
-          this.olMap2.removeLayer(this.aerialLayerImage)
+          this.olMap1.removeLayer(this.leftLayerImage)
+          this.olMap2.removeLayer(this.rightLayerImage)
         }
-        this.olMap1.addLayer(this.roadLayerImage)
-        this.olMap2.addLayer(this.aerialLayerImage)
+        this.olMap1.addLayer(this.leftLayerImage)
+        this.olMap2.addLayer(this.rightLayerImage)
       } else {
-        this.olMap1.removeLayer(this.roadLayerImage)
-        this.olMap2.removeLayer(this.aerialLayerImage)
+        this.olMap1.removeLayer(this.leftLayerImage)
+        this.olMap2.removeLayer(this.rightLayerImage)
       }
       this.sharedOnce = 2
     },
@@ -3588,35 +3594,39 @@ export default {
         } else {
           // 判断是2d还是卫星
           if (this.mapType == 'a') {
-            this.olMap1.removeLayer(this.roadLayer2d)
-            this.olMap2.removeLayer(this.aerialLayer2d)
-            this.olMap1.addLayer(this.roadLayer2d)
-            this.olMap2.addLayer(this.aerialLayer2d)
+            this.olMap1.removeLayer(this.leftLayer)
+            this.olMap2.removeLayer(this.rightLayer)
+            this.olMap1.removeLayer(this.leftLayer2d)
+            this.olMap2.removeLayer(this.rightLayer2d)
+            this.olMap1.addLayer(this.leftLayer2d)
+            this.olMap2.addLayer(this.rightLayer2d)
           } else if (this.mapType == 'b') {
-            this.olMap1.removeLayer(this.roadLayer)
-            this.olMap2.removeLayer(this.aerialLayer)
-            this.olMap1.addLayer(this.roadLayer)
-            this.olMap2.addLayer(this.aerialLayer)
+            this.olMap1.removeLayer(this.leftLayer)
+            this.olMap2.removeLayer(this.rightLayer)
+            this.olMap1.removeLayer(this.leftLayer2d)
+            this.olMap2.removeLayer(this.rightLayer2d)
+            this.olMap1.addLayer(this.leftLayer)
+            this.olMap2.addLayer(this.rightLayer)
           }
           // 判断道路标注是否打开
           if (this.roadWordChange) {
-            this.olMap1.removeLayer(this.roadLayerWord)
-            this.olMap2.removeLayer(this.aerialLayerWord)
-            this.olMap1.addLayer(this.roadLayerWord)
-            this.olMap2.addLayer(this.aerialLayerWord)
+            this.olMap1.removeLayer(this.leftLayerWord)
+            this.olMap2.removeLayer(this.rightLayerWord)
+            this.olMap1.addLayer(this.leftLayerWord)
+            this.olMap2.addLayer(this.rightLayerWord)
           } else {
-            this.olMap1.removeLayer(this.roadLayerWord)
-            this.olMap2.removeLayer(this.aerialLayerWord)
+            this.olMap1.removeLayer(this.leftLayerWord)
+            this.olMap2.removeLayer(this.rightLayerWord)
           }
           // 判断正射是否打开
           if (this.layerImageChange) {
-            this.olMap1.removeLayer(this.roadLayerImage)
-            this.olMap2.removeLayer(this.aerialLayerImage)
-            this.olMap1.addLayer(this.roadLayerImage)
-            this.olMap2.addLayer(this.aerialLayerImage)
+            this.olMap1.removeLayer(this.leftLayerImage)
+            this.olMap2.removeLayer(this.rightLayerImage)
+            this.olMap1.addLayer(this.leftLayerImage)
+            this.olMap2.addLayer(this.rightLayerImage)
           } else {
-            this.olMap1.removeLayer(this.roadLayerImage)
-            this.olMap2.removeLayer(this.aerialLayerImage)
+            this.olMap1.removeLayer(this.leftLayerImage)
+            this.olMap2.removeLayer(this.rightLayerImage)
           }
         }
         // this.sharedOnce = 2
@@ -3627,25 +3637,110 @@ export default {
       var vec_c = this.getTdLayer('vec_w')
       var cva_c = this.getTdLayer('cva_w')
       var img_c = this.getTdLayer('img_w')
+
+      // 左边道路标注
+      this.leftLayerWord = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        }),
+        zIndex: 15
+      })
+      // 右边道路标注
+      this.rightLayerWord = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        }),
+        zIndex: 15
+      })
+      // 左边卫星图
+      this.leftLayer = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        }),
+        zIndex: 9
+      })
+
+      // 右边卫星图
+      this.rightLayer = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        }),
+        zIndex: 9
+      })
+      // 左边2d
+      this.leftLayer2d = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        }),
+        zIndex: 9
+      })
+      // 右边2d
+      this.rightLayer2d = new TileLayer({
+        source: new XYZ({
+          url: `http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`,
+          maxZoom: 18
+        }),
+        zIndex: 9
+      })
+      // 左边正射
+      this.leftLayerImage = new TileLayer({
+        source: new XYZ({
+          url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
+            this.mapYear
+          }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
+            this.$store.state.tenantId
+          }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
+          maxZoom: 23
+        }),
+        zIndex: 10
+      })
+      // 右边正射
+      this.rightLayerImage = new TileLayer({
+        source: new XYZ({
+          url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
+            this.mapYear
+          }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
+            this.$store.state.tenantId
+          }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
+          maxZoom: 23
+        }),
+        zIndex: 10
+      })
+      // var veclayerGroup = new LayerGroup({
+      //   layers: [vec_c]
+      //   // layers: [vec_c, cva_c]
+      // })
+      // var imglayerGroup = new LayerGroup({
+      //   layers: [img_c]
+      //   // layers: [img_c, cva_c]
+      // })
       var veclayerGroup = new LayerGroup({
-        layers: [vec_c]
+        layers: [this.rightLayer2d, this.leftLayerWord]
         // layers: [vec_c, cva_c]
       })
       var imglayerGroup = new LayerGroup({
-        layers: [img_c]
+        layers: [this.rightLayer, this.leftLayerWord]
         // layers: [img_c, cva_c]
       })
       this.lmap = new Map({
         target: 'lmap',
-        layers: [imglayerGroup, veclayerGroup],
+        layers: [veclayerGroup, imglayerGroup],
+        // layers: [this.rightLayer, this.rightLayer2d],
         view: new View({
           projection: 'EPSG:4326',
           center: [this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat],
-          zoom: 14
+          zoom: 14,
+          minZoom: 1,
+          maxZoom: 23
         })
       })
       var swipe = document.getElementById('swipe')
-      vec_c.on('prerender', function(event) {
+      this.rightLayer.on('prerender', function(event) {
         var ctx = event.context
         var width = ctx.canvas.width * (swipe.value / 100)
         ctx.save()
@@ -3653,15 +3748,26 @@ export default {
         ctx.rect(width, 0, ctx.canvas.width - width, ctx.canvas.height)
         ctx.clip()
       })
-      vec_c.on('postrender', function(event) {
+      this.rightLayer.on('postrender', function(event) {
         var ctx = event.context
         ctx.restore()
       })
-      let that = this
+      this.leftLayerWord.on('prerender', function(event) {
+        var ctx = event.context
+        var width = ctx.canvas.width * (swipe.value / 100)
+        ctx.save()
+        ctx.beginPath()
+        ctx.rect(width, 0, ctx.canvas.width - width, ctx.canvas.height)
+        ctx.clip()
+      })
+      this.leftLayerWord.on('postrender', function(event) {
+        var ctx = event.context
+        ctx.restore()
+      })
       swipe.addEventListener(
         'input',
-        function() {
-          that.lmap.render()
+        () => {
+          this.lmap.render()
         },
         false
       )
@@ -3685,34 +3791,6 @@ export default {
       this.getMapPageData()
       if (this.historyData) {
       }
-    },
-    // openlayers 绘制点
-    olRiverRiskPoint(lnglat, imgUrl, id) {
-      console.log(lnglat, imgUrl)
-      let iconFeature = new Feature({
-        geometry: new Point([lnglat.lng, lnglat.lat]),
-        name: '',
-        population: 4000,
-        rainfall: 500
-      })
-      let iconStyle = new Style({
-        image: new Icon({
-          anchor: [0.5, 1],
-          // anchorXUnits: 'fraction',
-          // anchorYUnits: 'pixels',
-          src: imgUrl
-        })
-      })
-      iconFeature.setStyle(iconStyle)
-      let vectorSource = new VectorSource({
-        features: [iconFeature]
-      })
-      let vectorLayer = new VectorLayer({
-        source: vectorSource
-      })
-      vectorLayer.set('id', id)
-      this.olMap1.addLayer(vectorLayer)
-      this.olMap2.addLayer(vectorLayer)
     },
     // 添加标注
     drawAllPoint(latlng, index, id) {
@@ -4583,13 +4661,7 @@ export default {
                   points.push([point.lng, point.lat])
                 }
                 item.pointsData = points
-                this.olSharedDrawLine(
-                  item.pointsData,
-                  item.id,
-                  'olMap1',
-                  item.frameColor,
-                  item.framePellucidity
-                )
+                this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
               }
             } else {
               markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
@@ -4650,7 +4722,7 @@ export default {
           console.log(this.waterFlotagePointsRight)
         }
         // 双球开关
-        if (this.sharedChecked || this.swipeChecked) {
+        if (this.sharedChecked) {
           for (const item of this.waterFlotagePointsRight) {
             if (item.locationType.code == 'point') {
               item.latlng = {
@@ -4665,13 +4737,7 @@ export default {
                 points.push([point.lng, point.lat])
               }
               item.pointsData = points
-              this.olSharedDrawLine(
-                item.pointsData,
-                item.id,
-                'olMap1',
-                item.frameColor,
-                item.framePellucidity
-              )
+              this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
             }
             if (item.locationType.code == 'polygon') {
               let points = []
@@ -4705,7 +4771,7 @@ export default {
         // 卷帘开关
         if (this.swipeChecked) {
           for (const item of point) {
-            this.olSwipeDrawPoint(item.latlng, 'http://api.tianditu.gov.cn/v4.0/image/marker-icon.png', item.id)
+            this.olSwipeDrawPoint(item.latlng, item.drawType.icon, item.id)
           }
         }
       } else {
@@ -4763,13 +4829,7 @@ export default {
                   points.push([point.lng, point.lat])
                 }
                 item.pointsData = points
-                this.olSharedDrawLine(
-                  item.pointsData,
-                  item.id,
-                  'olMap1',
-                  item.frameColor,
-                  item.framePellucidity
-                )
+                this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
               }
             } else {
               markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
@@ -4847,13 +4907,7 @@ export default {
                 points.push([point.lng, point.lat])
               }
               item.pointsData = points
-              this.olSharedDrawLine(
-                item.pointsData,
-                item.id,
-                'olMap2',
-                item.frameColor,
-                item.framePellucidity
-              )
+              this.olSharedDrawLine(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity)
             }
             if (item.locationType.code == 'polygon') {
               let points = []
@@ -5107,13 +5161,7 @@ export default {
                     points.push([point.lng, point.lat])
                   }
                   item.pointsData = points
-                  this.olSharedDrawLine(
-                    item.pointsData,
-                    item.id,
-                    'olMap1',
-                    item.frameColor,
-                    item.framePellucidity
-                  )
+                  this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
                 }
               } else {
                 markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
@@ -5192,13 +5240,7 @@ export default {
                   points.push([point.lng, point.lat])
                 }
                 item.pointsData = points
-                this.olSharedDrawLine(
-                  item.pointsData,
-                  item.id,
-                  'olMap2',
-                  item.frameColor,
-                  item.framePellucidity
-                )
+                this.olSharedDrawLine(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity)
               }
               if (item.locationType.code == 'polygon') {
                 let points = []
@@ -5320,13 +5362,7 @@ export default {
                     points.push([point.lng, point.lat])
                   }
                   item.pointsData = points
-                  this.olSharedDrawLine(
-                    item.pointsData,
-                    item.id,
-                    'olMap1',
-                    item.frameColor,
-                    item.framePellucidity
-                  )
+                  this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
                 }
               } else {
                 markerTool = new T.Marker(item.line[0], {
@@ -5431,13 +5467,7 @@ export default {
                   points.push([point.lng, point.lat])
                 }
                 item.pointsData = points
-                this.olSharedDrawLine(
-                  item.pointsData,
-                  item.id,
-                  'olMap2',
-                  item.frameColor,
-                  item.framePellucidity
-                )
+                this.olSharedDrawLine(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity)
               }
               if (item.locationType.code == 'polygon') {
                 let points = []
@@ -5543,10 +5573,6 @@ export default {
       })
       let iconStyle = new Style({
         image: new Icon({
-          // anchor: [0.5, 1],
-          // // anchorXUnits: 'fraction',
-          // // anchorYUnits: 'pixels',
-          // src: imgUrl
           anchor: [0.5, 40],
           anchorOrigin: 'bottom-right',
           anchorXUnits: 'pixels',
@@ -5658,9 +5684,12 @@ export default {
       })
       let iconStyle = new Style({
         image: new Icon({
-          anchor: [0.5, 1],
-          // anchorXUnits: 'fraction',
-          // anchorYUnits: 'pixels',
+          anchor: [0.5, 40],
+          anchorOrigin: 'bottom-right',
+          anchorXUnits: 'pixels',
+          anchorYUnits: 'pixels',
+          scale: 1,
+          size: [40, 40],
           src: imgUrl
         })
       })
@@ -5669,7 +5698,8 @@ export default {
         features: [iconFeature]
       })
       let surveyPointLayer = new VectorLayer({
-        source: vectorSource
+        source: vectorSource,
+        zIndex: 20
       })
       surveyPointLayer.set('id', id)
       this.lmap.addLayer(surveyPointLayer)
