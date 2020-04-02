@@ -851,7 +851,7 @@
                             </a-row>
                           </template>
                           <div class="plan_personInfo">
-                            <a-checkbox-group @change="onChange">
+                            <a-checkbox-group @change="onChange" v-model="item.checkbox">
                               <a-row>
                                 <a-col
                                   class="person_check"
@@ -868,7 +868,7 @@
                                     </a-col>
                                     <a-col :span="4" style="line-height:30px;">
                                       <div
-                                        style="line-height:30px;width:10px;height:10px;border-radius:50%;background-color:green;"
+                                        :style="'line-height:30px;width:10px;height:10px;border-radius:50%;background-color:'+asdsad.rgb"
                                       ></div>
                                     </a-col>
                                   </a-row>
@@ -1440,7 +1440,19 @@ export default {
       riskPolygonData: [], // 风险地图数据
       riskSourceLevel: [], //风险源风险等级
       tigePage:[],//潮汐列表
-      rightIcon:false
+      rightIcon:false,
+      rbgList:[
+        '#8cc540',
+        '#27bbbc',
+        '#019fde',
+        '#6f62da',
+        '#d674e9',
+        '#fa7a91',
+        '#ff1244',
+        '#ff8345',
+        '#f8bd0b',
+        '#8b572a',
+      ]
     }
   },
   watch: {
@@ -2893,6 +2905,7 @@ export default {
     },
     //底部返回上一级按钮
     returnPre() {
+      this.map.clearOverLays()
       this.getinspectPointPage()
       this.getPage()
       this.firstShow = true
@@ -2997,33 +3010,30 @@ export default {
       this.checkPoint(checkedValues)
     },
     checkPoint(vals) {
-      for (const reg of this.regulatoryPage) {
-        for (const index of reg.teams) {
-          for (const staffs of index.staffs) {
-            var item = staffs
-            if (this.isExistInArr(vals, item.id)) {
-              //当前节点被选中
-              //判断当前节点是否已经存在于地图上
-              if (!this.mapMarkers.has(item.id)) {
-                //new一个marker，并以键值形式存储，以备后续操作
-                var lnglat = new T.LngLat(item.point.lng, item.point.lat)
-                var marker = new T.Marker(lnglat)
-                this.map.addOverLay(marker)
-                //存放当前marker
-                this.mapMarkers.set(item.id, marker)
-              }
-            } else {
-              //当前节点被取消勾选
-              if (this.mapMarkers.has(item.id)) {
-                //从地图删除
-                this.map.removeOverLay(this.mapMarkers.get(item.id))
-                //同时从暂存的mapMarkers中删除
-                this.mapMarkers.delete(item.id)
+      this.map.clearOverLays()
+      vals.forEach(v => {
+        for (const reg of this.regulatoryPage) {
+          for (const index of reg.teams) {
+            for (const staffs of index.staffs) {
+              if (v==staffs.id) {
+                if (staffs.locus.length>0) {
+                  let line = new T.Polyline(staffs.locus, {
+                    color: staffs.rgb, //线颜色
+                    weight: 3, //线宽
+                    id: staffs.id,
+                  })
+                  //向地图上添加线
+                  this.map.addOverLay(line)
+
+                  let markerTool = new T.Marker(staffs.locus[0], { })
+                  this.map.addOverLay(markerTool)
+                }
               }
             }
           }
         }
-      }
+      });
+      
     },
     isExistInArr(arr, item) {
       for (var i = 0; i < arr.length; i++) {
@@ -3125,6 +3135,7 @@ export default {
     //任务模块任务点
     loadPoint() {
       //随机标注点
+      this.map.clearOverLays()
       var picker = this.picker.split('-')
       var data = {
         id: '',
@@ -3171,9 +3182,16 @@ export default {
         var k = 0
         for (const item of arr) {
           k = k + 1
+          item.checkbox =[]
           item.plan.name = item.plan.name.slice(0, 2) + '-' + k
+          let aa = 0
           for (const a of item.teams) {
             for (const b of a.staffs) {
+              let R = Math.floor(Math.random() * 255);
+              let G = Math.floor(Math.random() * 255);
+              let B = Math.floor(Math.random() * 255);
+              b.rgb=this.rbgList[aa] 
+              aa = aa+1
               b.id = b.staff.id
               b.name = b.staff.worker.name
               b.role = b.staff.role.name
@@ -3182,6 +3200,7 @@ export default {
           }
         }
         this.regulatoryPage = arr
+        
       })
       // var line = new T.Polyline(this.cardData, lineconfig) //创建线条的对象
       // //向地图上添加线
