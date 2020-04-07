@@ -2892,17 +2892,35 @@ export default {
             this.defaultTime =
               item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
             this.defaultRightTime = this.defaultTime
+            this.mapYear = this.defaultTime.substring(0, 4)
+            this.mapMonth = this.defaultTime.substring(5, 7)
+            this.mapDay = this.defaultTime.substring(8, 10)
+            this.mapYearRight = this.defaultTime.substring(0, 4)
+            this.mapMonthRight = this.defaultTime.substring(5, 7)
+            this.mapDayRight = this.defaultTime.substring(8, 10)
             break
           } else if (item.manualTask != 0) {
             item.clicked = true
             this.defaultTime =
               item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
             this.defaultRightTime = this.defaultTime
+            this.mapYear = this.defaultTime.substring(0, 4)
+            this.mapMonth = this.defaultTime.substring(5, 7)
+            this.mapDay = this.defaultTime.substring(8, 10)
+            this.mapYearRight = this.defaultTime.substring(0, 4)
+            this.mapMonthRight = this.defaultTime.substring(5, 7)
+            this.mapDayRight = this.defaultTime.substring(8, 10)
             break
           } else {
             item.clicked = false
             this.defaultTime = this.endDate
             this.defaultRightTime = this.endDate
+            this.mapYear = this.defaultTime.substring(0, 4)
+            this.mapMonth = this.defaultTime.substring(5, 7)
+            this.mapDay = this.defaultTime.substring(8, 10)
+            this.mapYearRight = this.defaultTime.substring(0, 4)
+            this.mapMonthRight = this.defaultTime.substring(5, 7)
+            this.mapDayRight = this.defaultTime.substring(8, 10)
           }
         }
 
@@ -3094,17 +3112,17 @@ export default {
           // if (item.level != 2) {
           if (item.date == mouth) {
             this.defaultRightTime = mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8)
-            this.mapYear = mouth.substring(0, 4)
-            this.mapMonth = mouth.substring(4, 6)
-            this.mapDay = mouth.substring(6, 8)
+            this.mapYearRight = mouth.substring(0, 4)
+            this.mapMonthRight = mouth.substring(4, 6)
+            this.mapDayRight = mouth.substring(6, 8)
             if (this.sharedChecked && this.layerImageChange) {
               // 双球右边正射
               this.olMap2.removeLayer(this.rightLayerImage)
               this.rightLayerImage = new TileLayer({
                 source: new XYZ({
                   url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
-                    this.mapYear
-                  }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
+                    this.mapYearRight
+                  }&month=${this.mapMonthRight}&day=${this.mapDayRight}&x={x}&y={y}&z={z}&X-TENANT-ID=${
                     this.$store.state.tenantId
                   }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
                   maxZoom: 23
@@ -3547,8 +3565,8 @@ export default {
       this.rightLayerImage = new TileLayer({
         source: new XYZ({
           url: `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
-            this.mapYear
-          }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
+            this.mapYearRight
+          }&month=${this.mapMonthRight}&day=${this.mapDayRight}&x={x}&y={y}&z={z}&X-TENANT-ID=${
             this.$store.state.tenantId
           }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`,
           maxZoom: 23
