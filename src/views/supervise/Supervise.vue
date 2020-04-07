@@ -1512,8 +1512,9 @@ export default {
       }
       paramList(datarisk).then(res => {
         res.data.forEach(v => {
-          v.clicked = false
+          v.clicked = true
         })
+        // 风险源列表
         this.riskSourceList = res.data
       })
     },
@@ -2023,10 +2024,12 @@ export default {
           }
         })
         this.riverRiskPoints = ar
-        // 点击切换重新绘制触发
-        for (const item of this.riskSourceList) {
-          if (item.clicked) {
-            this.onDrawType(item.id, true)
+        if (this.riverRisk) {
+          // 点击切换重新绘制触发
+          for (const item of this.riskSourceList) {
+            if (item.clicked) {
+              this.onDrawType(item.id, true)
+            }
           }
         }
       })
@@ -2069,10 +2072,12 @@ export default {
           }
         })
         this.riverRiskPointsRight = ar
-        // 点击切换重新绘制触发
-        for (const item of this.riskSourceList) {
-          if (item.clicked) {
-            this.onDrawType(item.id, true)
+        if (this.riverRisk) {
+          // 点击切换重新绘制触发
+          for (const item of this.riskSourceList) {
+            if (item.clicked) {
+              this.onDrawType(item.id, true)
+            }
           }
         }
       })
@@ -5234,10 +5239,15 @@ export default {
     // 河岸风险源
     onRiverRisk() {
       if (this.riverRisk) {
+        for (const item of this.riskSourceList) {
+          if (item.clicked) {
+            this.onDrawType(item.id, true)
+          }
+        }
       } else {
-        this.riskSourceList.forEach(v => {
-          v.clicked = false
-        })
+        // this.riskSourceList.forEach(v => {
+        //   v.clicked = false
+        // })
         this.removeOverLays(this.riverRiskPoints)
         // 双球开关
         if (this.sharedChecked) {
