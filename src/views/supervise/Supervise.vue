@@ -1443,7 +1443,7 @@ export default {
           }
         } else {
           this.itgePortId = ''
-          this.$message.warning('当前日期下无潮汐数据')
+          // this.$message.warning('当前日期下无潮汐数据')
           this.drawLineItge([])
         }
       })
@@ -3029,7 +3029,7 @@ export default {
           this.weatherData.clouds = arr.clouds
         })
         .catch(err => {
-          this.$message.error('天气数据不存在')
+          // this.$message.error('天气数据不存在')
         })
     },
     // 时间轴
