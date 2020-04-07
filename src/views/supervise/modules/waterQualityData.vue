@@ -49,7 +49,7 @@
         <a-checkbox-group style="display:flex; flex-direction: column;" v-model="checkbox" @change="changeCheckbox">
           <a-checkbox value="1" style="margin:0 0 7px 0">PH值</a-checkbox>
           <a-checkbox value="2" style="margin:0 0 7px 0">溶解氧</a-checkbox>
-          <a-checkbox value="3" style="margin:0 0 7px 0">高猛酸盐指数</a-checkbox>
+          <a-checkbox value="3" style="margin:0 0 7px 0">高锰酸盐指数</a-checkbox>
           <a-checkbox value="4" style="margin:0 0 7px 0">氨氮</a-checkbox>
           <a-checkbox value="5" style="margin:0 0 7px 0">总磷</a-checkbox>
           <!-- <a-checkbox value="6" style="margin:0 0 7px 0">透明度</a-checkbox>
