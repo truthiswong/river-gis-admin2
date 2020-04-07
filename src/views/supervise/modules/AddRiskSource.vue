@@ -95,18 +95,6 @@
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="一级河长">
-              <a-input placeholder v-model="list.controller" disabled />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row style="width:100%">
-          <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="二级河长">
-              <a-input placeholder v-model="list.tworiver" disabled />
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="地标位置">
               <a-input placeholder v-model="list.landmarkLocation" />
             </a-form-item>
@@ -114,13 +102,13 @@
         </a-row>
         <a-row style="width:100%">
           <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="地址">
-              <a-input placeholder v-model="list.address" disabled />
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="一级河长">
+              <a-input placeholder v-model="list.controller" disabled />
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="准确位置">
-              <a-input placeholder v-model="list.accurateLocation" />
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="二级河长">
+              <a-input placeholder v-model="list.tworiver" disabled />
             </a-form-item>
           </a-col>
         </a-row>
@@ -133,6 +121,18 @@
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="纬度">
               <a-input placeholder v-model="list.lat" disabled />
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row style="width:100%">
+          <a-col :span="24">
+            <a-form-item :label-col="{span: 3, offset: 0}" :wrapper-col="{span: 20, offset: 0}" label="地址">
+              <a-input placeholder v-model="list.address" disabled />
+            </a-form-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-item :label-col="{span: 3, offset: 0}" :wrapper-col="{span: 20, offset: 0}" label="准确位置">
+              <a-input placeholder v-model="list.accurateLocation" />
             </a-form-item>
           </a-col>
         </a-row>
