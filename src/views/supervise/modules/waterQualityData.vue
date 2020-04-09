@@ -227,7 +227,7 @@ export default {
           });
           this.main2=true
         }else if(item == '3'){
-          text = '高猛酸盐指数'
+          text = '高锰酸盐指数'
           this.listMain.forEach(v => {
             date.push(v.date)
             xis.push(v.cod)
