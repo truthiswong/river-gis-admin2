@@ -16,6 +16,11 @@ function cloneSingleNode(nativeNode) {
         return utils_1.createImage(nativeNode.toDataURL());
     }
     if (nativeNode.tagName && nativeNode.tagName.toLowerCase() === 'svg') {
+        var numArr = nativeNode.style.transform.replace(/((^|[^\d\)])-\d+)/g,"$1@").match(/\(|\)|\+|-(\d+(?=@))?|\*|\/|\d+/g)
+        window.transXXX = Number(numArr[2])
+        window.transYYY = Number(numArr[3])
+        window.nativeNodeSvg = nativeNode
+        nativeNode.style.transform = `translate3d(${window.transXXX/2}px, ${window.transYYY/2}px, 0px)`;
         return Promise.resolve(nativeNode)
             .then(function (svg) { return utils_1.svgToDataURL(svg); })
             .then(utils_1.createImage);
