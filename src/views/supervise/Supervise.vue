@@ -3421,6 +3421,7 @@ export default {
         .toPng(node, { width: mapWidth, height: mapHeight })
         .then(dataUrl => {
           this.downloadFile('map' + this.getNowTime() + '.png', dataUrl)
+          window.nativeNodeSvg.style.transform = `translate3d(${window.transXXX}px, ${window.transYYY}px, 0px)`;
           setTimeout(() => {
             this.canDownload = true
           }, 1500)
