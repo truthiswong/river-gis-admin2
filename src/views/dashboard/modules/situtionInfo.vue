@@ -43,10 +43,10 @@
           <a-col :span="8">{{uavDetail.uavDetail.ipadCode}}</a-col>
         </a-row>
         <a-row type="flex" align="middle">
-          <a-col :span="8">任务开始时间:</a-col>
+          <a-col :span="8">任务执行时间:</a-col>
           <a-col :span="8">{{uavDetail.uavDetail.beginTime}}</a-col>
         </a-row>
-        <a-row type="flex" align="middle">
+        <a-row type="flex" align="middle" v-if="uavDetail.uavDetail.endTime!=false">
           <a-col :span="8">任务结束时间:</a-col>
           <a-col :span="8">{{uavDetail.uavDetail.endTime}}</a-col>
         </a-row>
@@ -82,10 +82,10 @@
             <a-col :span="8">{{manualDetail.manualDetail.coordinate[0]}},{{manualDetail.manualDetail.coordinate[1]}}</a-col>
           </a-row>
           <a-row type="flex" align="middle">
-            <a-col :span="8">任务开始时间:</a-col>
+            <a-col :span="8">任务执行时间:</a-col>
             <a-col :span="8">{{manualDetail.manualDetail.beginTime}}</a-col>
           </a-row>
-          <a-row type="flex" align="middle">
+          <a-row type="flex" align="middle" v-if="manualDetail.manualDetail.endTime!=false">
             <a-col :span="8">任务结束时间:</a-col>
             <a-col :span="8">{{manualDetail.manualDetail.endTime}}</a-col>
           </a-row>
@@ -150,10 +150,10 @@
             <a-col :span="8">{{waterDetail.timeCreated}}</a-col>
           </a-row>
           <a-row type="flex" align="middle">
-            <a-col :span="8">任务开始时间:</a-col>
+            <a-col :span="8">任务执行时间:</a-col>
             <a-col :span="8">{{waterDetail.waterDetail.beginTime}}</a-col>
           </a-row>
-          <a-row type="flex" align="middle">
+          <a-row type="flex" align="middle" v-if="waterDetail.waterDetail.endTime!=false">
             <a-col :span="8">任务结束时间:</a-col>
             <a-col :span="8">{{waterDetail.waterDetail.endTime}}</a-col>
           </a-row>
@@ -196,6 +196,7 @@
 </template>
 <script>
 import { inspectTaskDetail } from '@/api/login'
+import { number } from 'echarts/lib/export';
 export default {
   name: 'situtionInfo',
   data() {
@@ -222,18 +223,36 @@ export default {
           var hour = now.getHours() //返回日期中的小时数（0到23）
           var minute = now.getMinutes() //返回日期中的分钟数（0到59）
           var second = now.getSeconds() //返回日期中的秒数（0到59）
+          if (Number(hour) <10) {
+            hour = '0'+hour
+          }
+           if (Number(minute) <10) {
+            minute = '0'+minute
+          }
+           if (Number(second) <10) {
+            second = '0'+second
+          }
           return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
         }
         if (arr.template.code == 'uav') {
           arr.timeCreated = formatDate(new Date(arr.timeCreated))
           arr.uavDetail.beginTime = formatDate(new Date(arr.uavDetail.beginTime))
-          arr.uavDetail.endTime = formatDate(new Date(arr.uavDetail.endTime))
+          if (arr.uavDetail.endTime!=null) {
+            arr.uavDetail.endTime = formatDate(new Date(arr.uavDetail.endTime))
+          }else{
+            arr.uavDetail.endTime=false
+          }
+          
           this.uavDetail = arr
         }
         if (arr.template.code == 'manual') {
           arr.timeCreated = formatDate(new Date(arr.timeCreated))
           arr.manualDetail.beginTime = formatDate(new Date(arr.manualDetail.beginTime))
-          arr.manualDetail.endTime = formatDate(new Date(arr.manualDetail.endTime))
+          if (arr.manualDetail.endTime!=null) {
+            arr.manualDetail.endTime = formatDate(new Date(arr.manualDetail.endTime))
+          }else{
+            arr.manualDetail.endTime=false
+          }
           if (arr.manualDetail.beginTime == 'NaN-NaN-NaN NaN:NaN:NaN') {
             arr.manualDetail.beginTime = ''
           }
@@ -243,34 +262,82 @@ export default {
             arr.latlng = aaa.formatted_address
           })
           arr.floater =''
-          if (arr.manualDetail.floater.length>0) {
-            arr.manualDetail.floater.forEach(v => {
-              arr.floater=arr.floater+v.name+','
-            });
+          if (arr.manualDetail.floater!=null) {
+            if (arr.manualDetail.floater.length>0) {
+              for (let i = 0; i <  arr.manualDetail.floater.length; i++) {
+                if (i == arr.manualDetail.floater.length - 1) {
+                  arr.floater=arr.floater+arr.manualDetail.floater[0].name
+                }else{
+                  arr.floater=arr.floater+arr.manualDetail.floater[0].name+','
+                }
+              }
+              // arr.manualDetail.floater.forEach(v => {
+              //   arr.floater=arr.floater+v.name+','
+              // });
+            } 
           }
+          
           arr.biont =''
-          if (arr.manualDetail.biont.length>0) {
-            arr.manualDetail.biont.forEach(v => {
-              arr.biont=arr.biont+v.name+','
-            });
+          if (arr.manualDetail.biont!=null) {
+            if (arr.manualDetail.biont.length>0) {
+              for (let i = 0; i <  arr.manualDetail.biont.length; i++) {
+                if (i == arr.manualDetail.biont.length - 1) {
+                  arr.biont=arr.biont+arr.manualDetail.biont[0].name
+                }else{
+                  arr.biont=arr.biont+arr.manualDetail.biont[0].name+','
+                }
+              }
+              // arr.manualDetail.biont.forEach(v => {
+              //   arr.biont=arr.biont+v.name+','
+              // });
+            }
           }
           arr.govern =''
-          if (arr.manualDetail.govern.length>0) {
-            arr.manualDetail.govern.forEach(v => {
-              arr.govern=arr.govern+v.name+','
-            });
+          
+           if (arr.manualDetail.govern!=null) {
+            if (arr.manualDetail.govern.length>0) {
+              for (let i = 0; i <  arr.manualDetail.govern.length; i++) {
+                if (i == arr.manualDetail.govern.length - 1) {
+                  arr.govern=arr.govern+arr.manualDetail.govern[0].name
+                }else{
+                  arr.govern=arr.govern+arr.manualDetail.govern[0].name+','
+                }
+              }
+              // arr.manualDetail.govern.forEach(v => {
+              //   arr.govern=arr.govern+v.name+','
+              // });
+            }
           }
           arr.riskSource =''
-          if (arr.manualDetail.riskSource.length>0) {
-            arr.manualDetail.riskSource.forEach(v => {
-              arr.riskSource=arr.riskSource+v.name+','
-            });
+         
+           if (arr.manualDetail.riskSource!=null) {
+             if (arr.manualDetail.riskSource.length>0) {
+              for (let i = 0; i <  arr.manualDetail.riskSource.length; i++) {
+                if (i == arr.manualDetail.riskSource.length - 1) {
+                  arr.riskSource=arr.riskSource+arr.manualDetail.riskSource[0].name
+                }else{
+                  arr.riskSource=arr.riskSource+arr.manualDetail.riskSource[0].name+','
+                }
+              }
+              // arr.manualDetail.riskSource.forEach(v => {
+              //   arr.riskSource=arr.riskSource+v.name+','
+              // });
+            }
           }
           arr.emergency =''
-          if (arr.manualDetail.emergency.length>0) {
-            arr.manualDetail.emergency.forEach(v => {
-              arr.emergency=arr.emergency+v.name+','
-            });
+           if (arr.manualDetail.emergency!=null) {
+            if (arr.manualDetail.emergency.length>0) {
+              for (let i = 0; i <  arr.manualDetail.emergency.length; i++) {
+                if (i == arr.manualDetail.emergency.length - 1) {
+                  arr.emergency=arr.emergency+arr.manualDetail.emergency[0].name
+                }else{
+                  arr.emergency=arr.emergency+arr.manualDetail.emergency[0].name+','
+                }
+              }
+              // arr.manualDetail.emergency.forEach(v => {
+              //   arr.emergency=arr.emergency+v.name+','
+              // });
+            } 
           }
           this.manualDetail = arr
           console.log( this.manualDetail);
@@ -278,7 +345,12 @@ export default {
         if (arr.template.code == 'water') {
           arr.timeCreated = formatDate(new Date(arr.timeCreated))
           arr.waterDetail.beginTime = formatDate(new Date(arr.waterDetail.beginTime))
-          arr.waterDetail.endTime = formatDate(new Date(arr.waterDetail.endTime))
+          
+          if (arr.waterDetail.endTime !=null) {
+           arr.waterDetail.endTime = formatDate(new Date(arr.waterDetail.endTime))
+          }else{
+            arr.waterDetail.endTime =false
+          }
           if (arr.waterDetail.beginTime == 'NaN-NaN-NaN NaN:NaN:NaN') {
             arr.waterDetail.beginTime = ''
           }

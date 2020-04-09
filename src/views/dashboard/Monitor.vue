@@ -1463,6 +1463,7 @@ export default {
       this.getPage()
       this.getRecommendFangan()
       this.map.panTo(this.$store.state.projectCoordinate, 14)
+     
     },
     itgePortId(){
       for (const item of this.tigePage) {
@@ -1689,6 +1690,10 @@ export default {
             v.clicked = false
           })
           this.riverList = arr
+          if ( this.$refs.selectPatrol.visible==true) {
+            this.addRiverRefresh()
+          }
+          
         })
         .catch(err => {})
     },
@@ -3228,6 +3233,9 @@ export default {
       this.drawRiver()
       this.$refs.selectPatrol.show(this.riverList)
       this.$refs.addSurvey.close()
+    },
+    addRiverRefresh(){
+      this.$refs.selectPatrol.show(this.riverList)
     },
     asdasdsadsa() {
       this.$refs.waterquality.add()
