@@ -1346,6 +1346,7 @@ export default {
       } else {
         this.getTimeQuantum() // 获取时间段
         this.getRiverStreeList()
+        this.getParamList()
         this.map.panTo(this.$store.state.projectCoordinate, 14)
       }
     },
@@ -1787,6 +1788,13 @@ export default {
     },
     // 获取河流街道列表
     getRiverStreeList() {
+      // 切换项目清除上次河道街道
+      if (this.riverShow) {
+        this.removeOverLays(this.riverShowList)
+      }
+      if (this.streetShow) {
+        this.removeOverLays(this.streetShowList)
+      }
       getStreetList(this.$store.state.id)
         .then(res => {
           let arr = res.data.data
@@ -1799,7 +1807,7 @@ export default {
             v.clicked = false
           })
           this.streetShowList = arr
-          // console.log(this.streetShowList)
+          this.onStreetShow()
         })
         .catch(err => {})
       getRiverList(this.$store.state.id)
@@ -1824,7 +1832,7 @@ export default {
             v.clicked = false
           })
           this.riverShowList = arr
-          // console.log(this.riverShowList)
+          this.onRiverShow()
         })
         .catch(err => {})
       // // 二维数据转换
