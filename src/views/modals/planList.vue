@@ -324,14 +324,19 @@ export default {
                     this.numvis = false
                   })
               }
-              planPublish(this.id).then(res => {
-                this.$message.success('成功')
-                this.spinning = true
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
-              })
-              this.visible = false
+               this.t1 = setTimeout(() => {
+                 planPublish(this.id).then(res => {
+                  this.$message.success('成功')
+                  this.visible = false
+                  this.spinning = true
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+                  
+                })
+               },3000)
+              
+              
             }
           }else{
             if (item.roles[i].workerId.length  == 0) {

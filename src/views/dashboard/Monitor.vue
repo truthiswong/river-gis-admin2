@@ -3230,6 +3230,9 @@ export default {
     },
     //添加河道按钮事件
     addRiverBtn() {
+      if (this.markerTool) {
+        this.markerTool.close()
+      }
       this.drawRiver()
       this.$refs.selectPatrol.show(this.riverList)
       this.$refs.addSurvey.close()
@@ -3380,14 +3383,18 @@ export default {
     },
     // 添加调查点
     addSurveyPoints() {
+      if (this.markerTool) {
+        this.markerTool.close()
+      }
       let icon = new T.Icon({
         iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
         iconSize: new T.Point(19, 27),
         iconAnchor: new T.Point(10, 25)
       })
-      let markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
-      markerTool.open()
-      markerTool.addEventListener('mouseup', this.addPointed)
+      this.markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
+      this.markerTool.open()
+
+      this.markerTool.addEventListener('mouseup', this.addPointed)
     },
     // 添加调查点后
     addPointed(e) {
