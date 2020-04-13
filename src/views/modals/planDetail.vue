@@ -38,6 +38,7 @@
                     :wrapper-col="wrapperCol"
                     v-for="(item,index) in option.roles"
                     :key="index"
+                     style="margin-bottom:20px"
                   >
                     <a-checkbox-group v-model="item.workerId">
                       <a-checkbox
@@ -59,6 +60,7 @@
                     :wrapper-col="wrapperCol"
                     v-for="(add,jj) in option.devices"
                     :key="jj"
+                    style="margin-top:20px"
                   >
                     <a-checkbox-group
                       v-model="add.workerId"
@@ -86,7 +88,7 @@
                   >
                     <a-checkbox-group
                       v-model="option.additionalList"
-                      style="width:100%;display:flex"
+                      style="width:100%;display:flex;margin-bottom:20px"
                     >
                       <div
                         style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between"
@@ -387,5 +389,10 @@ export default {
 .planDetail_info {
   padding: 10px 20px;
   border-bottom: 1px solid #e8e8e8;
+}
+</style>
+<style >
+.ant-checkbox-disabled + span{
+ color: #000000
 }
 </style>

@@ -45,6 +45,7 @@
                     :wrapper-col="wrapperCol"
                     v-for="(item,index) in option.roles"
                     :key="index"
+                    style="margin-bottom:20px"
                   >
                     <a-checkbox-group v-model="item.workerId">
                       <a-checkbox
@@ -56,7 +57,7 @@
                   </a-form-item>
                 </div>
                 <div>
-                  <span style="font-size:16px;font-weight:500;color: #1F1F1F;margin:10px 0" >设备: <span>
+                  <span style="font-size:16px;font-weight:500;color: #1F1F1F;margin:10px 0;" >设备: <span>
                       <a-input  style="margin:0 10px 0 30px;width:150px" placeholder="请输入名称" v-model="nameAdditional"/>
                       <a-button block style="width:70px" @click="additionalClick(option.id)">添加</a-button>
                     </span></span>
@@ -66,6 +67,7 @@
                     :wrapper-col="wrapperCol"
                     v-for="(add,jj) in option.devices"
                     :key="jj"
+                    style="margin-top:20px"
                   >
                     <a-checkbox-group
                       v-model="add.workerId"
@@ -77,7 +79,7 @@
                         v-for="devi in add.devices"
                         :key="devi.device.id"
                       >
-                        <a-checkbox disabled :value="devi.device.id">{{devi.device.name}}</a-checkbox>
+                        <a-checkbox disabled :value="devi.device.id" style="color:#000000">{{devi.device.name}}</a-checkbox>
                         <a-input-number
                           class="changeNumber"
                           :min="devi.amount1"
@@ -93,10 +95,10 @@
                   >
                     <a-checkbox-group
                       v-model="option.additionalList"
-                      style="width:100%;display:flex"
+                      style="width:100%;display:flex;margin-bottom:20px"
                     >
                       <div
-                        style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between"
+                        style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between;"
                         v-for="(ew,cc) in option.additional"
                         :key="cc"
                       >
@@ -375,4 +377,10 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+
+</style>
+<style >
+.ant-checkbox-disabled + span{
+ color: #000000
+}
 </style>
