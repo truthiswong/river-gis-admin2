@@ -95,7 +95,7 @@
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="地标位置">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="治理单位">
               <a-input placeholder v-model="list.landmarkLocation" />
             </a-form-item>
           </a-col>
