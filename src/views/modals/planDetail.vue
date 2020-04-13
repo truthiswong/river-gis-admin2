@@ -4,6 +4,7 @@
     :width="1200"
     :visible="visible"
     @ok="submitPlan"
+     :confirmLoading="confirmLoading"
     @cancel="cancleBtn"
     :maskClosable="false"
     class="palnDetail_modal"
@@ -129,6 +130,7 @@ export default {
   data() {
     return {
       nameAdditional:'',
+      confirmLoading:false,
       spinning: true,
       date: '',
       name: '',
@@ -229,15 +231,16 @@ export default {
       this.teamId = id
     },
     submitPlan(e) {
+      this.confirmLoading=true
       var worker = ''
       var amount = ''
       var extraDeviceAmount = ''
-      console.log(this.planTab);
       for (const item of this.planTab) {
         for (let i=0;i<item.roles.length;i++) {
           if (i + 1 == item.roles.length) {
             if (item.roles[i].workerId.length  == 0) {
               this.$message.warning('请全部分配人员')
+              this.confirmLoading=false
               break
             }else{
               for (const item of this.planTab) {
@@ -256,6 +259,7 @@ export default {
 
                     })
                     .catch(err => {
+                      this.confirmLoading=false
                       this.numvis = false
                     })
                 }
@@ -287,25 +291,30 @@ export default {
                 equipmentRiverSave(arr).then(res => {
 
                 }).catch(err => {
+                  this.confirmLoading=false
                   this.numvis = false
                 })
               }
-              Promise.all((resolve, reject) => {
+              this.t1 = setTimeout(() => {
                 planPublish(this.id).then(res => {
+                  this.confirmLoading=false
+                  this.visible = false
                   this.$message.success('成功')
                   this.spinning = true
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
                 })
-              })
+              },3000)
              
               
-              this.visible = false
+              
             }
           }else{
+            
             if (item.roles[i].workerId.length  == 0) {
               this.$message.warning('请全部分配人员')
+              this.confirmLoading=false
               break
             } else {
               

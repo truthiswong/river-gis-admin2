@@ -21,6 +21,7 @@
       :width="1100"
       :visible="visible"
       @ok="submitPlan"
+       :confirmLoading="confirmLoading"
       @cancel="cancleBtn"
       :maskClosable="false"
       class="modal_plan"
@@ -152,6 +153,7 @@ export default {
     return {
       nameAdditional:'',
       spinning: true,
+      confirmLoading:false,
       teamId: '',
       checkedKeys: ['0-1-0-0'],
       selectedKeys: [],
@@ -268,6 +270,7 @@ export default {
     },
     //表单提交
     submitPlan(e) {
+      this.confirmLoading=true
       var worker = ''
       var amount = ''
       var extraDeviceAmount = ''
@@ -276,6 +279,7 @@ export default {
           if (i + 1 == item.roles.length) {
             if (item.roles[i].workerId.length  == 0) {
               this.$message.warning('请全部分配人员')
+              this.confirmLoading=false
               break
             }else{
               for (const item of this.planTab) {
@@ -292,6 +296,7 @@ export default {
                   memberRiverSave(data)
                     .then(res => {})
                     .catch(err => {
+                      this.confirmLoading=false
                       this.numvis = false
                     })
                 }
@@ -323,14 +328,16 @@ export default {
                 equipmentRiverSave(arr)
                   .then(res => {})
                   .catch(err => {
+                    this.confirmLoading=false
                     this.numvis = false
                   })
               }
                this.t1 = setTimeout(() => {
                  planPublish(this.id).then(res => {
+                   this.confirmLoading=false
                   this.$message.success('成功')
                   this.visible = false
-                  this.spinning = true
+                  // this.spinning = true
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
@@ -341,8 +348,11 @@ export default {
               
             }
           }else{
+             
             if (item.roles[i].workerId.length  == 0) {
               this.$message.warning('请全部分配人员')
+              this.confirmLoading=false
+              //  this.spinning = false
               break
             } else {
               

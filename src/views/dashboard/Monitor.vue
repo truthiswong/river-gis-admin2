@@ -889,7 +889,8 @@
             <div v-if="ishidden == 1">
               <a-row type="flex" justify="space-around">
                 <a-col :span="10">
-                  <a-button class="groupBtn" @click="newPlan_btn" v-show="hidingJudgment">生成计划</a-button>
+                  <!-- <a-button class="groupBtn" @click="newPlan_btn" v-show="hidingJudgment">生成计划</a-button> -->
+                  <a-button class="groupBtn" @click="newPlan_btn" >生成计划</a-button>
                 </a-col>
                 <a-col :span="10">
                   <a-popover title="加入计划" placement="topLeft" trigger="click" :width="100">
