@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="添加任务点"
+    :title="title"
     :width="400"
     :visible="visible"
     :confirmLoading="confirmLoading"
@@ -70,6 +70,7 @@ import { taskPointDetail, taskPointSave,getRiverList} from '@/api/login'
 export default {
   data() {
     return {
+      title:'',
       list:{
         id:'',
         taskId:'',
@@ -119,7 +120,7 @@ export default {
     },
     //新建
     add(e,data,taskId) {
-      console.log(e,data,taskId);
+      this.title = '添加点任务'
       this.list.coordinate = data.lon +','+data.lat
       this.list.taskId = taskId
       this.list.locationInfo = e
@@ -147,8 +148,9 @@ export default {
     edit(id){
 
       taskPointDetail(id).then(res => {
-        console.log(res);
+        // console.log(res);
         var arr = res.data
+        this.title = arr.taskInfo.title
         this.list.taskId = arr.taskInfo.id
         this.list.name = arr.name
         this.list.locationInfo = arr.locationInfo
