@@ -304,6 +304,9 @@ export default {
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+                }).catch(err => {
+                  this.confirmLoading=false
+                  this.$message.error(err.response.data.message)
                 })
               },3000)
              

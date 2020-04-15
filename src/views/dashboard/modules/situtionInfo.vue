@@ -79,7 +79,7 @@
           </a-row>
           <a-row type="flex" align="middle">
             <a-col :span="8">坐标:</a-col>
-            <a-col :span="8">{{manualDetail.manualDetail.coordinate[0]}},{{manualDetail.manualDetail.coordinate[1]}}</a-col>
+            <a-col :span="8">{{manualDetail.manualDetail.coordinate[0]}} , {{manualDetail.manualDetail.coordinate[1]}}</a-col>
           </a-row>
           <a-row type="flex" align="middle">
             <a-col :span="8">任务执行时间:</a-col>
@@ -128,6 +128,14 @@
           <a-row type="flex" align="middle">
             <a-col :span="8">备注:</a-col>
             <a-col :span="8">{{manualDetail.manualDetail.remark}}</a-col>
+          </a-row>
+          <a-row type="flex" align="middle">
+            <a-col :span="8">照片:</a-col>
+            <a-col :span="8">
+              <viewer   :images="imgList" style="display:flex">
+                <img  v-for="item of imgList"  :key="item" :src="item.media" style="margin:0 5px 5px 0;width:80px"/>
+              </viewer>
+            </a-col>
           </a-row>
         </div>
       </div>
@@ -184,8 +192,8 @@
           <a-row type="flex" align="middle">
             <a-col :span="8">照片:</a-col>
             <a-col :span="8">
-              <viewer  >
-                <img  :src="waterDetail.waterDetail.pic" :alt="waterDetail.waterDetail.pic" />
+              <viewer   :images="imgList">
+                <img  v-for="item of imgList"  :key="item" :src="item.media" style="margin:0 5px 5px 0;width:80px"/>
               </viewer>
             </a-col>
           </a-row>
@@ -195,7 +203,7 @@
   </a-modal>
 </template>
 <script>
-import { inspectTaskDetail } from '@/api/login'
+import { inspectTaskDetail,resultMediaList } from '@/api/login'
 import { number } from 'echarts/lib/export';
 export default {
   name: 'situtionInfo',
@@ -205,16 +213,14 @@ export default {
       sitution: '',
       uavDetail: {},
       manualDetail: {},
-      waterDetail: {}
+      waterDetail: {},
+      imgList:[],
     }
   },
   methods: { 
     show(id) {
-      console.log('111');
         inspectTaskDetail(id).then(res => {
         var arr = res.data
-        console.log(arr);
-        
         this.sitution = arr.template.code
         function formatDate(now) {
           var year = now.getFullYear() //取得4位数的年份
@@ -234,6 +240,9 @@ export default {
           }
           return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
         }
+        resultMediaList(arr.id).then(res=>{
+            this.imgList = res.data
+        })
         if (arr.template.code == 'uav') {
           arr.timeCreated = formatDate(new Date(arr.timeCreated))
           arr.uavDetail.beginTime = formatDate(new Date(arr.uavDetail.beginTime))
@@ -258,7 +267,7 @@ export default {
           }
           let geocode = new T.Geocoder()
           arr.latlng=''
-          geocode.getLocation(new T.LngLat(arr.manualDetail.coordinate[0], arr.manualDetail.coordinate[1]), aaa => {
+          geocode.getLocation(new T.LngLat(arr.manualDetail.coordinate[0] , arr.manualDetail.coordinate[1]), aaa => {
             arr.latlng = aaa.formatted_address
           })
           arr.floater =''
@@ -362,6 +371,7 @@ export default {
      
     },
     handleOk() {
+      this.imgList = []
       this.visible = false
     }
   }

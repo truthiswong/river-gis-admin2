@@ -229,7 +229,11 @@ export default {
               item.additional = ddd
               item.additionalList =suc
               item.devices = arrr
+            }).catch(err => {    
+              this.$message.error(err.response.data.message)
             })
+          }).catch(err => {    
+            this.$message.error(err.response.data.message)
           })
           staffPage(item.id).then(res => {
             var staff = res.data.data
@@ -248,12 +252,17 @@ export default {
               })
               item.roles = ar
             })
+          }).catch(err => {
+                  
+            this.$message.error(err.response.data.message)
           })
         }
         console.log(arr);
         
         this.planTab = arr
         this.spinning = false
+      }).catch(err => {    
+        this.$message.error(err.response.data.message)
       })
       this.teamId = id
     },
@@ -342,6 +351,9 @@ export default {
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
                   
+                }).catch(err => {
+                  this.confirmLoading=false
+                  this.$message.error(err.response.data.message)
                 })
                },3000)
               
