@@ -2332,6 +2332,9 @@ export default {
     setCenter() {
       console.log(this.$store.state.projectCoordinate)
       this.map.panTo(this.$store.state.projectCoordinate, 14)
+      if (this.sharedChecked) {
+        this.olview.setCenter([this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat])
+      }
     },
     // 工具
     toolsShowFun() {
@@ -3481,10 +3484,18 @@ export default {
     // 放大
     mapZoomIn() {
       this.map.zoomIn()
+      if (this.sharedChecked) {
+        console.log(this.olview.getZoom())
+        this.olview.setZoom(this.olview.getZoom()+1)
+      }
     },
     // 缩小
     mapZoomOut() {
       this.map.zoomOut()
+      if (this.sharedChecked) {
+        console.log(this.olview.getZoom())
+        this.olview.setZoom(this.olview.getZoom()-1)
+      }
     },
     removeOverLays(itemList) {
       for (const overlay of this.map.getOverlays()) {
@@ -3582,7 +3593,7 @@ export default {
         }),
         zIndex: 10
       })
-      var view = new View({
+      this.olview = new View({
         projection: 'EPSG:4326',
         center: [this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat],
         zoom: 14,
@@ -3595,14 +3606,14 @@ export default {
         // layers: [this.mapType == 'a'?this.leftLayer2d:this.leftLayer, this.leftWordChange?this.leftLayerWord:'', this.layerImageChange?this.leftLayerImage:''],
         // layers: [leftLayer, leftLayerWord],
         renderer: 'webgl',
-        view: view
+        view: this.olview
       })
       this.olMap2 = new Map({
         target: 'rightMap',
         // layers: [this.mapType == 'a'?this.rightLayer2d:this.rightLayer, this.leftWordChange?this.rightLayerWord:'', this.layerImageChange?this.rightLayerImage:''],
         // layers: [this.rightLayer, this.rightLayerWord],
         renderer: 'dom',
-        view: view
+        view: this.olview
       })
       // 判断是2d还是卫星
       if (this.mapType == 'a') {
@@ -3980,6 +3991,24 @@ export default {
     // 河道显示
     onRiverShow() {
       this.removeOverLays(this.riverShowList)
+      if (this.sharedChecked) {
+        this.olRemoveLayer(this.riverShowList, 'olMap1')
+        this.olRemoveLayer(this.riverShowList, 'olMap2')
+        for (const item of this.riverShowList) {
+          for (const layer of this.olMap1.getLayers().array_) {
+            if (layer.values_.id == item.id + "1") {
+              this.olMap1.removeLayer(layer)
+              this.olMap2.removeLayer(layer)
+            }
+          }
+          for (const layer of this.olMap2.getLayers().array_) {
+            if (layer.values_.id == item.id + "2") {
+              this.olMap1.removeLayer(layer)
+              this.olMap2.removeLayer(layer)
+            }
+          }
+        }
+      }
       for (const overlay of this.map.getOverlays()) {
         for (const item of this.riverShowList) {
           if (item.id + '1' == overlay.options.id) {
@@ -4029,16 +4058,36 @@ export default {
       } else {
         this.leftRight = false
         this.listItemLeftRight = false
-        // 双球开关水质数据关闭
-        if (this.sharedChecked) {
-          this.olRemoveLayer(this.riverShowList, 'olMap1')
-          this.olRemoveLayer(this.riverShowList, 'olMap2')
-        }
       }
       this.leftRightSwitch()
     },
     // 左右岸
     leftRightSwitch() {
+      // 双球卷帘移除图层
+      if (this.sharedChecked) {
+        for (const item of this.riverShowList) {
+          for (const layer of this.olMap1.getLayers().array_) {
+            if (layer.values_.id == item.id + "1") {
+              this.olMap1.removeLayer(layer)
+            }
+          }
+          for (const layer of this.olMap2.getLayers().array_) {
+            if (layer.values_.id == item.id + "1") {
+              this.olMap2.removeLayer(layer)
+            }
+          }
+          for (const layer of this.olMap1.getLayers().array_) {
+            if (layer.values_.id == item.id + "2") {
+              this.olMap1.removeLayer(layer)
+            }
+          }
+          for (const layer of this.olMap2.getLayers().array_) {
+            if (layer.values_.id == item.id + "2") {
+              this.olMap2.removeLayer(layer)
+            }
+          }
+        }
+      }
       if (this.leftRight) {
         for (const item of this.riverShowList) {
           if (item.leftBankRegion.length > 0) {
@@ -4080,10 +4129,10 @@ export default {
             item.pointsDataLeft.push(points)
           }
           for (const item of this.riverShowList) {
-            this.olSharedDrawPolygon(item.pointsDataLeft, item.id + 1, 'olMap1', '#0000ff', 0.5, '#FFFFFF', 0)
+            this.olSharedDrawPolygon(item.pointsDataLeft, item.id + '1', 'olMap1', '#ffff00', 0.5, '#FFFFFF', 0)
           }
           for (const item of this.riverShowList) {
-            this.olSharedDrawPolygon(item.pointsDataLeft, item.id + 1, 'olMap2', '#0000ff', 0.5, '#FFFFFF', 0)
+            this.olSharedDrawPolygon(item.pointsDataLeft, item.id + '1', 'olMap2', '#ffff00', 0.5, '#FFFFFF', 0)
           }
           // 右岸
           for (const item of this.riverShowList) {
@@ -4095,30 +4144,13 @@ export default {
             item.pointsDataRight.push(points)
           }
           for (const item of this.riverShowList) {
-            this.olSharedDrawPolygon(item.pointsDataRight, item.id + 2, 'olMap1', '#0000ff', 0.5, '#FFFFFF', 0)
+            this.olSharedDrawPolygon(item.pointsDataRight, item.id + '2', 'olMap1', '#ffff00', 0.5, '#FFFFFF', 0)
           }
           for (const item of this.riverShowList) {
-            this.olSharedDrawPolygon(item.pointsDataRight, item.id + 2, 'olMap2', '#0000ff', 0.5, '#FFFFFF', 0)
+            this.olSharedDrawPolygon(item.pointsDataRight, item.id + '2', 'olMap2', '#ffff00', 0.5, '#FFFFFF', 0)
           }
         }
       } else {
-        // 双球卷帘移除图层
-        if (this.sharedChecked) {
-          for (const item of this.riverShowList) {
-            for (const layer of this.olMap1.getLayers().array_) {
-              if (layer.values_.id == item.id + 1) {
-                this.olMap1.removeLayer(layer)
-                this.olMap2.removeLayer(layer)
-              }
-            }
-            for (const layer of this.olMap2.getLayers().array_) {
-              if (layer.values_.id == item.id + 2) {
-                this.olMap1.removeLayer(layer)
-                this.olMap2.removeLayer(layer)
-              }
-            }
-          }
-        }
         for (const overlay of this.map.getOverlays()) {
           for (const item of this.riverShowList) {
             if (item.id + '1' == overlay.options.id) {
@@ -4161,6 +4193,10 @@ export default {
     // 街道显示
     onStreetShow() {
       this.removeOverLays(this.streetShowList)
+      if (this.sharedChecked) {
+        this.olRemoveLayer(this.streetShowList, 'olMap1')
+        this.olRemoveLayer(this.streetShowList, 'olMap2')
+      }
       if (this.streetShow) {
         for (const item of this.streetShowList) {
           let polygon = new T.Polygon(item.lineData, {
