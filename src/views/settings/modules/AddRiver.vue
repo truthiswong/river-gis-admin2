@@ -22,26 +22,26 @@
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="河道长度(m)">
-              <a-input placeholder v-model="list.length1" />
+              <a-input  v-model="list.length1" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="河道编号">
-              <a-input placeholder v-model="list.code" />
+              <a-input  v-model="list.code" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="水域面积(m²)">
-              <a-input placeholder v-model="list.dimension" />
+              <a-input  v-model="list.dimension" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="管理级别" has-feedback>
-              <a-select v-model="list.supervisoryLevel">
+              <a-select v-model="list.supervisoryLevel" >
                 <a-select-option value="city">市</a-select-option>
                 <a-select-option value="district">区</a-select-option>
                 <a-select-option value="village">村</a-select-option>
@@ -142,12 +142,12 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="经度" has-feedback>
-              <a-input placeholder v-model="list.lng" />
+              <a-input  v-model="list.lng" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="纬度" has-feedback>
-              <a-input placeholder v-model="list.lat" />
+              <a-input  v-model="list.lat" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -191,12 +191,12 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="经度" has-feedback>
-              <a-input placeholder v-model="list.lng1" />
+              <a-input  v-model="list.lng1" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="纬度" has-feedback>
-              <a-input placeholder v-model="list.lat1" />
+              <a-input  v-model="list.lat1" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -204,48 +204,48 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="一级河长">
-              <a-input placeholder v-model="list.controller" />
+              <a-input  v-model="list.controller" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="常水位(m)">
-              <a-input placeholder v-model="list.normalWaterLevel" />
+              <a-input  v-model="list.normalWaterLevel" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="河口面积(m²)">
-              <a-input placeholder v-model="list.mouthDimension" />
+              <a-input  v-model="list.mouthDimension" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="最高控制水位(m)">
-              <a-input placeholder v-model="list.highWaterLevel" />
+              <a-input  v-model="list.highWaterLevel" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="平均水深(m)">
-              <a-input placeholder v-model="list.averageDepth" />
+              <a-input  v-model="list.averageDepth" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="最大水深(m)">
-              <a-input placeholder v-model="list.maxDepth" />
+              <a-input  v-model="list.maxDepth" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="河口最小面宽(m)">
-              <a-input placeholder v-model="list.minMouthWidth" />
+              <a-input  v-model="list.minMouthWidth" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="河口最大面宽(m)">
-              <a-input placeholder v-model="list.maxMouthWidth" />
+              <a-input  v-model="list.maxMouthWidth" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -253,7 +253,7 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="每月巡查次数(次)">
-              <a-input placeholder v-model="list.inspectTimes" />
+              <a-input  v-model="list.inspectTimes" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -327,6 +327,7 @@ export default {
         areaId3: '',
         areaId4: '',
         areaId5: '',
+        controller:'',
         averageDepth: '',
         highWaterLevel: '',
         maxDepth: '',
@@ -529,7 +530,9 @@ export default {
           this.list.priority = arr.info.priority + ''
           this.list.inspectTimes = arr.info.inspectTimes
           this.coordinate = arr.info.region
-          this.supervisoryLevel = arr.info.supervisoryLevel.code
+          console.log(arr.info.supervisoryLevel.code);
+          
+          this.list.supervisoryLevel = arr.info.supervisoryLevel.code
           //起点
           this.list.destAddress = arr.extra.destAddress
           this.list.startAddress = arr.extra.startAddress
@@ -608,6 +611,7 @@ export default {
       this.list.minMouthWidth = ''
       this.list.mouthDimension = ''
       this.list.normalWaterLevel = ''
+      this.list.controller=''
       this.list.cityList = []
       this.list.areaList = []
       this.list.cityList1 = []

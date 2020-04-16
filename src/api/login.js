@@ -710,6 +710,16 @@ export function taskInspectPage(data) {
     }
   })
 }
+//巡河任务图片列表
+export function resultMediaList(data) {
+  return axios({
+    url: '/server/data/admin/inspect/task/result/media/list',
+    method: 'get',
+    params: {
+      taskId:data
+    }
+  })
+}
 //巡河分组人员分页
 export function staffInspectPage(id) {
   return axios({

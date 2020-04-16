@@ -886,8 +886,13 @@
     <a-modal title="无人机照片" :visible="UAVPhotosModal" @ok="UAVPhotosOk" @cancel="UAVPhotosOk">
       <div>点击坐标: {{UAVPhotosCoordinate}}</div>
       <div style="margin-top:10px;max-height: 600px;overflow-y: scroll;">
-        <viewer style="margin:5px">
-          <img  v-for="item in uavPhotoList" :key="item.id" :src="item.pic" alt style="width:100%;margin:0 4px 4px 0;" />
+        <viewer style="margin:5px" :images="uavPhotoList">
+          <div v-for="item in uavPhotoList" :key="item.id">
+            <div style="margin:5px 0">日期：{{item.date}}</div>
+            <img   :src="item.pic" alt style="width:100%;margin:0 4px 4px 0;" />
+            
+          </div>
+          
         </viewer>
       </div>
     </a-modal>
@@ -4748,9 +4753,9 @@ export default {
           var html = `
             <div style='margin:0px;height: 300px;overflow-y: scroll;'>
               <div style='line-height:30px;font-size:14px;margin-bottom:5px; '>
-                <span style='font-weight:400'>水体名称: ${item.name}</span>
+                <span style='font-weight:400'>水体名称: ${item.sectionName}</span>
                 <span style='margin-left:50px'>${item.date}</span>
-                <div style='border-bottom:1px #c3c3c3 solid'>断面名称: ${item.sectionName}</div>
+                <div style='border-bottom:1px #c3c3c3 solid'>断面名称: ${item.name}</div>
                 <div style='display: flex;justify-content:space-around'>
                   <span style='width:180px'>PH值: ${item.ph}</span>
                   <span style='width:150px'>溶解氧: ${item.do}mg/L</span>

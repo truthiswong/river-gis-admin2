@@ -4,6 +4,7 @@
     :width="1200"
     :visible="visible"
     @ok="submitPlan"
+     :confirmLoading="confirmLoading"
     @cancel="cancleBtn"
     :maskClosable="false"
     class="palnDetail_modal"
@@ -38,6 +39,7 @@
                     :wrapper-col="wrapperCol"
                     v-for="(item,index) in option.roles"
                     :key="index"
+                     style="margin-bottom:20px"
                   >
                     <a-checkbox-group v-model="item.workerId">
                       <a-checkbox
@@ -59,6 +61,7 @@
                     :wrapper-col="wrapperCol"
                     v-for="(add,jj) in option.devices"
                     :key="jj"
+                    style="margin-top:20px"
                   >
                     <a-checkbox-group
                       v-model="add.workerId"
@@ -86,7 +89,7 @@
                   >
                     <a-checkbox-group
                       v-model="option.additionalList"
-                      style="width:100%;display:flex"
+                      style="width:100%;display:flex;margin-bottom:20px"
                     >
                       <div
                         style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between"
@@ -127,6 +130,7 @@ export default {
   data() {
     return {
       nameAdditional:'',
+      confirmLoading:false,
       spinning: true,
       date: '',
       name: '',
@@ -227,15 +231,16 @@ export default {
       this.teamId = id
     },
     submitPlan(e) {
+      this.confirmLoading=true
       var worker = ''
       var amount = ''
       var extraDeviceAmount = ''
-      console.log(this.planTab);
       for (const item of this.planTab) {
         for (let i=0;i<item.roles.length;i++) {
           if (i + 1 == item.roles.length) {
             if (item.roles[i].workerId.length  == 0) {
               this.$message.warning('请全部分配人员')
+              this.confirmLoading=false
               break
             }else{
               for (const item of this.planTab) {
@@ -254,6 +259,7 @@ export default {
 
                     })
                     .catch(err => {
+                      this.confirmLoading=false
                       this.numvis = false
                     })
                 }
@@ -285,25 +291,33 @@ export default {
                 equipmentRiverSave(arr).then(res => {
 
                 }).catch(err => {
+                  this.confirmLoading=false
                   this.numvis = false
                 })
               }
-              Promise.all((resolve, reject) => {
+              this.t1 = setTimeout(() => {
                 planPublish(this.id).then(res => {
+                  this.confirmLoading=false
+                  this.visible = false
                   this.$message.success('成功')
                   this.spinning = true
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
                   this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+                }).catch(err => {
+                  this.confirmLoading=false
+                  this.$message.error(err.response.data.message)
                 })
-              })
+              },3000)
              
               
-              this.visible = false
+              
             }
           }else{
+            
             if (item.roles[i].workerId.length  == 0) {
               this.$message.warning('请全部分配人员')
+              this.confirmLoading=false
               break
             } else {
               
@@ -387,5 +401,10 @@ export default {
 .planDetail_info {
   padding: 10px 20px;
   border-bottom: 1px solid #e8e8e8;
+}
+</style>
+<style >
+.ant-checkbox-disabled + span{
+ color: #000000
 }
 </style>

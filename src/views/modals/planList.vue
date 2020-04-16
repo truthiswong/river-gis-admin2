@@ -21,6 +21,7 @@
       :width="1100"
       :visible="visible"
       @ok="submitPlan"
+       :confirmLoading="confirmLoading"
       @cancel="cancleBtn"
       :maskClosable="false"
       class="modal_plan"
@@ -45,6 +46,7 @@
                     :wrapper-col="wrapperCol"
                     v-for="(item,index) in option.roles"
                     :key="index"
+                    style="margin-bottom:20px"
                   >
                     <a-checkbox-group v-model="item.workerId">
                       <a-checkbox
@@ -56,7 +58,7 @@
                   </a-form-item>
                 </div>
                 <div>
-                  <span style="font-size:16px;font-weight:500;color: #1F1F1F;margin:10px 0" >设备: <span>
+                  <span style="font-size:16px;font-weight:500;color: #1F1F1F;margin:10px 0;" >设备: <span>
                       <a-input  style="margin:0 10px 0 30px;width:150px" placeholder="请输入名称" v-model="nameAdditional"/>
                       <a-button block style="width:70px" @click="additionalClick(option.id)">添加</a-button>
                     </span></span>
@@ -66,6 +68,7 @@
                     :wrapper-col="wrapperCol"
                     v-for="(add,jj) in option.devices"
                     :key="jj"
+                    style="margin-top:20px"
                   >
                     <a-checkbox-group
                       v-model="add.workerId"
@@ -77,7 +80,7 @@
                         v-for="devi in add.devices"
                         :key="devi.device.id"
                       >
-                        <a-checkbox disabled :value="devi.device.id">{{devi.device.name}}</a-checkbox>
+                        <a-checkbox disabled :value="devi.device.id" style="color:#000000">{{devi.device.name}}</a-checkbox>
                         <a-input-number
                           class="changeNumber"
                           :min="devi.amount1"
@@ -93,10 +96,10 @@
                   >
                     <a-checkbox-group
                       v-model="option.additionalList"
-                      style="width:100%;display:flex"
+                      style="width:100%;display:flex;margin-bottom:20px"
                     >
                       <div
-                        style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between"
+                        style="width:200px;margin:0 15px 10px 0;display:flex;justify-content:space-between;"
                         v-for="(ew,cc) in option.additional"
                         :key="cc"
                       >
@@ -150,6 +153,7 @@ export default {
     return {
       nameAdditional:'',
       spinning: true,
+      confirmLoading:false,
       teamId: '',
       checkedKeys: ['0-1-0-0'],
       selectedKeys: [],
@@ -225,7 +229,11 @@ export default {
               item.additional = ddd
               item.additionalList =suc
               item.devices = arrr
+            }).catch(err => {    
+              this.$message.error(err.response.data.message)
             })
+          }).catch(err => {    
+            this.$message.error(err.response.data.message)
           })
           staffPage(item.id).then(res => {
             var staff = res.data.data
@@ -244,12 +252,17 @@ export default {
               })
               item.roles = ar
             })
+          }).catch(err => {
+                  
+            this.$message.error(err.response.data.message)
           })
         }
         console.log(arr);
         
         this.planTab = arr
         this.spinning = false
+      }).catch(err => {    
+        this.$message.error(err.response.data.message)
       })
       this.teamId = id
     },
@@ -266,6 +279,7 @@ export default {
     },
     //表单提交
     submitPlan(e) {
+      this.confirmLoading=true
       var worker = ''
       var amount = ''
       var extraDeviceAmount = ''
@@ -274,6 +288,7 @@ export default {
           if (i + 1 == item.roles.length) {
             if (item.roles[i].workerId.length  == 0) {
               this.$message.warning('请全部分配人员')
+              this.confirmLoading=false
               break
             }else{
               for (const item of this.planTab) {
@@ -290,6 +305,7 @@ export default {
                   memberRiverSave(data)
                     .then(res => {})
                     .catch(err => {
+                      this.confirmLoading=false
                       this.numvis = false
                     })
                 }
@@ -321,21 +337,34 @@ export default {
                 equipmentRiverSave(arr)
                   .then(res => {})
                   .catch(err => {
+                    this.confirmLoading=false
                     this.numvis = false
                   })
               }
-              planPublish(this.id).then(res => {
-                this.$message.success('成功')
-                this.spinning = true
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
-                this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
-              })
-              this.visible = false
+               this.t1 = setTimeout(() => {
+                 planPublish(this.id).then(res => {
+                   this.confirmLoading=false
+                  this.$message.success('成功')
+                  this.visible = false
+                  // this.spinning = true
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
+                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+                  
+                }).catch(err => {
+                  this.confirmLoading=false
+                  this.$message.error(err.response.data.message)
+                })
+               },3000)
+              
+              
             }
           }else{
+             
             if (item.roles[i].workerId.length  == 0) {
               this.$message.warning('请全部分配人员')
+              this.confirmLoading=false
+              //  this.spinning = false
               break
             } else {
               
@@ -370,4 +399,10 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+
+</style>
+<style >
+.ant-checkbox-disabled + span{
+ color: #000000
+}
 </style>

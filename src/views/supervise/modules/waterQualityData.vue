@@ -14,6 +14,9 @@
       <el-form-item label="断面编号:">
         <div>{{list.number}}</div>
       </el-form-item>
+      <el-form-item label="断面名称:">
+        <div>{{list.waterName}}</div>
+      </el-form-item>
       <el-form-item label="经度:">
         <div>{{list.lat}}</div>
       </el-form-item>
@@ -47,7 +50,7 @@
     <div style="display:flex;height:400px">
       <div class="leftList">
         <a-checkbox-group style="display:flex; flex-direction: column;" v-model="checkbox" @change="changeCheckbox">
-          <a-checkbox value="1" style="margin:0 0 7px 0">PH值</a-checkbox>
+          <a-checkbox value="6" style="margin:0 0 7px 0">PH值</a-checkbox>
           <a-checkbox value="2" style="margin:0 0 7px 0">溶解氧</a-checkbox>
           <a-checkbox value="3" style="margin:0 0 7px 0">高锰酸盐指数</a-checkbox>
           <a-checkbox value="4" style="margin:0 0 7px 0">氨氮</a-checkbox>
@@ -64,7 +67,7 @@
         </a-checkbox-group>
       </div>
       <div class="rightList">
-        <div id="main1" v-show="main1" style="width:600px;height:350px"></div>
+        <div id="main6" v-show="main6" style="width:600px;height:350px"></div>
         <div id="main2" v-show="main2" style="width:600px;height:350px"></div>
         <div id="main3" v-show="main3" style="width:600px;height:350px"></div>
         <div id="main4" v-show="main4" style="width:600px;height:350px"></div>
@@ -119,6 +122,7 @@ export default {
         number:'001',
         lat:'21',
         lng:'11.11',
+        waterName:'',
         date:[],
       },
       listMain:[],
@@ -152,7 +156,8 @@ export default {
   methods: {
     moment,
     add(item) {
-      this.name = item.target.options.item.name
+      this.name = item.target.options.item.waterName
+      this.list.waterName = item.target.options.item.name
       this.list.number = item.target.options.item.code
       this.list.lat = item.target.options.item.coordinate.lat
       this.list.lng = item.target.options.item.coordinate.lng
@@ -212,21 +217,22 @@ export default {
         var text = ''
         var date= []
         var xis=[]
-        if (item == '1') {
-          text = 'PH值'
-          this.listMain.forEach(v => {
-            date.push(v.date)
-            xis.push(v.ph)
-          });
-          this.main1=true
-        }else if(item == '2'){
+        var yis={}
+         if(item == '2'){
           text = '溶解氧'
           this.listMain.forEach(v => {
             date.push(v.date)
             xis.push(v.do)
           });
           this.main2=true
-        }else if(item == '3'){
+        }else if (item == '6') {
+          text = 'PH值'
+          this.listMain.forEach(v => {
+            date.push(v.date)
+            xis.push(v.ph)
+          });
+          this.main6=true
+        } else if(item == '3'){
           text = '高锰酸盐指数'
           this.listMain.forEach(v => {
             date.push(v.date)
@@ -277,6 +283,18 @@ export default {
         //   this.main14=true
         // }
         // 绘制图表
+        if (item=='6') {
+        } else {
+          yis= {
+            nameLocation :'center',
+            nameTextStyle:{
+              lineHeight: 56,
+              fontSize:15
+            },
+            type: 'value',
+            name : 'mg/L',
+          }
+        }
         console.log(xis);
         myChart.setOption({
           
@@ -288,9 +306,7 @@ export default {
           xAxis: {
              data: date
           },
-          yAxis: {
-            
-          },
+          yAxis:yis,
           series: [{
             name: text,
             type: 'line',

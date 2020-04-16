@@ -890,6 +890,7 @@
               <a-row type="flex" justify="space-around">
                 <a-col :span="10">
                   <a-button class="groupBtn" @click="newPlan_btn" v-show="hidingJudgment">生成计划</a-button>
+                  <!-- <a-button class="groupBtn" @click="newPlan_btn" >生成计划</a-button> -->
                 </a-col>
                 <a-col :span="10">
                   <a-popover title="加入计划" placement="topLeft" trigger="click" :width="100">
@@ -2130,13 +2131,21 @@ export default {
         return year + '-' + month + '-' + date
       }
       function tab(date1) {
-        var oDate1 = new Date(date1)
+        var oDate1 =  new Date(date1)
         var oDate2 = new Date()
         if (oDate1.getTime() > oDate2.getTime()) {
           return true
         } else {
           return false
         }
+        // if (oDate1.getTime() < oDate2.getTime()) {
+        //   console.log(oDate1.getTime(),oDate2.getTime());
+          
+        //   return false
+        // } else {
+          
+        //    return true
+        // }
       }
       function tab1(date1) {
         var oDate1 = new Date(date1)
@@ -2241,11 +2250,11 @@ export default {
           }
           this.spinning = false
           this.planListPage = arr
-          if (this.planListPage.length == 0 && hidingJudgment == true) {
-            this.hidingJudgment = true
-          } else {
-            this.hidingJudgment = false
-          }
+          // if (this.planListPage.length == 0 && hidingJudgment == true) {
+          //   this.hidingJudgment = true
+          // } else {
+          //   this.hidingJudgment = false
+          // }
         })
         .catch(err => {
           this.spinning = false
@@ -3230,6 +3239,9 @@ export default {
     },
     //添加河道按钮事件
     addRiverBtn() {
+      if (this.markerTool) {
+        this.markerTool.close()
+      }
       this.drawRiver()
       this.$refs.selectPatrol.show(this.riverList)
       this.$refs.addSurvey.close()
@@ -3380,14 +3392,18 @@ export default {
     },
     // 添加调查点
     addSurveyPoints() {
+      if (this.markerTool) {
+        this.markerTool.close()
+      }
       let icon = new T.Icon({
         iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
         iconSize: new T.Point(19, 27),
         iconAnchor: new T.Point(10, 25)
       })
-      let markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
-      markerTool.open()
-      markerTool.addEventListener('mouseup', this.addPointed)
+      this.markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
+      this.markerTool.open()
+
+      this.markerTool.addEventListener('mouseup', this.addPointed)
     },
     // 添加调查点后
     addPointed(e) {
@@ -3669,9 +3685,36 @@ export default {
               lat: item.point[1]
             }
             point1.push(item)
+            
           }
           if (item.locationType.code == 'line') {
             this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+              let markerTool
+             if (item.drawType.icon) {
+              let icon = new T.Icon({
+                iconUrl: item.drawType.icon,
+                iconSize: new T.Point(41, 40),
+                iconAnchor: new T.Point(21, 40)
+              })
+              markerTool = new T.Marker(item.line[0], {
+                icon: icon,
+                id: item.id,
+                title: item.innerName,
+                code: item.innerType.code
+              })
+              this.map.addOverLay(markerTool)
+              if (this.sharedChecked) {
+                let points = []
+                for (const point of item.line) {
+                  points.push([point.lng, point.lat])
+                }
+                item.pointsData = points
+                this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
+              }
+            } else {
+              markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+              this.map.addOverLay(markerTool)
+            }
           }
           if (item.locationType.code == 'polygon') {
             this.noodlesDraw(
@@ -3685,6 +3728,41 @@ export default {
               item.id,
               item.innerType.code
             )
+             let markerTool
+              if (item.drawType.icon) {
+                let icon = new T.Icon({
+                  iconUrl: item.drawType.icon,
+                  iconSize: new T.Point(41, 40),
+                  iconAnchor: new T.Point(21, 40)
+                })
+                markerTool = new T.Marker(item.polygon[0], {
+                  icon: icon,
+                  id: item.id,
+                  title: item.innerName,
+                  code: item.innerType.code
+                })
+                this.map.addOverLay(markerTool)
+                if (this.sharedChecked) {
+                  let points = []
+                  for (const point of item.polygon) {
+                    points.push([point.lng, point.lat])
+                  }
+                  item.pointsData = []
+                  item.pointsData.push(points)
+                  this.olSharedDrawPolygon(
+                    item.pointsData,
+                    item.id,
+                    'olMap1',
+                    item.frameColor,
+                    item.framePellucidity,
+                    item.shapeColor,
+                    item.shapePellucidity
+                  )
+                }
+              } else {
+                markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+                this.map.addOverLay(markerTool)
+              }
           }
         }
         if (point1.length > 0) {
@@ -3914,6 +3992,32 @@ export default {
           }
           if (item.locationType.code == 'line') {
             this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
+            let markerTool
+             if (item.drawType.icon) {
+              let icon = new T.Icon({
+                iconUrl: item.drawType.icon,
+                iconSize: new T.Point(41, 40),
+                iconAnchor: new T.Point(21, 40)
+              })
+              markerTool = new T.Marker(item.line[0], {
+                icon: icon,
+                id: item.id,
+                title: item.innerName,
+                code: item.innerType.code
+              })
+              this.map.addOverLay(markerTool)
+              if (this.sharedChecked) {
+                let points = []
+                for (const point of item.line) {
+                  points.push([point.lng, point.lat])
+                }
+                item.pointsData = points
+                this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
+              }
+            } else {
+              markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+              this.map.addOverLay(markerTool)
+            }
           }
           if (item.locationType.code == 'polygon') {
             this.noodlesDraw(
@@ -3927,6 +4031,41 @@ export default {
               item.id,
               item.innerType.code
             )
+            let markerTool
+              if (item.drawType.icon) {
+                let icon = new T.Icon({
+                  iconUrl: item.drawType.icon,
+                  iconSize: new T.Point(41, 40),
+                  iconAnchor: new T.Point(21, 40)
+                })
+                markerTool = new T.Marker(item.polygon[0], {
+                  icon: icon,
+                  id: item.id,
+                  title: item.innerName,
+                  code: item.innerType.code
+                })
+                this.map.addOverLay(markerTool)
+                if (this.sharedChecked) {
+                  let points = []
+                  for (const point of item.polygon) {
+                    points.push([point.lng, point.lat])
+                  }
+                  item.pointsData = []
+                  item.pointsData.push(points)
+                  this.olSharedDrawPolygon(
+                    item.pointsData,
+                    item.id,
+                    'olMap1',
+                    item.frameColor,
+                    item.framePellucidity,
+                    item.shapeColor,
+                    item.shapePellucidity
+                  )
+                }
+              } else {
+                markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+                this.map.addOverLay(markerTool)
+              }
           }
         }
         if (point.length > 0) {
