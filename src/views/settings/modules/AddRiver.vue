@@ -611,6 +611,7 @@ export default {
       this.list.minMouthWidth = ''
       this.list.mouthDimension = ''
       this.list.normalWaterLevel = ''
+      this.list.controller=''
       this.list.cityList = []
       this.list.areaList = []
       this.list.cityList1 = []
