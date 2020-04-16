@@ -889,8 +889,8 @@
             <div v-if="ishidden == 1">
               <a-row type="flex" justify="space-around">
                 <a-col :span="10">
-                  <!-- <a-button class="groupBtn" @click="newPlan_btn" v-show="hidingJudgment">生成计划</a-button> -->
-                  <a-button class="groupBtn" @click="newPlan_btn" >生成计划</a-button>
+                  <a-button class="groupBtn" @click="newPlan_btn" v-show="hidingJudgment">生成计划</a-button>
+                  <!-- <a-button class="groupBtn" @click="newPlan_btn" >生成计划</a-button> -->
                 </a-col>
                 <a-col :span="10">
                   <a-popover title="加入计划" placement="topLeft" trigger="click" :width="100">
@@ -2133,19 +2133,19 @@ export default {
       function tab(date1) {
         var oDate1 =  new Date(date1)
         var oDate2 = new Date()
-        // if (oDate1.getTime() > oDate2.getTime()) {
-        //   return true
-        // } else {
-        //   return false
-        // }
-        if (oDate1.getTime() < oDate2.getTime()) {
-          console.log(oDate1.getTime(),oDate2.getTime());
-          
-          return false
+        if (oDate1.getTime() > oDate2.getTime()) {
+          return true
         } else {
-          
-           return true
+          return false
         }
+        // if (oDate1.getTime() < oDate2.getTime()) {
+        //   console.log(oDate1.getTime(),oDate2.getTime());
+          
+        //   return false
+        // } else {
+          
+        //    return true
+        // }
       }
       function tab1(date1) {
         var oDate1 = new Date(date1)
