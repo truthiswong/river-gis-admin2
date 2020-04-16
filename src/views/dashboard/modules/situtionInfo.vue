@@ -133,7 +133,7 @@
             <a-col :span="8">照片:</a-col>
             <a-col :span="8">
               <viewer   :images="imgList" style="display:flex">
-                <img  v-for="item of imgList"  :key="item" :src="item.media" style="margin:0 5px 5px 0;width:80px"/>
+                <img  v-for="item of imgList"  :key="item" :src="item.media" style="margin:0 5px 5px 0;width:80px;height:80px"/>
               </viewer>
             </a-col>
           </a-row>
@@ -193,7 +193,7 @@
             <a-col :span="8">照片:</a-col>
             <a-col :span="8">
               <viewer   :images="imgList">
-                <img  v-for="item of imgList"  :key="item" :src="item.media" style="margin:0 5px 5px 0;width:80px"/>
+                <img  v-for="item of imgList"  :key="item" :src="item.media" style="margin:0 5px 5px 0;width:80px;height:80px"/>
               </viewer>
             </a-col>
           </a-row>
@@ -242,6 +242,7 @@ export default {
         }
         resultMediaList(arr.id).then(res=>{
             this.imgList = res.data
+            
         })
         if (arr.template.code == 'uav') {
           arr.timeCreated = formatDate(new Date(arr.timeCreated))
@@ -275,9 +276,9 @@ export default {
             if (arr.manualDetail.floater.length>0) {
               for (let i = 0; i <  arr.manualDetail.floater.length; i++) {
                 if (i == arr.manualDetail.floater.length - 1) {
-                  arr.floater=arr.floater+arr.manualDetail.floater[0].name
+                  arr.floater=arr.floater+arr.manualDetail.floater[i].name
                 }else{
-                  arr.floater=arr.floater+arr.manualDetail.floater[0].name+','
+                  arr.floater=arr.floater+arr.manualDetail.floater[i].name+','
                 }
               }
               // arr.manualDetail.floater.forEach(v => {
@@ -291,9 +292,9 @@ export default {
             if (arr.manualDetail.biont.length>0) {
               for (let i = 0; i <  arr.manualDetail.biont.length; i++) {
                 if (i == arr.manualDetail.biont.length - 1) {
-                  arr.biont=arr.biont+arr.manualDetail.biont[0].name
+                  arr.biont=arr.biont+arr.manualDetail.biont[i].name
                 }else{
-                  arr.biont=arr.biont+arr.manualDetail.biont[0].name+','
+                  arr.biont=arr.biont+arr.manualDetail.biont[i].name+','
                 }
               }
               // arr.manualDetail.biont.forEach(v => {
@@ -307,9 +308,9 @@ export default {
             if (arr.manualDetail.govern.length>0) {
               for (let i = 0; i <  arr.manualDetail.govern.length; i++) {
                 if (i == arr.manualDetail.govern.length - 1) {
-                  arr.govern=arr.govern+arr.manualDetail.govern[0].name
+                  arr.govern=arr.govern+arr.manualDetail.govern[i].name
                 }else{
-                  arr.govern=arr.govern+arr.manualDetail.govern[0].name+','
+                  arr.govern=arr.govern+arr.manualDetail.govern[i].name+','
                 }
               }
               // arr.manualDetail.govern.forEach(v => {
@@ -323,9 +324,9 @@ export default {
              if (arr.manualDetail.riskSource.length>0) {
               for (let i = 0; i <  arr.manualDetail.riskSource.length; i++) {
                 if (i == arr.manualDetail.riskSource.length - 1) {
-                  arr.riskSource=arr.riskSource+arr.manualDetail.riskSource[0].name
+                  arr.riskSource=arr.riskSource+arr.manualDetail.riskSource[i].name
                 }else{
-                  arr.riskSource=arr.riskSource+arr.manualDetail.riskSource[0].name+','
+                  arr.riskSource=arr.riskSource+arr.manualDetail.riskSource[i].name+','
                 }
               }
               // arr.manualDetail.riskSource.forEach(v => {
@@ -338,9 +339,9 @@ export default {
             if (arr.manualDetail.emergency.length>0) {
               for (let i = 0; i <  arr.manualDetail.emergency.length; i++) {
                 if (i == arr.manualDetail.emergency.length - 1) {
-                  arr.emergency=arr.emergency+arr.manualDetail.emergency[0].name
+                  arr.emergency=arr.emergency+arr.manualDetail.emergency[i].name
                 }else{
-                  arr.emergency=arr.emergency+arr.manualDetail.emergency[0].name+','
+                  arr.emergency=arr.emergency+arr.manualDetail.emergency[i].name+','
                 }
               }
               // arr.manualDetail.emergency.forEach(v => {
