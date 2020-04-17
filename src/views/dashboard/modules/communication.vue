@@ -28,8 +28,8 @@
       <div class="header">{{item.remark}}</div>
       <div class="player">
         <!-- <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :options="item.playerOptions" :playsinline="true"></video-player> -->
-        <img :src="item.media" alt style="width:100%" />
-        <a-button @click="audioBut(item.media)" v-show="item.audioSHow==true">播放</a-button>
+        <img :src="item.media" alt style="width:100%" v-show="item.mediaType.code=='image'"/>
+        <a-button @click="audioBut(item.media)" v-show="item.mediaType.code!='image'">播放</a-button>
         <!-- <audio :src="item.media" controls="controls"></audio> -->
       </div>
     </div>
@@ -129,12 +129,7 @@ export default {
         this.list = arr
         if (arr.length>0) {
           arr.forEach(v => {
-            v.audioSHow=false
-            if (v.media) {
-              v.audioSHow =true
-            }else{
-              v.audioSHow=false
-            }
+           
           });  
         }
       })
