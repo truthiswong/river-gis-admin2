@@ -2001,7 +2001,11 @@ export default {
     //风险源绘制数据
     getRiskSourceMapDrawPage(riskSourceType) {
       this.removeOverLays(this.riverRiskPoints)
+      console.log(this.riskSourceLevel);
+      
       var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
+      console.log(riskSourceLevel);
+      
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
@@ -5329,8 +5333,6 @@ export default {
     },
     // 河岸风险源子栏
     onDrawType(id, clicked) {
-      console.log(id, clicked)
-      console.log(this.riverRiskPoints)
       // 点击时间轴切换先清除上一次的地图数据
       let data1 = []
       let data2 = []

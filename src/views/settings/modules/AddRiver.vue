@@ -312,6 +312,7 @@ export default {
         projectId: this.$store.state.id,
         name: '',
         length1: '',
+        supervisoryLevel:'',
         dimension: '',
         code: '',
         priority: '',

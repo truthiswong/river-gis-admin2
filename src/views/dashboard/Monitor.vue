@@ -447,7 +447,7 @@
                               <a-radio-group v-model="listAppend.locationType">
                                 <a-radio-button value="point" @click="addPoint">点</a-radio-button>
                                 <a-radio-button value="line" @click="addLineTool">线</a-radio-button>
-                                <a-radio-button value="surface" @click="addPolygonTool">面</a-radio-button>
+                                <a-radio-button value="polygon" @click="addPolygonTool">面</a-radio-button>
                               </a-radio-group>
                               <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;">查看</a-button> -->
                             </a-form-item>
@@ -636,7 +636,7 @@
                                             <a-radio-group v-model="listAppend.locationType">
                                               <a-radio-button value="point" @click="addPoint">点</a-radio-button>
                                               <a-radio-button value="line" @click="addLineTool">线</a-radio-button>
-                                              <a-radio-button value="surface" @click="addPolygonTool">面</a-radio-button>
+                                              <a-radio-button value="polygon" @click="addPolygonTool">面</a-radio-button>
                                             </a-radio-group>
                                             <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;">查看</a-button> -->
                                           </a-form-item>
@@ -1442,6 +1442,7 @@ export default {
       riskSourceLevel: [], //风险源风险等级
       tigePage:[],//潮汐列表
       rightIcon:false,
+      addplanListId:'',
       rbgList:[
         '#8cc540',
         '#27bbbc',
@@ -1769,6 +1770,8 @@ export default {
         })
     },
     newlyBuildTask(item){
+      console.log(item);
+      
       for (const key of item) {
         if (key.locationType.code=='point') {
           if (key.pic) {
@@ -1785,10 +1788,21 @@ export default {
           }
          
          
-        }else{
+        }else if(key.locationType.code=='line'){
           let line = new T.Polyline(key.region,{})
           //向地图上添加线
           this.map.addOverLay(line)
+        }else {
+          
+          let polygon = new T.Polygon(key.region, {
+            color: 'blue', //线颜色
+            weight: 2, //线宽
+            opacity: 0.5, //透明度
+            fillColor: '#FFFFFF', //填充颜色
+            fillOpacity: 0.5, // 填充透明度
+          })
+          //向地图上添加面
+          this.map.addOverLay(polygon, {})
         }
       }
       // for (const key in item) {
@@ -2531,6 +2545,7 @@ export default {
     },
     //关闭调查点窗口
     handleCancel() {
+      this.map.clearOverLays() 
       this.getinspectPointPage()
       this.taskId = ''
       this.confirmLoading = false
@@ -2872,6 +2887,7 @@ export default {
     },
     //底部取消按钮
     canclePlanBtn() {
+      this.planList1.id =  this.addplanListId
       this.ishidden = 1
     },
     //底部下一步按钮
@@ -2911,6 +2927,7 @@ export default {
     },
     //底部上一步按钮
     previousBtn() {
+      this.planList1.id =  this.addplanListId
       this.ishidden = 2
     },
     //返回首页
@@ -2978,7 +2995,7 @@ export default {
           this.$refs.creatGroup.planGeneration(id)
         })
         this.ishidden = 2
-      
+        this.addplanListId = this.planList1.id
         this.planList1.id= id
       }
       
@@ -3629,7 +3646,7 @@ export default {
           data.region = data.region + item.lng + ',' + item.lat + '|'
         }
       }
-      if (data.locationType == 'surface') {
+      if (data.locationType == 'polygon') {
         for (const item of this.polygonDate) {
           data.region = data.region + item.lng + ',' + item.lat + '|'
         }
@@ -4255,6 +4272,8 @@ export default {
     //风险源绘制数据
     getRiskSourceMapDrawPage(riskSourceType) {
       var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
+      console.log(riskSourceLevel);
+      
       var time = this.threePicker
       var picker = time.split('/')
       var data = {
