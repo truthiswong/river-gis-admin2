@@ -445,9 +445,9 @@
                               style="text-align:left;"
                             >
                               <a-radio-group v-model="listAppend.locationType">
-                                <a-radio-button value="point" @click="addPoint">点</a-radio-button>
-                                <a-radio-button value="line" @click="addLineTool">线</a-radio-button>
-                                <a-radio-button value="polygon" @click="addPolygonTool">面</a-radio-button>
+                                <a-radio-button value="point" @click.stop="addPoint">点</a-radio-button>
+                                <a-radio-button value="line" @click.stop="addLineTool">线</a-radio-button>
+                                <a-radio-button value="polygon" @click.stop="addPolygonTool">面</a-radio-button>
                               </a-radio-group>
                               <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;">查看</a-button> -->
                             </a-form-item>
@@ -634,9 +634,9 @@
                                             style="text-align:left;"
                                           >
                                             <a-radio-group v-model="listAppend.locationType">
-                                              <a-radio-button value="point" @click="addPoint">点</a-radio-button>
-                                              <a-radio-button value="line" @click="addLineTool">线</a-radio-button>
-                                              <a-radio-button value="polygon" @click="addPolygonTool">面</a-radio-button>
+                                              <a-radio-button value="point" @click.stop="addPoint">点</a-radio-button>
+                                              <a-radio-button value="line" @click.stop="addLineTool">线</a-radio-button>
+                                              <a-radio-button value="polygon" @click.stop="addPolygonTool">面</a-radio-button>
                                             </a-radio-group>
                                             <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;">查看</a-button> -->
                                           </a-form-item>
@@ -1454,7 +1454,9 @@ export default {
         '#ff8345',
         '#f8bd0b',
         '#8b572a',
-      ]
+      ],
+      translateId:84987546,//追加任务本地保存id
+      translateIdList:[],//追加任务本地保存数据
     }
   },
   watch: {
@@ -3373,20 +3375,6 @@ export default {
         this.addTaskPoint(info)
       }
     },
-    //追加任务画线
-    addLineTool(clickLine) {
-      this.map.setViewport(this.appendLatlngList)
-      this.map.setZoom('16')
-      this.clickLine = clickLine
-      if (this.lineTool && this.clickLine == false) {
-        this.lineTool.clear()
-      } else {
-        this.lineTool = new T.PolylineTool(this.map)
-        this.lineTool.open()
-        this.lineTool.setTips(`<p style="padding:0px;">单击确认起点, 双击结束绘制</p>`)
-        this.lineTool.addEventListener('draw', this.getLineDate)
-      }
-    },
     //获取绘制线坐标
     getLineDate(e) {
       this.lineLnglats = e.currentLnglats
@@ -3460,40 +3448,74 @@ export default {
     },
     //画点
     addPoint(clickPoint, num) {
+      console.log(this.markerTool,this.lineTool,this.polygonTool);
+      
+      if (this.markerTool) {
+        this.markerTool.clear()
+      }
+      if (this.lineTool) {
+        this.lineTool.clear()
+      }
+      if (this.polygonTool) {
+        this.polygonTool.clear()
+      }
       this.map.setViewport(this.appendLatlngList)
       this.map.setZoom('16')
-      this.clickPoint = clickPoint
-      if (this.markerTool && this.clickPoint == false) {
-        this.markerTool.clear()
-      } else {
-        this.markerTool = new T.MarkTool(this.map, { follow: true })
-        this.markerTool.open()
-        this.markerTool.addEventListener('mouseup', this.addPointDate)
-      }
+      this.clickPoint = clickPoint 
+      this.markerTool = new T.MarkTool(this.map, {id:this.translateId})
+      this.markerTool.open()
+      this.markerTool.addEventListener('mouseup', this.addPointDate)
       // this.markerTool.addEventListener('mouseup', this.addPointed)
     },
     addPointDate(e) {
       this.markLnglat = e.currentLnglat
     },
+    //追加任务画线
+    addLineTool(clickLine) {
+      if (this.markerTool) {
+        this.markerTool.clear()
+      }
+      if (this.lineTool) {
+        this.lineTool.clear()
+      }
+      if (this.polygonTool) {
+        this.polygonTool.clear()
+      }
+      this.map.setViewport(this.appendLatlngList)
+      this.map.setZoom('16')
+      this.clickLine = clickLine
+      this.lineTool = new T.PolylineTool(this.map,{
+        id:this.translateId
+      })
+      this.lineTool.open()
+      this.lineTool.setTips(`<p style="padding:0px;">单击确认起点, 双击结束绘制</p>`)
+      this.lineTool.addEventListener('draw', this.getLineDate)
+    },
     //画面
     addPolygonTool(clickPolygon) {
+      if (this.markerTool) {
+        this.markerTool.clear()
+      }
+      if (this.lineTool) {
+        this.lineTool.clear()
+      }
+      if (this.polygonTool) {
+        this.polygonTool.clear()
+      }
       this.map.setViewport(this.appendLatlngList)
       this.map.setZoom('16')
       this.clickPolygon = clickPolygon
-      if (this.polygonTool && this.clickPolygon == false) {
-        this.polygonTool.clear()
-      } else {
         this.polygonTool = new T.PolygonTool(this.map, {
           showLabel: true,
           color: 'blue',
           weight: 3,
           opacity: 0.5,
+          id:this.translateId,
           fillColor: '#FFFFFF',
           fillOpacity: 0.5
         })
         this.polygonTool.open()
         this.polygonTool.addEventListener('draw', this.addPolygonDate)
-      }
     },
     addPolygonDate(e) {
       this.polygonDate = e.currentLnglats
