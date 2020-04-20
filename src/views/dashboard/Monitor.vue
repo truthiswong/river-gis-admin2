@@ -2871,6 +2871,7 @@ export default {
     },
     //生成计划
     newPlan_btn() {
+      
       var ids = []
       for (const item of this.riverMontion) {
         for (const index of item.taskChoose){
@@ -2878,6 +2879,7 @@ export default {
         } 
       }
       if (ids.length != 0) {
+        this.addplanListId = this.planList1.id
         taskChoose(ids.join(',')).then(res => {})
         this.ishidden = 2
         this.$refs.creatGroup.planGeneration(this.planList1.id)
@@ -2983,6 +2985,7 @@ export default {
       if (ids.length == 0) {
         this.$message.warning('请先选择河道或调查点')
       }else{
+        this.addplanListId = this.planList1.id
         var data = {
           sourcePlanId: this.planList1.id,
           taskIds: ids.join(','),
@@ -2995,7 +2998,7 @@ export default {
           this.$refs.creatGroup.planGeneration(id)
         })
         this.ishidden = 2
-        this.addplanListId = this.planList1.id
+        
         this.planList1.id= id
       }
       
