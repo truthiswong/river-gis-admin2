@@ -1438,20 +1438,36 @@ export default {
       getTigeList(data).then(res => {
         var arr = res.data
         this.tigePage = arr
-        if (this.tigePage.length > 0) {
-          if (this.itgePortId != '') {
+        if (this.tigePage.length>0) {
+          if (this.itgePortId!='') {
             for (const item of this.tigePage) {
-              if (item.portId == this.itgePortId) {
+              if (item.portId==this.itgePortId) {
                 this.drawLineItge(item.tide)
                 break
               }
             }
+          }else{
+             this.itgePortId = arr[0].portId
           }
-        } else {
-          this.itgePortId = ''
-          // this.$message.warning('当前日期下无潮汐数据')
+        }else{
+          this.itgePortId=''
+          // this.$message.warning('当前日期下无潮汐数据');
           this.drawLineItge([])
         }
+        // if (this.tigePage.length > 0) {
+        //   if (this.itgePortId != '') {
+        //     for (const item of this.tigePage) {
+        //       if (item.portId == this.itgePortId) {
+        //         this.drawLineItge(item.tide)
+        //         break
+        //       }
+        //     }
+        //   }
+        // } else {
+        //   this.itgePortId = ''
+        //   // this.$message.warning('当前日期下无潮汐数据')
+        //   this.drawLineItge([])
+        // }
       })
     },
     drawLineItge(date) {

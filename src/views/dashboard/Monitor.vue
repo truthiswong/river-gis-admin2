@@ -1543,6 +1543,8 @@ export default {
                 break
               }
             }
+          }else{
+             this.itgePortId = arr[0].portId
           }
         }else{
           this.itgePortId=''
