@@ -326,7 +326,7 @@
             </a-tab-pane>
             <a-tab-pane tab="点任务" key="2" forceRender>
               <section class="task_face">
-                <a-collapse defaultActiveKey="1" accordion style="margin-top:10px;">
+                <a-collapse defaultActiveKey="1" accordion style="margin-top:10px;" @change="collapseClick" v-model="collapseId">
                   <!-- -->
                   <a-collapse-panel
                     v-show="!addPointShow"
@@ -749,6 +749,7 @@ export default {
 
       // 地图对象
       map: {},
+      collapseId:'',
       once: 0 // 移入次数
     }
   },
@@ -1080,16 +1081,27 @@ export default {
     // 添加所有的标注点
     allPointTask() {
       // this.map.clearOverLays()
-      for (const item of this.pointTaskList) {
-        for (const point of item.pointList) {
-          for (const overlay of this.map.getOverlays()) {
-            if (point.id == overlay.options.id) {
-              this.map.removeOverLay(overlay)
+      if (this.collapseId) {
+        for (const item of this.pointTaskList) {
+          if (item.id ==this.collapseId) {
+            for (const point of item.pointList) {
+              this.drawAllPoint(point.latlng, point.id, point.name, item.pic)
             }
           }
-          this.drawAllPoint(point.latlng, point.id, point.name, item.pic)
+        }
+      }else{
+        for (const item of this.pointTaskList) {
+          for (const point of item.pointList) {
+            for (const overlay of this.map.getOverlays()) {
+              if (point.id == overlay.options.id) {
+                this.map.removeOverLay(overlay)
+              }
+            }
+            this.drawAllPoint(point.latlng, point.id, point.name, item.pic)
+          }
         }
       }
+      
     },
     // 添加标注图片
     drawAllPoint(latlng, id, title, iconUrl) {
@@ -1848,6 +1860,21 @@ export default {
     polygonStreetMouseout() {
       this.once--
       this.alertShow = false
+    },
+    collapseClick(key){
+      this.map.clearOverLays() 
+      if (key) {
+        for (const item of this.pointTaskList) {
+          if (item.id ==key) {
+            for (const point of item.pointList) {
+              this.drawAllPoint(point.latlng, point.id, point.name, item.pic)
+            }
+          }
+        }
+      }else{
+        this.allPointTask()
+      }
+      
     }
   }
 }

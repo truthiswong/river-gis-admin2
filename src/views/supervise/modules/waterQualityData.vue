@@ -25,7 +25,6 @@
       </el-form-item>
       <el-form-item label="查看时间">
         <a-range-picker
-          v-model="list.date"
           :defaultValue="[moment(startDate, dateFormat), moment(endDate, dateFormat)]"
           :format="dateFormat"
           @change="onChange"
@@ -50,11 +49,11 @@
     <div style="display:flex;height:400px">
       <div class="leftList">
         <a-checkbox-group style="display:flex; flex-direction: column;" v-model="checkbox" @change="changeCheckbox">
-          <a-checkbox value="6" style="margin:0 0 7px 0">PH值</a-checkbox>
-          <a-checkbox value="2" style="margin:0 0 7px 0">溶解氧</a-checkbox>
-          <a-checkbox value="3" style="margin:0 0 7px 0">高锰酸盐指数</a-checkbox>
-          <a-checkbox value="4" style="margin:0 0 7px 0">氨氮</a-checkbox>
-          <a-checkbox value="5" style="margin:0 0 7px 0">总磷</a-checkbox>
+          <a-checkbox value="6" style="margin:0 0 7px 0" v-show="checkbox1">PH值</a-checkbox>
+          <a-checkbox value="2" style="margin:0 0 7px 0" v-show="checkbox2">溶解氧</a-checkbox>
+          <a-checkbox value="3" style="margin:0 0 7px 0" v-show="checkbox3">高锰酸盐指数</a-checkbox>
+          <a-checkbox value="4" style="margin:0 0 7px 0" v-show="checkbox4">氨氮</a-checkbox>
+          <a-checkbox value="5" style="margin:0 0 7px 0" v-show="checkbox5">总磷</a-checkbox>
           <!-- <a-checkbox value="6" style="margin:0 0 7px 0">透明度</a-checkbox>
           <a-checkbox value="7" style="margin:0 0 7px 0">氧化还原电位</a-checkbox>
           <a-checkbox value="8" style="margin:0 0 7px 0">化学需氧量</a-checkbox>
@@ -117,14 +116,18 @@ export default {
       fileList:[],
       startDate:'',
       dateFormat: 'YYYY-MM-DD',
-      endDate: '', // 结束日期
       list:{
-        number:'001',
+        number:'',
         lat:'21',
         lng:'11.11',
         waterName:'',
         date:[],
       },
+      checkbox1:true,
+      checkbox2:true,
+      checkbox3:true,
+      checkbox4:true,
+      checkbox5:true,
       listMain:[],
       main1:false,
       main2:false,
@@ -150,17 +153,27 @@ export default {
     }
   },
   computed: {},
-  mounted: function() {
+  mounted() {
 
   },
   methods: {
     moment,
     add(item) {
+     //开始时间
+      let d = new Date()
+      d.setMonth(d.getMonth() - 3)
+      let a = (d.toLocaleDateString()).split('/')
+      this.startDate = a[0]+'-'+a[1]+'-'+a[2]
+       //结束时间
+      let c = new Date()
+      let b = (c.toLocaleDateString()).split('/')
+      this.endDate = b[0]+'-'+b[1]+'-'+b[2]
       this.name = item.target.options.item.waterName
       this.list.waterName = item.target.options.item.name
       this.list.number = item.target.options.item.code
       this.list.lat = item.target.options.item.coordinate.lat
       this.list.lng = item.target.options.item.coordinate.lng
+      this.getList()
       this.visible = true
     },
     handleSubmit() {
@@ -185,12 +198,66 @@ export default {
       }
       getWaterQualityList(data).then(res=>{
         let arr = res.data.data
+        this.checkbox=[]
+        if (arr.length==0) {
+          this.checkbox1 =false
+          this.checkbox2 =false
+          this.checkbox3 =false
+          this.checkbox4 =false
+          this.checkbox5 =false
+          this.main2=false
+          this.main3=false
+          this.main4=false
+          this.main5=false
+          this.main6=false
+        }else{
+          this.checkbox1 =false
+          this.checkbox2 =false
+          this.checkbox3 =false
+          this.checkbox4 =false
+          this.checkbox5 =false
+         for(const v of arr ){
+             if (v.ph!=0){
+               this.checkbox1 =true
+               this.checkbox.push('6')
+               break
+             }
+          }
+         for(const v of arr ){
+             if (v.do!=0){
+               this.checkbox2 =true
+               this.checkbox.push('2')
+               break
+             }
+          }
+         for(const v of arr ){
+             if (v.cod!=0){
+               this.checkbox3 =true
+               this.checkbox.push('3')
+               break
+             }
+          }
+         for(const v of arr ){
+            if (v.nh3N!=0){
+              this.checkbox4 =true
+              this.checkbox.push('4')
+              break
+            }
+          }
+         for(const v of arr ){
+             if (v.tp!=0){
+               this.checkbox5 =true
+               this.checkbox.push('5')
+               break
+             }
+          }
+        }
         this.listMain = arr
         this.changeCheckbox()
       })
     },
     changeCheckbox(){
-      if (this.list.date != '') {
+      if (this.startDate != '') {
         this.drawLine()
       }else{
         this.$message.warning('请先选择时间');
@@ -198,7 +265,7 @@ export default {
      
     },
     drawLine(){
-      this.main1=false
+      this.main6=false
       this.main2=false
       this.main3=false
       this.main4=false
@@ -295,7 +362,6 @@ export default {
             name : 'mg/L',
           }
         }
-        console.log(xis);
         myChart.setOption({
           
           
