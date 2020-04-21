@@ -1774,7 +1774,6 @@ export default {
         })
     },
     newlyBuildTask(item){
-      console.log(item);
       
       for (const key of item) {
         if (key.locationType.code=='point') {
@@ -2149,8 +2148,13 @@ export default {
         return year + '-' + month + '-' + date
       }
       function tab(date1) {
-        var oDate1 =  new Date(date1)
-        var oDate2 = new Date()
+        // var oDate1 =  new Date(date1)
+        // var oDate2 = new Date()
+        var oDate1 = new Date(date1)
+        let c = new Date()
+        let b = (c.toLocaleDateString()).split('/')
+        let a = b[0]+'-'+b[1]+'-'+b[2]
+        var oDate2 = new Date(a)
         if (oDate1.getTime() > oDate2.getTime()) {
           return true
         } else {
@@ -2173,6 +2177,7 @@ export default {
         } else {
           return false
         }
+        
       }
       function tab2(date1, date2) {
         var oDate1 = new Date(date1)
@@ -2268,11 +2273,11 @@ export default {
           }
           this.spinning = false
           this.planListPage = arr
-          // if (this.planListPage.length == 0 && hidingJudgment == true) {
-          //   this.hidingJudgment = true
-          // } else {
-          //   this.hidingJudgment = false
-          // }
+          if (this.planListPage.length == 0 && hidingJudgment == true) {
+            this.hidingJudgment = true
+          } else {
+            this.hidingJudgment = false
+          }
         })
         .catch(err => {
           this.spinning = false
