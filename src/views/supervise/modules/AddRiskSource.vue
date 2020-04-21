@@ -516,7 +516,7 @@ export default {
       this.upload.drawId = id
       mediaList(this.list.drawId).then(res => {
         console.log(res.data)
-        this.attachmentJpg = res.data
+        this.attachmentJpg = res.data.slice(0,3)
       })
       this.getList()
       this.visible = true
@@ -640,7 +640,7 @@ export default {
       this.$message.success('上传成功')
       this.fileList = []
       mediaList(this.list.drawId).then(res => {
-        this.attachmentJpg = res.data
+        this.attachmentJpg = res.data.slice(0,3)
       })
     },
     handleRemove(err) {
@@ -652,7 +652,7 @@ export default {
         .then(res => {
           this.$message.success('删除成功')
           mediaList(this.list.drawId).then(res => {
-            this.attachmentJpg = res.data
+            this.attachmentJpg = res.data.slice(0,3)
           })
         })
         .catch(err => {

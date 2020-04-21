@@ -583,7 +583,7 @@ export default {
         this.list.innerName = arr.innerName
         this.list.functionName = arr.functionName
         mediaList(this.list.drawId).then(res => {
-          this.attachmentJpg = res.data
+          this.attachmentJpg = res.data.slice(0,3)
         })
       })
     },
@@ -719,7 +719,7 @@ export default {
       this.fileList = []
       mediaList(this.list.drawId).then(res => {
         console.log(res.data)
-        this.attachmentJpg = res.data
+        this.attachmentJpg = res.data.slice(0,3)
       })
     },
     handleRemove(err) {
@@ -731,7 +731,7 @@ export default {
         .then(res => {
           this.$message.success('删除成功')
           mediaList(this.list.drawId).then(res => {
-            this.attachmentJpg = res.data
+            this.attachmentJpg = res.data.slice(0,3)
           })
         })
         .catch(err => {
