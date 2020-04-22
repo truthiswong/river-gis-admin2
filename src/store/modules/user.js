@@ -58,8 +58,43 @@ const user = {
           Vue.ls.set(ACCESS_TOKEN, 'Bearer ' + result.token, 7 * 24 * 60 * 60 * 1000)
           commit('SET_TOKEN', 'Bearer ' + result.token)
           getUserCurrent().then(res => {
-            // console.log(res);
             var arr = res.data
+            res.data.forEach(v => {
+              if (v.id=="5e142f3273e44f2d59d43766") {
+                commit('getOperationPermission',{name:v.write,key:0})
+              }else if(v.id=="5e142f8373e44f2d59d43767"){
+                commit('getOperationPermission',{name:v.write,key:1})
+              }else if(v.id=="5e142f8e73e44f2d59d43768"){
+                v.children.forEach(a => {
+                  if (a.id=="5e144bdfa96a47239fbf9d72") {
+                    commit('getOperationPermission',{name:a.write,key:2})
+                  }else if(a.id=="5e15857aa96a47239fbf9dc5"){
+                    commit('getOperationPermission',{name:a.write,key:3})
+                  }else if(a.id=="5e15858ba96a47239fbf9dc6"){
+                    commit('getOperationPermission',{name:a.write,key:4})
+                  }else if(a.id=="5e1585d5a96a47239fbf9dc8"){
+                    commit('getOperationPermission',{name:a.write,key:5})
+                  }else if(a.id=="5e1587f4a96a47239fbf9dc9"){
+                    commit('getOperationPermission',{name:a.write,key:6})
+                  }else if(a.id=="5e158f06a96a47239fbf9dcf"){
+                    commit('getOperationPermission',{name:a.write,key:7})
+                  }else if(a.id=="5e158f26a96a47239fbf9dd0"){
+                    commit('getOperationPermission',{name:a.write,key:8})
+                  }else if(a.id=="5e158f37a96a47239fbf9dd1"){
+                    commit('getOperationPermission',{name:a.write,key:9})
+                  }else if(a.id=="5e158f4ba96a47239fbf9dd2"){
+                    commit('getOperationPermission',{name:a.write,key:10})
+                  }else if(a.id=="5e158f58a96a47239fbf9dd3"){
+                    commit('getOperationPermission',{name:a.write,key:11})
+                  }else if(a.id=="5e158f67a96a47239fbf9dd4"){
+                    commit('getOperationPermission',{name:a.write,key:12})
+                  }
+                  // else if(a.id=="5e1585b3a96a47239fbf9dc7"){
+                  //   commit('getOperationPermission',{name:a.write,key:5})
+                  // }
+                });
+              }
+            });
             if (arr[0].children) {
               window.localStorage.setItem('DefaultRoutePath', arr[0].children[0].route)
               // commit('getDefaultRoutePath', arr[0].children[0].route)
@@ -117,11 +152,9 @@ const user = {
             }
             resolve()
           }).catch(error => {
-            console.log(error)
             reject(error)
           })
         }).catch(error => {
-          console.log(error)
           reject(error)
         })
       })
@@ -129,9 +162,42 @@ const user = {
     GetInfo1 ({ commit }) {
       return new Promise((resolve, reject) => {
         getUserCurrent().then(res => {
-          // console.log(res)
           var arr = []
           res.data.forEach(v => {
+            if (v.id=="5e142f3273e44f2d59d43766") {
+              commit('getOperationPermission',{name:v.write,key:0})
+            }else if(v.id=="5e142f8373e44f2d59d43767"){
+              commit('getOperationPermission',{name:v.write,key:1})
+            }else if(v.id=="5e142f8e73e44f2d59d43768"){
+              v.children.forEach(a => {
+                if (a.id=="5e144bdfa96a47239fbf9d72") {
+                  commit('getOperationPermission',{name:a.write,key:2})
+                }else if(a.id=="5e15857aa96a47239fbf9dc5"){
+                  commit('getOperationPermission',{name:a.write,key:3})
+                }else if(a.id=="5e15858ba96a47239fbf9dc6"){
+                  commit('getOperationPermission',{name:a.write,key:4})
+                }else if(a.id=="5e1585d5a96a47239fbf9dc8"){
+                  commit('getOperationPermission',{name:a.write,key:5})
+                }else if(a.id=="5e1587f4a96a47239fbf9dc9"){
+                  commit('getOperationPermission',{name:a.write,key:6})
+                }else if(a.id=="5e158f06a96a47239fbf9dcf"){
+                  commit('getOperationPermission',{name:a.write,key:7})
+                }else if(a.id=="5e158f26a96a47239fbf9dd0"){
+                  commit('getOperationPermission',{name:a.write,key:8})
+                }else if(a.id=="5e158f37a96a47239fbf9dd1"){
+                  commit('getOperationPermission',{name:a.write,key:9})
+                }else if(a.id=="5e158f4ba96a47239fbf9dd2"){
+                  commit('getOperationPermission',{name:a.write,key:10})
+                }else if(a.id=="5e158f58a96a47239fbf9dd3"){
+                  commit('getOperationPermission',{name:a.write,key:11})
+                }else if(a.id=="5e158f67a96a47239fbf9dd4"){
+                  commit('getOperationPermission',{name:a.write,key:12})
+                }
+                // else if(a.id=="5e1585b3a96a47239fbf9dc7"){
+                //   commit('getOperationPermission',{name:a.write,key:5})
+                // }
+              });
+            }
             arr.push(v.flag)
             if (v.children) {
               for (const item of v.children) {

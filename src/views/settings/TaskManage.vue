@@ -126,7 +126,7 @@
                           okText="确定"
                           cancelText="取消"
                         >
-                          <a href="#">删除</a>
+                          <a href="#" v-show="jurisdiction">删除</a>
                         </a-popconfirm>
                       </a-col>
                     </a-row>
@@ -336,9 +336,9 @@
                     class="custom_list"
                   >
                     <template slot="header">
-                      <a-row style="width:100%">
+                      <a-row style="width:100%" >
                         <a-col :span="9">{{item.name}}</a-col>
-                        <a-col :span="14" style="text-align:right;" :pull="1">
+                        <a-col :span="14" style="text-align:right;" :pull="1"  v-show="jurisdiction">
                           <a-button
                             size="small"
                             type="primary"
@@ -377,7 +377,7 @@
                               okText="确定"
                               cancelText="取消"
                             >
-                              <a href="#">删除</a>
+                              <a href="#" v-show="jurisdiction">删除</a>
                             </a-popconfirm>
                           </a-col>
                         </a-row>
@@ -549,6 +549,7 @@
           block
           class="bottom_add"
           @click="addTask"
+          v-if="jurisdiction"
           v-show="(actionTab==1 && !addLineShow) || (actionTab==2 && !addPointShow)"
         >{{actionTab==1?"添加线路任务":"添加点任务"}}</a-button>
         <!-- 线路任务按钮 -->
@@ -628,6 +629,7 @@ export default {
   },
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[4],//权限
       moreLoadOnce: 0, // 更多加载一次
       mapType: 'b', // 地图类型
       roadWordChange: true, // 道路标注

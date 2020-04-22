@@ -65,23 +65,27 @@
       <a-button
         type="primary"
         icon="plus"
+        v-show="jurisdiction"
         @click="$refs.addSupervisory.add()"
         style="margin-bottom: 15px;"
       >添加</a-button>
     </div>
     <a-table :columns="columns" :dataSource="loadData" bordered>
-      <template slot="action" slot-scope="row">
-        <a @click="$refs.addSupervisory.add1(row.id)">编辑</a>
-        <a-divider type="vertical" />
-        <a-popconfirm
-          title="确定要删除吗?"
-          @confirm="confirmDelete(row.id)"
-          @cancel="cancelDelete"
-          okText="确定"
-          cancelText="取消"
-        >
-          <a>删除</a>
-        </a-popconfirm>
+      <template slot="action" slot-scope="row" >
+        <div v-show="jurisdiction">
+          <a @click="$refs.addSupervisory.add1(row.id)">编辑</a>
+          <a-divider type="vertical" />
+          <a-popconfirm
+            title="确定要删除吗?"
+            @confirm="confirmDelete(row.id)"
+            @cancel="cancelDelete"
+            okText="确定"
+            cancelText="取消"
+          >
+            <a>删除</a>
+          </a-popconfirm>
+        </div>
+        
       </template>
     </a-table>
     <add-supervisory
@@ -114,6 +118,7 @@ export default {
   },
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[6],//权限
       streetList: [],
       riverList: [],
       labelList: [],

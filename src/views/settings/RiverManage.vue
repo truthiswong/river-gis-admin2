@@ -103,13 +103,13 @@
                   okText="确定"
                   cancelText="取消"
                 >
-                  <a href="#">删除</a>
+                  <a href="#" v-show="jurisdiction">删除</a>
                 </a-popconfirm>
               </a-col>
             </a-row>
           </a-list-item>
         </a-list>
-        <a-popover title trigger="click" v-model="addRiverShow" class="bottom_add">
+        <a-popover title trigger="click" v-model="addRiverShow" class="bottom_add" >
           <template slot="content">
             <a-button block @click="addDrawRiver()">绘制</a-button>
             <el-upload
@@ -132,7 +132,7 @@
             </el-upload>
             <!-- <a-button block @click="addUploadRiver" style="margin-top: 10px;">上传KMZ</a-button> -->
           </template>
-          <a-button type="primary" block @click="del1">添加河道</a-button>
+          <a-button type="primary" block @click="del1" v-show="jurisdiction">添加河道</a-button>
         </a-popover>
       </div>
     </div>
@@ -174,7 +174,7 @@ export default {
       riverShowList: [], // 河道
       streetShowList: [], //街道
       polygonStreet: {}, // 街道对象
-
+      jurisdiction:this.$store.state.operationPermission[2],//权限
       upload: '0',
       fileList: [], //上传列表
       spotList: {
@@ -245,6 +245,8 @@ export default {
     },
   },
   mounted() {
+    console.log(this);
+    
     let token = Vue.ls.get(ACCESS_TOKEN)
     let zoom = 14
     let twoDimensionURL =
@@ -578,7 +580,6 @@ export default {
     },
     // 多边形点击事件
     polygonClick(index) {
-      console.log(index)
       for (const item of this.riverShowList) {
         if (item.id == index.target.options.id) {
           item.clicked = true

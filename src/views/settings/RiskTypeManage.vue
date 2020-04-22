@@ -6,7 +6,7 @@
         <a-breadcrumb-item>风险源类型管理</a-breadcrumb-item>
       </a-breadcrumb>
       <a-divider style="margin: 10px 0" />
-      <a-button type="primary" icon="plus" style="margin-bottom:15px" @click="visible=true">添加</a-button>
+      <a-button type="primary" icon="plus" style="margin-bottom:15px" @click="visible=true" v-show="jurisdiction">添加</a-button>
       <a-table :columns="columns" :dataSource="data" bordered>
         <template slot="type" slot-scope="row">
           <viewer >
@@ -14,17 +14,19 @@
           </viewer>
         </template>
         <template slot="operation" slot-scope="row">
-          <a @click="add(row.id)">编辑</a>
-          <a-divider type="vertical" />
-          <a-popconfirm
-            title="是否确认删除?"
-            @confirm="confirm"
-            @cancel="cancel"
-            okText="确认"
-            cancelText="取消"
-          >
-            <a @click="del(row.id)">删除</a>
-          </a-popconfirm>
+          <div v-show="jurisdiction">
+             <a @click="add(row.id)">编辑</a>
+            <a-divider type="vertical" />
+            <a-popconfirm
+              title="是否确认删除?"
+              @confirm="confirm"
+              @cancel="cancel"
+              okText="确认"
+              cancelText="取消"
+            >
+              <a @click="del(row.id)">删除</a>
+           </a-popconfirm>
+          </div>
         </template>
       </a-table>
     </a-card>
@@ -89,6 +91,7 @@ const columns = [
 export default {
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[8],//权限
       fileList:[],
       file:false,
       attachmentJpg:'',

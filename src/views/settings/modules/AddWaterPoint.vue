@@ -133,7 +133,7 @@
             </a-form-item>
           </a-col>
         </a-row>
-        <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
+        <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
           <a-col :span="4">
             <a-button type="primary" block @click="handleCancel">取消</a-button>
           </a-col>
@@ -155,6 +155,7 @@ export default {
   },
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[5],//权限
       list: {
         id: '',
         projectId: this.$store.state.id,

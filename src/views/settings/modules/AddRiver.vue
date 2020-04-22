@@ -259,7 +259,7 @@
         </a-row>
       </a-form>
       <a-divider orientation="left"></a-divider>
-      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
+      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
         <!-- <a-button-group>
             <a-button>取消</a-button>
             <a-button>保存</a-button>
@@ -270,7 +270,7 @@
           <a-button block @click="handleCancel">取消</a-button>
         </a-col>
         <a-col :span="6">
-          <a-button block @click="saveRiver">保存</a-button>
+          <a-button block @click="saveRiver" >保存</a-button>
         </a-col>
         <!-- <a-col :span="3">
             <a-button block>修改河道区域</a-button>
@@ -295,6 +295,7 @@ export default {
   },
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[2],//权限
       leftKmz:'上传kmz',
       rightKmz:'上传kmz',
       fileList:[],
@@ -528,19 +529,31 @@ export default {
           this.list.length1 = arr.info.length
           this.list.dimension = arr.info.dimension
           this.list.code = arr.info.code
-          this.list.priority = arr.info.priority + ''
+          this.list.priority = arr.info.priority +''
           this.list.inspectTimes = arr.info.inspectTimes
           this.coordinate = arr.info.region
-          console.log(arr.info.supervisoryLevel.code);
+          if (arr.info.supervisoryLevel) {
+            this.list.supervisoryLevel = arr.info.supervisoryLevel.code
+          }
           
-          this.list.supervisoryLevel = arr.info.supervisoryLevel.code
           //起点
           this.list.destAddress = arr.extra.destAddress
           this.list.startAddress = arr.extra.startAddress
-          this.list.lat = arr.extra.startCoordinate.lat
-          this.list.lng = arr.extra.startCoordinate.lng
-          this.list.lat1 = arr.extra.destCoordinate.lat
-          this.list.lng1 = arr.extra.destCoordinate.lng
+          if (arr.extra.startCoordinate.lat) {
+             this.list.lat = arr.extra.startCoordinate.lat
+          }
+          if (arr.extra.startCoordinate.lng) {
+              this.list.lng = arr.extra.startCoordinate.lng
+          }
+          if (arr.extra.destCoordinate.lat) {
+             this.list.lat1 = arr.extra.destCoordinate.lat
+          }
+          if (arr.extra.destCoordinate.lng) {
+             this.list.lng1 = arr.extra.destCoordinate.lng
+          }
+         
+         
+          
           //其他信息
           this.list.controller = arr.info.controller
           this.list.averageDepth = arr.extra.averageDepth

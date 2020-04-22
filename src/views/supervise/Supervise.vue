@@ -200,7 +200,7 @@
             :multiple="true"
             :file-list="fileList"
           >
-            <a-button style="width:198px;" block>
+            <a-button style="width:198px;" block v-show="jurisdiction">
               <a-icon type="upload" />上传照片
             </a-button>
           </el-upload>
@@ -227,12 +227,12 @@
                 <a-col :span="24">
                   <a-input placeholder="选择坐标点" read-only v-model="item.latlng"></a-input>
                 </a-col>
-                <a-col :span="12">
+                <a-col :span="12" v-show="jurisdiction">
                   <a-button block style="padding: 0" @click="phoneChooseCoordinate(item.id)">
                     <a-icon type="environment" />选择坐标
                   </a-button>
                 </a-col>
-                <a-col :span="12">
+                <a-col :span="12" v-show="jurisdiction">
                   <a-button block @click="phoneConfirm(item.id)">确定</a-button>
                 </a-col>
               </a-row>
@@ -313,7 +313,7 @@
                 />
               </a-col>
             </a-row>
-            <a-button block @click="drawRiskMap">
+            <a-button block @click="drawRiskMap" v-show="jurisdiction">
               <a-icon type="edit" />绘制风险地图
             </a-button>
             <a-row
@@ -363,7 +363,7 @@
             :limit="1"
             :file-list="fileList"
           >
-            <a-button style="width:198px;">导入最新水质数据</a-button>
+            <a-button style="width:198px;" v-show="jurisdiction">导入最新水质数据</a-button>
           </el-upload>
         </a-collapse-panel>
         <a-collapse-panel
@@ -433,7 +433,7 @@
       <li @click="setCenter">
         <img src="../../assets/img/restoration.png" alt="复位" title="复位" />
       </li>
-      <li @click="toolsShowFun" v-show="!(this.sharedChecked || this.swipeChecked)">
+      <li @click="toolsShowFun" v-show="!(this.sharedChecked || this.swipeChecked)" v-if="jurisdiction">
         <img src="../../assets/img/draw.png" alt="工具" title="工具" />
       </li>
       <li>
@@ -911,7 +911,7 @@
           <a-input placeholder v-model="otherModalList.locationName" style="width:200px" />
         </a-form-item>
       </a-form>
-      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
+      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
         <a-col :span="3">
           <a-button block @click="otherCancel">取消</a-button>
         </a-col>
@@ -1033,6 +1033,7 @@ export default {
   },
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[1],//权限
       otherModal: false, //其他绘制弹窗
       otherModalList: {
         title: '',
@@ -1364,7 +1365,6 @@ export default {
       }
     },
     accordionAlertKey(key) {
-      console.log(key)
     },
     // 历史数据
     historyData() {
@@ -1392,7 +1392,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.colorToRgba('#74c449', 0.3))
+    // console.log(this.colorToRgba('#74c449', 0.3))
     let token = Vue.ls.get(ACCESS_TOKEN)
     // 初始化地图控件
     let zoom = 14
@@ -1412,7 +1412,7 @@ export default {
       layers: [this.mapLayerSatellite, this.mapLayerWord]
     })
     this.map.addEventListener('zoomend', this.mapZoomChange)
-    console.log(this.$store.state.projectCoordinate)
+    // console.log(this.$store.state.projectCoordinate)
     this.map.centerAndZoom(this.$store.state.projectCoordinate, zoom)
     //添加比例尺控件
     this.map.addControl(new T.Control.Scale())
@@ -1595,7 +1595,6 @@ export default {
       }
     },
     mapZoomChange() {
-      // console.log(this.map.getZoom())
       if (this.map.getZoom() > 18) {
       }
     },
@@ -1640,8 +1639,6 @@ export default {
             this.phonePhotoPointsList.push(item)
           }
         }
-        console.log(this.phonePhotoPoints)
-        console.log(this.phonePhotoPointsList)
         this.onPhonePhoto()
       })
     },
@@ -1700,7 +1697,6 @@ export default {
           v.clicked = false
         })
         this.surveyPointPoints = arr
-        console.log(this.surveyPointPoints)
         this.onSurveyPoint()
       })
     },
@@ -1729,7 +1725,6 @@ export default {
           v.clicked = false
         })
         this.rightSurveyPointPoints = arr
-        console.log(this.surveyPointPoints)
         this.onSurveyPoint()
       })
     },
@@ -1890,7 +1885,6 @@ export default {
         .then(res => {
           let arr = res.data
           this.waterQualityPoints = arr
-          console.log(this.waterQualityPoints)
           this.onWaterQuality()
         })
         .catch(err => {})
@@ -2017,11 +2011,7 @@ export default {
     //风险源绘制数据
     getRiskSourceMapDrawPage(riskSourceType) {
       this.removeOverLays(this.riverRiskPoints)
-      console.log(this.riskSourceLevel);
-      
       var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
-      console.log(riskSourceLevel);
-      
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
@@ -2117,7 +2107,6 @@ export default {
     },
     //获取排口绘制数据
     getDischargeMapDrawPage() {
-      console.log(this.dischargeLevel)
       this.removeOverLays(this.outletPoints)
       if (this.dischargeLevel.length > 0) {
         var dischargeLevel = this.dischargeLevel.join(',')
@@ -2249,7 +2238,6 @@ export default {
           }
         })
         this.waterFlotagePoints = ar
-        console.log(this.waterFlotagePoints)
         this.onWaterFlotage()
       })
     },
@@ -2290,7 +2278,6 @@ export default {
           }
         })
         this.waterFlotagePointsRight = ar
-        console.log(this.waterFlotagePointsRight)
         this.onWaterFlotage()
       })
     },
@@ -2355,7 +2342,6 @@ export default {
     compass() {},
     // 复位
     setCenter() {
-      console.log(this.$store.state.projectCoordinate)
       this.map.panTo(this.$store.state.projectCoordinate, 14)
       if (this.sharedChecked) {
         this.olview.setCenter([this.$store.state.projectCoordinate.lng, this.$store.state.projectCoordinate.lat])
@@ -2506,8 +2492,6 @@ export default {
         })
         this.toolIndexLineData[result].borderColor = this.borderColor
         this.toolIndexLineData[result].borderOpacity = this.borderOpacity / 100
-        console.log(result)
-        console.log(this.toolIndexLineData)
         var polygon = ''
         for (const index of this.polygonList) {
           polygon = polygon + index.lng + ',' + index.lat + '|'
@@ -2572,7 +2556,6 @@ export default {
         let result = this.toolIndexPolygonData.findIndex(item => {
           return this.toolIndexId == item.id
         })
-        console.log(result)
         // console.log(this.toolIndexPolygonData)
         var polygon = ''
         for (const index of this.polygonList) {
@@ -2753,7 +2736,6 @@ export default {
       this.colorAlertShow = false
       let id = new Date().valueOf()
       this.toolIndexId = id
-      console.log(e)
       if (this.toolIndex === 1) {
         this.currentArea = 0
         this.toolCard = true
@@ -2777,7 +2759,6 @@ export default {
       } else if (this.toolIndex === 3) {
         // 工具-面
         this.currentArea = e.currentArea.toFixed(3)
-        console.log(e.currentArea.toFixed(3)) //获取面积 平方米
         this.toolCard = true
         this.polygonTool.close()
         this.polygonList = e.currentLnglats
@@ -2795,7 +2776,6 @@ export default {
     },
     // 点击编辑工具线
     lineClick(e) {
-      console.log(e)
       this.toolCard = true
       this.colorAlertShow = false
       this.toolIndex = 2
@@ -2804,7 +2784,6 @@ export default {
     },
     // 点击编辑工具面
     polygonClick(e) {
-      console.log(e)
       this.toolCard = true
       this.colorAlertShow = false
       this.toolIndex = 3
@@ -2908,8 +2887,6 @@ export default {
         end: end
       }
       daydataList(data).then(res => {
-        console.log('1')
-
         var arr = res.data.reverse()
         for (const item of res.data) {
           if (item.uavTask != 0) {
@@ -2999,7 +2976,6 @@ export default {
       weatherList(data)
         .then(res => {
           let arr = res.data
-          console.log(arr)
           if (arr.code == 0) {
             this.weatherData.img = require('./img/weather/0.png')
           } else if (arr.code == 1) {
@@ -3093,7 +3069,7 @@ export default {
     },
     // 时间轴
     timeLineItem(mouth) {
-      console.log(mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8))
+      // console.log(mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8))
       for (const item of this.timeData) {
         if (mouth == item.date) {
           // if (item.level != 2) {
@@ -3142,7 +3118,7 @@ export default {
     },
     // 右侧时间轴
     timeLineItemRight(mouth) {
-      console.log(mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8))
+      // console.log(mouth.substring(0, 4) + '-' + mouth.substring(4, 6) + '-' + mouth.substring(6, 8))
       for (const item of this.timeDataRight) {
         if (mouth == item.date) {
           // if (item.level != 2) {
@@ -3182,7 +3158,6 @@ export default {
     timeLineChange() {
       // 双球开关 卷帘开关
       if (this.sharedChecked || this.swipeChecked) {
-        console.log('时间轴切换')
         // 河道显示
         if (this.riverShow) {
         }
@@ -3221,7 +3196,6 @@ export default {
           let data1 = []
           let data2 = []
           for (const listItem of this.riskSourceList) {
-            console.log(listItem.clicked)
             if (listItem.clicked) {
               for (const item of this.riverRiskPoints) {
                 if (item.drawType.id == listItem.id) {
@@ -3262,7 +3236,6 @@ export default {
     rightTimeLineChange() {
       // 双球开关 卷帘开关
       if (this.sharedChecked || this.swipeChecked) {
-        console.log('时间轴切换')
       }
       // 河道显示
       if (this.riverShow) {
@@ -3299,7 +3272,6 @@ export default {
         let data1 = []
         let data2 = []
         for (const listItem of this.riskSourceList) {
-          console.log(listItem.clicked)
           if (listItem.clicked) {
             for (const item of this.riverRiskPoints) {
               if (item.drawType.id == listItem.id) {
@@ -3335,10 +3307,10 @@ export default {
     moment,
     // 更多
     onSelect(keys) {
-      console.log('Trigger Select', keys)
+
     },
     onExpand() {
-      console.log('Trigger Expand')
+
     },
     // 图像
     onMapChange() {
@@ -3510,7 +3482,6 @@ export default {
     mapZoomIn() {
       this.map.zoomIn()
       if (this.sharedChecked) {
-        console.log(this.olview.getZoom())
         this.olview.setZoom(this.olview.getZoom()+1)
       }
     },
@@ -3518,7 +3489,6 @@ export default {
     mapZoomOut() {
       this.map.zoomOut()
       if (this.sharedChecked) {
-        console.log(this.olview.getZoom())
         this.olview.setZoom(this.olview.getZoom()-1)
       }
     },
@@ -3625,7 +3595,6 @@ export default {
         minZoom: 1,
         maxZoom: 23
       })
-      console.log(this.mapType)
       this.olMap1 = new Map({
         target: 'leftMap',
         // layers: [this.mapType == 'a'?this.leftLayer2d:this.leftLayer, this.leftWordChange?this.leftLayerWord:'', this.layerImageChange?this.leftLayerImage:''],
@@ -3684,7 +3653,6 @@ export default {
     },
     // 双球开关
     sharedView() {
-      console.log(!this.sharedChecked && !this.swipeChecked)
       if (this.sharedChecked) {
         this.swipeChecked = false
         if (this.sharedOnce == 1) {
@@ -3941,7 +3909,6 @@ export default {
       let vectorSource = new VectorSource({
         features: [iconFeature]
       })
-      console.log(222222222)
       this.rightLayer.setSource(vectorSource)
       this.rightLayer.setMap(this.lmap)
       // let surveyPointLayer = new VectorLayer({
@@ -4190,7 +4157,6 @@ export default {
     },
     // 多边形点击事件
     polygonRiverClick(index) {
-      console.log(index)
     },
     // 多边形移入事件
     polygonMouseover(index) {
@@ -4264,7 +4230,6 @@ export default {
     },
     // 多边形点击事件
     polygonStreetClick(index) {
-      console.log(index)
     },
     // 多边形移入事件
     polygonStreetMouseover(index) {
@@ -4316,7 +4281,6 @@ export default {
     },
     //无人机照片地图点击事件
     UAVPhotoClick(e) {
-      console.log(e)
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
@@ -4337,7 +4301,6 @@ export default {
       }
       uavPhoto(data).then(res => {
         var arr = res.data
-        console.log(res.data)
         if (arr.length > 0) {
           this.UAVPhotosCoordinate = e.lnglat.lng + ',' + e.lnglat.lat
           this.uavPhotoList = arr
@@ -4528,7 +4491,6 @@ export default {
     },
     // 绘制结束
     drawRiskMapEnd(e) {
-      console.log(e.currentLnglats)
       this.isRiskEdit = false
       this.colorAlertShow = false
       let id = new Date().valueOf()
@@ -4545,16 +4507,12 @@ export default {
       this.removeOverLays(this.riskPolygonData)
       this.isRiskSaveShow = false
       this.colorAlertShow = false
-      console.log(this.isRiskEdit)
-      console.log(this.riskIndexId)
       if (this.polygonTool) {
         this.polygonTool.clear()
       }
       let result = this.riskPolygonData.findIndex(item => {
         return this.riskIndexId == item.id
       })
-      console.log(result)
-      console.log(this.riskPolygonData)
       this.riskPolygonData[result].borderColor = this.borderColor
       this.riskPolygonData[result].fullColor = this.fullColor
       this.riskPolygonData[result].borderOpacity = this.borderOpacity / 100
@@ -4582,12 +4540,9 @@ export default {
           shapePellucidity: this.fullOpacity,
           innerType: 'riskMap'
         }
-        console.log(riskEditData)
         mapdrawSave(riskEditData)
           .then(res => {
             this.$message.success('保存成功')
-            console.log(res.data)
-            console.log(res.data.id)
             this.getRiskMapList()
           })
           .catch(err => {
@@ -4609,12 +4564,9 @@ export default {
         shapePellucidity: this.fullOpacity,
         innerType: 'riskMap'
       }
-      console.log(riskSaveData)
       mapdrawSave(riskSaveData)
         .then(res => {
           this.$message.success('保存成功')
-          console.log(res.data)
-          console.log(res.data.id)
           this.getRiskMapList()
         })
         .catch(err => {
@@ -4687,7 +4639,6 @@ export default {
     onWaterQuality() {
       this.removeOverLays(this.waterQualityPoints)
       if (this.waterQuality) {
-        console.log(this.waterQualityPoints)
         if (this.waterQualityPoints.length > 0) {
           for (const item of this.waterQualityPoints) {
             var icon = new T.Icon({
@@ -4753,11 +4704,9 @@ export default {
     },
     // 水质监测点点击
     waterQualityHistoryClick(item) {
-      console.log(item)
       this.$refs.waterQualityAlert.add(item)
     },
     waterQualityClick(e) {
-      console.log(e)
       var time = this.defaultTime
       var picker = time.split('-')
       var data = {
@@ -4958,8 +4907,7 @@ export default {
         }
         if (point.length > 0) {
           this.spotDraw(point)
-          console.log(this.waterFlotagePoints)
-          console.log(this.waterFlotagePointsRight)
+
         }
         // 双球开关
         if (this.sharedChecked) {
@@ -5316,7 +5264,6 @@ export default {
       this.$refs.AddFloatage.detailList(row)
     },
     otherClick(row) {
-      console.log(row)
       this.otherModalList.id = row.target.options.id
       this.otherModalList.innerName = row.target.options.title
       this.otherModalList.title = row.target.options.drawType
@@ -5382,7 +5329,6 @@ export default {
             }
             if (item.locationType.code == 'line') {
               this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
-              console.log(item)
               let markerTool
               if (item.drawType.icon) {
                 let icon = new T.Icon({
@@ -5467,7 +5413,6 @@ export default {
         this.spotDraw(point)
         // 双球开关
         if (this.sharedChecked) {
-          console.log(this.riverRiskPointsRight)
           for (const item of this.riverRiskPointsRight) {
             if (item.drawType.id == id) {
               if (item.locationType.code == 'point') {
@@ -5620,7 +5565,6 @@ export default {
               }
             }
             if (item.locationType.code == 'polygon') {
-              console.log(item)
               if (item.innerName) {
               } else {
                 item.innerName = ''
@@ -5790,7 +5734,7 @@ export default {
         }
         // 双球开关
         if (this.sharedChecked || this.swipeChecked) {
-          console.log('双球')
+
           for (const item of this.surveyPointPoints) {
             this.olSharedDrawPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id, 'olMap1')
           }
@@ -5799,7 +5743,7 @@ export default {
           }
         }
       } else {
-        console.log('关闭专项调查')
+
         if (this.sharedChecked) {
           this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
           this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
@@ -6030,12 +5974,10 @@ export default {
     },
     // 任务点点击事件
     taskPointClick(index) {
-      console.log(index)
       this.$refs.riskInfo.riskInfo()
     },
     // 绘制图片
     allImageTask(pointLists) {
-      console.log(pointLists)
       let arrayObj = new Array()
       let styles = new Array()
       for (const item of pointLists) {
@@ -6070,9 +6012,7 @@ export default {
     },
     // 任务照片点击
     taskImageClick(e) {
-      console.log(e.target.options.id)
       this.photoAlertShow = true
-      console.log(this.phonePhotoPoints)
       for (const item of this.phonePhotoPoints) {
         if (e.target.options.id == item.id) {
           this.imageEditorData.id = item.id
@@ -6093,7 +6033,6 @@ export default {
     },
     // 上传手机照片
     phonePhotoSuccess(response, file, fileList) {
-      console.log(response)
       this.fileList = []
       this.$message.success('上传成功')
       // 刷新手机照片
@@ -6107,7 +6046,6 @@ export default {
         from: 'admin'
       }
       dataManual(phoneArr).then(res => {
-        console.log(res.data.data)
         let arr = res.data.data
         arr.forEach(v => {
           v.latlng = v.coordinate
@@ -6125,8 +6063,6 @@ export default {
             this.phonePhotoPointsList.push(item)
           }
         }
-        console.log(this.phonePhotoPoints)
-        console.log(this.phonePhotoPointsList)
         // 获取后重新绘制
         if (this.MarkerClusterer) {
           this.MarkerClusterer.removeMarkers(this.MarkerClusterer.options.markers)
@@ -6135,11 +6071,9 @@ export default {
       })
     },
     phonePhotoError(err, file, fileList) {
-      console.log(err)
     },
     phonePhotoChange(info) {
       if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList)
       }
       if (info.file.status === 'done') {
         // this.fileList = []
@@ -6150,7 +6084,6 @@ export default {
     },
     // 手机照片选择经纬度
     phoneChooseCoordinate(id) {
-      console.log(id)
       this.phonePhoneId = id
       if (this.cp) {
         this.cp.removeEvent()
@@ -6159,7 +6092,6 @@ export default {
       this.cp.addEvent()
     },
     getLngLat(lnglat) {
-      console.log(lnglat.lng + ', ' + lnglat.lat)
       for (const item of this.phonePhotoPointsList) {
         if (this.phonePhoneId == item.id) {
           item.latlng = `${lnglat.lng}, ${lnglat.lat}`
@@ -6224,13 +6156,10 @@ export default {
       }
     },
     sourceRiskView(id, code) {
-      console.log(id, code)
       if (code == 'riskSource') {
-        console.log('1')
         this.$refs.addRisk.addSource(id)
       }
       if (code == 'discharge') {
-        console.log('2')
         this.$refs.addOutlet.detailList(id)
       }
     },

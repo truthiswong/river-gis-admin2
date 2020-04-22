@@ -52,7 +52,7 @@
           <a-input placeholder="请输入月计划次数" v-model="list.times"/>
         </a-col>
       </a-row>
-      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
+      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
         <a-col :span="6">
           <a-button type="primary" block @click="handleCancel">取消</a-button>
         </a-col>
@@ -70,6 +70,7 @@ import { taskPointDetail, taskPointSave,getRiverList} from '@/api/login'
 export default {
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[3],//权限
       title:'',
       list:{
         id:'',

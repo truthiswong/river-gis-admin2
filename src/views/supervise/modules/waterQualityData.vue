@@ -42,7 +42,7 @@
           :data="uploadData"
           :limit="1"
           :file-list="fileList">
-           <a-button>导入最新水质数据</a-button>
+           <a-button v-show="jurisdiction">导入最新水质数据</a-button>
         </el-upload>
       </el-form-item>
     </el-form>
@@ -106,6 +106,7 @@ export default {
   },
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[1],//权限
       uploadData:{
         projectId:this.$store.state.id
       },

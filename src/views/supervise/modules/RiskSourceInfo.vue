@@ -56,16 +56,16 @@
                 <a-tooltip slot="datetime" :title="item.datetime">
                   <span>{{item.datetime}}</span>
                 </a-tooltip>
-                <a-popconfirm title="确定删除吗？" @confirm="confirmDelete(item.id)" @cancel="cancelDelete">
+                <a-popconfirm title="确定删除吗？" @confirm="confirmDelete(item.id)" @cancel="cancelDelete" v-show="jurisdiction">
                   <a-icon slot="icon" type="question-circle-o" style="color: red" />
-                  <a-button size="small">删除</a-button>
+                  <a-button size="small" >删除</a-button>
                 </a-popconfirm>
               </div>
             </template>
           </a-comment>
         </a-list-item>
       </a-list>
-      <a-button type="primary" block @click="renewClick('1')">更新风险状态</a-button>
+      <a-button type="primary" block @click="renewClick('1')" v-show="jurisdiction">更新风险状态</a-button>
     </div>
     <div v-show="show_type">
       <a-form>
@@ -131,6 +131,7 @@ import { riskDetails, dischargeDetails, floatageDetails, commentMapdraw, comment
 export default {
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[1],//权限
       name: '',
       fileList: [],
       code: '',

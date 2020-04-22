@@ -129,6 +129,7 @@ export default {
   name: 'planDetail',
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[0],//权限
       nameAdditional:'',
       confirmLoading:false,
       spinning: true,
@@ -231,101 +232,106 @@ export default {
       this.teamId = id
     },
     submitPlan(e) {
-      this.confirmLoading=true
-      var worker = ''
-      var amount = ''
-      var extraDeviceAmount = ''
-      for (const item of this.planTab) {
-        for (let i=0;i<item.roles.length;i++) {
-          if (i + 1 == item.roles.length) {
-            if (item.roles[i].workerId.length  == 0) {
-              this.$message.warning('请全部分配人员')
-              this.confirmLoading=false
-              break
-            }else{
-              for (const item of this.planTab) {
-                worker = ''
-                amount = ''
-                extraDeviceAmount=''
-                for (const role of item.roles) {
-                  var data = {
-                    id: '',
-                    teamId: item.id,
-                    roleId: role.role.id,
-                    workerId: role.workerId.join(',')
-                  }
-                  memberRiverSave(data)
-                    .then(res => {
+      if (this.jurisdiction) {
+        this.confirmLoading=true
+        var worker = ''
+        var amount = ''
+        var extraDeviceAmount = ''
+        for (const item of this.planTab) {
+          for (let i=0;i<item.roles.length;i++) {
+            if (i + 1 == item.roles.length) {
+              if (item.roles[i].workerId.length  == 0) {
+                this.$message.warning('请全部分配人员')
+                this.confirmLoading=false
+                break
+              }else{
+                for (const item of this.planTab) {
+                  worker = ''
+                  amount = ''
+                  extraDeviceAmount=''
+                  for (const role of item.roles) {
+                    var data = {
+                      id: '',
+                      teamId: item.id,
+                      roleId: role.role.id,
+                      workerId: role.workerId.join(',')
+                    }
+                    memberRiverSave(data)
+                      .then(res => {
 
-                    })
-                    .catch(err => {
-                      this.confirmLoading=false
-                      this.numvis = false
-                    })
-                }
-                for (const devices of item.devices) {
-                  for (const am of devices.workerId) {
-                    // worker.push(am.workerId)
-                    worker = worker + am + ','
+                      })
+                      .catch(err => {
+                        this.confirmLoading=false
+                        this.numvis = false
+                      })
                   }
-                  for (const devi of devices.devices) {
-                    amount = amount + devi.amount + ','
-                    // amount.push(devi.amount)
-                  }
-                }
-                for (const numadd of item.additional) {
-                  for (const addnum of item.additionalList) {
-                    if (numadd.extraDevice == addnum) {
-                      extraDeviceAmount=extraDeviceAmount + numadd.extraDeviceAmount+','
+                  for (const devices of item.devices) {
+                    for (const am of devices.workerId) {
+                      // worker.push(am.workerId)
+                      worker = worker + am + ','
+                    }
+                    for (const devi of devices.devices) {
+                      amount = amount + devi.amount + ','
+                      // amount.push(devi.amount)
                     }
                   }
-                }
-                var arr = {
-                  id: '',
-                  teamId: item.id,
-                  deviceId: worker,
-                  amount: amount,
-                  extraDevice:item.additionalList.join(','),
-                  extraDeviceAmount:extraDeviceAmount
-                }
-                equipmentRiverSave(arr).then(res => {
+                  for (const numadd of item.additional) {
+                    for (const addnum of item.additionalList) {
+                      if (numadd.extraDevice == addnum) {
+                        extraDeviceAmount=extraDeviceAmount + numadd.extraDeviceAmount+','
+                      }
+                    }
+                  }
+                  var arr = {
+                    id: '',
+                    teamId: item.id,
+                    deviceId: worker,
+                    amount: amount,
+                    extraDevice:item.additionalList.join(','),
+                    extraDeviceAmount:extraDeviceAmount
+                  }
+                  equipmentRiverSave(arr).then(res => {
 
-                }).catch(err => {
-                  this.confirmLoading=false
-                  this.numvis = false
-                })
+                  }).catch(err => {
+                    this.confirmLoading=false
+                    this.numvis = false
+                  })
+                }
+                this.t1 = setTimeout(() => {
+                  planPublish(this.id).then(res => {
+                    this.confirmLoading=false
+                    this.visible = false
+                    this.$message.success('成功')
+                    this.spinning = true
+                    this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
+                    this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
+                    this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
+                  }).catch(err => {
+                    this.confirmLoading=false
+                    this.$message.error(err.response.data.message)
+                  })
+                },3000)
+              
+                
+                
               }
-              this.t1 = setTimeout(() => {
-                planPublish(this.id).then(res => {
-                  this.confirmLoading=false
-                  this.visible = false
-                  this.$message.success('成功')
-                  this.spinning = true
-                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPage()
-                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getPlanSave()
-                  this.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.getNowPlan()
-                }).catch(err => {
-                  this.confirmLoading=false
-                  this.$message.error(err.response.data.message)
-                })
-              },3000)
-             
+            }else{
               
-              
-            }
-          }else{
-            
-            if (item.roles[i].workerId.length  == 0) {
-              this.$message.warning('请全部分配人员')
-              this.confirmLoading=false
-              break
-            } else {
-              
+              if (item.roles[i].workerId.length  == 0) {
+                this.$message.warning('请全部分配人员')
+                this.confirmLoading=false
+                break
+              } else {
+                
+              }
             }
           }
+          
         }
-        
+      }else{
+        this.$message.warning('您暂无操作权限!');
       }
+      
     },
     additionalClick(id){
       for (const item of this.planTab) {

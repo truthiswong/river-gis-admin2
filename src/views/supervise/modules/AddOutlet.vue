@@ -288,14 +288,14 @@
                 :file-list="fileList"
                 :limit="1"
               >
-                <a-button type="primary" icon="plus">上传</a-button>
+                <a-button type="primary" icon="plus" v-show="jurisdiction">上传</a-button>
               </el-upload>
               <div style="display:flex;flex-wrap:wrap">
                  <span >
                   <viewer :images="attachmentJpg" >
                     <img v-for="item in attachmentJpg" :key="item.id" :src="item.media" alt style="width:70px;height:70px;margin:0 4px 4px 0;"  />
                   </viewer >
-                  <div style="width:70px;margin:0 4px 4px 0;display: inline-block"  v-for="item in attachmentJpg" :key="item.id"> 
+                  <div style="width:70px;margin:0 4px 4px 0;display: inline-block"  v-for="item in attachmentJpg" :key="item.id" v-show="jurisdiction"> 
                      <a-popconfirm
                         title="确定删除吗？"
                         @confirm="mediaDelete(item.id)"
@@ -313,7 +313,7 @@
         </a-row>
         <h3 style="margin-top: 10px;">
           督办单
-          <a-button size="small" style="margin-left:10px;" @click="addSheet()">添加</a-button>
+          <a-button size="small" style="margin-left:10px;" @click="addSheet()" v-show="jurisdiction">添加</a-button>
         </h3>
         <div v-show="sheet" style="margin-bottom:20px;">
           <a-select
@@ -347,15 +347,15 @@
               okText="确定"
               cancelText="取消"
             >
-              <a>删除</a>
+              <a v-show="jurisdiction">删除</a>
             </a-popconfirm>
             <a-divider type="vertical" />
-            <a :href="record.attachment"  target="_blank" download >下载</a>
+            <a :href="record.attachment" :download="record.documentName"   target="_blank" >下载</a>
           </template>
         </a-table>
       </a-form>
       <a-divider orientation="left"></a-divider>
-      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
+      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
         <a-col :span="3">
           <a-button block @click="handleCancel">取消</a-button>
         </a-col>
@@ -391,6 +391,7 @@ import {
 export default {
   data() {
     return {
+       jurisdiction:this.$store.state.operationPermission[1],//权限
       sheet: false,
       sheetList: [],
       sheetId: [],

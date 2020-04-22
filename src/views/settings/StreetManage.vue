@@ -103,7 +103,7 @@
                   okText="确定"
                   cancelText="取消"
                 >
-                  <a href="#">删除</a>
+                  <a href="#" v-show="jurisdiction">删除</a>
                 </a-popconfirm>
               </a-col>
             </a-row>
@@ -132,7 +132,7 @@
               <a-button block style="margin-top: 10px;">上传KMZ</a-button>
             </el-upload>
           </template>
-          <a-button type="primary" block @click="del1">添加街道</a-button>
+          <a-button type="primary" block @click="del1" v-show="jurisdiction">添加街道</a-button>
         </a-popover>
       </div>
     </div>
@@ -147,7 +147,7 @@
     <!-- 添加街道 -->
     <add-street ref="addStreet" @cancel="cancelClick" @confirm="confirmClick"></add-street>
   </div>
-</template>
+</template> 
 
 <script>
 // import WorldMap from "../../components/map/WorldMap.vue";
@@ -163,6 +163,7 @@ export default {
   },
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[3],//权限
       mapType: 'b', // 地图类型
       roadWordChange: true, // 道路标注
       mapLayerWord: '', // 道路层级

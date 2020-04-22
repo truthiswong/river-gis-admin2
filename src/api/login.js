@@ -523,6 +523,13 @@ export function SuperviseDetail(id) {
     method: 'get',
   })
 }
+//督办单下载
+export function SuperviseDownload(id) {
+  return axios({
+    url: '/server/data/admin/supervision/download/' + id,
+    method: 'get',
+  })
+}
 //巡河
 //巡河计划列表
 export function planPage(data) {

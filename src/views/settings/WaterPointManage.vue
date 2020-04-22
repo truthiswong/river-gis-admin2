@@ -101,7 +101,7 @@
                         okText="确定"
                         cancelText="取消"
                       >
-                        <a href="#">删除</a>
+                        <a href="#" v-show="jurisdiction">删除</a>
                       </a-popconfirm>
                     </a-col>
                   </a-row>
@@ -129,7 +129,7 @@
                         okText="确定"
                         cancelText="取消"
                       >
-                        <a href="#">删除</a>
+                        <a href="#" v-show="jurisdiction">删除</a>
                       </a-popconfirm>
                     </a-col>
                   </a-row>
@@ -138,9 +138,9 @@
             </section>
           </a-tab-pane>
         </a-tabs>
-        <a-button type="primary" block class="bottom_add" @click="addTask">添加</a-button>
+        <a-button type="primary" block class="bottom_add" @click="addTask" v-show="jurisdiction">添加</a-button>
       </div>
-      <a-button type="primary" block class="bottom_add" @click="addTask">添加</a-button>
+      <a-button type="primary" block class="bottom_add" @click="addTask" v-show="jurisdiction">添加</a-button>
     </div>
     <!-- 鼠标跟随弹窗 -->
     <div
@@ -167,6 +167,7 @@ export default {
   },
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[5],//权限
       mapType: 'b', // 地图类型
       roadWordChange: true, // 道路标注
       mapLayerWord: '', // 道路层级
@@ -185,14 +186,8 @@ export default {
       actionTab: '1', //tab
       type: '1',
       fixedPointList: [
-        // { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.21493, lng: 121.49566 } },
-        // { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.22344, lng: 121.47892 } },
-        // { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.20649, lng: 121.47712 } }
       ],
       peoplePointList: [
-        // { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.26493, lng: 121.45566 } },
-        // { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.27344, lng: 121.43892 } },
-        // { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.25649, lng: 121.43712 } }
       ],
       addLineShow: false, // 线路任务显示
       addPointShow: false, // 点任务显示

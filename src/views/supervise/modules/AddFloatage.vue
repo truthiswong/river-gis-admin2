@@ -89,7 +89,7 @@
         </a-row>
       </a-form>
       <a-divider orientation="left"></a-divider>
-      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
+      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
         <a-col :span="3">
           <a-button block @click="handleCancel">取消</a-button>
         </a-col>
@@ -110,6 +110,7 @@ import { getRiverList, getStreetList, floatageSave, floatageDetails, mapdrawDeta
 export default {
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[1],//权限
       labelCol: {
         xs: { span: 18 },
         sm: { span: 6 }

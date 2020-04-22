@@ -43,18 +43,18 @@
             </a-form-item>
           </a-col>
         </a-row>
-        <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
+        <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
           <a-col :span="6">
             <a-button type="primary" block @click="handleCancel">取消</a-button>
           </a-col>
           <a-col :span="6">
-            <a-button type="primary" block @click="SaveStreet">保存</a-button>
+            <a-button type="primary" block @click="SaveStreet" >保存</a-button>
           </a-col>
         </a-row>
       </a-form>
     </a-spin>
   </a-modal>
-</template>
+</template> 
 
 <script>
 const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters']
@@ -62,6 +62,7 @@ import { informationStreet,getSaveStreet } from '@/api/login'
 export default {
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[3],//权限
       save:'1',
       list:{
         id:'',

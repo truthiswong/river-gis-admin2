@@ -213,7 +213,7 @@
                 :file-list="fileList"
                 :limit="1"
               >
-                <a-button type="primary" icon="plus">上传</a-button>
+                <a-button type="primary" icon="plus" v-show="jurisdiction">上传</a-button>
               </el-upload>
               <!-- <div class="comment_img">
                 <viewer  >
@@ -231,7 +231,7 @@
                         @confirm="mediaDelete(item.id)"
                       >
                         <a-icon slot="icon" type="question-circle-o" style="color: red" />
-                        <a-button type="primary" >删除</a-button>
+                        <a-button type="primary" v-show="jurisdiction">删除</a-button>
                       </a-popconfirm>
                   </div>
                  
@@ -242,7 +242,7 @@
         </a-row>
         <h3 style="margin-top: 10px;">
           督办单
-          <a-button size="small" style="margin-left:10px;" @click="addSheet()">添加</a-button>
+          <a-button size="small" style="margin-left:10px;" @click="addSheet()" v-show="jurisdiction">添加</a-button>
         </h3>
         <div v-show="sheet" style="margin-bottom:20px;">
           <a-select
@@ -276,15 +276,15 @@
               okText="确定"
               cancelText="取消"
             >
-              <a>删除</a>
+              <a v-show="jurisdiction">删除</a>
             </a-popconfirm>
             <a-divider type="vertical" />
-            <a href="/files/supervision/bill/0701.txt.txt" download   target="_blank">下载</a>
+            <a :href="record.attachment" :download="record.documentName"   target="_blank" >下载</a>
           </template>
         </a-table>
       </a-form>
       <a-divider orientation="left"></a-divider>
-      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around">
+      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
         <a-col :span="3">
           <a-button block @click="handleCancel">取消</a-button>
         </a-col>
@@ -321,11 +321,13 @@ import {
   SupervisePage,
   riskDetails,
   mapdrawDelete,
-  mediaRemove
+  mediaRemove,
+  SuperviseDownload
 } from '@/api/login'
 export default {
   data() {
     return {
+       jurisdiction:this.$store.state.operationPermission[1],//权限
       sheet: false,
       sheetList: [],
       sheetId: [],
@@ -735,6 +737,12 @@ export default {
         }
       }
       return wbout
+    },
+    downloadClick(id){
+      SuperviseDownload(id).then(res=>{
+        console.log(res);
+        
+      })
     }
   }
 }

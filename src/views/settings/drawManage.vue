@@ -6,7 +6,7 @@
         <a-breadcrumb-item>绘制类型管理</a-breadcrumb-item>
       </a-breadcrumb>
       <a-divider style="margin: 10px 0" />
-      <a-button type="primary" icon="plus" style="margin-bottom:15px" @click="visible=true">添加</a-button>
+      <a-button type="primary" icon="plus" style="margin-bottom:15px" @click="visible=true" v-show="jurisdiction">添加</a-button>
       <a-table :columns="columns" :dataSource="data" bordered>
         <template slot="type" slot-scope="row">
           <viewer >
@@ -14,7 +14,7 @@
           </viewer>
         </template>
         <template slot="operation" slot-scope="row">
-          <div>
+          <div v-show="jurisdiction">
              <a @click="add(row.id,row.name)">编辑</a>
               <a-divider type="vertical" />
               <a-popconfirm
@@ -122,6 +122,7 @@ const columns = [
 export default {
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[9],//权限
       fileList:[],
       file:false,
       attachmentJpg:'',

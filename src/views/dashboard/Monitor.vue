@@ -78,7 +78,7 @@
               </div>
             </div>
             <!-- 新建计划时展示 -->
-            <div class="left-patrol" v-if="noTitleKey === 'addPlan' || nosuperKey === 'taskCard'">
+            <div class="left-patrol" v-if="noTitleKey === 'addPlan' || nosuperKey === 'taskCard'" v-show="jurisdiction">
               <p class="left-patrol-title">推荐巡河方案</p>
               <div class="patrol-plan">
                 <!-- <a-tree defaultExpandAll v-model="checkedPlan" @select="selectPatrol" :treeData="patrolPlanInfo"/> -->
@@ -371,6 +371,7 @@
                     <!-- 判断显示内容 -->
                     <div v-if="ishidden == 1">
                       <a-row
+                        v-show="jurisdiction"
                         type="flex"
                         justify="center"
                         style="margin-bottom:15px;margin-top:15px;text-align:center;"
@@ -399,8 +400,9 @@
                                 @cancel="cancel"
                                 okText="确认"
                                 cancelText="取消"
+                               
                               >
-                                <a-button shape="circle" icon="close" style="font-size:8px;"></a-button>
+                                <a-button shape="circle" icon="close" style="font-size:8px;"  v-show="jurisdiction"></a-button>
                               </a-popconfirm>
                             </a-col>
                           </a-row>
@@ -419,7 +421,8 @@
                             class="addTask_btn commBtn"
                             icon="plus"
                             @click="addTaskBtn(item.objectId,item.objectName,item.code,item)"
-                            v-show="item.isShow == false"
+                            v-if="item.isShow == false"
+                            v-show="jurisdiction"
                           >追加任务</a-button>
                         </div>
                         <div class="addTask_info" v-show="item.isShow">
@@ -559,9 +562,10 @@
                                             :title="'是否确认删除'+targetId.target.objectName+'?'"
                                             okText="确认"
                                             cancelText="取消"
+                                            
                                             @confirm="del(targetId.target.id)"
                                           >
-                                            <a>删除</a>
+                                            <a v-show="jurisdiction">删除</a>
                                           </a-popconfirm>
                                         </a-col>
                                       </a-row>
@@ -608,6 +612,7 @@
                                       <a-button
                                         class="addTask_btn commBtn"
                                         icon="plus"
+                                        v-show="jurisdiction"
                                         @click="addTaskBtnDay(item.plan.id,targetId.target.objectId,targetId.target.objectName,targetId.target.object.code,index.team.id,index.team.id,targetId)"
                                         v-if="targetId.isShow == false"
                                       >追加任务</a-button>
@@ -763,7 +768,7 @@
                                         cancelText="取消"
                                         @confirm="del(targetId.target.id)"
                                       >
-                                        <a>删除</a>
+                                        <a v-show="jurisdiction">删除</a>
                                       </a-popconfirm>
                                     </a-col>
                                   </a-row>
@@ -887,7 +892,7 @@
           <!-- 底部 -->
           <div class="addPlan_foot" v-show="noTitleKey === 'addPlan'">
             <div v-if="ishidden == 1">
-              <a-row type="flex" justify="space-around">
+              <a-row type="flex" justify="space-around" v-show="jurisdiction">
                 <a-col :span="10">
                   <a-button class="groupBtn" @click="newPlan_btn" v-show="hidingJudgment">生成计划</a-button>
                   <!-- <a-button class="groupBtn" @click="newPlan_btn" >生成计划</a-button> -->
@@ -1245,6 +1250,7 @@ export default {
   },
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[0],//权限
       accordionAlertKey: ['phonePhoto'], // 手风琴
       akakak:'/iii.amr',
       threePicker:'',

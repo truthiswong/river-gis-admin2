@@ -2,52 +2,34 @@
   <a-modal
     :visible="visible"
     :footer="null"
+    :width="510"
     @cancel="cmtHandle"
     :maskClosable="false"
-    :width="400"
     class="cmModal"
   >
     <template slot="title">
       <div>外勤反馈</div>
       <!-- <span style="background-color:#EBF5FF;border:1px solid #e8e8e8;border-radius: 50%;padding:8px 10px;">张</span> -->
     </template>
-    <div style="font-size: 16px;">经度：{{lng}},纬度：{{lat}}</div>
-    <div style="margin-top:20px;border-top:1px solid #e8e8e8;" v-for="item in list" :key="item.id">
-      <div class="header">
-        <a-row>
-          <a-col :span="8">
-            <span
-              style="background-color:#EBF5FF;border:1px solid #e8e8e8;border-radius: 50%;padding:8px 10px;"
-            >{{item.creator.name}}</span>
-          </a-col>
-          <a-col :span="16" class="nowdate">
-            <div>{{item.date}}</div>
-          </a-col>
-        </a-row>
+    <div style="font-size:14px;font-family:PingFangSC-Semibold,PingFang SC;font-weight:600;color:rgba(82,90,111,1);margin-bottom:10px">经度：{{lng}},纬度：{{lat}}</div>
+    <div  v-for="item in list" :key="item.id" style="margin-bottom:10px">
+      <div style="font-size:12px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(188,190,199,1);line-height:26px;">{{item.date}}</div>
+      <div style="display:flex;">
+        <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;width:70px">马进：</div>
+        <div style="">
+            <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;margin-bottom:10px">{{item.remark}}</div>
+            <div style="width:393px">
+              <img :src="item.media" alt style="width:100%" v-show="item.mediaType.code=='image'"/>
+              <a-button @click="audioBut(item.media)" v-show="item.mediaType.code!='image'">播放</a-button>
+            </div>
+        </div>
       </div>
-      <div class="header">{{item.remark}}</div>
+      <!-- <div class="header">{{item.remark}}</div>
       <div class="player">
-        <!-- <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :options="item.playerOptions" :playsinline="true"></video-player> -->
         <img :src="item.media" alt style="width:100%" v-show="item.mediaType.code=='image'"/>
         <a-button @click="audioBut(item.media)" v-show="item.mediaType.code!='image'">播放</a-button>
-        <!-- <audio :src="item.media" controls="controls"></audio> -->
-      </div>
+      </div> -->
     </div>
-    <!-- <div style="margin-top:20px;border-top:1px solid #e8e8e8;">
-            <div class="header">
-                <a-row>
-                    <a-col :span="8">
-                        <span style="background-color:#EBF5FF;border:1px solid #e8e8e8;border-radius: 50%;padding:8px 10px;">张</span>
-                    </a-col>
-                    <a-col :span="16" class="nowdate">
-                        <div>2019-9-9 15:00</div>
-                    </a-col>
-                </a-row>
-            </div>
-            <div class="audio">
-                <audio src="https://www.w3school.com.cn/i/horse.ogg" controls="controls"></audio>
-            </div>
-    </div>-->
   </a-modal>
 </template>
 <script>

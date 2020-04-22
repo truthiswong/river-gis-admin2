@@ -13,39 +13,43 @@
           </a-card>
         </div>
         <div style="width:100%;margin-left:20px">
-          <div v-if="treeId==true">
-            <a-button type="primary" icon="plus" @click="visible=true" style="margin-bottom:15px">添加</a-button>
+          <div v-if="treeId==true" >
+            <a-button type="primary" icon="plus" @click="visible=true" v-show="jurisdiction" style="margin-bottom:15px">添加</a-button>
             <a-table :columns="columns" :dataSource="data" bordered>
               <template slot="operation" slot-scope="row">
-                <a @click="add(row.id,row.name)">编辑</a>
-                <a-divider type="vertical" />
-                <a-popconfirm
-                  title="是否确认删除?"
-                  @confirm="confirm('1')"
-                  @cancel="cancel"
-                  okText="确认"
-                  cancelText="取消"
-                >
-                  <a @click="del(row.id)">删除</a>
-                </a-popconfirm>
+                <div v-show="jurisdiction">
+                  <a @click="add(row.id,row.name)">编辑</a>
+                  <a-divider type="vertical" />
+                  <a-popconfirm
+                    title="是否确认删除?"
+                    @confirm="confirm('1')"
+                    @cancel="cancel"
+                    okText="确认"
+                    cancelText="取消"
+                  >
+                    <a @click="del(row.id)">删除</a>
+                  </a-popconfirm>
+                </div>
               </template>
             </a-table>
           </div>
           <div v-else>
-            <a-button type="primary" icon="plus" @click="addProject" style="margin-bottom:15px">添加</a-button>
+            <a-button type="primary" icon="plus" @click="addProject" style="margin-bottom:15px" v-show="jurisdiction">添加</a-button>
             <a-table :columns="columns1" :dataSource="data1" bordered>
               <template slot="operation" slot-scope="row">
-                <a @click="add1(row)">编辑</a>
-                <a-divider type="vertical" />
-                <a-popconfirm
-                  title="是否确认删除?"
-                  @confirm="confirm('2')"
-                  @cancel="cancel"
-                  okText="确认"
-                  cancelText="取消"
-                >
-                  <a @click="del(row.id)">删除</a>
-                </a-popconfirm>
+                <div v-show="jurisdiction">
+                  <a @click="add1(row)">编辑</a>
+                  <a-divider type="vertical" />
+                  <a-popconfirm
+                    title="是否确认删除?"
+                    @confirm="confirm('2')"
+                    @cancel="cancel"
+                    okText="确认"
+                    cancelText="取消"
+                  >
+                    <a @click="del(row.id)">删除</a>
+                  </a-popconfirm>
+                </div>
               </template>
             </a-table>
           </div>
@@ -180,6 +184,7 @@ const columns1 = [
 export default {
   data() {
     return {
+      jurisdiction:this.$store.state.operationPermission[10],//权限
       id: '',
       treeId: true,
       treeData,
