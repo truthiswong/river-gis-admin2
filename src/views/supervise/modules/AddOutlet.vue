@@ -350,7 +350,7 @@
               <a>删除</a>
             </a-popconfirm>
             <a-divider type="vertical" />
-            <a :href="record.attachment"  target="_blank">下载</a>
+            <a :href="record.attachment"  target="_blank" download >下载</a>
           </template>
         </a-table>
       </a-form>

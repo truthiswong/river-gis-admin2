@@ -279,7 +279,7 @@
               <a>删除</a>
             </a-popconfirm>
             <a-divider type="vertical" />
-            <a :href="record.attachment"  target="_blank">下载</a>
+            <a href="/files/supervision/bill/0701.txt.txt" download   target="_blank">下载</a>
           </template>
         </a-table>
       </a-form>
@@ -586,6 +586,8 @@ export default {
       })
     },
     handleCancel() {
+      this.list.standardCode = ''
+      this.list.standardName = ''
       this.list.riverId = ''
       this.list.streetId = ''
       this.list.tworiver = ''
