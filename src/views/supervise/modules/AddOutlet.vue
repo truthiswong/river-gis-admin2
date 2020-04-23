@@ -13,7 +13,7 @@
   >
     <a-spin :spinning="confirmLoading">
       <a-form class="from">
-        <h3>名称</h3>
+        <h3>基本信息</h3>
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="内部编码">
@@ -38,7 +38,7 @@
             </a-form-item>
           </a-col>
         </a-row>
-        <h3 style="margin-top: 10px;">位置</h3>
+        <!-- <h3 style="margin-top: 10px;">位置</h3> -->
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="所属河道">
@@ -141,6 +141,16 @@
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="准确位置">
               <a-input placeholder v-model="list.accurateLocation" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="首次发现时间">
+              <a-date-picker
+                   
+                    style="width: 100%"
+                  />
+                   <!-- :value="moment(list.activateTime, 'YYYY-MM-DD')"
+                    @change="onChange" -->
             </a-form-item>
           </a-col>
         </a-row>
@@ -392,6 +402,7 @@ export default {
   data() {
     return {
        jurisdiction:this.$store.state.operationPermission[1],//权限
+       currentAreaDisabled:false,
       sheet: false,
       sheetList: [],
       sheetId: [],

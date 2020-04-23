@@ -41,7 +41,7 @@
           <div class="list_content left2">{{uavDetail.uavDetail.ipadCode}}</div>
         </div>
         <div class="list">
-          <div class="list_title">任务执行时间：</div>
+          <div class="list_title">任务开始时间：</div>
           <div class="list_content">{{uavDetail.uavDetail.beginTime}}</div>
           <div class="list_title left1" v-if="uavDetail.uavDetail.endTime!=false">任务结束时间：</div>
           <div class="list_content left2" v-if="uavDetail.uavDetail.endTime!=false">{{uavDetail.uavDetail.endTime}}</div>
@@ -59,7 +59,7 @@
           <a-col :span="8">{{uavDetail.uavDetail.ipadCode}}</a-col>
         </a-row>
         <a-row type="flex" align="middle">
-          <a-col :span="8">任务执行时间:</a-col>
+          <a-col :span="8">任务开始时间:</a-col>
           <a-col :span="8">{{uavDetail.uavDetail.beginTime}}</a-col>
         </a-row>
         <a-row type="flex" align="middle" v-if="uavDetail.uavDetail.endTime!=false">
@@ -120,7 +120,7 @@
           <div class="list_content left2">{{manualDetail.riskSource}}</div>
         </div>
         <div class="list">
-          <div class="list_title">任务执行时间：</div>
+          <div class="list_title">任务开始时间：</div>
           <div class="list_content">{{manualDetail.manualDetail.beginTime}}</div>
           <div class="list_title left1" v-if="manualDetail.manualDetail.endTime!=false">任务结束时间：</div>
           <div class="list_content left2" v-if="manualDetail.manualDetail.endTime!=false">{{manualDetail.manualDetail.endTime}}</div>
@@ -175,7 +175,7 @@
           <div class="list_content">{{waterDetail.waterDetail.ntu}}</div>
         </div>
         <div class="list">
-          <div class="list_title">任务执行时间：</div>
+          <div class="list_title">任务开始时间：</div>
           <div class="list_content">{{waterDetail.waterDetail.beginTime}}</div>
           <div class="list_title left1" v-if="waterDetail.waterDetail.endTime!=false">任务结束时间：</div>
           <div class="list_content left2" v-if="waterDetail.waterDetail.endTime!=false">{{waterDetail.waterDetail.endTime}}</div>

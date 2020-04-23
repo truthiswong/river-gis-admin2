@@ -388,7 +388,7 @@ export default {
       if (this.streetShow) {
         for (const item of this.streetShowList) {
           let polygonStreet = new T.Polygon(item.lineData, {
-            color: 'blue', //线颜色
+            color: 'red', //线颜色
             weight: 3, //线宽
             opacity: 0.5, //透明度
             fillColor: '#FFFFFF', //填充颜色
@@ -452,7 +452,7 @@ export default {
       }
       for (const item of this.riverShowList) {
         if (item.clicked == true) {
-          this.setPolylineFn(item.lineData, 'red', 3, 0.5, 0, item.name, item.id)
+          this.setPolylineFn(item.lineData, 'green', 3, 0.5, 0, item.name, item.id)
         } else {
           this.setPolylineFn(item.lineData, 'blue', 3, 0.5, 0, item.name, item.id)
         }

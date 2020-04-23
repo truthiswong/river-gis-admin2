@@ -438,9 +438,9 @@ export default {
       }
       for (const item of this.streetShowList) {
         if (item.clicked == true) {
-          this.setPolylineFn(item.lineData, 'red', 3, 1, 'red', 0.2, item.id, item.name)
+          this.setPolylineFn(item.lineData, 'green', 3, 1, 'green', 0.2, item.id, item.name)
         } else {
-          this.setPolylineFn(item.lineData, 'blue', 3, 1, '', 0, item.id, item.name)
+          this.setPolylineFn(item.lineData, 'red', 3, 1, '', 0, item.id, item.name)
         }
       }
     },

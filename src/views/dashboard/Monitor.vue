@@ -3675,7 +3675,7 @@ export default {
     // }
     //追加任务
     addPlanInfo() {
-      var data = this.listAppend
+      let data = this.listAppend
       if (data.locationType == 'point') {
         data.region = this.markLnglat.lng + ',' + this.markLnglat.lat
       }
@@ -3689,6 +3689,8 @@ export default {
           data.region = data.region + item.lng + ',' + item.lat + '|'
         }
       }
+      console.log(data);
+      
       data.status = 'incomplete'
       data.roleId = data.roleId.join(',')
       inspectTaskSave(data).then(res => {
@@ -3696,6 +3698,8 @@ export default {
         this.getinspectPointPage()
         this.getPage()
         this.cancleBtn(this.listAppend.objectName)
+      }).catch(err => {
+        this.$message.error(err.response.data.message)
       })
     },
     cancleBtn(name) {

@@ -246,7 +246,7 @@ export default {
         this.name = '排口'
         dischargeDetails(row.target.options.id).then(res => {
           let arr = res.data
-          arr.discoveryTime = arr.activateTime
+          arr.discoveryTime = moment(arr.discoveryTime).format('YYYY-MM-DD')
           if (arr.type) {
             arr.type = arr.type.name
           }

@@ -156,7 +156,7 @@
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="面积(m²)">
-              <a-input placeholder v-model="list.currentArea" />
+              <a-input placeholder v-model="list.currentArea"  :disabled="currentAreaDisabled"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -327,6 +327,7 @@ import {
 export default {
   data() {
     return {
+      currentAreaDisabled:false,
        jurisdiction:this.$store.state.operationPermission[1],//权限
       sheet: false,
       sheetList: [],
@@ -538,6 +539,11 @@ export default {
           v.surveyDate = formatDate(new Date(v.surveyDate))
           this.dataSourceId.push(v.id)
         })
+        if (Number(arr.polygonSize) ==0) {
+          this.currentAreaDisabled =true
+        }else{
+          this.currentAreaDisabled =false
+        }
         if (arr.river) {
           this.list.code = arr.river.code
           this.list.controller = arr.river.controller
@@ -684,6 +690,11 @@ export default {
       this.sheet = true
     },
     add(id, currentArea, result) {
+      if (Number(currentArea) ==0) {
+        this.currentAreaDisabled =true
+      }else{
+        this.currentAreaDisabled =false
+      }
       this.list.drawId = id
       this.upload.drawId = id
       this.list.address = result.formatted_address

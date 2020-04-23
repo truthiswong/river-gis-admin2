@@ -110,6 +110,7 @@ import { getRiverList, getStreetList, floatageSave, floatageDetails, mapdrawDeta
 export default {
   data() {
     return {
+      
       jurisdiction:this.$store.state.operationPermission[1],//权限
       labelCol: {
         xs: { span: 18 },
@@ -168,7 +169,6 @@ export default {
       this.visible = true
     },
     add(id, currentArea, result,defaultTime) {
-      // console.log(id,currentArea,result);
       this.list.createTime = defaultTime
       this.getList()
       this.list.drawId = id
