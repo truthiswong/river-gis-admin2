@@ -15,7 +15,7 @@
     <div  v-for="item in list" :key="item.id" style="margin-bottom:10px">
       <div style="font-size:12px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(188,190,199,1);line-height:26px;">{{item.date}}</div>
       <div style="display:flex;">
-        <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;width:70px">马进：</div>
+        <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;width:70px"></div>
         <div style="">
             <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;margin-bottom:10px">{{item.remark}}</div>
             <div style="width:393px">
