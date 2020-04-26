@@ -108,7 +108,7 @@
           <div class="list_content left2">{{manualDetail.manualDetail.level.name}}</div>
         </div>
         <div class="list">
-          <div class="list_title">河道气味：</div>
+          <div class="list_title">水面漂浮物情况：</div>
           <div class="list_content">{{manualDetail.floater}}</div>
           <div class="list_title left1">河道水位：</div>
           <div class="list_content left2">{{manualDetail.biont}}</div>
@@ -128,6 +128,14 @@
         <div class="list">
           <div class="list_title">突发情况：</div>
           <div class="list_content">{{manualDetail.emergency}}</div>
+        </div>
+        <div class="list" style="height:52px">
+          <div class="list_title">突然情况描述：</div>
+          <div class="list_content" style="width:430px">{{manualDetail.manualDetail.emergencyRemark}}</div>
+        </div>
+        <div class="list" style="height:52px">
+          <div class="list_title">漂浮物描述：</div>
+          <div class="list_content" style="width:430px">{{manualDetail.manualDetail.floaterRemark}}</div>
         </div>
         <div class="list" style="height:52px">
           <div class="list_title">备注：</div>
