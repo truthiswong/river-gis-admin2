@@ -125,9 +125,9 @@
           </div>
           <div class="map_operate">
             <ul>
-              <li @click="compass">
+              <!-- <li @click="compass">
                 <img src="../../assets/compass.png" alt="指北针" />
-              </li>
+              </li> -->
               <li @click="setCenter">
                 <img src="../../assets/restoration.png" alt="复位" />
               </li>
