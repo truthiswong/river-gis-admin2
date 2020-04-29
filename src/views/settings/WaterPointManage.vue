@@ -384,7 +384,7 @@ export default {
     },
     // 返回标注点的坐标
     addTaskPeoplePointed(e) {
-      this.$refs.addWaterPoint.add(e.currentLnglat, this.type)
+      this.$refs.addWaterPoint.add(e.currentLnglat, this.type, this.riverShowList, this.streetShowList)
       console.log(e)
     },
     // 绘制取消

@@ -117,7 +117,7 @@
         <el-form-item label="设备数量">
           <el-input  placeholder="请输入" v-model="equipmentList.amount" style="width:250px" />
         </el-form-item>
-        <el-form-item label="设备聚隆编号">
+        <el-form-item label="设备聚隆编号" prop="number">
           <el-input v-model="equipmentList.number" placeholder="请输入" style="width:250px" />
         </el-form-item>
         <h3 style="margin-bottom:25px">关联设备</h3>
@@ -241,7 +241,8 @@ export default {
       checkedList:[],
       ruleValidate: {
         name: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        type: [{ required: true, message: '不能为空', trigger: 'blur' }]
+        type: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        number: [{ required: true, message: '不能为空', trigger: 'blur' }]
       },
       data1: [
        

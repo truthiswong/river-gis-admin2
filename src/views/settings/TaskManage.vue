@@ -1477,6 +1477,8 @@ export default {
             .then(res => {
               this.$message.success('保存成功')
               this.taskCancel()
+              this.getRoleList()
+              this.getStructDeviceList()
               this.getLineList()
             })
             .catch(err => {
@@ -1521,6 +1523,8 @@ export default {
               var arr = res.data
               this.$message.success('保存成功')
               this.taskCancel()
+              this.getRoleList()
+              this.getStructDeviceList()
               this.getList()
             })
             .catch(err => {
