@@ -638,13 +638,11 @@ export function inspectTaskDetail(id) {
   })
 }
 //任务批量选定
-export function taskChoose(ids) {
+export function taskChoose(data) {
   return axios({
     url: '/server/data/admin/inspect/task/choose',
     method: 'post',
-    data: {
-      ids: ids
-    }
+    data
   })
 }
 //任务加入已有计划

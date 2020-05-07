@@ -2895,7 +2895,11 @@ export default {
       }
       if (ids.length != 0) {
         this.addplanListId = this.planList1.id
-        taskChoose(ids.join(',')).then(res => {})
+        let data = {
+          ids:ids.join(','),
+          planId:this.planList1.id
+        }
+        taskChoose(data).then(res => {})
         this.ishidden = 2
         this.$refs.creatGroup.planGeneration(this.planList1.id)
       } else {
