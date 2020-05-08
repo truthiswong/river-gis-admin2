@@ -281,7 +281,7 @@ export default {
           if (this.list.type == 'fixed') {
             this.$parent.getFixedList()
           } else {
-            this.$parent.getManualList()
+            this.$parent.getManualList('2')
           }
           this.handleCancel()
           this.$message.success('保存成功')

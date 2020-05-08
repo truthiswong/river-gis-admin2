@@ -269,7 +269,7 @@ export default {
         .catch(err => {})
     },
     //人工监测分页
-    getManualList() {
+    getManualList(key) {
       var data = {
         id: 'manual',
         prid: this.$store.state.id
@@ -282,6 +282,10 @@ export default {
             v.clicked = false
           })
           this.peoplePointList = arr
+          if (key =='2') {
+            this.allPointTask(this.peoplePointList)
+          }
+          
         })
         .catch(err => {})
     },

@@ -3465,38 +3465,42 @@ export default {
     },
     //画点
     addPoint(clickPoint, num) {
-      console.log(this.markerTool,this.lineTool,this.polygonTool);
-      
-      if (this.markerTool) {
-        this.markerTool.clear()
+      if (this.markerTool1) {
+        this.markerTool1.clear()
+        this.markerTool1.close()
       }
       if (this.lineTool) {
         this.lineTool.clear()
+        this.lineTool.close()
       }
       if (this.polygonTool) {
         this.polygonTool.clear()
+        this.polygonTool.close()
       }
       this.map.setViewport(this.appendLatlngList)
       this.map.setZoom('16')
       this.clickPoint = clickPoint 
-      this.markerTool = new T.MarkTool(this.map, {id:this.translateId})
-      this.markerTool.open()
-      this.markerTool.addEventListener('mouseup', this.addPointDate)
-      // this.markerTool.addEventListener('mouseup', this.addPointed)
+      this.markerTool1 = new T.MarkTool(this.map, {id:this.translateId})
+      this.markerTool1.open()
+      this.markerTool1.addEventListener('mouseup', this.addPointDate)
+      // this.markerTool1.addEventListener('mouseup', this.addPointed)
     },
     addPointDate(e) {
       this.markLnglat = e.currentLnglat
     },
     //追加任务画线
     addLineTool(clickLine) {
-      if (this.markerTool) {
-        this.markerTool.clear()
+      if (this.markerTool1) {
+        this.markerTool1.clear()
+        this.markerTool1.close()
       }
       if (this.lineTool) {
         this.lineTool.clear()
+        this.lineTool.close()
       }
       if (this.polygonTool) {
         this.polygonTool.clear()
+        this.polygonTool.close()
       }
       this.map.setViewport(this.appendLatlngList)
       this.map.setZoom('16')
@@ -3510,29 +3514,32 @@ export default {
     },
     //画面
     addPolygonTool(clickPolygon) {
-      if (this.markerTool) {
-        this.markerTool.clear()
+      if (this.markerTool1) {
+        this.markerTool1.clear()
+        this.markerTool1.close()
       }
       if (this.lineTool) {
         this.lineTool.clear()
+        this.lineTool.close()
       }
       if (this.polygonTool) {
         this.polygonTool.clear()
+        this.polygonTool.close()
       }
       this.map.setViewport(this.appendLatlngList)
       this.map.setZoom('16')
       this.clickPolygon = clickPolygon
-        this.polygonTool = new T.PolygonTool(this.map, {
-          showLabel: true,
-          color: 'blue',
-          weight: 3,
-          opacity: 0.5,
-          id:this.translateId,
-          fillColor: '#FFFFFF',
-          fillOpacity: 0.5
-        })
-        this.polygonTool.open()
-        this.polygonTool.addEventListener('draw', this.addPolygonDate)
+      this.polygonTool = new T.PolygonTool(this.map, {
+        showLabel: true,
+        color: 'blue',
+        weight: 3,
+        opacity: 0.5,
+        id:this.translateId,
+        fillColor: '#FFFFFF',
+        fillOpacity: 0.5
+      })
+      this.polygonTool.open()
+      this.polygonTool.addEventListener('draw', this.addPolygonDate)
     },
     addPolygonDate(e) {
       this.polygonDate = e.currentLnglats
