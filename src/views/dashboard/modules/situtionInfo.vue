@@ -144,7 +144,7 @@
         <div style="display:flex;">
           <div class="list_title1">照片：</div>
           <viewer   :images="imgList" style="display:flex; flex-wrap:wrap;padding-bottom:20px;margin-left:80px">
-            <img  v-for="item of imgList"  :key="item" :src="item.media" style="margin:0 5px 5px 0;width:80px;height:80px"/>
+            <embed  v-for="item of imgList"  :key="item" :src="item.media" style="margin:0 5px 5px 0;width:80px;height:80px"/>
           </viewer>
         </div>
         <!-- <div class style="margin-bottom:15px;">

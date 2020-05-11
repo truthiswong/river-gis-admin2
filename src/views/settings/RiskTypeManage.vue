@@ -10,7 +10,7 @@
       <a-table :columns="columns" :dataSource="data" bordered>
         <template slot="type" slot-scope="row">
           <viewer >
-            <img :src="row.icon" alt="" style="width:80px;">
+            <embed :src="row.icon" alt="" style="width:80px;">
           </viewer>
         </template>
         <template slot="operation" slot-scope="row">
@@ -56,7 +56,7 @@
             <a-button type="primary" icon="plus" >添加</a-button>
           </el-upload>
           <viewer >
-            <img  :src="attachmentJpg" alt="" style="height:70px;">
+            <embed  :src="attachmentJpg" alt="" style="height:70px;">
           </viewer >
         </a-form-item>
       </a-form>
