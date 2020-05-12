@@ -4722,9 +4722,9 @@ export default {
           var html = `
             <div style='margin:0px;height: 300px;overflow-y: scroll;'>
               <div style='line-height:30px;font-size:14px;margin-bottom:5px; '>
-                <span style='font-weight:400'>水体名称: ${item.sectionName}</span>
+                <span style='font-weight:400'>水体名称: ${item.name}</span>
                 <span style='margin-left:50px'>${item.date}</span>
-                <div style='border-bottom:1px #c3c3c3 solid'>断面名称: ${item.name}</div>
+                <div style='border-bottom:1px #c3c3c3 solid'>断面名称: ${item.sectionName}</div>
                 <div style='display: flex;justify-content:space-around'>
                   <span style='width:180px'>PH值: ${item.ph}</span>
                   <span style='width:150px'>溶解氧: ${item.do}mg/L</span>
