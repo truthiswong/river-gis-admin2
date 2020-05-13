@@ -226,7 +226,7 @@ export default {
           this.riverId = arr.rivers1
           this.list.streetId = arr.street.id
           this.list.tags = arr.tags1
-          this.attachment = arr.attachment
+          this.attachment = arr.documentName
           console.log(arr)
         })
         .catch(err => {})
