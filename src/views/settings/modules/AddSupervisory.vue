@@ -227,13 +227,11 @@ export default {
           this.list.streetId = arr.street.id
           this.list.tags = arr.tags1
           this.attachment = arr.documentName
-          console.log(arr)
         })
         .catch(err => {})
     },
     // 添加河流
     addRiver(value) {
-      console.log(value)
     },
     // 风险源类型
     handleChange(selectedItems) {

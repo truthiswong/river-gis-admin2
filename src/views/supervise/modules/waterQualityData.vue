@@ -100,6 +100,7 @@ require('echarts/lib/chart/line');
 require('echarts/lib/component/tooltip');
 require('echarts/lib/component/dataZoom');
 require('echarts/lib/component/title');
+require('echarts/lib/component/markLine');
 export default {
   name:'waterQualityData',
   components: {
@@ -283,6 +284,8 @@ export default {
       for(const item of this.checkbox){
         var myChart = echarts.init(document.getElementById('main'+item));
         var text = ''
+        var mark = undefined
+        var mark1 = undefined
         var date= []
         var xis=[]
         var yis={}
@@ -293,6 +296,46 @@ export default {
             xis.push(v.do)
           });
           this.main2=true
+          mark = {
+            symbol: ['none', 'none'],//去掉箭头
+            itemStyle: {
+                normal: { 
+                  lineStyle: { color:'#FE7575'}
+                }
+            },
+            data: [
+              {
+                name: 'max',
+                yAxis: 7.5,
+                // valueDim: 'close'
+              },
+              {
+                  name: '最小值',
+                  yAxis: 2,
+                  // valueDim: 'close'
+              },
+            ]
+          }
+          mark1 = {
+            symbol: ['none', 'none'],//去掉箭头
+            itemStyle: {
+                normal: { 
+                  lineStyle: { color:'#707070'}
+                }
+            },
+            data: [
+              // {
+              //   name: 'max',
+              //   yAxis: 2,
+              //   // valueDim: 'close'
+              // },
+              {
+                  name: '最小值',
+                  yAxis: 0.2,
+                  // valueDim: 'close'
+              },
+            ]
+          }
         }else if (item == '6') {
           text = 'PH值'
           this.listMain.forEach(v => {
@@ -300,6 +343,26 @@ export default {
             xis.push(v.ph)
           });
           this.main6=true
+          mark = {
+            symbol: ['none', 'none'],//去掉箭头
+            itemStyle: {
+                normal: { 
+                  lineStyle: { color:'#FE7575'}
+                }
+            },
+            data: [
+              {
+                name: 'max',
+                yAxis: 9,
+                // valueDim: 'close'
+              },
+              {
+                  name: 'min',
+                  yAxis: 6,
+                  // valueDim: 'close'
+              },
+            ]
+          }
         } else if(item == '3'){
           text = '高锰酸盐指数'
           this.listMain.forEach(v => {
@@ -307,6 +370,26 @@ export default {
             xis.push(v.cod)
           });
           this.main3=true
+           mark = {
+            symbol: ['none', 'none'],//去掉箭头
+            itemStyle: {
+                normal: { 
+                  lineStyle: { color:'#FE7575'}
+                }
+            },
+            data: [
+              {
+                name: 'max',
+                yAxis: 15,
+                // valueDim: 'close'
+              },
+              {
+                  name: 'min',
+                  yAxis: 2,
+                  // valueDim: 'close'
+              },
+            ]
+          }
         }else if(item == '4'){
           text = '氨氮'
           this.listMain.forEach(v => {
@@ -314,6 +397,46 @@ export default {
             xis.push(v.nh3N)
           });
           this.main4=true
+           mark = {
+            symbol: ['none', 'none'],//去掉箭头
+            itemStyle: {
+                normal: { 
+                  lineStyle: { color:'#FE7575'}
+                }
+            },
+            data: [
+              {
+                name: 'max',
+                yAxis: 2,
+                // valueDim: 'close'
+              },
+              {
+                  name: 'min',
+                  yAxis: 0.15,
+                  // valueDim: 'close'
+              },
+            ]
+          }
+          mark1 = {
+            symbol: ['none', 'none'],//去掉箭头
+            itemStyle: {
+                normal: { 
+                  lineStyle: { color:'#707070'}
+                }
+            },
+            data: [
+              {
+                name: 'max',
+                yAxis: 15,
+                // valueDim: 'close'
+              },
+              {
+                  name: 'min',
+                  yAxis: 8,
+                  // valueDim: 'close'
+              },
+            ]
+          }
         }else if(item == '5'){
           text = '总磷'
           this.listMain.forEach(v => {
@@ -321,6 +444,26 @@ export default {
             xis.push(v.tp)
           });
           this.main5=true
+          mark = {
+            symbol: ['none', 'none'],//去掉箭头
+            itemStyle: {
+                normal: { 
+                  lineStyle: { color:'#FE7575'}
+                }
+            },
+            data: [
+              {
+                name: 'max',
+                yAxis: 0.4,
+                // valueDim: 'close'
+              },
+              {
+                  name: 'min',
+                  yAxis: 0.02,
+                  // valueDim: 'close'
+              },
+            ]
+          }
         }
         // else if(item == '6'){
         //   text = '透明度'
@@ -364,8 +507,6 @@ export default {
           }
         }
         myChart.setOption({
-          
-          
           title: {
             text: text
           },
@@ -377,8 +518,27 @@ export default {
           series: [{
             name: text,
             type: 'line',
-            data:xis
-          }],
+            data:xis,
+            itemStyle:{ 
+              normal:{ 
+                color:'blue', //折点颜色
+                lineStyle:{ 
+                    color:'blue' //折线颜色
+                } 
+              } 
+            },
+          },
+          {
+            name: '水质评价',
+            type: 'line',
+            markLine: mark
+          },
+          {
+            name: '黑臭评价',
+            type: 'line',
+            markLine: mark1
+          },
+          ],
           dataZoom: [
             {
                 type: 'slider',
