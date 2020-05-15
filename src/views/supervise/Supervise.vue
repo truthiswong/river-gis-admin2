@@ -400,7 +400,7 @@
         <a-list-item v-for="item in riskSourceList" :key="item.id">
           <a-row style="width:100%" type="flex" justify="space-between" align="middle">
             <a-col :span="18">
-              <p style="margin:0;">{{item.name}}</p>
+              <p style="margin:0;">{{item.name}} ({{item.num}})</p>
             </a-col>
             <a-col :span="6">
               <a-switch
@@ -609,7 +609,7 @@
                     <a-list-item>
                       <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                         <a-col :span="18">
-                          <p style="margin:0;">河岸风险源</p>
+                          <p style="margin:0;">河岸风险源({{statisticsList.riskSource}})</p>
                         </a-col>
                         <a-col :span="6">
                           <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
@@ -619,7 +619,7 @@
                     <a-list-item>
                       <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                         <a-col :span="18">
-                          <p style="margin:0;">风险地图</p>
+                          <p style="margin:0;">风险地图({{statisticsList.riskMap}})</p>
                         </a-col>
                         <a-col :span="6">
                           <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
@@ -639,7 +639,7 @@
                     <a-list-item>
                       <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                         <a-col :span="18">
-                          <p style="margin:0;">水面漂浮物</p>
+                          <p style="margin:0;">水面漂浮物({{statisticsList.floatage}})</p>
                         </a-col>
                         <a-col :span="6">
                           <a-switch size="small" v-model="waterFlotage" @click="onWaterFlotage" />
@@ -649,7 +649,7 @@
                     <a-list-item>
                       <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                         <a-col :span="18">
-                          <p style="margin:0;">排口</p>
+                          <p style="margin:0;">排口({{statisticsList.discharge}})</p>
                         </a-col>
                         <a-col :span="6">
                           <a-switch size="small" v-model="outlet" @click="onOutlet" />
@@ -681,7 +681,7 @@
                     <a-list-item v-for="item in otherList" :key="item.id">
                       <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                         <a-col :span="18">
-                          <p style="margin:0;">{{item.name}}</p>
+                          <p style="margin:0;">{{item.name}}({{item.num}})</p>
                         </a-col>
                         <a-col :span="6">
                           <a-switch
@@ -738,7 +738,7 @@
                   <span>其他</span>
                 </template>
                 <a-list-item>
-                  <p style="margin:0;">其他</p>
+                  <p style="margin:0;">其他({{statisticsList.other}})</p>
                 </a-list-item>
               </a-popover>
             </a-list>
@@ -945,7 +945,8 @@ import {
   inspectPointPageRiver,
   mapdrawPageRiskSource,
   uavPhoto,
-  getTigeList
+  getTigeList,
+  getMapdrawCount
 } from '@/api/login'
 import RiskSourceInfo from './modules/RiskSourceInfo'
 import AddRiskSource from './modules/AddRiskSource'
@@ -1033,6 +1034,13 @@ export default {
   },
   data() {
     return {
+      statisticsList:{
+        riskMap:'',
+        riskSource:'',
+        discharge:'',
+        floatage:'',
+        other:'',
+      },
       jurisdiction:this.$store.state.operationPermission[1],//权限
       otherModal: false, //其他绘制弹窗
       otherModalList: {
@@ -1076,11 +1084,6 @@ export default {
       defaultRightTime: '', //右侧默认日期
 
       otherList: [
-        {
-          id: 0,
-          name: '测试',
-          clicked: false
-        }
       ], //其他
       riskSourceList: [], //河岸风险源
       currentArea: '', //面积
@@ -1525,6 +1528,7 @@ export default {
             }
           }
           this.otherList = arr
+          this.getOtherDataStatistics()
         })
         .catch(err => {
           this.$message.warning('绘制类型数据加载失败')
@@ -1538,11 +1542,168 @@ export default {
         })
         // 风险源列表
         this.riskSourceList = res.data
+        this.getDataStatistics()
       })
+    },
+    //其他子栏数据统计
+    getOtherDataStatistics(){
+      var time = this.defaultTime
+      var picker = time.split('-')
+      this.otherList.forEach(v => {
+        if (this.historyData) {
+          var data = {
+            projectId: this.$store.state.id,
+            startDate: this.startDate,
+            endDate: this.endDate,
+            typeId: v.id,
+          }
+        } else {
+          var data = {
+            projectId: this.$store.state.id,
+            year: picker[0],
+            month: picker[1],
+            day: picker[2],
+            typeId: v.id,
+          }
+        }
+        getMapdrawCount(data).then(res=>{
+          v.num = res.data
+        })
+      });
+    },
+    //数据统计
+    getDataStatistics(){
+      var time = this.defaultTime
+      var picker = time.split('-')
+      //风险源总数
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType : 'riskSource' 
+        }
+      } else {
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType : 'riskSource' 
+        }
+      }
+      getMapdrawCount(data).then(res=>{
+        this.statisticsList.riskSource = res.data
+      })
+      //排口总数
+      if (this.historyData) {
+        var data1 = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType : 'discharge' 
+        }
+      } else {
+        var data1 = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType : 'discharge' 
+        }
+      }
+      getMapdrawCount(data1).then(res=>{
+        this.statisticsList.discharge = res.data
+      })
+      //漂浮物
+      if (this.historyData) {
+        var data2 = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType : 'floatage' 
+        }
+      } else {
+        var data2 = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType : 'floatage' 
+        }
+      }
+      getMapdrawCount(data2).then(res=>{
+        this.statisticsList.floatage = res.data
+      })
+      if (this.historyData) {
+        var data3 = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType : 'other' 
+        }
+      } else {
+        var data3 = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType : 'other' 
+        }
+      }
+      //其他
+      getMapdrawCount(data3).then(res=>{
+        this.statisticsList.other = res.data
+      })
+      if (this.historyData) {
+        var data4 = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          innerType : 'riskMap' 
+        }
+      } else {
+        var data4 = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          innerType : 'riskMap' 
+        }
+      }
+      //风险地图
+      getMapdrawCount(data4).then(res=>{
+        this.statisticsList.riskMap = res.data
+      })
+      //风险源子项
+      this.riskSourceList.forEach(v => {
+        if (this.historyData) {
+          var data = {
+            projectId: this.$store.state.id,
+            startDate: this.startDate,
+            endDate: this.endDate,
+            typeId: v.id,
+          }
+        } else {
+          var data = {
+            projectId: this.$store.state.id,
+            year: picker[0],
+            month: picker[1],
+            day: picker[2],
+            typeId: v.id,
+          }
+        }
+        getMapdrawCount(data).then(res=>{
+          v.num = res.data
+  
+        })
+      });
     },
     // 获取当前页面数据
     getMapPageData() {
       if (this.moreLoadOnce == '1') {
+        this.getOtherDataStatistics()
+        this.getDataStatistics()
         // 获取手机照片
         this.removeOverLays(this.phonePhotoPoints)
         this.getPhonePhotoPoints()

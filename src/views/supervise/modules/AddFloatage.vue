@@ -64,7 +64,7 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="面积(m²)">
-              <a-input placeholder v-model="list.polygonSize" disabled />
+              <a-input placeholder v-model="list.polygonSize" />
             </a-form-item>
           </a-col>
           <a-col :span="12">

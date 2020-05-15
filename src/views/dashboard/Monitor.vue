@@ -181,7 +181,7 @@
                             <a-list-item>
                               <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <p style="margin:0;">河岸风险源</p>
+                                  <p style="margin:0;">河岸风险源({{statisticsList.riskSource}})</p>
                                 </a-col>
                                 <a-col :span="6">
                                   <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
@@ -191,7 +191,7 @@
                             <a-list-item>
                               <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <p style="margin:0;">风险地图</p>
+                                  <p style="margin:0;">风险地图({{statisticsList.riskMap}})</p>
                                 </a-col>
                                 <a-col :span="6">
                                   <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
@@ -211,7 +211,7 @@
                             <a-list-item>
                               <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <p style="margin:0;">水面漂浮物</p>
+                                  <p style="margin:0;">水面漂浮物({{statisticsList.floatage}})</p>
                                 </a-col>
                                 <a-col :span="6">
                                   <a-switch size="small" v-model="waterFlotage" @click="onWaterFlotage" />
@@ -221,7 +221,7 @@
                             <a-list-item>
                               <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <p style="margin:0;">排口</p>
+                                  <p style="margin:0;">排口({{statisticsList.discharge}})</p>
                                 </a-col>
                                 <a-col :span="6">
                                   <a-switch size="small" v-model="outlet" @click="onOutlet" />
@@ -253,7 +253,7 @@
                             <a-list-item v-for="item in otherList" :key="item.id">
                               <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <p style="margin:0;">{{item.name}}</p>
+                                  <p style="margin:0;">{{item.name}}({{item.num}})</p>
                                 </a-col>
                                 <a-col :span="6">
                                   <a-switch
@@ -270,7 +270,7 @@
                           <span>其他</span>
                         </template>
                         <a-list-item>
-                          <p style="margin:0;">其他</p>
+                          <p style="margin:0;">其他({{statisticsList.other}})</p>
                         </a-list-item>
                       </a-popover>
                     </a-list>
@@ -964,7 +964,7 @@
         <a-list-item v-for="item in riskSourceList" :key="item.id">
           <a-row style="width:100%" type="flex" justify="space-between" align="middle">
             <a-col :span="18">
-              <p style="margin:0;">{{item.name}}</p>
+              <p style="margin:0;">{{item.name}}({{item.num}})</p>
             </a-col>
             <a-col :span="6">
               <a-switch
@@ -1088,7 +1088,8 @@ import {
   paramList,
   inspectPointPageRiver,
   getWaterStation ,
-  getTigeList
+  getTigeList,
+  getMapdrawCount
 } from '@/api/login'
 import 'ol/ol.css'
 // import Map from "ol/Map"
@@ -1386,41 +1387,26 @@ export default {
       hidingJudgment3: false,
       appendLatlngList:[],//追加任务坐标点
       isShow:false,
-      riskMapPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.23493, lng: 121.51566 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24344, lng: 121.49892 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.22649, lng: 121.49712 } }
-      ],
+      riskMapPoints: [],
       waterQuality: false, // 水质
-      waterQualityPoints: [
-
-      ],
+      waterQualityPoints: [],
       waterFlotage: false, // 水质漂浮物
-      waterFlotagePoints: [
-
-      ],
+      waterFlotagePoints: [],
       riverRisk: false, // 河岸风险源
-      riverRiskPoints: [
-
-      ],
+      riverRiskPoints: [],
       waterLandLoss: false, // 水土流失
-      waterLandLossPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.09999, lng: 121.50333 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.16666, lng: 121.48333 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.05555, lng: 121.49666 } }
-      ],
+      waterLandLossPoints: [],
       waterRatio: false, // 水面率
-      waterRatioPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.26023, lng: 121.50565 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.2396, lng: 121.5164 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.22994, lng: 121.50955 } }
-      ],
+      waterRatioPoints: [ ],
       bottomMud: false, // 底泥
-      bottomMudPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.23564, lng: 121.51066 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24315, lng: 121.49606 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.23668, lng: 121.49656 } }
-      ],
+      bottomMudPoints: [],
+      statisticsList:{//数据统计
+        riskMap:'',
+        riskSource:'',
+        discharge:'',
+        floatage:'',
+        other:'',
+      },
       addTaskCode: '1',
       patrolPlanInfo: [],
       riverList: [],
@@ -1593,6 +1579,7 @@ export default {
             }
           }
           this.otherList = arr
+          this.getOtherDataStatistics()
         })
         .catch(err => {
           this.$message.warning('绘制类型数据加载失败')
@@ -1605,6 +1592,7 @@ export default {
           v.clicked = false
         })
         this.riskSourceList = res.data
+        this.getDataStatistics()
       })
     },
     //-----------------------------------------------推荐巡河方案*-------------------------------------------------------
@@ -4605,9 +4593,96 @@ export default {
         this.removeOverLays(this.waterQualityPoints)
         this.getWaterQualityPoints()
         this.onSurveyPoint()
+        this.getOtherDataStatistics()
+        this.getDataStatistics()
         // this.getUavPhoto()//无人机照片
         this.moreLoadOnce = '2'
       }
+    },
+    //其他子栏数据统计
+    getOtherDataStatistics(){
+      var time = this.threePicker
+      var picker = time.split('/')
+      
+      this.otherList.forEach(v => {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+          endDate: this.picker,
+          typeId: v.id,
+        }
+        getMapdrawCount(data).then(res=>{
+          v.num = res.data
+        })
+      });
+    },
+    //数据统计
+    getDataStatistics(){
+      var time = this.threePicker
+      var picker = time.split('/')
+      //风险源总数
+      var data = {
+        projectId: this.$store.state.id,
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
+        innerType : 'riskSource' 
+      }
+      getMapdrawCount(data).then(res=>{
+        this.statisticsList.riskSource = res.data
+      })
+      //排口总数
+      var data1 = {
+        projectId: this.$store.state.id,
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
+        innerType : 'discharge' 
+      }
+      getMapdrawCount(data1).then(res=>{
+        this.statisticsList.discharge = res.data
+      })
+      //漂浮物
+      var data2 = {
+        projectId: this.$store.state.id,
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
+        innerType : 'floatage' 
+      }
+      getMapdrawCount(data2).then(res=>{
+        this.statisticsList.floatage = res.data
+      })
+      var data3 = {
+        projectId: this.$store.state.id,
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
+        innerType : 'other' 
+      }
+      //其他
+      getMapdrawCount(data3).then(res=>{
+        this.statisticsList.other = res.data
+      })
+      var data4 = {
+        projectId: this.$store.state.id,
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
+        innerType : 'riskMap' 
+      }
+      //风险地图
+      getMapdrawCount(data4).then(res=>{
+        this.statisticsList.riskMap = res.data
+      })
+      //风险源子项
+      this.riskSourceList.forEach(v => {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+          endDate: this.picker,
+          typeId: v.id,
+        }
+        getMapdrawCount(data).then(res=>{
+          v.num = res.data
+  
+        })
+      });
     },
     drawLine(date){
        var myChart = echarts.init(document.getElementById('main1'));

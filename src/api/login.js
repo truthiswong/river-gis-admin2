@@ -1067,6 +1067,14 @@ export function getUserCurrent() {
     method: 'get'
   })
 }
+//基础绘制数据统计
+export function getMapdrawCount(data) {
+  return axios({
+    url: '/server/data/admin/mapdraw/data/count',
+    method: 'get',
+    params: data
+  })
+}
 //潮汐
 export function getTigeList(parameter) {
   return axios({
