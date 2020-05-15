@@ -11,43 +11,55 @@
       <div class v-if="sitution == 'uav'">
         <div class="title">任务信息</div>
         <div class="list">
-          <div class="list_title">任务名称：</div>
-          <div class="list_content">{{uavDetail.name}}</div>
-          <div class="list_btn">{{uavDetail.status.name}}</div>
+          <div class="list_title" style="width: 112px;">任务名称：</div>
+          <div class="list_content" style="width: 362px;">{{uavDetail.name}}</div>
+          <div class="list_btn" style="margin-left: 20px;">{{uavDetail.status.name}}</div>
         </div>
         <div class="list">
-          <div class="list_title">任务类型：</div>
+          <div class="list_title" style="width: 112px;">任务类型：</div>
           <div class="list_content">{{uavDetail.template.name}}</div>
         </div>
         <div class="list">
-          <div class="list_title">发布时间：</div>
+          <div class="list_title" style="width: 112px;">发布时间：</div>
           <div class="list_content">{{uavDetail.timeCreated}}</div>
         </div>
-        <div class="title" style="margin-top:20px">设备信息</div>
-        <div class="list">
-          <div class="list_title">无人机编号：</div>
+        <div class="title" style="margin-top:20px" >设备信息</div>
+        <div class="list" style="width:270px">
+          <div class="list_title" style="width: 112px;">无人机编号：</div>
           <div class="list_content">{{uavDetail.uavDetail.uavCode}}</div>
         </div>
         <div class="list" v-for="(item,index) in uavDetail.uavDetail.batteryCode" :key="index">
-          <div class="list_title">无人机电池编号：</div>
-          <div class="list_content">{{item}}</div>
-          <div class="list_title left1">电池剩余电量：</div>
-          <div class="list_content left2">{{uavDetail.uavDetail.batteryPower[index]}}</div>
+          <span style="width:270px;display:flex">
+            <p class="list_title" style="width: 112px;">无人机电池编号：</p>
+            <span class="list_content">{{item}}</span>
+          </span>
+          <span style="width:270px;display:flex">
+            <p class="list_title" style="width: 112px;">电池剩余电量：</p>
+            <span class="list_content">{{uavDetail.uavDetail.batteryPower[index]}}</span>
+          </span>
         </div>
         <div class="list">
-          <div class="list_title">内存卡编号：</div>
-          <div class="list_content">{{uavDetail.uavDetail.storageCardCode}}</div>
-          <div class="list_title left1">ipad编号：</div>
-          <div class="list_content left2">{{uavDetail.uavDetail.ipadCode}}</div>
+          <span style="width:270px;display:flex">
+            <p class="list_title" style="width: 112px;">内存卡编号：</p>
+            <span class="list_content">{{uavDetail.uavDetail.storageCardCode}}</span>
+          </span>
+          <span style="width:270px;display:flex;display:flex">
+            <p class="list_title" style="width: 112px;">ipad编号：</p>
+            <span class="list_content">{{uavDetail.uavDetail.ipadCode}}</span>
+          </span>
         </div>
         <div class="list">
-          <div class="list_title">任务开始时间：</div>
-          <div class="list_content">{{uavDetail.uavDetail.beginTime}}</div>
-          <div class="list_title left1" v-if="uavDetail.uavDetail.endTime!=false">任务结束时间：</div>
-          <div class="list_content left2" v-if="uavDetail.uavDetail.endTime!=false">{{uavDetail.uavDetail.endTime}}</div>
+          <span style="width:270px;display:flex">
+            <p class="list_title" style="width: 112px;">任务开始时间：</p>
+            <span class="list_content">{{uavDetail.uavDetail.beginTime}}</span>
+          </span>
+          <span style="width:270px;display:flex">
+            <p class="list_title" v-if="uavDetail.uavDetail.endTime!=false" style="width: 112px;">任务结束时间：</p>
+            <span class="list_content" v-if="uavDetail.uavDetail.endTime!=false">{{uavDetail.uavDetail.endTime}}</span>
+          </span>
         </div>
-        <div class="list" style="height:52px">
-          <div class="list_title">备注：</div>
+        <div class="list">
+          <div class="list_title" style="width: 112px;">备注：</div>
           <div class="list_content" style="width:430px">{{uavDetail.uavDetail.remark}}</div>
         </div>
         <!-- <a-row type="flex" align="middle">
@@ -74,75 +86,95 @@
       <div class v-if="sitution == 'manual'">
         <div class="title">任务信息</div>
         <div class="list">
-          <div class="list_title">任务名称：</div>
-          <div class="list_content">{{manualDetail.name}}</div>
-          <div class="list_btn">{{manualDetail.status.name}}</div>
+          <div class="list_title" style="width: 112px;">任务名称：</div>
+          <div class="list_content" style="width: 362pxpx;">{{manualDetail.name}}</div>
+          <div class="list_btn" style="margin-left:20px">{{manualDetail.status.name}}</div>
         </div>
         <div class="list">
-          <div class="list_title">任务类型：</div>
+          <div class="list_title" style="width: 112px;">任务类型：</div>
           <div class="list_content">{{manualDetail.template.name}}</div>
         </div>
         <div class="list">
-          <div class="list_title">发布时间：</div>
+          <div class="list_title" style="width: 112px;">发布时间：</div>
           <div class="list_content">{{manualDetail.timeCreated}}</div>
         </div>
         <div class="list">
-          <div class="list_title">详细位置：</div>
+          <div class="list_title" style="width: 112px;">详细位置：</div>
           <div class="list_content">{{manualDetail.latlng}}</div>
         </div>
         <div class="list">
-          <div class="list_title">坐标：</div>
+          <div class="list_title" style="width: 112px;">坐标：</div>
           <div class="list_content">{{manualDetail.manualDetail.coordinate[0]}} , {{manualDetail.manualDetail.coordinate[1]}}</div>
         </div>
         <div class="title" style="margin-top:20px">反馈信息</div>
         <div class="list">
-          <div class="list_title">河道水体水色：</div>
-          <div class="list_content">{{manualDetail.manualDetail.color.name}}</div>
-          <div class="list_title left1">河道水体流动性：</div>
-          <div class="list_content left2">{{manualDetail.manualDetail.flow.name}}</div>
+          <span style="width:270px;display:flex">
+            <div class="list_title" style="width: 112px;">河道水体水色：</div>
+            <div class="list_content" style="width: 155px;">{{manualDetail.manualDetail.color.name}}</div>
+          </span>
+          <span style="width:270px;display:flex">
+            <div class="list_title left1" style="width: 112px;">河道水体流动性：</div>
+            <div class="list_content left2">{{manualDetail.manualDetail.flow.name}}</div>
+          </span>
         </div>
         <div class="list">
-          <div class="list_title">河道气味：</div>
-          <div class="list_content">{{manualDetail.manualDetail.smell.name}}</div>
-          <div class="list_title left1">河道水位：</div>
-          <div class="list_content left2">{{manualDetail.manualDetail.level.name}}</div>
+          <span style="width:270px;display:flex">
+            <div class="list_title" style="width: 112px;">河道气味：</div>
+            <div class="list_content" style="width: 155px;">{{manualDetail.manualDetail.smell.name}}</div>
+          </span>
+          <span style="width:270px;display:flex">
+            <div class="list_title left1" style="width: 112px;">河道水位：</div>
+            <div class="list_content left2" style="width: 156px;">{{manualDetail.manualDetail.level.name}}</div>
+          </span>
         </div>
         <div class="list">
-          <div class="list_title">水面漂浮物情况：</div>
-          <div class="list_content">{{manualDetail.floater}}</div>
-          <div class="list_title left1">河道水位：</div>
-          <div class="list_content left2">{{manualDetail.biont}}</div>
+          <span style="width:270px;display:flex">
+            <div class="list_title" style="width: 112px;">水面漂浮物情况：</div>
+            <div class="list_content" style="width: 155px;">{{manualDetail.floater}}</div>
+          </span>
+          <span style="width:270px;display:flex">
+            <div class="list_title left1" style="width: 112px;">河道内动植物：</div>
+            <div class="list_content left2" style="width: 156px;">{{manualDetail.biont}}</div>
+          </span>
         </div>
         <div class="list">
-          <div class="list_title">人工治理措施：</div>
-          <div class="list_content">{{manualDetail.govern}}</div>
-          <div class="list_title left1">风险源：</div>
-          <div class="list_content left2">{{manualDetail.riskSource}}</div>
+          <span style="width:270px;display:flex">
+            <div class="list_title" style="width: 112px;">人工治理措施：</div>
+            <div class="list_content" style="width: 155px;">{{manualDetail.govern}}</div>
+          </span>
+          <span style="width:270px;display:flex;">
+            <span class="list_title left1" style="width: 112px;">风险源：</span>
+            <span class="list_content left2" style="width: 156px;">{{manualDetail.riskSource}}</span>
+          </span>
         </div>
         <div class="list">
-          <div class="list_title">任务开始时间：</div>
-          <div class="list_content">{{manualDetail.manualDetail.beginTime}}</div>
-          <div class="list_title left1" v-if="manualDetail.manualDetail.endTime!=false">任务结束时间：</div>
-          <div class="list_content left2" v-if="manualDetail.manualDetail.endTime!=false">{{manualDetail.manualDetail.endTime}}</div>
+          <span style="width:270px;display:flex">
+            <div class="list_title" style="width: 112px;">任务开始时间：</div>
+            <div class="list_content">{{manualDetail.manualDetail.beginTime}}</div>
+          </span>
+          <span style="width:270px;display:flex">
+            <div class="list_title left1" v-if="manualDetail.manualDetail.endTime!=false" style="width: 112px;">任务结束时间：</div>
+            <div class="list_content left2" v-if="manualDetail.manualDetail.endTime!=false">{{manualDetail.manualDetail.endTime}}</div>
+          </span>
         </div>
         <div class="list">
-          <div class="list_title">突发情况：</div>
+          <div class="list_title" style="width: 112px;">突发情况：</div>
           <div class="list_content">{{manualDetail.emergency}}</div>
         </div>
         <div class="list" style="height:52px">
-          <div class="list_title">突然情况描述：</div>
+          <div class="list_title" style="width: 112px;">突然情况描述：</div>
           <div class="list_content" style="width:430px">{{manualDetail.manualDetail.emergencyRemark}}</div>
         </div>
         <div class="list" style="height:52px">
-          <div class="list_title">漂浮物描述：</div>
+          <div class="list_title" style="width: 112px;">漂浮物描述：</div>
           <div class="list_content" style="width:430px">{{manualDetail.manualDetail.floaterRemark}}</div>
         </div>
         <div class="list" style="height:52px">
-          <div class="list_title">备注：</div>
+          <div class="list_title" style="width: 112px;">备注：</div>
           <div class="list_content" style="width:430px">{{manualDetail.manualDetail.remark}}</div>
         </div>
         <div style="display:flex;">
-          <div class="list_title1">照片：</div>
+          <div class="list_title1" style="width: 112px;">照片：</div>
           <viewer   :images="imgList" style="display:flex; flex-wrap:wrap;padding-bottom:20px;margin-left:80px">
             <embed  v-for="item of imgList"  :key="item" :src="item.media" style="margin:0 5px 5px 0;width:80px;height:80px"/>
           </viewer>
@@ -153,49 +185,65 @@
       <div class v-if="sitution == 'water'">
         <div class="title">任务信息</div>
         <div class="list">
-          <div class="list_title">任务名称：</div>
-          <div class="list_content">{{waterDetail.name}}</div>
-          <div class="list_btn">{{waterDetail.status.name}}</div>
+          <div class="list_title" style="width: 125px;">任务名称：</div>
+          <div class="list_content" style="width: 362px;">{{waterDetail.name}}</div>
+          <div class="list_btn" style="margin-left:20px">{{waterDetail.status.name}}</div>
         </div>
         <div class="list">
-          <div class="list_title">任务类型：</div>
+          <div class="list_title" style="width: 125px;">任务类型：</div>
           <div class="list_content">{{waterDetail.template.name}}</div>
         </div>
         <div class="list">
-          <div class="list_title">发布时间：</div>
+          <div class="list_title" style="width: 125px;">发布时间：</div>
           <div class="list_content">{{waterDetail.timeCreated}}</div>
         </div>
         <div class="title" style="margin-top:20px">反馈信息</div>
         <div class="list">
-          <div class="list_title">水温℃：</div>
-          <div class="list_content">{{waterDetail.waterDetail.temperature}}</div>
-          <div class="list_title left1">ph：</div>
-          <div class="list_content left2">{{waterDetail.waterDetail.ph}}</div>
+          
+          <span style="width:270px;display:flex">
+            <div class="list_title" style="width: 125px;">水温℃：</div>
+            <div class="list_content">{{waterDetail.waterDetail.temperature}}</div>
+          </span>
+          <span style="width:270px;display:flex">
+            <div class="list_title left1" style="width: 125px;">ph：</div>
+            <div class="list_content left2">{{waterDetail.waterDetail.ph}}</div>
+          </span>
         </div>
         <div class="list">
-          <div class="list_title">氧化还原电位 mV：</div>
-          <div class="list_content">{{waterDetail.waterDetail.redox}}</div>
-          <div class="list_title left1">溶解氧 mg/L：</div>
-          <div class="list_content left2">{{waterDetail.waterDetail.cond}}</div>
+          <span style="width:270px;display:flex">
+            <div class="list_title" style="width: 125px;">氧化还原电位 mV：</div>
+            <div class="list_content">{{waterDetail.waterDetail.redox}}</div>
+          </span>
+          <span style="width:270px;display:flex">
+            <div class="list_title left1" style="width: 125px;">溶解氧 mg/L：</div>
+            <div class="list_content left2">{{waterDetail.waterDetail.cond}}</div>
+          </span>
         </div>
         <div class="list">
-          <div class="list_title">浊度 NTU：</div>
-          <div class="list_content">{{waterDetail.waterDetail.ntu}}</div>
+          <span style="width:270px;display:flex">
+            <div class="list_title" style="width: 125px;">浊度 NTU：</div>
+            <div class="list_content">{{waterDetail.waterDetail.ntu}}</div>
+          </span>
         </div>
         <div class="list">
-          <div class="list_title">任务开始时间：</div>
-          <div class="list_content">{{waterDetail.waterDetail.beginTime}}</div>
-          <div class="list_title left1" v-if="waterDetail.waterDetail.endTime!=false">任务结束时间：</div>
-          <div class="list_content left2" v-if="waterDetail.waterDetail.endTime!=false">{{waterDetail.waterDetail.endTime}}</div>
+          
+          <span style="width:270px;display:flex">
+            <div class="list_title" style="width: 125px;">任务开始时间：</div>
+            <div class="list_content">{{waterDetail.waterDetail.beginTime}}</div>
+          </span>
+          <span style="width:270px;display:flex">
+            <div class="list_title left1" v-if="waterDetail.waterDetail.endTime!=false" style="width: 125px;">任务结束时间：</div>
+            <div class="list_content left2" v-if="waterDetail.waterDetail.endTime!=false">{{waterDetail.waterDetail.endTime}}</div>
+          </span>
         </div>
         <div class="list" style="height:52px">
-          <div class="list_title">备注：</div>
+          <div class="list_title" style="width: 125px;">备注：</div>
           <div class="list_content" style="width:430px">{{waterDetail.waterDetail.remark}}</div>
         </div>
         <div style="display:flex;">
-          <div class="list_title1">照片：</div>
-          <viewer   :images="imgList" style="display:flex; flex-wrap:wrap;padding-bottom:20px;margin-left:80px">
-            <img  v-for="item of imgList"  :key="item" :src="item.media" style="margin:0 5px 5px 0;width:80px;height:80px"/>
+          <div class="list_title1" style="width: 125px;">照片：</div>
+          <viewer   :images="imgList" style="display:flex; flex-wrap:wrap;padding-bottom:20px;">
+            <img  v-for="(item,index) of imgList"  :key="index" :src="item.media" style="margin:0 5px 5px 0;width:80px;height:80px"/>
           </viewer>
         </div>
       </div>
@@ -241,6 +289,10 @@ export default {
           return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
         }
         resultMediaList(arr.id).then(res=>{
+            // res.data.forEach(v => {
+            //   let imgFile =v.media
+              
+            // });
             this.imgList = res.data
             
         })
@@ -393,12 +445,11 @@ export default {
   margin-bottom: 10px
 }
 .list{
-  position: relative;
+  display: flex;
   min-height: 26px;
   width: 552px;
   margin-bottom: 6px;
   .list_title{
-    position: absolute;
     left: 0px;
     font-size:14px;
     font-family:PingFangSC-Regular,PingFang SC;
@@ -409,7 +460,6 @@ export default {
   
   .list_content{
     box-sizing:border-box;
-     position: absolute;
     left: 122px;
     top: 0;
     font-size:14px;
@@ -419,7 +469,6 @@ export default {
     line-height:26px;
   }
   .list_btn{
-     position: absolute;
     right: 0;
     top: 0;
     width:62px;

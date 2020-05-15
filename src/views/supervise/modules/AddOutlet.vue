@@ -146,11 +146,12 @@
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="首次发现时间">
               <a-date-picker
-                   
+                :allowClear='false'
+                   :value="moment(list.discoveryTime, 'YYYY-MM-DD')"
+                    @change="onChange1"
                     style="width: 100%"
                   />
-                   <!-- :value="moment(list.activateTime, 'YYYY-MM-DD')"
-                    @change="onChange" -->
+                   
             </a-form-item>
           </a-col>
         </a-row>
@@ -247,6 +248,7 @@
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="建成时间">
               <a-date-picker
+                :allowClear='false'
                 :value="moment(list.activateTime, 'YYYY-MM-DD')"
                 @change="onChange"
                 style="width: 100%"
@@ -439,6 +441,7 @@ export default {
         linktel: '',
         blockoffStatus: '',
         statement: '',
+        discoveryTime:moment(new Date()).format('YYYY-MM-DD'),
         activateTime: moment(new Date()).format('YYYY-MM-DD'),
         registrationState: '',
         approveState: '',
@@ -504,6 +507,9 @@ export default {
     moment,
     onChange(date, dateString) {
       this.list.activateTime = dateString
+    },
+    onChange1(date, dateString) {
+      this.list.discoveryTime = dateString
     },
     getList() {
       SupervisePage(this.$store.state.id).then(res => {
@@ -586,6 +592,7 @@ export default {
         this.list.blockoffStatus = arr.blockoffStatus
         this.list.statement = arr.statement
         this.list.activateTime = moment(arr.activateTime).format('YYYY-MM-DD')
+        this.list.discoveryTime = moment(arr.discoveryTime).format('YYYY-MM-DD')
         this.list.registrationState = arr.registrationState
         this.list.approveState = arr.approveState
         this.list.approveUnit = arr.approveUnit

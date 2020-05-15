@@ -386,13 +386,11 @@
                       <div class="riverInfo" v-for="item in riverMontion" :key="item.value">
                         <div class="river_info">
                           <a-row type="flex" justify="space-between" align="middle">
-                            <a-col :span="8" >{{item.objectName}}</a-col>
+                            <a-col :span="18" >{{item.objectName}}</a-col>
                             <!-- @click="choosePointTask(item.id)" -->
-                            <a-col :span="10">
-                              <!-- <a-select defaultValue @change="handleChange" style="width:100%;">
-                            <a-select-option value="jack">Jack</a-select-option>
-                              </a-select>-->
-                            </a-col>
+                            <!-- <a-col :span="10">
+                              
+                            </a-col> -->
                             <a-col :span="3">
                               <a-popconfirm
                                 title="是否确认删除?"
@@ -3435,6 +3433,7 @@ export default {
       this.lat = e.currentLnglat.lat
       this.lng = e.currentLnglat.lng
       var data = {
+        projectId: this.$store.state.id,
         coordinate: e.currentLnglat.lng + ',' + e.currentLnglat.lat,
         radius: '1'
       }

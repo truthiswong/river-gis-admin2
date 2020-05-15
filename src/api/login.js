@@ -392,6 +392,7 @@ export function taskSpotList(data) {
     url: '/server/data/admin/task/point/list',
     method: 'get',
     params: {
+      projectId: data.projectId,
       riverId: data.id,
       coordinate: data.coordinate,
       radius: data.radius,
