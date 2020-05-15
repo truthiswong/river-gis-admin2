@@ -1555,6 +1555,7 @@ export default {
             projectId: this.$store.state.id,
             startDate: this.startDate,
             endDate: this.endDate,
+             innerType : 'other',
             typeId: v.id,
           }
         } else {
@@ -1563,6 +1564,7 @@ export default {
             year: picker[0],
             month: picker[1],
             day: picker[2],
+            innerType : 'other',
             typeId: v.id,
           }
         }
@@ -1683,6 +1685,7 @@ export default {
             startDate: this.startDate,
             endDate: this.endDate,
             typeId: v.id,
+             innerType : 'riskSource',
           }
         } else {
           var data = {
@@ -1691,6 +1694,7 @@ export default {
             month: picker[1],
             day: picker[2],
             typeId: v.id,
+             innerType : 'riskSource',
           }
         }
         getMapdrawCount(data).then(res=>{

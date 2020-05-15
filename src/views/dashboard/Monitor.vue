@@ -1575,6 +1575,7 @@ export default {
               item.id != '5da8389eea6c157d2d61007f' &&
               item.id != '5dafe6c8ea6c159999a0549c'
             ) {
+              item.num =null
               arr.push(item)
             }
           }
@@ -4609,6 +4610,7 @@ export default {
           projectId: this.$store.state.id,
           startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
           endDate: this.picker,
+          innerType : 'other',
           typeId: v.id,
         }
         getMapdrawCount(data).then(res=>{
@@ -4676,6 +4678,7 @@ export default {
           projectId: this.$store.state.id,
           startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
           endDate: this.picker,
+          innerType : 'riskSource' ,
           typeId: v.id,
         }
         getMapdrawCount(data).then(res=>{
