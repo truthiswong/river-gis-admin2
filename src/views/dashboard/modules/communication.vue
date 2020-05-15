@@ -19,8 +19,8 @@
         <div style="">
             <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;margin-bottom:10px">{{item.remark}}</div>
             <div style="width:393px">
-              <img :src="item.media" alt style="width:100%" v-show="item.mediaType.code=='image'"/>
-              <a-button @click="audioBut(item.media)" v-show="item.mediaType.code!='image'">播放</a-button>
+              <img :src="item.media" alt style="width:100%" v-show="item.mediaType=='image'"/>
+              <a-button @click="audioBut(item.media)" v-show="item.mediaType=='audio'">播放</a-button>
             </div>
         </div>
       </div>
@@ -105,15 +105,19 @@ export default {
         let arr = res.data.data
         console.log(arr);
         
-        // arr.forEach(v => {
-        //     v.media =
-        // });  
+        arr.forEach(v => {
+            if (v.mediaType) {
+              v.mediaType = v.mediaType.code
+            }else{
+              v.mediaType = ''
+            }
+        });  
         this.list = arr
-        if (arr.length>0) {
-          arr.forEach(v => {
-           
-          });  
-        }
+        // if (arr.length>0) {
+        //   arr.forEach(v => {
+            
+        //   });  
+        // }
       })
 
       this.visible = true
