@@ -601,6 +601,8 @@ export default {
     },
     handleCancel() {
       this.list.id = ''
+      this.list.controller = ''
+      this.list.inspectTimes = ''
       this.list.name = ''
       this.list.length1 = ''
       this.list.dimension = ''
@@ -670,6 +672,8 @@ export default {
       this.$refs.upload.submit()
       this.$refs.upload1.submit()
       this.list.id = ''
+      this.list.inspectTimes = ''
+      this.list.controller = ''
       this.list.name = ''
       this.list.length1 = ''
       this.list.dimension = ''

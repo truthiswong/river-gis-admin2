@@ -976,7 +976,7 @@ export function projectMinesTructure() {
 //时间轴
 export function daydataList(data) {
   return axios({
-    url: '/server/data/admin/calendar/daydata/',
+    url: '/server/data/admin/calendar/data4project',
     method: 'get',
     params: {
       projectId: data.projectId,
@@ -988,7 +988,7 @@ export function daydataList(data) {
 //日天气
 export function weatherList(data) {
   return axios({
-    url: '/server/data/admin/weather/daydata',
+    url: '/server/data/admin/weather/daydata/',
     method: 'get',
     params: {
       date: data.date,

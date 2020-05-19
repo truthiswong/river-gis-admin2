@@ -161,14 +161,14 @@
           <div class="list_title" style="width: 112px;">突发情况：</div>
           <div class="list_content">{{manualDetail.emergency}}</div>
         </div>
-        <div class="list" style="height:52px">
+        <!-- <div class="list" style="height:52px">
           <div class="list_title" style="width: 112px;">突然情况描述：</div>
           <div class="list_content" style="width:430px">{{manualDetail.manualDetail.emergencyRemark}}</div>
         </div>
         <div class="list" style="height:52px">
           <div class="list_title" style="width: 112px;">漂浮物描述：</div>
           <div class="list_content" style="width:430px">{{manualDetail.manualDetail.floaterRemark}}</div>
-        </div>
+        </div> -->
         <div class="list" style="height:52px">
           <div class="list_title" style="width: 112px;">备注：</div>
           <div class="list_content" style="width:430px">{{manualDetail.manualDetail.remark}}</div>

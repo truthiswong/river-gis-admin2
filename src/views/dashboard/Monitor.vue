@@ -551,9 +551,10 @@
                                     <template slot="header">
                                       <a-row type="flex" justify="space-between" align="middle">
                                         <a-col :span="16">
-                                          <div
+                                          <span style="padding:3px 5px;background-color:#2DBFFC;color:#fff;margin-right:3px;border-radius:10px;height: 20px;font-size: 10px;">{{targetId.completeTaskNum}}/{{targetId.totalTaskNum}}</span>
+                                          <span
                                             @click="choosePointTask1(targetId.target.id,targetId)"
-                                          >{{targetId.target.objectName}}</div>
+                                          >{{targetId.target.objectName}}</span>
                                         </a-col>
                                         <a-col :span="8" v-if="hidingJudgment3 == true">
                                           <a-popconfirm
@@ -4313,8 +4314,6 @@ export default {
     //风险源绘制数据
     getRiskSourceMapDrawPage(riskSourceType) {
       var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
-      console.log(riskSourceLevel);
-      
       var time = this.threePicker
       var picker = time.split('/')
       var data = {
@@ -4780,6 +4779,7 @@ export default {
       padding: 15px 9px;
       box-sizing: border-box;
       width: 100%;
+      
       border-top: 1px solid rgba(216, 216, 216, 0.5);
       border-bottom: 1px solid rgba(216, 216, 216, 0.5);
       font-size: 12px;

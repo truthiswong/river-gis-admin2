@@ -3064,14 +3064,24 @@ export default {
           } else {
             item.level = 2
           }
-          item.title = item.date.substring(item.date.length - 2, item.date.length)
+          if (item.date) {
+            item.title = item.date.substring(item.date.length - 2, item.date.length)
+          }else{
+            item.title = item.beginDate.substring(item.beginDate.length - 2, item.beginDate.length)
+            
+          }
+          
           item.clicked = false
         }
         for (const item of res.data) {
           if (item.uavTask != 0) {
             item.clicked = true
-            this.defaultTime =
-              item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+            if (item.date) {
+              this.defaultTime = item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+            }else{
+              this.defaultTime = item.beginDate
+            }
+            
             this.defaultRightTime = this.defaultTime
             this.mapYear = this.defaultTime.substring(0, 4)
             this.mapMonth = this.defaultTime.substring(5, 7)
@@ -3082,8 +3092,11 @@ export default {
             break
           } else if (item.manualTask != 0) {
             item.clicked = true
-            this.defaultTime =
-              item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+            if (item.date) {
+              this.defaultTime = item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+            }else{
+              this.defaultTime = item.beginDate
+            }
             this.defaultRightTime = this.defaultTime
             this.mapYear = this.defaultTime.substring(0, 4)
             this.mapMonth = this.defaultTime.substring(5, 7)
@@ -3103,6 +3116,7 @@ export default {
             this.mapMonthRight = this.defaultTime.substring(5, 7)
             this.mapDayRight = this.defaultTime.substring(8, 10)
           }
+          item.date= item.beginDate
         }
 
         this.timeData = res.data

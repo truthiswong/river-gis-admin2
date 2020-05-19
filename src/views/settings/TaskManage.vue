@@ -1401,6 +1401,8 @@ export default {
     },
     // 线路任务按钮
     taskCancel() {
+      this.getRoleList() 
+      this.getStructDeviceList()
       if (this.actionTab == 1) {
         this.addLineShow = false
         this.lineList.id = ''

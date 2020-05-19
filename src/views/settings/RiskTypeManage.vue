@@ -56,7 +56,7 @@
             <a-button type="primary" icon="plus" >添加</a-button>
           </el-upload>
           <viewer >
-            <embed  :src="attachmentJpg" alt="" style="height:70px;">
+            <img  :src="attachmentJpg" alt="" style="width:70px">
           </viewer >
         </a-form-item>
       </a-form>
@@ -212,7 +212,8 @@ export default {
         this.fileList=[]
       }
       console.log(file, fileList);
-      this.attachmentJpg=URL.createObjectURL(file.raw)
+      this.attachmentJpg =''
+      this.attachmentJpg = URL.createObjectURL(file.raw)
     },
     handleRemove(file, fileList) {
       
