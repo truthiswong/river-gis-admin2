@@ -3251,15 +3251,16 @@ export default {
             this.mapYear = mouth.substring(0, 4)
             this.mapMonth = mouth.substring(4, 6)
             this.mapDay = mouth.substring(6, 8)
-            this.map.removeLayer(this.mapLayerImage)
-            let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
-              this.mapYear
-            }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
-              this.$store.state.tenantId
-            }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
-            this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
-            this.map.addLayer(this.mapLayerImage)
-
+            if(this.layerImageChange){
+              this.map.removeLayer(this.mapLayerImage)
+              let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
+                this.mapYear
+              }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
+                this.$store.state.tenantId
+              }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
+              this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
+              this.map.addLayer(this.mapLayerImage)
+            }
             if (this.sharedChecked && this.layerImageChange) {
               // 双球左边正射
               this.olMap1.removeLayer(this.leftLayerImage)
