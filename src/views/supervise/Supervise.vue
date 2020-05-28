@@ -629,7 +629,7 @@
                     <a-list-item>
                       <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                         <a-col :span="18">
-                          <p style="margin:0;">水质数据</p>
+                          <p style="margin:0;">水质数据({{regulatorWaterCountData}})</p>
                         </a-col>
                         <a-col :span="6">
                           <a-switch size="small" v-model="waterQuality" @click="onWaterQuality" />
@@ -659,7 +659,7 @@
                     <a-list-item>
                       <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                         <a-col :span="18">
-                          <p style="margin:0;">专项调查点</p>
+                          <p style="margin:0;">专项调查点({{pointCountData}})</p>
                         </a-col>
                         <a-col :span="6">
                           <a-switch size="small" v-model="surveyPoint" @click="onSurveyPoint" />
@@ -946,7 +946,9 @@ import {
   mapdrawPageRiskSource,
   uavPhoto,
   getTigeList,
-  getMapdrawCount
+  getMapdrawCount,
+  getRegulatorWaterCount,
+  getPointCount
 } from '@/api/login'
 import RiskSourceInfo from './modules/RiskSourceInfo'
 import AddRiskSource from './modules/AddRiskSource'
@@ -1061,6 +1063,7 @@ export default {
       waterQualityData: {
         projectId: this.$store.state.id
       },
+      regulatorWaterCountData:'',//水质数据统计
       headers: {
         Authorization: Vue.ls.get(ACCESS_TOKEN),
         'X-TENANT-ID': this.$store.state.tenantId
@@ -1316,6 +1319,7 @@ export default {
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.23668, lng: 121.49656 } }
       ],
       surveyPoint: false, // 专项调查点
+      pointCountData:'',//专项调查点统计
       surveyPointPoints: [
         // {
         //   id: 0,
@@ -1575,6 +1579,51 @@ export default {
           v.num = res.data
         })
       });
+    },
+    //水质数据统计
+    regulatorWaterCount(){
+      var time = this.defaultTime
+      var picker = time.split('-')
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+        }
+      } else {
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+        }
+      }
+      getRegulatorWaterCount(data).then(res=>{
+        this.regulatorWaterCountData = res.data
+      })
+    },
+    //调查点
+    pointCount(){
+      var time = this.defaultTime
+      var picker = time.split('-')
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+        }
+      } else {
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+        }
+      }
+      getPointCount(data).then(res=>{
+        this.pointCountData = res.data
+        
+      })
     },
     //数据统计
     getDataStatistics(){
@@ -1864,6 +1913,7 @@ export default {
         arr.forEach(v => {
           v.clicked = false
         })
+        this.pointCount()
         this.surveyPointPoints = arr
         this.onSurveyPoint()
       })
@@ -2053,6 +2103,7 @@ export default {
         .then(res => {
           let arr = res.data
           this.waterQualityPoints = arr
+          this.regulatorWaterCount()
           this.onWaterQuality()
         })
         .catch(err => {})

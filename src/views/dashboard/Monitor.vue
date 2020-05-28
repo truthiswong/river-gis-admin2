@@ -201,7 +201,7 @@
                             <a-list-item>
                               <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <p style="margin:0;">水质数据</p>
+                                  <p style="margin:0;">水质数据({{regulatorWaterCountData}})</p>
                                 </a-col>
                                 <a-col :span="6">
                                   <a-switch size="small" v-model="waterQuality" @click="onWaterQuality" />
@@ -231,7 +231,7 @@
                             <a-list-item>
                               <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                                 <a-col :span="18">
-                                  <p style="margin:0;">专项调查点</p>
+                                  <p style="margin:0;">专项调查点({{pointCountData}})</p>
                                 </a-col>
                                 <a-col :span="6">
                                   <a-switch size="small" v-model="surveyPoint" @click="onSurveyPoint"/>
@@ -1088,7 +1088,9 @@ import {
   inspectPointPageRiver,
   getWaterStation ,
   getTigeList,
-  getMapdrawCount
+  getMapdrawCount,
+  getRegulatorWaterCount,
+  getPointCount
 } from '@/api/login'
 import 'ol/ol.css'
 // import Map from "ol/Map"
@@ -1415,6 +1417,8 @@ export default {
       dischargeLevel: [], //排口绘制等级
       outletPoints: [], //排口数据
       surveyPoint: false, // 专项调查点
+      pointCountData:'',//专项调查点统计
+      regulatorWaterCountData:'',//水质数据统计
       moreLoadOnce:'1',
       itgePortId:'',
       surveyPointPoints: [
@@ -4003,6 +4007,7 @@ export default {
         .then(res => {
           let arr = res.data
           this.waterQualityPoints = arr
+          this.regulatorWaterCount()
           this.onWaterQuality()
         })
         .catch(err => {})
@@ -4149,6 +4154,7 @@ export default {
         arr.forEach(v => {
           v.clicked = false
         })
+        this.pointCount()
         this.surveyPointPoints = arr
         this.onSurveyPoint()
       })
@@ -4615,6 +4621,33 @@ export default {
           v.num = res.data
         })
       });
+    },
+    //水质数据统计
+    regulatorWaterCount(){
+      var time = this.threePicker
+      var picker = time.split('/')
+      var data = {
+        projectId: this.$store.state.id,
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
+      }
+      getRegulatorWaterCount(data).then(res=>{
+        this.regulatorWaterCountData = res.data
+      })
+    },
+    //调查点
+    pointCount(){
+      var time = this.threePicker
+      var picker = time.split('/')
+      var data = {
+        projectId: this.$store.state.id,
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
+      }
+      getPointCount(data).then(res=>{
+        this.pointCountData = res.data
+        
+      })
     },
     //数据统计
     getDataStatistics(){

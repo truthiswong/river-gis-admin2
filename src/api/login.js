@@ -1076,6 +1076,22 @@ export function getMapdrawCount(data) {
     params: data
   })
 }
+//水质数据统计
+export function getRegulatorWaterCount(data) {
+  return axios({
+    url: '/server/data/admin/regulator/water/count',
+    method: 'get',
+    params: data
+  })
+}
+//水质数据统计
+export function getPointCount(data) {
+  return axios({
+    url: '/server/data/admin/inspect/point/count',
+    method: 'get',
+    params: data
+  })
+}
 //潮汐
 export function getTigeList(parameter) {
   return axios({
