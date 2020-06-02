@@ -1,5 +1,11 @@
 <template>
   <div class="supervise">
+    <div class="doubleBall" v-show="doubleBallTimeControl">
+      {{defaultTime}}
+    </div>
+    <div class="doubleBall1" v-show="doubleBallTimeControl">
+      {{defaultRightTime}}
+    </div>
     <div id="map" ref="worldMap" v-show="!sharedChecked && !swipeChecked">
       <div class="time_quantum" v-show="!canDownload">{{historyData?timeQuantum:defaultTime}}</div>
       <div class="compass_pointer" @click="compass" title="指北针">
@@ -1051,6 +1057,7 @@ export default {
         innerName: '',
         locationName: ''
       },
+      doubleBallTimeControl:false,//双球时间控制显示
       otherPoints: [], //其他绘制数据
       otherPointsRight: [], //右侧其他绘制数据
       riskSourceLevel: [], //风险源风险等级
@@ -3878,7 +3885,9 @@ export default {
     },
     // 双球开关
     sharedView() {
+       this.doubleBallTimeControl = false
       if (this.sharedChecked) {
+        this.doubleBallTimeControl = true
         this.swipeChecked = false
         if (this.sharedOnce == 1) {
           this.$nextTick(() => {
@@ -6872,5 +6881,25 @@ export default {
 
 .ant-col-6 {
   text-align: right;
+}
+.doubleBall{
+  position: absolute;
+  left: 80px;
+  top: 8px;
+  z-index: 99999;
+  color: #000;
+  padding: 5px;
+  font-weight: 600;
+  background: #fff;
+}
+.doubleBall1{
+  position: absolute;
+  left: 855px;
+  top: 8px;
+  z-index: 99999;
+  color: #000;
+  padding: 5px;
+  font-weight: 600;
+  background: #fff;
 }
 </style>
