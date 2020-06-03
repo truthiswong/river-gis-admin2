@@ -13,13 +13,22 @@
     </template>
     <div style="font-size:14px;font-family:PingFangSC-Semibold,PingFang SC;font-weight:600;color:rgba(82,90,111,1);margin-bottom:10px">经度：{{lng}},纬度：{{lat}}</div>
     <div  v-for="item in list" :key="item.id" style="margin-bottom:10px">
-      <div style="font-size:12px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(188,190,199,1);line-height:26px;">{{item.date}}</div>
       <div style="display:flex;">
-        <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;width:70px"></div>
+        <img src="../img/head.png" alt="" style="width:30px;height:30px">
+        <div class="nameTime">
+          <span style="width: 50px;padding: 0px;margin: 0px;color: rgb(0, 0, 0);">{{item.creator.name}}</span>
+          <span style="font-size:12px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(188,190,199,1);">{{item.date}}</span>
+        </div>
+      </div>
+      <!-- <div style="font-size:12px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(188,190,199,1);line-height:26px;">{{item.date}}</div> -->
+      <div style="display:flex;margin-left:32px">
+        <!-- <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;width:70px">{{item.creator.name}}</div> -->
         <div style="">
-            <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;margin-bottom:10px">{{item.remark}}</div>
+            <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;margin-bottom:10px">内容：{{item.remark}}</div>
             <div style="width:393px">
-              <img :src="item.media" alt style="width:100%" v-show="item.mediaType=='image'"/>
+              <viewer >
+                <img :src="item.media" alt style="height:200px" v-show="item.mediaType=='image'"/>
+              </viewer>
               <a-button @click="audioBut(item.media)" v-show="item.mediaType=='audio'">播放</a-button>
             </div>
         </div>
@@ -106,11 +115,16 @@ export default {
         console.log(arr);
         
         arr.forEach(v => {
-            if (v.mediaType) {
-              v.mediaType = v.mediaType.code
-            }else{
-              v.mediaType = ''
-            }
+          // v.creator ={
+          //   code: "9",
+          //   mobile: "18861125267",
+          //   name: "邵超"
+          // }
+          if (v.mediaType) {
+            v.mediaType = v.mediaType.code
+          }else{
+            v.mediaType = ''
+          }
         });  
         this.list = arr
         // if (arr.length>0) {
@@ -145,5 +159,13 @@ export default {
 }
 .nowdate {
   text-align: right;
+}
+.nameTime{
+  margin-left:12px;
+  height: 43px;
+  width: 200px;
+  font-size: 12px;
+  display: flex;
+  // position: relative;
 }
 </style>
