@@ -223,7 +223,7 @@
               </div> -->
               <div style="display:flex;flex-wrap:wrap">
                 <span >
-                  <viewer :images="attachmentJpg" >
+                  <viewer :images="attachmentJpg" v-if="attachmentJpg">
                     <img v-for="item in attachmentJpg" :key="item.id" :src="item.media" alt style="width:70px;height:70px;margin:0 4px 4px 0;"  />
                   </viewer >
                   <div style="width:70px;margin:0 4px 4px 0;display: inline-block"  v-for="item in attachmentJpg" :key="item.id"> 
@@ -416,7 +416,9 @@ export default {
     }
   },
   computed: {},
-  mounted() {},
+  mounted() {
+    console.log(this.$store.state.tenantId)
+  },
   methods: {
     moment,
     getList() {

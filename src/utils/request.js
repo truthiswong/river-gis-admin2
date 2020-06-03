@@ -17,7 +17,7 @@ switch (process.env.VUE_APP_TITLE) {
     break
   case 'prod':
     baseUrl = "http://jleco-river.jl-shgroup.com" //生产环境url
-    tenantId = "jl:jlgis@2019" //这里是测试环境中的商户id
+    tenantId = "jl:jlgis@2019" //这里是正式环境中的商户id
     console.log("2222")
     store.commit('setServerUrl', baseUrl)
     store.commit('tenantIdFn', tenantId)

@@ -113,7 +113,7 @@ export default {
       },
       headers: {
         Authorization: Vue.ls.get(ACCESS_TOKEN),
-        'X-TENANT-ID': 'jl:jlgis@2019'
+        'X-TENANT-ID': this.$store.state.tenantId
       },
       fileList:[],
       startDate:'',
