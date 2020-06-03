@@ -126,12 +126,20 @@
         </a-row>
         <a-row style="width:100%">
           <a-col :span="24">
-            <a-form-item :label-col="{span: 3, offset: 0}" :wrapper-col="{span: 20, offset: 0}" label="地址">
+            <a-form-item
+              :label-col="{span: 3, offset: 0}"
+              :wrapper-col="{span: 20, offset: 0}"
+              label="地址"
+            >
               <a-input placeholder v-model="list.address" disabled />
             </a-form-item>
           </a-col>
           <a-col :span="24">
-            <a-form-item :label-col="{span: 3, offset: 0}" :wrapper-col="{span: 20, offset: 0}" label="准确位置">
+            <a-form-item
+              :label-col="{span: 3, offset: 0}"
+              :wrapper-col="{span: 20, offset: 0}"
+              label="准确位置"
+            >
               <a-input placeholder v-model="list.accurateLocation" />
             </a-form-item>
           </a-col>
@@ -156,7 +164,7 @@
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="面积(m²)">
-              <a-input placeholder v-model="list.currentArea"  :disabled="currentAreaDisabled"/>
+              <a-input placeholder v-model="list.currentArea" :disabled="currentAreaDisabled" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -174,7 +182,7 @@
               <el-date-picker
                 v-model="list.discoveryTime"
                 type="date"
-                :allowClear='false'
+                :allowClear="false"
                 placeholder="选择日期"
                 style="width: 100%"
                 format="yyyy-MM-dd"
@@ -220,22 +228,28 @@
                 <viewer  >
                   <img v-for="img in attachmentJpg" :key="img.media" :src="img.media" :alt="img.media" />
                 </viewer>
-              </div> -->
+              </div>-->
               <div style="display:flex;flex-wrap:wrap">
-                <span >
+                <span>
                   <viewer :images="attachmentJpg" v-if="attachmentJpg">
-                    <img v-for="item in attachmentJpg" :key="item.id" :src="item.media" alt style="width:70px;height:70px;margin:0 4px 4px 0;"  />
-                  </viewer >
-                  <div style="width:70px;margin:0 4px 4px 0;display: inline-block"  v-for="item in attachmentJpg" :key="item.id"> 
-                     <a-popconfirm
-                        title="确定删除吗？"
-                        @confirm="mediaDelete(item.id)"
-                      >
-                        <a-icon slot="icon" type="question-circle-o" style="color: red" />
-                        <a-button type="primary" v-show="jurisdiction">删除</a-button>
-                      </a-popconfirm>
+                    <img
+                      v-for="item in attachmentJpg"
+                      :key="item.id"
+                      :src="item.media"
+                      alt
+                      style="width:70px;height:70px;margin:0 4px 4px 0;"
+                    />
+                  </viewer>
+                  <div
+                    style="width:70px;margin:0 4px 4px 0;display: inline-block"
+                    v-for="item in attachmentJpg"
+                    :key="item.id"
+                  >
+                    <a-popconfirm title="确定删除吗？" @confirm="mediaDelete(item.id)">
+                      <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                      <a-button type="primary" v-show="jurisdiction">删除</a-button>
+                    </a-popconfirm>
                   </div>
-                 
                 </span>
               </div>
             </a-form-item>
@@ -243,7 +257,12 @@
         </a-row>
         <h3 style="margin-top: 10px;">
           督办单
-          <a-button size="small" style="margin-left:10px;" @click="addSheet()" v-show="jurisdiction">添加</a-button>
+          <a-button
+            size="small"
+            style="margin-left:10px;"
+            @click="addSheet()"
+            v-show="jurisdiction"
+          >添加</a-button>
         </h3>
         <div v-show="sheet" style="margin-bottom:20px;">
           <a-select
@@ -280,12 +299,17 @@
               <a v-show="jurisdiction">删除</a>
             </a-popconfirm>
             <a-divider type="vertical" />
-            <a :href="record.attachment" :download="record.documentName"   target="_blank" >下载</a>
+            <a :href="record.attachment" :download="record.documentName" target="_blank">下载</a>
           </template>
         </a-table>
       </a-form>
       <a-divider orientation="left"></a-divider>
-      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
+      <a-row
+        style="width:100%; margin-top:10px;"
+        type="flex"
+        justify="space-around"
+        v-show="jurisdiction"
+      >
         <a-col :span="3">
           <a-button block @click="handleCancel">取消</a-button>
         </a-col>
@@ -308,7 +332,6 @@ const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters']
 import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
-
 import {
   mapdrawDetail,
   getRiverList,
@@ -328,8 +351,8 @@ import {
 export default {
   data() {
     return {
-      currentAreaDisabled:false,
-       jurisdiction:this.$store.state.operationPermission[1],//权限
+      currentAreaDisabled: false,
+      jurisdiction: this.$store.state.operationPermission[1], //权限
       sheet: false,
       sheetList: [],
       sheetId: [],
@@ -416,9 +439,7 @@ export default {
     }
   },
   computed: {},
-  mounted() {
-    console.log(this.$store.state.tenantId)
-  },
+  mounted() {},
   methods: {
     moment,
     getList() {
@@ -504,7 +525,7 @@ export default {
         innerCode: this.list.innerCode,
         innerName: this.list.innerName,
         billId: this.dataSourceId.join(','),
-        coordinate:this.list.lat+','+this.list.lng
+        coordinate: this.list.lat + ',' + this.list.lng
       }
       mapdrawRiskSave(data)
         .then(res => {
@@ -522,7 +543,7 @@ export default {
       this.upload.drawId = id
       mediaList(this.list.drawId).then(res => {
         console.log(res.data)
-        this.attachmentJpg = res.data.slice(0,3)
+        this.attachmentJpg = res.data.slice(0, 3)
       })
       this.getList()
       this.visible = true
@@ -542,10 +563,10 @@ export default {
           v.surveyDate = formatDate(new Date(v.surveyDate))
           this.dataSourceId.push(v.id)
         })
-        if (Number(arr.polygonSize) ==0) {
-          this.currentAreaDisabled =true
-        }else{
-          this.currentAreaDisabled =false
+        if (Number(arr.polygonSize) == 0) {
+          this.currentAreaDisabled = true
+        } else {
+          this.currentAreaDisabled = false
         }
         if (arr.river) {
           this.list.code = arr.river.code
@@ -560,23 +581,23 @@ export default {
         } else if (arr.river.priority == false) {
           this.list.priority = '非重点'
         }
-        
+
         this.list.address = arr.address
         this.dataSource = arr.bill
         if (arr.street) {
           this.list.tworiver = arr.street.controller
           this.list.streetId = arr.street.id
         }
-        if ( arr.type) {
-          this.list.typeId = arr.type.id  
+        if (arr.type) {
+          this.list.typeId = arr.type.id
         }
-        
+
         if (arr.level) {
           this.list.level = arr.level.code
         }
         if (arr.coordinate) {
-          this.list.lat=arr.coordinate[0]
-          this.list.lng=arr.coordinate[1]
+          this.list.lat = arr.coordinate[0]
+          this.list.lng = arr.coordinate[1]
         }
         // this.list.supervisoryLevel=arr.
         // this.list.controller=arr.
@@ -653,7 +674,7 @@ export default {
       this.$message.success('上传成功')
       this.fileList = []
       mediaList(this.list.drawId).then(res => {
-        this.attachmentJpg = res.data.slice(0,3)
+        this.attachmentJpg = res.data.slice(0, 3)
       })
     },
     handleRemove(err) {
@@ -665,7 +686,7 @@ export default {
         .then(res => {
           this.$message.success('删除成功')
           mediaList(this.list.drawId).then(res => {
-            this.attachmentJpg = res.data.slice(0,3)
+            this.attachmentJpg = res.data.slice(0, 3)
           })
         })
         .catch(err => {
@@ -693,10 +714,10 @@ export default {
       this.sheet = true
     },
     add(id, currentArea, result) {
-      if (Number(currentArea) ==0) {
-        this.currentAreaDisabled =true
-      }else{
-        this.currentAreaDisabled =false
+      if (Number(currentArea) == 0) {
+        this.currentAreaDisabled = true
+      } else {
+        this.currentAreaDisabled = false
       }
       this.list.drawId = id
       this.upload.drawId = id
@@ -736,7 +757,7 @@ export default {
       }
     },
     cancelDelete() {},
-    exportExcel () {
+    exportExcel() {
       /* generate workbook object from table */
       var xlsxParam = { raw: true } // 导出的内容只做解析，不进行格式转换
       var wb = XLSX.utils.table_to_book(document.querySelector('#exportTab'), xlsxParam)
@@ -752,10 +773,9 @@ export default {
       }
       return wbout
     },
-    downloadClick(id){
-      SuperviseDownload(id).then(res=>{
-        console.log(res);
-        
+    downloadClick(id) {
+      SuperviseDownload(id).then(res => {
+        console.log(res)
       })
     }
   }
@@ -794,8 +814,6 @@ export default {
 <style lang="less" >
 .ant-form input[type='file'] {
   display: none;
-  
 }
-
 </style>
 
