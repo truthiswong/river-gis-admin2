@@ -1,11 +1,7 @@
 <template>
   <div class="supervise">
-    <div class="doubleBall" v-show="doubleBallTimeControl">
-      {{defaultTime}}
-    </div>
-    <div class="doubleBall1" v-show="doubleBallTimeControl">
-      {{defaultRightTime}}
-    </div>
+    <div class="doubleBall" v-show="doubleBallTimeControl">{{defaultTime}}</div>
+    <div class="doubleBall1" v-show="doubleBallTimeControl">{{defaultRightTime}}</div>
     <div id="map" ref="worldMap" v-show="!sharedChecked && !swipeChecked">
       <div class="time_quantum" v-show="!canDownload">{{historyData?timeQuantum:defaultTime}}</div>
       <div class="compass_pointer" @click="compass" title="指北针">
@@ -29,6 +25,7 @@
             <template slot="title">
               <span>{{day.date}}</span>
             </template>
+            <!-- <h6 style="font-size:12px;text-align:center;margin:0;">{{day.date}}</h6> -->
             <div class="line_style">
               <div
                 class="line"
@@ -152,7 +149,7 @@
                 :value="item.portId"
               >{{item.portName}}</a-select-option>
             </a-select>
-            <div id="main1"  style="width:500px;height:450px"></div>
+            <div id="main1" style="width:500px;height:450px"></div>
             <!-- <div class="weather_basic">
               <div class="weather_basic_content">
                 <img src="./img/water.png" alt style="margin-right:5px;height:12px;width:12px" />
@@ -439,7 +436,11 @@
       <li @click="setCenter">
         <img src="../../assets/img/restoration.png" alt="复位" title="复位" />
       </li>
-      <li @click="toolsShowFun" v-show="!(this.sharedChecked || this.swipeChecked)" v-if="jurisdiction">
+      <li
+        @click="toolsShowFun"
+        v-show="!(this.sharedChecked || this.swipeChecked)"
+        v-if="jurisdiction"
+      >
         <img src="../../assets/img/draw.png" alt="工具" title="工具" />
       </li>
       <li>
@@ -566,7 +567,7 @@
                 <a-list-item>
                   <p style="margin:0;">影像对比</p>
                 </a-list-item>
-              </a-popover> -->
+              </a-popover>-->
               <a-list-item>
                 <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                   <a-col :span="18">
@@ -586,7 +587,7 @@
                     <a-switch size="small" v-model="swipeChecked" @click="layerSwipe" />
                   </a-col>
                 </a-row>
-              </a-list-item> -->
+              </a-list-item>-->
               <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
                 <template slot="content">
                   <a-list size="small">
@@ -915,10 +916,8 @@
         <viewer style="margin:5px" :images="uavPhotoList">
           <div v-for="item in uavPhotoList" :key="item.id">
             <div style="margin:5px 0">日期：{{item.date}}</div>
-            <img   :src="item.pic" alt style="width:100%;margin:0 4px 4px 0;" />
-            
+            <img :src="item.pic" alt style="width:100%;margin:0 4px 4px 0;" />
           </div>
-          
         </viewer>
       </div>
     </a-modal>
@@ -937,7 +936,12 @@
           <a-input placeholder v-model="otherModalList.locationName" style="width:200px" />
         </a-form-item>
       </a-form>
-      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
+      <a-row
+        style="width:100%; margin-top:10px;"
+        type="flex"
+        justify="space-around"
+        v-show="jurisdiction"
+      >
         <a-col :span="3">
           <a-button block @click="otherCancel">取消</a-button>
         </a-col>
@@ -1062,14 +1066,14 @@ export default {
   },
   data() {
     return {
-      statisticsList:{
-        riskMap:'',
-        riskSource:'',
-        discharge:'',
-        floatage:'',
-        other:'',
+      statisticsList: {
+        riskMap: '',
+        riskSource: '',
+        discharge: '',
+        floatage: '',
+        other: ''
       },
-      jurisdiction:this.$store.state.operationPermission[1],//权限
+      jurisdiction: this.$store.state.operationPermission[1], //权限
       otherModal: false, //其他绘制弹窗
       otherModalList: {
         title: '',
@@ -1077,7 +1081,7 @@ export default {
         innerName: '',
         locationName: ''
       },
-      doubleBallTimeControl:false,//双球时间控制显示
+      doubleBallTimeControl: false, //双球时间控制显示
       otherPoints: [], //其他绘制数据
       otherPointsRight: [], //右侧其他绘制数据
       riskSourceLevel: [], //风险源风险等级
@@ -1090,7 +1094,7 @@ export default {
       waterQualityData: {
         projectId: this.$store.state.id
       },
-      regulatorWaterCountData:'',//水质数据统计
+      regulatorWaterCountData: '', //水质数据统计
       headers: {
         Authorization: Vue.ls.get(ACCESS_TOKEN),
         'X-TENANT-ID': this.$store.state.tenantId
@@ -1113,8 +1117,7 @@ export default {
       defaultTime: '', //默认日期
       defaultRightTime: '', //右侧默认日期
 
-      otherList: [
-      ], //其他
+      otherList: [], //其他
       riskSourceList: [], //河岸风险源
       currentArea: '', //面积
       drawTypeId: '', //绘制类型
@@ -1346,7 +1349,7 @@ export default {
         { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.23668, lng: 121.49656 } }
       ],
       surveyPoint: false, // 专项调查点
-      pointCountData:'',//专项调查点统计
+      pointCountData: '', //专项调查点统计
       surveyPointPoints: [
         // {
         //   id: 0,
@@ -1398,8 +1401,7 @@ export default {
         }
       }
     },
-    accordionAlertKey(key) {
-    },
+    accordionAlertKey(key) {},
     // 历史数据
     historyData() {
       // this.watchAllSwitch()
@@ -1438,10 +1440,9 @@ export default {
     let wordLabel = `http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
     this.mapLayerWord = new T.TileLayer(wordLabel, { minZoom: 4, maxZoom: 18, zIndex: 15 })
     // 正射影像
-    if(this.layerImageChange){
+    if (this.layerImageChange) {
       this.mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${this.$store.state.id}&Authorization=${token}`
       this.mapLayerImage = new T.TileLayer(this.mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
-      
     }
     this.map = new T.Map('map', {
       minZoom: 4,
@@ -1475,19 +1476,19 @@ export default {
       getTigeList(data).then(res => {
         var arr = res.data
         this.tigePage = arr
-        if (this.tigePage.length>0) {
-          if (this.itgePortId!='') {
+        if (this.tigePage.length > 0) {
+          if (this.itgePortId != '') {
             for (const item of this.tigePage) {
-              if (item.portId==this.itgePortId) {
+              if (item.portId == this.itgePortId) {
                 this.drawLineItge(item.tide)
                 break
               }
             }
-          }else{
-             this.itgePortId = arr[0].portId
+          } else {
+            this.itgePortId = arr[0].portId
           }
-        }else{
-          this.itgePortId=''
+        } else {
+          this.itgePortId = ''
           // this.$message.warning('当前日期下无潮汐数据');
           this.drawLineItge([])
         }
@@ -1511,35 +1512,63 @@ export default {
       var myChart = echarts.init(document.getElementById('main1'))
       myChart.setOption({
         xAxis: {
-          name : '潮时(Hrs)',
-          nameLocation :'center',
-          nameTextStyle:{
-             lineHeight: 56,
-             fontSize:15
+          name: '潮时(Hrs)',
+          nameLocation: 'center',
+          nameTextStyle: {
+            lineHeight: 56,
+            fontSize: 15
           },
-          axisLabel:{
-             show : true
+          axisLabel: {
+            show: true
           },
           type: 'category',
-          data: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','24:00']
+          data: [
+            '00:00',
+            '01:00',
+            '02:00',
+            '03:00',
+            '04:00',
+            '05:00',
+            '06:00',
+            '07:00',
+            '08:00',
+            '09:00',
+            '10:00',
+            '11:00',
+            '12:00',
+            '13:00',
+            '14:00',
+            '15:00',
+            '16:00',
+            '17:00',
+            '18:00',
+            '19:00',
+            '20:00',
+            '21:00',
+            '22:00',
+            '23:00',
+            '24:00'
+          ]
         },
         tooltip: {
-            trigger: 'item',
+          trigger: 'item'
         },
         yAxis: {
-           nameLocation :'center',
-            nameTextStyle:{
-              lineHeight: 56,
-              fontSize:15
-            },
-            type: 'value',
-            name : '潮高(cm)',
+          nameLocation: 'center',
+          nameTextStyle: {
+            lineHeight: 56,
+            fontSize: 15
+          },
+          type: 'value',
+          name: '潮高(cm)'
         },
-        series: [{
+        series: [
+          {
             data: date,
             type: 'line',
             smooth: true
-        }]
+          }
+        ]
       })
     },
     //获取绘制类型
@@ -1580,7 +1609,7 @@ export default {
       })
     },
     //其他子栏数据统计
-    getOtherDataStatistics(){
+    getOtherDataStatistics() {
       var time = this.defaultTime
       var picker = time.split('-')
       this.otherList.forEach(v => {
@@ -1589,8 +1618,8 @@ export default {
             projectId: this.$store.state.id,
             startDate: this.startDate,
             endDate: this.endDate,
-             innerType : 'other',
-            typeId: v.id,
+            innerType: 'other',
+            typeId: v.id
           }
         } else {
           var data = {
@@ -1598,62 +1627,61 @@ export default {
             year: picker[0],
             month: picker[1],
             day: picker[2],
-            innerType : 'other',
-            typeId: v.id,
+            innerType: 'other',
+            typeId: v.id
           }
         }
-        getMapdrawCount(data).then(res=>{
+        getMapdrawCount(data).then(res => {
           v.num = res.data
         })
-      });
+      })
     },
     //水质数据统计
-    regulatorWaterCount(){
+    regulatorWaterCount() {
       var time = this.defaultTime
       var picker = time.split('-')
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
-          endDate: this.endDate,
+          endDate: this.endDate
         }
       } else {
         var data = {
           projectId: this.$store.state.id,
           year: picker[0],
           month: picker[1],
-          day: picker[2],
+          day: picker[2]
         }
       }
-      getRegulatorWaterCount(data).then(res=>{
+      getRegulatorWaterCount(data).then(res => {
         this.regulatorWaterCountData = res.data
       })
     },
     //调查点
-    pointCount(){
+    pointCount() {
       var time = this.defaultTime
       var picker = time.split('-')
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
           startDate: this.startDate,
-          endDate: this.endDate,
+          endDate: this.endDate
         }
       } else {
         var data = {
           projectId: this.$store.state.id,
           year: picker[0],
           month: picker[1],
-          day: picker[2],
+          day: picker[2]
         }
       }
-      getPointCount(data).then(res=>{
+      getPointCount(data).then(res => {
         this.pointCountData = res.data
-        
       })
     },
     //数据统计
-    getDataStatistics(){
+    getDataStatistics() {
       var time = this.defaultTime
       var picker = time.split('-')
       //风险源总数
@@ -1662,7 +1690,7 @@ export default {
           projectId: this.$store.state.id,
           startDate: this.startDate,
           endDate: this.endDate,
-          innerType : 'riskSource' 
+          innerType: 'riskSource'
         }
       } else {
         var data = {
@@ -1670,10 +1698,10 @@ export default {
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          innerType : 'riskSource' 
+          innerType: 'riskSource'
         }
       }
-      getMapdrawCount(data).then(res=>{
+      getMapdrawCount(data).then(res => {
         this.statisticsList.riskSource = res.data
       })
       //排口总数
@@ -1682,7 +1710,7 @@ export default {
           projectId: this.$store.state.id,
           startDate: this.startDate,
           endDate: this.endDate,
-          innerType : 'discharge' 
+          innerType: 'discharge'
         }
       } else {
         var data1 = {
@@ -1690,10 +1718,10 @@ export default {
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          innerType : 'discharge' 
+          innerType: 'discharge'
         }
       }
-      getMapdrawCount(data1).then(res=>{
+      getMapdrawCount(data1).then(res => {
         this.statisticsList.discharge = res.data
       })
       //漂浮物
@@ -1702,7 +1730,7 @@ export default {
           projectId: this.$store.state.id,
           startDate: this.startDate,
           endDate: this.endDate,
-          innerType : 'floatage' 
+          innerType: 'floatage'
         }
       } else {
         var data2 = {
@@ -1710,10 +1738,10 @@ export default {
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          innerType : 'floatage' 
+          innerType: 'floatage'
         }
       }
-      getMapdrawCount(data2).then(res=>{
+      getMapdrawCount(data2).then(res => {
         this.statisticsList.floatage = res.data
       })
       if (this.historyData) {
@@ -1721,7 +1749,7 @@ export default {
           projectId: this.$store.state.id,
           startDate: this.startDate,
           endDate: this.endDate,
-          innerType : 'other' 
+          innerType: 'other'
         }
       } else {
         var data3 = {
@@ -1729,11 +1757,11 @@ export default {
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          innerType : 'other' 
+          innerType: 'other'
         }
       }
       //其他
-      getMapdrawCount(data3).then(res=>{
+      getMapdrawCount(data3).then(res => {
         this.statisticsList.other = res.data
       })
       if (this.historyData) {
@@ -1741,7 +1769,7 @@ export default {
           projectId: this.$store.state.id,
           startDate: this.startDate,
           endDate: this.endDate,
-          innerType : 'riskMap' 
+          innerType: 'riskMap'
         }
       } else {
         var data4 = {
@@ -1749,11 +1777,11 @@ export default {
           year: picker[0],
           month: picker[1],
           day: picker[2],
-          innerType : 'riskMap' 
+          innerType: 'riskMap'
         }
       }
       //风险地图
-      getMapdrawCount(data4).then(res=>{
+      getMapdrawCount(data4).then(res => {
         this.statisticsList.riskMap = res.data
       })
       //风险源子项
@@ -1764,7 +1792,7 @@ export default {
             startDate: this.startDate,
             endDate: this.endDate,
             typeId: v.id,
-             innerType : 'riskSource',
+            innerType: 'riskSource'
           }
         } else {
           var data = {
@@ -1773,14 +1801,13 @@ export default {
             month: picker[1],
             day: picker[2],
             typeId: v.id,
-             innerType : 'riskSource',
+            innerType: 'riskSource'
           }
         }
-        getMapdrawCount(data).then(res=>{
+        getMapdrawCount(data).then(res => {
           v.num = res.data
-  
         })
-      });
+      })
     },
     // 获取当前页面数据
     getMapPageData() {
@@ -2880,7 +2907,7 @@ export default {
       // this.removeOverLays(this.toolIndexPointData)
       // this.removeOverLays(this.toolIndexLineData)
       // this.removeOverLays(this.toolIndexPolygonData)
-      if (result.status == 0) {
+      if (result.getStatus() == 0) {
         if (this.drawTypeId == '5da8374dea6c157d2d61007c') {
           this.$refs.addRisk.add(this.mapdrawId, this.currentArea, result)
         } else if (this.drawTypeId == '5da8389eea6c157d2d61007f') {
@@ -3148,8 +3175,8 @@ export default {
           }
           if (item.date) {
             item.title = item.date.substring(item.date.length - 2, item.date.length)
-          }else{
-            item.date= item.beginDate
+          } else {
+            item.date = item.beginDate
             item.title = item.beginDate.substring(item.beginDate.length - 2, item.beginDate.length)
           }
           item.clicked = false
@@ -3157,7 +3184,8 @@ export default {
         for (const item of res.data) {
           if (item.uavTask != 0) {
             item.clicked = true
-            this.defaultTime = item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+            this.defaultTime =
+              item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
             this.defaultRightTime = this.defaultTime
             this.mapYear = this.defaultTime.substring(0, 4)
             this.mapMonth = this.defaultTime.substring(5, 7)
@@ -3168,7 +3196,8 @@ export default {
             break
           } else if (item.manualTask != 0) {
             item.clicked = true
-            this.defaultTime = item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
+            this.defaultTime =
+              item.date.substring(0, 4) + '-' + item.date.substring(4, 6) + '-' + item.date.substring(6, 8)
             this.defaultRightTime = this.defaultTime
             this.mapYear = this.defaultTime.substring(0, 4)
             this.mapMonth = this.defaultTime.substring(5, 7)
@@ -3203,7 +3232,7 @@ export default {
           month: picker[1],
           day: picker[2]
         }
-        if(this.layerImageChange){
+        if (this.layerImageChange) {
           let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
             picker[0]
           }&month=${picker[1]}&day=${picker[2]}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${
@@ -3333,7 +3362,7 @@ export default {
             this.mapYear = mouth.substring(0, 4)
             this.mapMonth = mouth.substring(4, 6)
             this.mapDay = mouth.substring(6, 8)
-            if(this.layerImageChange){
+            if (this.layerImageChange) {
               this.map.removeLayer(this.mapLayerImage)
               let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${
                 this.mapYear
@@ -3562,12 +3591,8 @@ export default {
     // 时间格式
     moment,
     // 更多
-    onSelect(keys) {
-
-    },
-    onExpand() {
-
-    },
+    onSelect(keys) {},
+    onExpand() {},
     // 图像
     onMapChange() {
       if (this.mapType == 'a') {
@@ -3685,7 +3710,7 @@ export default {
         .toPng(node, { width: mapWidth, height: mapHeight })
         .then(dataUrl => {
           this.downloadFile('map' + this.getNowTime() + '.png', dataUrl)
-          window.nativeNodeSvg.style.transform = `translate3d(${window.transXXX}px, ${window.transYYY}px, 0px)`;
+          window.nativeNodeSvg.style.transform = `translate3d(${window.transXXX}px, ${window.transYYY}px, 0px)`
           setTimeout(() => {
             this.canDownload = true
           }, 1500)
@@ -3738,14 +3763,14 @@ export default {
     mapZoomIn() {
       this.map.zoomIn()
       if (this.sharedChecked) {
-        this.olview.setZoom(this.olview.getZoom()+1)
+        this.olview.setZoom(this.olview.getZoom() + 1)
       }
     },
     // 缩小
     mapZoomOut() {
       this.map.zoomOut()
       if (this.sharedChecked) {
-        this.olview.setZoom(this.olview.getZoom()-1)
+        this.olview.setZoom(this.olview.getZoom() - 1)
       }
     },
     removeOverLays(itemList) {
@@ -3909,7 +3934,7 @@ export default {
     },
     // 双球开关
     sharedView() {
-       this.doubleBallTimeControl = false
+      this.doubleBallTimeControl = false
       if (this.sharedChecked) {
         this.doubleBallTimeControl = true
         this.swipeChecked = false
@@ -3962,67 +3987,66 @@ export default {
       }
     },
     clearOlLayer() {
-      
       // 风险地图
-        if (!this.riskMap) {
-          this.olRemoveLayer(this.riskPolygonData, 'olMap1')
-          this.olRemoveLayer(this.riskPolygonDataRight, 'olMap2')
-        }
-        // 水质数据
-        if (!this.waterQuality) {
-        }
-        // 水面漂浮物
+      if (!this.riskMap) {
+        this.olRemoveLayer(this.riskPolygonData, 'olMap1')
+        this.olRemoveLayer(this.riskPolygonDataRight, 'olMap2')
+      }
+      // 水质数据
+      if (!this.waterQuality) {
+      }
+      // 水面漂浮物
+      this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+      this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
+      if (!this.waterFlotage) {
         this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
-        if (!this.waterFlotage) {
-          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-          this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
-        }
-        this.onWaterFlotage()
-        // 排口
+        this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
+      }
+      this.onWaterFlotage()
+      // 排口
+      this.olRemoveLayer(this.outletPoints, 'olMap1')
+      this.olRemoveLayer(this.outletPointsRight, 'olMap2')
+      if (!this.outlet) {
         this.olRemoveLayer(this.outletPoints, 'olMap1')
-          this.olRemoveLayer(this.outletPointsRight, 'olMap2')
-        if (!this.outlet) {
-          this.olRemoveLayer(this.outletPoints, 'olMap1')
-          this.olRemoveLayer(this.outletPointsRight, 'olMap2')
-        }
-        // 河岸风险源
-        if (!this.riverRisk) {
-          let data1 = []
-          let data2 = []
-          for (const listItem of this.riskSourceList) {
-            if (listItem.clicked) {
-              for (const item of this.riverRiskPoints) {
-                if (item.drawType.id == listItem.id) {
-                  data1.push(item)
-                }
+        this.olRemoveLayer(this.outletPointsRight, 'olMap2')
+      }
+      // 河岸风险源
+      if (!this.riverRisk) {
+        let data1 = []
+        let data2 = []
+        for (const listItem of this.riskSourceList) {
+          if (listItem.clicked) {
+            for (const item of this.riverRiskPoints) {
+              if (item.drawType.id == listItem.id) {
+                data1.push(item)
               }
-              for (const item of this.riverRiskPointsRight) {
-                if (item.drawType.id == listItem.id) {
-                  data2.push(item)
-                }
+            }
+            for (const item of this.riverRiskPointsRight) {
+              if (item.drawType.id == listItem.id) {
+                data2.push(item)
               }
             }
           }
-          this.olRemoveLayer(data1, 'olMap1')
-          this.olRemoveLayer(data2, 'olMap2')
         }
+        this.olRemoveLayer(data1, 'olMap1')
+        this.olRemoveLayer(data2, 'olMap2')
+      }
 
-        // 专项调查点
+      // 专项调查点
+      this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
+      this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
+      if (!this.surveyPoint) {
         this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
-          this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
-        if (!this.surveyPoint) {
-          this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
-          this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
+        this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
+      }
+      // 其他
+      for (const item of this.otherList) {
+        if (!item.clicked) {
+          this.olRemoveLayer(this.otherPoints, 'olMap1')
+          this.olRemoveLayer(this.otherPointsRight, 'olMap2')
         }
-        // 其他
-        for (const item of this.otherList) {
-          if (!item.clicked) {
-            this.olRemoveLayer(this.otherPoints, 'olMap1')
-            this.olRemoveLayer(this.otherPointsRight, 'olMap2')
-          }
-        }
-        // 风险地图
+      }
+      // 风险地图
       this.onRiskMap()
       // 水质数据
       this.onWaterQuality()
@@ -4227,7 +4251,7 @@ export default {
     },
     textttt() {
       let iconFeature = new Feature({
-        geometry: new Point([121.43025, 31.16963]),
+        geometry: new Point([121.43025, 31.16963])
       })
       let iconStyle = new Style({
         image: new Icon({
@@ -4240,7 +4264,7 @@ export default {
           src: require('../../assets/img/fixedIcon.png')
         })
       })
-      iconFeature.setId("9999999999999")
+      iconFeature.setId('9999999999999')
       iconFeature.setStyle(iconStyle)
       let vectorSource = new VectorSource({
         features: [iconFeature]
@@ -4252,7 +4276,6 @@ export default {
       //   zIndex: 20
       // })
       // surveyPointLayer.set('id', id)
-      
     },
     // 卷帘开关
     layerSwipe() {
@@ -4324,13 +4347,13 @@ export default {
         this.olRemoveLayer(this.riverShowList, 'olMap2')
         for (const item of this.riverShowList) {
           for (const layer of this.olMap1.getLayers().array_) {
-            if (layer.values_.id == item.id + "1") {
+            if (layer.values_.id == item.id + '1') {
               this.olMap1.removeLayer(layer)
               this.olMap2.removeLayer(layer)
             }
           }
           for (const layer of this.olMap2.getLayers().array_) {
-            if (layer.values_.id == item.id + "2") {
+            if (layer.values_.id == item.id + '2') {
               this.olMap1.removeLayer(layer)
               this.olMap2.removeLayer(layer)
             }
@@ -4395,22 +4418,22 @@ export default {
       if (this.sharedChecked) {
         for (const item of this.riverShowList) {
           for (const layer of this.olMap1.getLayers().array_) {
-            if (layer.values_.id == item.id + "1") {
+            if (layer.values_.id == item.id + '1') {
               this.olMap1.removeLayer(layer)
             }
           }
           for (const layer of this.olMap2.getLayers().array_) {
-            if (layer.values_.id == item.id + "1") {
+            if (layer.values_.id == item.id + '1') {
               this.olMap2.removeLayer(layer)
             }
           }
           for (const layer of this.olMap1.getLayers().array_) {
-            if (layer.values_.id == item.id + "2") {
+            if (layer.values_.id == item.id + '2') {
               this.olMap1.removeLayer(layer)
             }
           }
           for (const layer of this.olMap2.getLayers().array_) {
-            if (layer.values_.id == item.id + "2") {
+            if (layer.values_.id == item.id + '2') {
               this.olMap2.removeLayer(layer)
             }
           }
@@ -4492,8 +4515,7 @@ export default {
       }
     },
     // 多边形点击事件
-    polygonRiverClick(index) {
-    },
+    polygonRiverClick(index) {},
     // 多边形移入事件
     polygonMouseover(index) {
       if (this.once == 1) {
@@ -4565,8 +4587,7 @@ export default {
       }
     },
     // 多边形点击事件
-    polygonStreetClick(index) {
-    },
+    polygonStreetClick(index) {},
     // 多边形移入事件
     polygonStreetMouseover(index) {
       if (this.once == 1) {
@@ -6070,7 +6091,6 @@ export default {
         }
         // 双球开关
         if (this.sharedChecked || this.swipeChecked) {
-
           for (const item of this.surveyPointPoints) {
             this.olSharedDrawPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id, 'olMap1')
           }
@@ -6079,7 +6099,6 @@ export default {
           }
         }
       } else {
-
         if (this.sharedChecked) {
           this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
           this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
@@ -6406,8 +6425,7 @@ export default {
         this.allImageTask(this.phonePhotoPoints)
       })
     },
-    phonePhotoError(err, file, fileList) {
-    },
+    phonePhotoError(err, file, fileList) {},
     phonePhotoChange(info) {
       if (info.file.status !== 'uploading') {
       }
@@ -6984,7 +7002,7 @@ export default {
 .ant-col-6 {
   text-align: right;
 }
-.doubleBall{
+.doubleBall {
   position: absolute;
   left: 80px;
   top: 8px;
@@ -6994,7 +7012,7 @@ export default {
   font-weight: 600;
   background: #fff;
 }
-.doubleBall1{
+.doubleBall1 {
   position: absolute;
   left: 855px;
   top: 8px;
