@@ -5,7 +5,6 @@ import notification from 'ant-design-vue/es/notification'
 import { VueAxios } from './axios'
 import qs from 'qs'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-console.log(store.state.tenantId)
 let baseUrl, tenantId
 switch (process.env.VUE_APP_TITLE) {
   case 'test':
@@ -29,6 +28,7 @@ switch (process.env.VUE_APP_TITLE) {
     store.commit('setServerUrl', baseUrl)
     store.commit('tenantIdFn', tenantId)
 }
+console.log(store.state.tenantId)
 // 创建 axios 实例
 const service = axios.create({
   // baseURL: process.env.VUE_APP_API_BASE_URL, // api base_url
