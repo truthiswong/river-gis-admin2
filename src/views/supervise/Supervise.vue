@@ -535,7 +535,7 @@
                   </a-col>
                 </a-row>
               </a-list-item>
-              <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
+              <!-- <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
                 <template slot="content">
                   <a-list size="small">
                     <a-list-item>
@@ -566,7 +566,27 @@
                 <a-list-item>
                   <p style="margin:0;">影像对比</p>
                 </a-list-item>
-              </a-popover>
+              </a-popover> -->
+              <a-list-item>
+                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                  <a-col :span="18">
+                    <p style="margin:0;">双球对比</p>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-switch size="small" v-model="sharedChecked" @click="sharedView" />
+                  </a-col>
+                </a-row>
+              </a-list-item>
+              <!-- <a-list-item>
+                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                  <a-col :span="18">
+                    <p style="margin:0;">卷帘对比</p>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-switch size="small" v-model="swipeChecked" @click="layerSwipe" />
+                  </a-col>
+                </a-row>
+              </a-list-item> -->
               <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
                 <template slot="content">
                   <a-list size="small">
