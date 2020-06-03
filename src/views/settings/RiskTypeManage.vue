@@ -13,6 +13,11 @@
             <embed :src="row.icon" alt="" style="width:80px;">
           </viewer>
         </template>
+        <template slot="type1" slot-scope="row">
+          <viewer >
+            <embed :src="row.icon2" alt="" style="width:80px;">
+          </viewer>
+        </template>
         <template slot="operation" slot-scope="row">
           <div v-show="jurisdiction">
              <a @click="add(row.id)">编辑</a>
@@ -38,7 +43,7 @@
         <a-form-item label="风险源类型名称" :label-col="{ span: 7 }" :wrapper-col="{ span: 16 }">
           <a-input placeholder="请输入风险源类型名称" v-model="list.name"/>
         </a-form-item>
-        <a-form-item label="标注样式" :label-col="{ span: 7 }" :wrapper-col="{ span: 16 }">
+        <a-form-item label="PC标注样式" :label-col="{ span: 7 }" :wrapper-col="{ span: 16 }">
           <el-upload
             class="upload-demo"
             ref="upload"
@@ -57,6 +62,27 @@
           </el-upload>
           <viewer >
             <img  :src="attachmentJpg" alt="" style="width:70px">
+          </viewer >
+        </a-form-item>
+        <a-form-item label="APP标注样式" :label-col="{ span: 7 }" :wrapper-col="{ span: 16 }">
+          <el-upload
+            class="upload-demo"
+            ref="upload1"
+            :data="list"
+            name="icon2"
+            :headers="headers"
+            action="/server/data/admin/param/save"
+            :on-preview="handlePreview"
+            :on-success="handleSuccess1"
+            :on-change="handleChange1"
+            :on-remove="handleRemove"
+            :file-list="fileList1"
+            :limit='1'
+            :auto-upload="false">
+            <a-button type="primary" icon="plus" >添加</a-button>
+          </el-upload>
+          <viewer >
+            <img  :src="attachmentJpg1" alt="" style="width:70px">
           </viewer >
         </a-form-item>
       </a-form>
@@ -79,8 +105,12 @@ const columns = [
     dataIndex: 'name'
   },
   {
-    title: '标注样式',
+    title: 'PC标注样式',
     scopedSlots: { customRender: 'type' },
+  },
+  {
+    title: 'APP标注样式',
+    scopedSlots: { customRender: 'type1' },
   },
   {
     title: '操作',
@@ -93,8 +123,9 @@ export default {
     return {
       jurisdiction:this.$store.state.operationPermission[8],//权限
       fileList:[],
-      file:false,
       attachmentJpg:'',
+      fileList1:[],
+      attachmentJpg1:'',
       id:'',
       list: {
         name: '',
@@ -151,6 +182,7 @@ export default {
         if (this.data[i].id==id) {
           this.list.name =this.data[i].name
           this.attachmentJpg = this.data[i].icon
+          this.attachmentJpg1 = this.data[i].icon2
           break
         }  
       }
@@ -175,21 +207,25 @@ export default {
 
     },
     submitUpload() {
-      if (this.attachmentJpg !='') {
-        if (this.fileList.length == 0) {
+      if (this.attachmentJpg !=''&&this.attachmentJpg1 !='') {
+        if (this.fileList.length == 0 && this.fileList1.length == 0) {
           var data = this.list
           paramSave(data).then(res => {
               this.$message.success('保存成功');
               this.visible = false
+              this.visible1 = false
               this.list.id=''
               this.list.name=''
               this.attachmentJpg=''
-              this.getList()
+              this.attachmentJpg1=''
+              this.getList()  
           }).catch(err => {
               this.$message.error(err.response.data.message);
           })
-        }else{
+        }else if(this.fileList.length != 0){
           this.$refs.upload.submit();
+        }else if(this.fileList1.length != 0){
+          this.$refs.upload1.submit();
         }
       }else{
         this.$message.error('图片不能为空');
@@ -197,13 +233,18 @@ export default {
       
     },
     handleSuccess(response, file, fileList){
-      this.attachmentJpg=''
-      this.visible = false;
-      this.$message.success('保存成功');
-      this.list.id=''
-      this.list.name=''
-      this.getList()
-      this.attachmentJpg=''
+      if (this.fileList1.length != 0) {
+        this.list.id=response.data.id
+        this.$refs.upload1.submit();
+      }else{
+        this.visible = false;
+        this.visible1 = false
+        this.$message.success('保存成功');
+        this.list.id=''
+        this.list.name=''
+        this.getList()
+        this.attachmentJpg=''
+      }
     },
     handleChange(file, fileList){
       if(this.fileList.length==0){
@@ -219,6 +260,24 @@ export default {
       
     },
     handlePreview(file) {
+    },
+    handleSuccess1(response, file, fileList){
+      this.visible = false;
+      this.visible1 = false
+      this.$message.success('保存成功');
+      this.list.id=''
+      this.list.name=''
+      this.getList()
+      this.attachmentJpg=''
+      this.attachmentJpg1=''
+    },
+    handleChange1(file, fileList){
+      if(this.fileList1.length==0){
+        this.fileList1=fileList
+      }else{
+        this.fileList1=[]
+      }
+      this.attachmentJpg1=URL.createObjectURL(file.raw)
     }
   }
 }
