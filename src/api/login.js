@@ -1032,7 +1032,7 @@ export function commentMapdrawSave(data) {
   return axios({
     url: '/server/data/admin/mapdraw/comment/save',
     method: 'post',
-    params: data
+    data
   })
 }
 //水质数据

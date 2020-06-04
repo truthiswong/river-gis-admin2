@@ -9,12 +9,12 @@
     :maskClosable="false"
     class="palnDetail_modal"
   >
-    <span class="editIcon" @click="editModalTitle" v-if="editShow">
+    <!-- <span class="editIcon" @click="editModalTitle" v-if="editShow">
       <a-icon type="edit" />
-    </span>
-    <span style="position:absolute;top:12px;left:200px;" v-if="!editShow">
+    </span> -->
+    <!-- <span style="position:absolute;top:12px;left:200px;" v-if="!editShow">
       <a-input placeholder style="width:150px;margin-left:20px;" />
-    </span>
+    </span> -->
     <div class="planDetail_info">
       <a-row style="padding-bottom:10px;">
         <a-col :span="3" style="font-size:15px;">下发时间:</a-col>
@@ -22,7 +22,7 @@
       </a-row>
       <a-row>
         <a-col :span="3" style="font-size:15px;">下发人:</a-col>
-        <a-col :span="20"></a-col>
+        <a-col :span="20">{{userName}}</a-col>
       </a-row>
     </div>
     <a-spin size="large" :spinning="spinning">
@@ -129,6 +129,7 @@ export default {
   name: 'planDetail',
   data() {
     return {
+      userName:'',
       jurisdiction:this.$store.state.operationPermission[0],//权限
       nameAdditional:'',
       confirmLoading:false,
@@ -228,6 +229,7 @@ export default {
       planDetail(id).then(res => {
         this.name = res.data.name
         this.date = res.data.date
+        this.userName = res.data.creator.name
       })
       this.teamId = id
     },
