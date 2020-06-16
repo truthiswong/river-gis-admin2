@@ -12,74 +12,52 @@
                 v-model="picker"
                 type="date"
                 placeholder="选择日期"
-                style="width:400px"
+                style="width:100%;"
                 value-format="yyyy-MM-dd"
                 @change="selectData"
               ></el-date-picker>
             </div>
             <!-- 天气 -->
             <div class="weather">
-              <img :src="weatherData.img" alt="天气" />
-              <h3>{{weatherData.temperature}}</h3>
-              <div class="text">
-                <div class="top">
-                  <span class="degree_logo">℃</span>
-                  <span class="weather_detail">{{weatherData.text}}(实时)</span>
-                  <span class="date">{{picker}}</span>
-                </div>
-                <div style="display:flex;justify-content:space-between">
-                  <div class="weather_basic_content">
-                    <img src="../supervise/img/wind.png" alt style="margin-right:5px;height:12px;width:12px" />
-                    <span>{{weatherData.wind_direction}}风 {{weatherData.wind_scale}}级</span>
-                  </div>
-                  <div class="weather_basic_content">
-                    <img src="../supervise/img/cloudiness.png" alt style="margin-right:5px;height:12px;width:12px" />
-                    <span>{{weatherData.clouds}}%</span>
-                  </div>
-                </div>
-                
+              <div>
+                <img v-show="weatherData.img" :src="weatherData.img" alt="天气" />
+              </div>
+              <div>
+                <p>实时天气: {{weatherData.text}}</p>
+                <p>风力: {{weatherData.wind_scale}}级</p>
               </div>
               <div class="weather_right">
-                <a-icon class="right_icon" type="caret-left"  :class="rightIcon == true ? 'right_icon_active':''" @click="rightIconClick"/>
+                <a-icon
+                  class="right_icon"
+                  type="caret-left"
+                  :class="rightIcon == true ? 'right_icon_active':''"
+                  @click="rightIconClick"
+                />
                 <!-- 天气弹窗 -->
-                <div class="weather_alert"  v-show="rightIcon">
+                <div class="weather_alert" v-show="rightIcon">
                   <div class="weather_content">
-                    <a-select  style="width: 200px" v-model="itgePortId">
-                      <a-select-option v-for="item in tigePage" :key="item.locationId" :value="item.portId">{{item.portName}}</a-select-option>
+                    <a-select style="width: 200px" v-model="itgePortId">
+                      <a-select-option
+                        v-for="item in tigePage"
+                        :key="item.locationId"
+                        :value="item.portId"
+                      >{{item.portName}}</a-select-option>
                     </a-select>
-                     <div id="main1"  style="width:500px;height:450px"></div>
-                    <!-- <div class="weather_basic">
-                      <div class="weather_basic_content">
-                        <img src="../supervise/img/water.png" alt style="margin-right:5px;height:12px;width:12px" />
-                        <span></span>
-                      </div>
-                      <div class="weather_basic_content">
-                        <img src="../supervise/img/wind.png" alt style="margin-right:5px;height:12px;width:12px" />
-                        <span>{{weatherData.wind_direction}}风 {{weatherData.wind_scale}}级</span>
-                      </div>
-                      <div class="weather_basic_content">
-                        <img src="../supervise/img/cloudiness.png" alt style="margin-right:5px;height:12px;width:12px" />
-                        <span>{{weatherData.clouds}}</span>
-                      </div>
-                    </div>
-                    <div class="weather24">
-                      <div class="time24" v-for="item in weatherList" :key="item.id">
-                        <div>{{item.temperature}}</div>
-
-                      </div>
-                      <div class="time24" v-for="item in weatherList" :key="item.id">
-                        <div style="text-align:center;">{{item.temperature}}</div>
-                        <img src="../supervise/img/fine.png" alt style="margin:12px 5px;height:19px;width:19px" />
-                        <div style="text-align:center;">{{item.time}}</div>
-                      </div>
-                    </div> -->
+                    <div id="main1" style="width:500px;height:450px"></div>
                   </div>
                 </div>
               </div>
             </div>
             <!-- 新建计划时展示 -->
-            <div class="left-patrol" v-if="noTitleKey === 'addPlan' || nosuperKey === 'taskCard'" v-show="jurisdiction">
-              <p class="left-patrol-title">推荐巡河方案</p>
+            <div
+              class="left-patrol"
+              v-if="noTitleKey === 'addPlan' || nosuperKey === 'taskCard'"
+              v-show="jurisdiction"
+            >
+              <p class="left-patrol-title">
+                <img style="vertical-align: middle;" src="./img/patrolPlan.png" alt />
+                <span style="vertical-align: middle;">推荐巡河方案</span>
+              </p>
               <div class="patrol-plan">
                 <!-- <a-tree defaultExpandAll v-model="checkedPlan" @select="selectPatrol" :treeData="patrolPlanInfo"/> -->
                 <a-collapse v-model="activeKey" @change="changeCollapse" accordion>
@@ -93,6 +71,49 @@
                   </a-collapse-panel>
                 </a-collapse>
               </div>
+            </div>
+            <!-- 河岸风险源 -->
+            <!-- v-show="riverRisk" -->
+            <div class="river_risk_alert">
+              <a-collapse>
+                <a-collapse-panel>
+                  <div slot="header">
+                    <img style="vertical-align: middle;" src="./img/riverRiskIcon.png" alt />
+                    <span style="vertical-align: middle;">河岸风险源</span>
+                  </div>
+                  <div class="river_risk_content">
+                    <div class="river_risk_type">
+                      <img src="./img/level1.png" alt />
+                      <img src="./img/level2.png" alt />
+                      <img src="./img/level3.png" alt />
+                      <img src="./img/level4.png" alt />
+                      <img src="./img/levelno.png" alt />
+                    </div>
+                    <div class="river_risk_list">
+                      <a-row
+                        style="width:100%"
+                        type="flex"
+                        justify="space-between"
+                        align="middle"
+                        v-for="item in riskSourceList"
+                        :key="item.id"
+                      >
+                        <a-col :span="18">
+                          <img :src="item.icon" alt />
+                          <span>{{item.name}}({{item.num}})</span>
+                        </a-col>
+                        <a-col :span="6" style="text-align: right;">
+                          <a-switch
+                            size="small"
+                            v-model="item.clicked"
+                            @click="onDrawType(item.id,item.clicked)"
+                          />
+                        </a-col>
+                      </a-row>
+                    </div>
+                  </div>
+                </a-collapse-panel>
+              </a-collapse>
             </div>
           </div>
           <!-- 今日计划监管页轨迹 -->
@@ -125,168 +146,172 @@
           </div>
           <div class="map_operate">
             <ul>
-              <!-- <li @click="compass">
-                <img src="../../assets/compass.png" alt="指北针" />
-              </li> -->
               <li @click="setCenter">
                 <img src="../../assets/restoration.png" alt="复位" />
               </li>
-              <li @click="mapZoomIn">
-                <img src="../../assets/max.png" alt="放大" />
-              </li>
-              <li @click="mapZoomOut">
-                <img src="../../assets/min.png" alt="缩小" />
+              <li style="border-radius: 40px;">
+                <img @click="mapZoomIn" src="../../assets/max.png" alt="放大" />
+                <img @click="mapZoomOut" src="../../assets/min.png" alt="缩小" />
               </li>
               <li>
                 <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-                  <template slot="content">
-                    <a-row style="width: 100%;">
+                  <div slot="content" style="width:120px;">
+                    <a-row>
+                      <a-radio-group v-model="mapType" @change="onMapChange">
+                        <a-col :span="24">
+                          <a-radio value="a">
+                            <span style="margin-left:10px;">2D影像图</span>
+                          </a-radio>
+                        </a-col>
+                        <a-col :span="24">
+                          <a-radio value="b">
+                            <span style="margin-left:10px;">卫星影像图</span>
+                          </a-radio>
+                        </a-col>
+                      </a-radio-group>
+                    </a-row>
+                    <a-row>
                       <a-col :span="24">
-                        <a-radio-group @change="onMapChange" v-model="mapType">
-                          <a-radio-button value="a">2D影像图</a-radio-button>
-                          <a-radio-button value="b">卫星影像图</a-radio-button>
-                        </a-radio-group>
+                        <a-switch
+                          size="small"
+                          v-model="roadWordChange"
+                          @click="onRoadChangeSwitch"
+                        />
+                        <span style="margin-left:7px;">道路标注</span>
                       </a-col>
                     </a-row>
-                    <a-row style="width: 100%; margin-top: 8px;">
-                      <a-col :span="16">
-                        <span>道路标注</span>
-                      </a-col>
-                      <a-col :span="8" style="text-align: right;">
-                        <a-switch size="small" v-model="roadWordChange" @click="onRoadChangeSwitch" />
-                      </a-col>
-                    </a-row>
-                    <a-row style="width: 100%; margin-top: 8px;">
-                      <a-col :span="16">
-                        <span>正射开关</span>
-                      </a-col>
-                      <a-col :span="8" style="text-align: right;">
-                        <a-switch size="small" v-model="layerImageChange" @click="onLayerImageSwitch" />
+                    <a-row>
+                      <a-col :span="24">
+                        <a-switch
+                          size="small"
+                          v-model="layerImageChange"
+                          @click="onLayerImageSwitch"
+                        />
+                        <span style="margin-left:7px;">正射开关</span>
                       </a-col>
                     </a-row>
-                  </template>
-                  <template slot="title">
-                    <span>图像</span>
-                  </template>
-                  <img src="../../assets/map.png" alt="图像" title="图像" />
+                  </div>
+                  <img src="../../assets/mapIcon.png" alt="图像" title="图像" />
                 </a-popover>
               </li>
               <li class="popMore">
                 <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
                   <template slot="content" style="overflow-y: scroll;">
-                    <a-list size="small">
-                      <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-                        <template slot="content">
-                          <a-list size="small">
-                            <a-list-item>
-                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                                <a-col :span="18">
-                                  <p style="margin:0;">河岸风险源({{statisticsList.riskSource}})</p>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                            <a-list-item>
-                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                                <a-col :span="18">
-                                  <p style="margin:0;">风险地图({{statisticsList.riskMap}})</p>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                            <a-list-item>
-                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                                <a-col :span="18">
-                                  <p style="margin:0;">水质数据({{regulatorWaterCountData}})</p>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch size="small" v-model="waterQuality" @click="onWaterQuality" />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                            <a-list-item>
-                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                                <a-col :span="18">
-                                  <p style="margin:0;">水面漂浮物({{statisticsList.floatage}})</p>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch size="small" v-model="waterFlotage" @click="onWaterFlotage" />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                            <a-list-item>
-                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                                <a-col :span="18">
-                                  <p style="margin:0;">排口({{statisticsList.discharge}})</p>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch size="small" v-model="outlet" @click="onOutlet" />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                            <a-list-item>
-                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                                <a-col :span="18">
-                                  <p style="margin:0;">专项调查点({{pointCountData}})</p>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch size="small" v-model="surveyPoint" @click="onSurveyPoint"/>
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                          </a-list>
-                        </template>
-                        <template slot="title">
-                          <span>风险管理</span>
-                        </template>
-                        <a-list-item>
-                          <p style="margin:0;">风险管理</p>
-                        </a-list-item>
-                      </a-popover>
-                      <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-                        <template slot="content">
-                          <a-list size="small">
-                            <a-list-item v-for="item in otherList" :key="item.id">
-                              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                                <a-col :span="18">
-                                  <p style="margin:0;">{{item.name}}({{item.num}})</p>
-                                </a-col>
-                                <a-col :span="6">
-                                  <a-switch
-                                    size="small"
-                                    v-model="item.clicked"
-                                    @click="onWaterLandLoss(item.id,item.clicked)"
-                                  />
-                                </a-col>
-                              </a-row>
-                            </a-list-item>
-                          </a-list>
-                        </template>
-                        <template slot="title">
-                          <span>其他</span>
-                        </template>
-                        <a-list-item>
-                          <p style="margin:0;">其他({{statisticsList.other}})</p>
-                        </a-list-item>
-                      </a-popover>
-                    </a-list>
+                    <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
+                      <div slot="content" style="min-width: 180px;">
+                        <a-row type="flex" justify="space-between" align="middle">
+                          <a-col :span="20">
+                            <img
+                              style="width:20px;height:20px;margin-right:5px;"
+                              src="./img/riverRisk.png"
+                            />
+                            <span>河岸风险源({{statisticsList.riskSource}})</span>
+                          </a-col>
+                          <a-col :span="4" style="text-align:right;">
+                            <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
+                          </a-col>
+                        </a-row>
+                        <a-row type="flex" justify="space-between" align="middle">
+                          <a-col :span="20">
+                            <img
+                              style="width:20px;height:20px;margin-right:5px;"
+                              src="./img/riskMap.png"
+                            />
+                            <span>风险地图({{statisticsList.riskMap}})</span>
+                          </a-col>
+                          <a-col :span="4" style="text-align:right;">
+                            <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
+                          </a-col>
+                        </a-row>
+                        <a-row type="flex" justify="space-between" align="middle">
+                          <a-col :span="20">
+                            <img
+                              style="width:20px;height:20px;margin-right:5px;"
+                              src="./img/waterQualityIcon.png"
+                            />
+                            <span>水质数据({{regulatorWaterCountData}})</span>
+                          </a-col>
+                          <a-col :span="4" style="text-align:right;">
+                            <a-switch size="small" v-model="waterQuality" @click="onWaterQuality" />
+                          </a-col>
+                        </a-row>
+                        <a-row type="flex" justify="space-between" align="middle">
+                          <a-col :span="20">
+                            <img
+                              style="width:20px;height:20px;margin-right:5px;"
+                              src="./img/waterFlotageIcon.png"
+                            />
+                            <span>水面漂浮物({{statisticsList.floatage}})</span>
+                          </a-col>
+                          <a-col :span="4" style="text-align:right;">
+                            <a-switch size="small" v-model="waterFlotage" @click="onWaterFlotage" />
+                          </a-col>
+                        </a-row>
+                        <a-row type="flex" justify="space-between" align="middle">
+                          <a-col :span="20">
+                            <img
+                              style="width:20px;height:20px;margin-right:5px;"
+                              src="./img/outletIcon.png"
+                            />
+                            <span>排口({{statisticsList.discharge}})</span>
+                          </a-col>
+                          <a-col :span="4" style="text-align:right;">
+                            <a-switch size="small" v-model="outlet" @click="onOutlet" />
+                          </a-col>
+                        </a-row>
+                        <a-row type="flex" justify="space-between" align="middle">
+                          <a-col :span="20">
+                            <img
+                              style="width:20px;height:20px;margin-right:5px;"
+                              src="./img/surveyPointIcon1.png"
+                            />
+                            <span>专项调查点({{pointCountData}})</span>
+                          </a-col>
+                          <a-col :span="4" style="text-align:right;">
+                            <a-switch size="small" v-model="surveyPoint" @click="onSurveyPoint" />
+                          </a-col>
+                        </a-row>
+                      </div>
+                      <div>
+                        <span>风险管理</span>
+                      </div>
+                    </a-popover>
+                    <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
+                      <template slot="content">
+                        <a-row
+                          v-for="item in otherList"
+                          :key="item.id"
+                          style="width:150px"
+                          type="flex"
+                          justify="space-between"
+                          align="middle"
+                        >
+                          <a-col :span="20">
+                            <!-- <img style="width:20px;height:20px;margin-right:5px;"
+                            :src="item.drawType.icon" />-->
+                            <span>{{item.name}}({{item.num}})</span>
+                          </a-col>
+                          <a-col :span="4" style="text-align: right;">
+                            <a-switch
+                              size="small"
+                              style
+                              v-model="item.clicked"
+                              @click="onWaterLandLoss(item.id,item.clicked)"
+                            />
+                          </a-col>
+                        </a-row>
+                      </template>
+                      <div>
+                        <span>其他({{statisticsList.other}})</span>
+                      </div>
+                    </a-popover>
                   </template>
-                  <template slot="title">
-                    <span>更多</span>
-                  </template>
-                  <img src="../../assets/more.png" alt="更多" title="更多"  />
+                  <img src="../../assets/more.png" alt="更多" title="更多" />
                 </a-popover>
               </li>
             </ul>
           </div>
-          <div
-            class="accordion_alert"
-            v-show=" riskMap || waterQuality || riverRisk || outlet"
-          >
+          <div class="accordion_alert" v-show=" riskMap || waterQuality || riverRisk || outlet">
             <a-collapse accordion class="custom_collapse" v-model="accordionAlertKey">
               <a-collapse-panel
                 header="河岸风险源"
@@ -355,7 +380,7 @@
               v-if="firstShow"
             ></a-card>-->
             <a-tabs
-              :activeKey='SamedayAndNewlybuild'
+              :activeKey="SamedayAndNewlybuild"
               defaultActiveKey="addPlan"
               @change="onTabChange"
               v-show="firstShow"
@@ -377,20 +402,28 @@
                         style="margin-bottom:15px;margin-top:15px;text-align:center;"
                       >
                         <a-col :span="12">
-                          <a-button style="padding:0 22px;color:#1890ff;" @click="addRiverBtn">添加河道</a-button>
+                          <a-button style="padding:0 22px;color:#1890ff;" @click="addRiverBtn">
+                            <img
+                              style="width: 13px;height: 13px;margin-right: 4px;vertical-align: middle;"
+                              src="./img/addRiverIcon.png"
+                            />
+                            <span style="vertical-align: middle;color: rgba(32, 56, 104, 1);">添加河道</span>
+                          </a-button>
                         </a-col>
                         <a-col :span="12">
-                          <a-button @click="addSurveyPoint" class="commBtn">添加调查点</a-button>
+                          <a-button @click="addSurveyPoint" class="commBtn">
+                            <img
+                              style="width: 16px;height: 16px;vertical-align: middle;"
+                              src="./img/addSurveyPointIcon.png"
+                            />
+                            <span style="vertical-align: middle;color: rgba(32, 56, 104, 1);">添加调查点</span>
+                          </a-button>
                         </a-col>
                       </a-row>
                       <div class="riverInfo" v-for="item in riverMontion" :key="item.value">
                         <div class="river_info">
                           <a-row type="flex" justify="space-between" align="middle">
-                            <a-col :span="18" >{{item.objectName}}</a-col>
-                            <!-- @click="choosePointTask(item.id)" -->
-                            <!-- <a-col :span="10">
-                              
-                            </a-col> -->
+                            <a-col :span="18">{{item.objectName}}</a-col>
                             <a-col :span="3">
                               <a-popconfirm
                                 title="是否确认删除?"
@@ -398,9 +431,13 @@
                                 @cancel="cancel"
                                 okText="确认"
                                 cancelText="取消"
-                               
                               >
-                                <a-button shape="circle" icon="close" style="font-size:8px;"  v-show="jurisdiction"></a-button>
+                                <a-button
+                                  shape="circle"
+                                  icon="close"
+                                  style="font-size:8px;"
+                                  v-show="jurisdiction"
+                                ></a-button>
                               </a-popconfirm>
                             </a-col>
                           </a-row>
@@ -425,19 +462,31 @@
                         </div>
                         <div class="addTask_info" v-show="item.isShow">
                           <p class="addTask_title">追加任务</p>
-                          <a-form  class="addTask_from">
+                          <a-form class="addTask_from">
                             <a-form-item label="名称" :label-col="{span:6}" :wrapper-col="{span:16}">
                               <a-input placeholder="请输入任务名称" v-model="listAppend.name"></a-input>
                             </a-form-item>
-                            <a-form-item label="任务类型" :label-col="{span:6}" :wrapper-col="{span:16}">
+                            <a-form-item
+                              label="任务类型"
+                              :label-col="{span:6}"
+                              :wrapper-col="{span:16}"
+                            >
                               <a-select v-model="listAppend.template">
                                 <a-select-option value="uav">无人机</a-select-option>
                                 <a-select-option value="manual">人工调查</a-select-option>
                                 <a-select-option value="water">水质调查</a-select-option>
                               </a-select>
                             </a-form-item>
-                            <a-form-item label="任务内容" :label-col="{ span: 6}" :wrapper-col="{ span: 16}">
-                              <a-textarea placeholder="Basic usage" :rows="4" v-model="listAppend.content" />
+                            <a-form-item
+                              label="任务内容"
+                              :label-col="{ span: 6}"
+                              :wrapper-col="{ span: 16}"
+                            >
+                              <a-textarea
+                                placeholder="Basic usage"
+                                :rows="4"
+                                v-model="listAppend.content"
+                              />
                             </a-form-item>
                             <a-form-item
                               label="位置"
@@ -452,7 +501,11 @@
                               </a-radio-group>
                               <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;">查看</a-button> -->
                             </a-form-item>
-                            <a-form-item label="任务职位" :label-col="{ span: 6}" :wrapper-col="{ span: 16 }">
+                            <a-form-item
+                              label="任务职位"
+                              :label-col="{ span: 6}"
+                              :wrapper-col="{ span: 16 }"
+                            >
                               <a-select
                                 showSearch
                                 mode="multiple"
@@ -462,11 +515,21 @@
                                 style="width: 100%"
                                 v-model="listAppend.roleId"
                               >
-                                <a-select-option v-for="item in rolePage" :value="item.id" :key="item.id">{{item.name}}</a-select-option>
+                                <a-select-option
+                                  v-for="item in rolePage"
+                                  :value="item.id"
+                                  :key="item.id"
+                                >{{item.name}}</a-select-option>
                               </a-select>
                             </a-form-item>
-                            <a-form-item :wrapper-col="{span:24}" style="text-align:center;margin-top:10px;">
-                              <a-button @click="cancleBtn(item.objectName)" style="display:inline-block;width:40%;margin-right:10px;">取消</a-button>
+                            <a-form-item
+                              :wrapper-col="{span:24}"
+                              style="text-align:center;margin-top:10px;"
+                            >
+                              <a-button
+                                @click="cancleBtn(item.objectName)"
+                                style="display:inline-block;width:40%;margin-right:10px;"
+                              >取消</a-button>
                               <a-button
                                 type="primary"
                                 @click="addPlanInfo"
@@ -475,7 +538,7 @@
                             </a-form-item>
                           </a-form>
                         </div>
-                         <!-- <add-task
+                        <!-- <add-task
                           ref="addTask"
                           :msg="newTaskObj"
                           @chooseLocation="addLineTool"
@@ -484,7 +547,7 @@
                           @addPoint="addPoint"
                           @addLineTool="addLineTool"
                           @addPolygonTool="addPolygonTool"
-                        ></add-task> -->
+                        ></add-task>-->
                       </div>
                     </div>
                     <div v-show="ishidden == 2">
@@ -551,7 +614,9 @@
                                     <template slot="header">
                                       <a-row type="flex" justify="space-between" align="middle">
                                         <a-col :span="16">
-                                          <span style="padding:3px 5px;background-color:#2DBFFC;color:#fff;margin-right:3px;border-radius:10px;height: 20px;font-size: 10px;">{{targetId.completeTaskNum}}/{{targetId.totalTaskNum}}</span>
+                                          <span
+                                            style="padding:3px 5px;background-color:#2DBFFC;color:#fff;margin-right:3px;border-radius:10px;height: 20px;font-size: 10px;"
+                                          >{{targetId.completeTaskNum}}/{{targetId.totalTaskNum}}</span>
                                           <span
                                             @click="choosePointTask1(targetId.target.id,targetId)"
                                           >{{targetId.target.objectName}}</span>
@@ -561,7 +626,6 @@
                                             :title="'是否确认删除'+targetId.target.objectName+'?'"
                                             okText="确认"
                                             cancelText="取消"
-                                            
                                             @confirm="del(targetId.target.id)"
                                           >
                                             <a v-show="jurisdiction">删除</a>
@@ -617,19 +681,38 @@
                                       >追加任务</a-button>
                                       <div class="addTask_info" v-show="targetId.isShow">
                                         <p class="addTask_title">追加任务</p>
-                                        <a-form  class="addTask_from">
-                                          <a-form-item label="名称" :label-col="{span:6}" :wrapper-col="{span:16}">
-                                            <a-input placeholder="请输入任务名称" v-model="listAppend.name"></a-input>
+                                        <a-form class="addTask_from">
+                                          <a-form-item
+                                            label="名称"
+                                            :label-col="{span:6}"
+                                            :wrapper-col="{span:16}"
+                                          >
+                                            <a-input
+                                              placeholder="请输入任务名称"
+                                              v-model="listAppend.name"
+                                            ></a-input>
                                           </a-form-item>
-                                          <a-form-item label="任务类型" :label-col="{span:6}" :wrapper-col="{span:16}">
+                                          <a-form-item
+                                            label="任务类型"
+                                            :label-col="{span:6}"
+                                            :wrapper-col="{span:16}"
+                                          >
                                             <a-select v-model="listAppend.template">
                                               <a-select-option value="uav">无人机</a-select-option>
                                               <a-select-option value="manual">人工调查</a-select-option>
                                               <a-select-option value="water">水质调查</a-select-option>
                                             </a-select>
                                           </a-form-item>
-                                          <a-form-item label="任务内容" :label-col="{ span: 6}" :wrapper-col="{ span: 16}">
-                                            <a-textarea placeholder="Basic usage" :rows="4" v-model="listAppend.content" />
+                                          <a-form-item
+                                            label="任务内容"
+                                            :label-col="{ span: 6}"
+                                            :wrapper-col="{ span: 16}"
+                                          >
+                                            <a-textarea
+                                              placeholder="Basic usage"
+                                              :rows="4"
+                                              v-model="listAppend.content"
+                                            />
                                           </a-form-item>
                                           <a-form-item
                                             label="位置"
@@ -639,12 +722,22 @@
                                           >
                                             <a-radio-group v-model="listAppend.locationType">
                                               <a-radio-button value="point" @click.stop="addPoint">点</a-radio-button>
-                                              <a-radio-button value="line" @click.stop="addLineTool">线</a-radio-button>
-                                              <a-radio-button value="polygon" @click.stop="addPolygonTool">面</a-radio-button>
+                                              <a-radio-button
+                                                value="line"
+                                                @click.stop="addLineTool"
+                                              >线</a-radio-button>
+                                              <a-radio-button
+                                                value="polygon"
+                                                @click.stop="addPolygonTool"
+                                              >面</a-radio-button>
                                             </a-radio-group>
                                             <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;">查看</a-button> -->
                                           </a-form-item>
-                                          <a-form-item label="任务职位" :label-col="{ span: 6}" :wrapper-col="{ span: 16 }">
+                                          <a-form-item
+                                            label="任务职位"
+                                            :label-col="{ span: 6}"
+                                            :wrapper-col="{ span: 16 }"
+                                          >
                                             <a-select
                                               showSearch
                                               mode="multiple"
@@ -654,7 +747,11 @@
                                               style="width: 100%"
                                               v-model="listAppend.roleId"
                                             >
-                                              <a-select-option v-for="item in rolePage" :value="item.id" :key="item.id">{{item.name}}</a-select-option>
+                                              <a-select-option
+                                                v-for="item in rolePage"
+                                                :value="item.id"
+                                                :key="item.id"
+                                              >{{item.name}}</a-select-option>
                                             </a-select>
                                           </a-form-item>
                                           <!-- <a-form-item label="是否紧急" :label-col="{ span: 6}" :wrapper-col="{ span: 16 }" style="text-align:left;">
@@ -667,8 +764,14 @@
                                                         </a-button>
                                                     </a-upload>
                                           </a-form-item>-->
-                                          <a-form-item :wrapper-col="{span:24}" style="text-align:center;margin-top:10px;">
-                                            <a-button @click="cancleBtn(targetId.target.objectName)" style="display:inline-block;width:40%;margin-right:10px;">取消</a-button>
+                                          <a-form-item
+                                            :wrapper-col="{span:24}"
+                                            style="text-align:center;margin-top:10px;"
+                                          >
+                                            <a-button
+                                              @click="cancleBtn(targetId.target.objectName)"
+                                              style="display:inline-block;width:40%;margin-right:10px;"
+                                            >取消</a-button>
                                             <a-button
                                               type="primary"
                                               @click="addPlanInfo"
@@ -726,7 +829,7 @@
                           <span>{{item.plan.name}}</span>
                         </a-col>
                         <a-col :span="16">
-                         <a-progress :percent="item.plan.percentage" />
+                          <a-progress :percent="item.plan.percentage" />
                         </a-col>
                       </a-row>
                     </template>
@@ -793,10 +896,9 @@
                                     >
                                       <template slot="custom" slot-scope="item">
                                         <span class>
-                                          <a-button class="" @click.stop="searchItme(item.id)">查看</a-button>
+                                          <a-button class @click.stop="searchItme(item.id)">查看</a-button>
                                         </span>
                                         <span>{{ item.name }}</span>
-                                        
                                       </template>
                                     </a-tree>
                                   </div>
@@ -834,7 +936,7 @@
                         </a-col>
                         <!-- <a-col :span="16">
                           <a-progress :percent="70" />
-                        </a-col> -->
+                        </a-col>-->
                       </a-row>
                     </template>
                     <div class="planGroup">
@@ -851,7 +953,7 @@
                               </a-col>
                               <!-- <a-col :span="16">
                                 <a-progress :percent="70" />
-                              </a-col> -->
+                              </a-col>-->
                             </a-row>
                           </template>
                           <div class="plan_personInfo">
@@ -917,7 +1019,11 @@
                         </a-list-item>
                       </a-list>
                     </template>
-                    <a-button class="groupBtn" @click="getplanPageList" v-show="hidingJudgment3">加入计划</a-button>
+                    <a-button
+                      class="groupBtn"
+                      @click="getplanPageList"
+                      v-show="hidingJudgment3"
+                    >加入计划</a-button>
                   </a-popover>
                 </a-col>
               </a-row>
@@ -957,25 +1063,6 @@
     <sitution-info ref="situtionInfo"></sitution-info>
     <update-time ref="updateTime"></update-time>
     <communication ref="communication"></communication>
-    <!-- 河岸风险源 -->
-    <div class="river_risk_alert" v-show="riverRisk">
-      <a-list size="small" style="padding:0 10px; max-height:240px; overflow: auto;">
-        <a-list-item v-for="item in riskSourceList" :key="item.id">
-          <a-row style="width:100%" type="flex" justify="space-between" align="middle">
-            <a-col :span="18">
-              <p style="margin:0;">{{item.name}}({{item.num}})</p>
-            </a-col>
-            <a-col :span="6">
-              <a-switch
-                size="small"
-                v-model="item.clicked"
-                @click="onDrawType(item.id,item.clicked)"
-              />
-            </a-col>
-          </a-row>
-        </a-list-item>
-      </a-list>
-    </div>
     <!-- 河道信息弹框 -->
     <a-modal
       :visible="infoVisible"
@@ -1086,7 +1173,7 @@ import {
   mapdrawPageRiskSource,
   paramList,
   inspectPointPageRiver,
-  getWaterStation ,
+  getWaterStation,
   getTigeList,
   getMapdrawCount,
   getRegulatorWaterCount,
@@ -1117,31 +1204,40 @@ import Vue from 'vue'
 import qs from 'qs'
 // token
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-var echarts = require('echarts/lib/echarts');
+var echarts = require('echarts/lib/echarts')
 // 引入提示框和标题组件
-require('echarts/lib/chart/line');
-require('echarts/lib/component/tooltip');
-require('echarts/lib/component/dataZoom');
-require('echarts/lib/component/legend');
-require('echarts/lib/component/title');
+require('echarts/lib/chart/line')
+require('echarts/lib/component/tooltip')
+require('echarts/lib/component/dataZoom')
+require('echarts/lib/component/legend')
+require('echarts/lib/component/title')
 const personInfo = [
   {
     id: 1,
     name: '张三',
     position: '飞手',
-    point: { lat: 31.21098, lng: 121.495505 }
+    point: {
+      lat: 31.21098,
+      lng: 121.495505
+    }
   },
   {
     id: 2,
     name: '李四',
     position: '调查员',
-    point: { lat: 31.21038, lng: 121.485505 }
+    point: {
+      lat: 31.21038,
+      lng: 121.485505
+    }
   },
   {
     id: 3,
     name: '王五',
     position: '司机',
-    point: { lat: 31.21098, lng: 121.475505 }
+    point: {
+      lat: 31.21098,
+      lng: 121.475505
+    }
   }
 ]
 
@@ -1252,10 +1348,10 @@ export default {
   },
   data() {
     return {
-      jurisdiction:this.$store.state.operationPermission[0],//权限
+      jurisdiction: this.$store.state.operationPermission[0], //权限
       accordionAlertKey: ['phonePhoto'], // 手风琴
-      akakak:'/iii.amr',
-      threePicker:'',
+      akakak: '/iii.amr',
+      threePicker: '',
       confirmLoading: false,
       hidingJudgment: true, //计划显示方案
       hidingJudgment1: true,
@@ -1273,16 +1369,20 @@ export default {
         {
           key: 'addPlan',
           tab: '新建计划',
-          scopedSlots: { tab: 'customRender' }
+          scopedSlots: {
+            tab: 'customRender'
+          }
         },
         {
           key: 'nowPlan',
           tab: '当日计划',
-          scopedSlots: { tab: 'customRender' }
+          scopedSlots: {
+            tab: 'customRender'
+          }
         }
       ],
-      SamedayAndNewlybuild:'addPlan',
-      rolePage:[],
+      SamedayAndNewlybuild: 'addPlan',
+      rolePage: [],
       listAppend: {
         planId: '',
         object: '',
@@ -1293,17 +1393,17 @@ export default {
         content: '',
         locationType: '',
         region: '',
-        teamId:'',
+        teamId: '',
         roleId: []
       },
-      weatherData:{
-        text:'',
-        img:'',
-        temperature:'',
-        wind_direction:'',
-        wind_scale:'',
-        clouds:'',
-      },//天气
+      weatherData: {
+        text: '',
+        img: '',
+        temperature: '',
+        wind_direction: '',
+        wind_scale: '',
+        clouds: ''
+      }, //天气
       lineLnglats: [],
       markLnglat: {},
       polygonDate: [],
@@ -1386,8 +1486,8 @@ export default {
       spinning: true,
       defaultLineTask: '',
       hidingJudgment3: false,
-      appendLatlngList:[],//追加任务坐标点
-      isShow:false,
+      appendLatlngList: [], //追加任务坐标点
+      isShow: false,
       riskMapPoints: [],
       waterQuality: false, // 水质
       waterQualityPoints: [],
@@ -1398,15 +1498,16 @@ export default {
       waterLandLoss: false, // 水土流失
       waterLandLossPoints: [],
       waterRatio: false, // 水面率
-      waterRatioPoints: [ ],
+      waterRatioPoints: [],
       bottomMud: false, // 底泥
       bottomMudPoints: [],
-      statisticsList:{//数据统计
-        riskMap:'',
-        riskSource:'',
-        discharge:'',
-        floatage:'',
-        other:'',
+      statisticsList: {
+        //数据统计
+        riskMap: '',
+        riskSource: '',
+        discharge: '',
+        floatage: '',
+        other: ''
       },
       addTaskCode: '1',
       patrolPlanInfo: [],
@@ -1417,10 +1518,10 @@ export default {
       dischargeLevel: [], //排口绘制等级
       outletPoints: [], //排口数据
       surveyPoint: false, // 专项调查点
-      pointCountData:'',//专项调查点统计
-      regulatorWaterCountData:'',//水质数据统计
-      moreLoadOnce:'1',
-      itgePortId:'',
+      pointCountData: '', //专项调查点统计
+      regulatorWaterCountData: '', //水质数据统计
+      moreLoadOnce: '1',
+      itgePortId: '',
       surveyPointPoints: [
         // {
         //   id: 0,
@@ -1431,14 +1532,14 @@ export default {
         // }
       ],
       otherList: [], //其他
-      otherPoints:[],//其他绘制数据
+      otherPoints: [], //其他绘制数据
       riskSourceList: [], //河岸风险源
       riskPolygonData: [], // 风险地图数据
       riskSourceLevel: [], //风险源风险等级
-      tigePage:[],//潮汐列表
-      rightIcon:false,
-      addplanListId:'',
-      rbgList:[
+      tigePage: [], //潮汐列表
+      rightIcon: false,
+      addplanListId: '',
+      rbgList: [
         '#8cc540',
         '#27bbbc',
         '#019fde',
@@ -1448,10 +1549,10 @@ export default {
         '#ff1244',
         '#ff8345',
         '#f8bd0b',
-        '#8b572a',
+        '#8b572a'
       ],
-      translateId:84987546,//追加任务本地保存id
-      translateIdList:[],//追加任务本地保存数据
+      translateId: 84987546, //追加任务本地保存id
+      translateIdList: [] //追加任务本地保存数据
     }
   },
   watch: {
@@ -1462,19 +1563,17 @@ export default {
       this.getPage()
       this.getRecommendFangan()
       this.map.panTo(this.$store.state.projectCoordinate, 14)
-     
     },
-    itgePortId(){
+    itgePortId() {
       for (const item of this.tigePage) {
-        if (item.portId==this.itgePortId) {
+        if (item.portId == this.itgePortId) {
           this.drawLine(item.tide)
           break
         }
       }
     },
     //选中树节点
-    checkedKeys(val) {
-    },
+    checkedKeys(val) {}
   },
   mounted() {
     let year = new Date().getFullYear() //取得4位数的年份
@@ -1490,15 +1589,31 @@ export default {
     let zoom = 14
     let twoDimensionURL =
       'http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
-    this.mapLayer2d = new T.TileLayer(twoDimensionURL, { minZoom: 4, maxZoom: 18, zIndex: 10 })
+    this.mapLayer2d = new T.TileLayer(twoDimensionURL, {
+      minZoom: 4,
+      maxZoom: 18,
+      zIndex: 10
+    })
     let satelliteURL = 'http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
-    this.mapLayerSatellite = new T.TileLayer(satelliteURL, { minZoom: 4, maxZoom: 18, zIndex: 10 })
+    this.mapLayerSatellite = new T.TileLayer(satelliteURL, {
+      minZoom: 4,
+      maxZoom: 18,
+      zIndex: 10
+    })
     // 创建自定义图层对象
     let wordLabel = 'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822'
-    this.mapLayerWord = new T.TileLayer(wordLabel, { minZoom: 4, maxZoom: 18, zIndex: 15 })
+    this.mapLayerWord = new T.TileLayer(wordLabel, {
+      minZoom: 4,
+      maxZoom: 18,
+      zIndex: 15
+    })
     // 正射影像
     let mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${this.$store.state.id}&Authorization=${token}`
-    this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
+    this.mapLayerImage = new T.TileLayer(mapImage, {
+      minZoom: 4,
+      maxZoom: 23,
+      zIndex: 12
+    })
     this.map = new T.Map('map', {
       minZoom: 4,
       maxZoom: 23,
@@ -1518,35 +1633,34 @@ export default {
     this.tideList()
   },
   methods: {
-    rightIconClick(){
-      this.rightIcon=!this.rightIcon
+    rightIconClick() {
+      this.rightIcon = !this.rightIcon
     },
-    tideList(){
+    tideList() {
       var picker = this.picker.split('-')
       var data = {
-        date:picker[0]+picker[1]+picker[2]
+        date: picker[0] + picker[1] + picker[2]
       }
-      this.tigePage=[]
+      this.tigePage = []
       getTigeList(data).then(res => {
         var arr = res.data
-        this.tigePage=arr
-        if (this.tigePage.length>0) {
-          if (this.itgePortId!='') {
+        this.tigePage = arr
+        if (this.tigePage.length > 0) {
+          if (this.itgePortId != '') {
             for (const item of this.tigePage) {
-              if (item.portId==this.itgePortId) {
+              if (item.portId == this.itgePortId) {
                 this.drawLine(item.tide)
                 break
               }
             }
-          }else{
-             this.itgePortId = arr[0].portId
+          } else {
+            this.itgePortId = arr[0].portId
           }
-        }else{
-          this.itgePortId=''
+        } else {
+          this.itgePortId = ''
           // this.$message.warning('当前日期下无潮汐数据');
           this.drawLine([])
         }
-        
       })
     },
     getplanPageList() {
@@ -1578,7 +1692,7 @@ export default {
               item.id != '5da8389eea6c157d2d61007f' &&
               item.id != '5dafe6c8ea6c159999a0549c'
             ) {
-              item.num =null
+              item.num = null
               arr.push(item)
             }
           }
@@ -1644,7 +1758,10 @@ export default {
             this.map.addOverLay(line)
           }
           for (const points of item.taskPoints) {
-            let markerTool = new T.Marker(points.coordinate, { title: points.name, id: points.id })
+            let markerTool = new T.Marker(points.coordinate, {
+              title: points.name,
+              id: points.id
+            })
             this.map.addOverLay(markerTool)
           }
         }
@@ -1694,10 +1811,9 @@ export default {
             v.clicked = false
           })
           this.riverList = arr
-          if ( this.$refs.selectPatrol.visible==true) {
+          if (this.$refs.selectPatrol.visible == true) {
             this.addRiverRefresh()
           }
-          
         })
         .catch(err => {})
     },
@@ -1705,7 +1821,7 @@ export default {
     getinspectPointPage() {
       var list = {
         id: this.planList1.id,
-        projectId: this.$store.state.id,
+        projectId: this.$store.state.id
       }
       targetPage(list)
         .then(res => {
@@ -1731,10 +1847,10 @@ export default {
               taskInspectPage(data)
                 .then(res => {
                   var ar = res.data.data
-                   if (this.noTitleKey == 'nowPlan') {
-                    } else {
-                      this.newlyBuildTask(ar)
-                    }
+                  if (this.noTitleKey == 'nowPlan') {
+                  } else {
+                    this.newlyBuildTask(ar)
+                  }
                   ar.forEach(v => {
                     v.key = v.id
                     v.title = v.name
@@ -1742,8 +1858,7 @@ export default {
                     v.code = v.status.code
                     arr[a].taskChoose.push(v.id)
                   })
-                  
-                  
+
                   arr[a].taskPage = ar
                   this.spinning = false
                 })
@@ -1758,56 +1873,52 @@ export default {
               this.planDayDraw()
             } else {
               this.judgeDate()
-              
             }
           } else {
             this.riverMontion = arr
             this.spinning = false
           }
-          
         })
         .catch(err => {
           this.spinning = false
           this.$message.error('加载数据失败')
         })
     },
-    newlyBuildTask(item){
-      
+    newlyBuildTask(item) {
       for (const key of item) {
-        if (key.locationType.code=='point') {
+        if (key.locationType.code == 'point') {
           if (key.pic) {
             let icon = new T.Icon({
               iconUrl: key.pic,
               iconSize: new T.Point(41, 40),
               iconAnchor: new T.Point(21, 40)
             })
-             var markerTool = new T.Marker(key.region[0],{ icon: icon,})
+            var markerTool = new T.Marker(key.region[0], {
+              icon: icon
+            })
             this.map.addOverLay(markerTool)
-          }else{
-            var markerTool = new T.Marker(key.region[0],{})
+          } else {
+            var markerTool = new T.Marker(key.region[0], {})
             this.map.addOverLay(markerTool)
           }
-         
-         
-        }else if(key.locationType.code=='line'){
-          let line = new T.Polyline(key.region,{})
+        } else if (key.locationType.code == 'line') {
+          let line = new T.Polyline(key.region, {})
           //向地图上添加线
           this.map.addOverLay(line)
-        }else {
-          
+        } else {
           let polygon = new T.Polygon(key.region, {
             color: 'blue', //线颜色
             weight: 2, //线宽
             opacity: 0.5, //透明度
             fillColor: '#FFFFFF', //填充颜色
-            fillOpacity: 0.5, // 填充透明度
+            fillOpacity: 0.5 // 填充透明度
           })
           //向地图上添加面
           this.map.addOverLay(polygon, {})
         }
       }
       // for (const key in item) {
-        
+
       // }
     },
     //显示河道或调查点
@@ -1831,7 +1942,9 @@ export default {
         iconSize: new T.Point(19, 27),
         iconAnchor: new T.Point(10, 25)
       })
-      let marker = new T.Marker(new T.LngLat(task.latlng.lng, task.latlng.lat), { icon: icon })
+      let marker = new T.Marker(new T.LngLat(task.latlng.lng, task.latlng.lat), {
+        icon: icon
+      })
       this.map.addOverLay(marker)
       if (task.clicked == true) {
         let circle = new T.Circle(task.latlng, 1000, {
@@ -1862,13 +1975,19 @@ export default {
     },
     pointTarget(taskPage) {
       for (const item of taskPage) {
-        console.log(item);
-        
+        console.log(item)
+
         if (item.type.code == 'dot') {
-          let markerTool = new T.Marker(item.region[0], { title: item.name, id: item.id })
+          let markerTool = new T.Marker(item.region[0], {
+            title: item.name,
+            id: item.id
+          })
           this.map.addOverLay(markerTool)
         } else if (item.type.code == 'plan') {
-          let markerTool = new T.Marker(item.region[0], { title: item.name, id: item.id })
+          let markerTool = new T.Marker(item.region[0], {
+            title: item.name,
+            id: item.id
+          })
           this.map.addOverLay(markerTool)
         } else {
           let line = new T.Polyline(item.region, {
@@ -1908,7 +2027,9 @@ export default {
       //向地图上添加中心标注
       this.lng = arr.latlng.lng
       this.lat = arr.latlng.lat
-      let marker = new T.Marker(new T.LngLat(this.lng, this.lat), { icon: icon })
+      let marker = new T.Marker(new T.LngLat(this.lng, this.lat), {
+        icon: icon
+      })
       this.map.addOverLay(marker)
       var data = {
         coordinate: this.lng + ',' + this.lat,
@@ -1929,7 +2050,9 @@ export default {
       //向地图上添加中心标注
       this.lng = arr.latlng.lng
       this.lat = arr.latlng.lat
-      let marker = new T.Marker(new T.LngLat(this.lng, this.lat), { icon: icon })
+      let marker = new T.Marker(new T.LngLat(this.lng, this.lat), {
+        icon: icon
+      })
       this.map.addOverLay(marker)
       marker.addEventListener('click', this.clickCircle)
       var data = {
@@ -1999,7 +2122,7 @@ export default {
         return year + '-' + month + '-' + day
       }
       this.picker = formatDate(new Date())
-      var d= new Date()
+      var d = new Date()
       d.setMonth(d.getMonth() - 3)
       this.threePicker = d.toLocaleDateString()
       this.getWeatherList()
@@ -2023,110 +2146,111 @@ export default {
       })
     },
     //获取天气
-    getWeatherList(){
+    getWeatherList() {
       this.weatherData.text = ''
       this.weatherData.temperature = ''
       this.weatherData.wind_direction = ''
       this.weatherData.wind_scale = ''
       this.weatherData.img = ''
       this.weatherData.clouds = ''
-      var date =  this.picker.split('-')
+      var date = this.picker.split('-')
       let data = {
-        date:date[0]+date[1]+date[2],
-        locationId:this.$store.state.weatherId
+        date: date[0] + date[1] + date[2],
+        locationId: this.$store.state.weatherId
       }
-      weatherList(data).then(res=>{
-        let arr = res.data
-        if (arr.code ==0) {
-          this.weatherData.img =  require('../supervise/img/weather/0.png')
-        }else if(arr.code ==1){
-           this.weatherData.img =  require('../supervise/img/weather/1.png')
-        }else if(arr.code ==2){
-           this.weatherData.img =  require('../supervise/img/weather/0.png')
-        }else if(arr.code ==3){
-           this.weatherData.img =  require('../supervise/img/weather/1.png')
-        }else if(arr.code ==4){
-           this.weatherData.img =  require('../supervise/img/weather/4.png')
-        }else if(arr.code ==5){
-           this.weatherData.img =  require('../supervise/img/weather/5.png')
-        }else if(arr.code ==6){
-           this.weatherData.img =  require('../supervise/img/weather/6.png')
-        }else if(arr.code ==7){
-           this.weatherData.img =  require('../supervise/img/weather/5.png')
-        }else if(arr.code ==8){
-           this.weatherData.img =  require('../supervise/img/weather/6.png')
-        }else if(arr.code ==9){
-           this.weatherData.img =  require('../supervise/img/weather/9.png')
-        }else if(arr.code ==10){
-           this.weatherData.img =  require('../supervise/img/weather/10.png')
-        }else if(arr.code ==11){
-           this.weatherData.img =  require('../supervise/img/weather/11.png')
-        }else if(arr.code ==12){
-           this.weatherData.img =  require('../supervise/img/weather/12.png')
-        }else if(arr.code ==13){
-           this.weatherData.img =  require('../supervise/img/weather/13.png')
-        }else if(arr.code ==14){
-           this.weatherData.img =  require('../supervise/img/weather/14.png')
-        }else if(arr.code ==15){
-           this.weatherData.img =  require('../supervise/img/weather/15.png')
-        }else if(arr.code ==16){
-           this.weatherData.img =  require('../supervise/img/weather/16.png')
-        }else if(arr.code ==17){
-           this.weatherData.img =  require('../supervise/img/weather/17.png')
-        }else if(arr.code ==18){
-           this.weatherData.img =  require('../supervise/img/weather/17.png')
-        }else if(arr.code ==19){
-           this.weatherData.img =  require('../supervise/img/weather/19.png')
-        }else if(arr.code ==20){
-           this.weatherData.img =  require('../supervise/img/weather/20.png')
-        }else if(arr.code ==21){
-           this.weatherData.img =  require('../supervise/img/weather/21.png')
-        }else if(arr.code ==22){
-           this.weatherData.img =  require('../supervise/img/weather/22.png')
-        }else if(arr.code ==23){
-           this.weatherData.img =  require('../supervise/img/weather/23.png')
-        }else if(arr.code ==24){
-           this.weatherData.img =  require('../supervise/img/weather/24.png')
-        }else if(arr.code ==25){
-           this.weatherData.img =  require('../supervise/img/weather/25.png')
-        }else if(arr.code ==26){
-           this.weatherData.img =  require('../supervise/img/weather/26.png')
-        }else if(arr.code ==27){
-           this.weatherData.img =  require('../supervise/img/weather/26.png')
-        }else if(arr.code ==28){
-           this.weatherData.img =  require('../supervise/img/weather/28.png')
-        }else if(arr.code ==29){
-           this.weatherData.img =  require('../supervise/img/weather/28.png')
-        }else if(arr.code ==30){
-           this.weatherData.img =  require('../supervise/img/weather/30.png')
-        }else if(arr.code ==31){
-           this.weatherData.img =  require('../supervise/img/weather/31.png')
-        }else if(arr.code ==32){
-           this.weatherData.img =  require('../supervise/img/weather/32.png')
-        }else if(arr.code ==33){
-           this.weatherData.img =  require('../supervise/img/weather/32.png')
-        }else if(arr.code ==34){
-           this.weatherData.img =  require('../supervise/img/weather/34.png')
-        }else if(arr.code ==35){
-           this.weatherData.img =  require('../supervise/img/weather/34.png')
-        }else if(arr.code ==36){
-           this.weatherData.img =  require('../supervise/img/weather/36.png')
-        }else if(arr.code ==37){
-           this.weatherData.img =  require('../supervise/img/weather/37.png')
-        }else if(arr.code ==38){
-           this.weatherData.img =  require('../supervise/img/weather/38.png')
-        }else{
-           this.weatherData.img =  require('../supervise/img/weather/99.png')
-        }
-        this.weatherData.text = arr.text
-        this.weatherData.temperature = arr.temperature
-        this.weatherData.wind_direction = arr.wind_direction
-        this.weatherData.wind_scale = arr.wind_scale
-        this.weatherData.clouds = arr.clouds
-      }).catch(err => {
-        // this.$message.error('天气数据不存在');
-      })
-      
+      weatherList(data)
+        .then(res => {
+          let arr = res.data
+          if (arr.code == 0) {
+            this.weatherData.img = require('../supervise/img/weather/0.png')
+          } else if (arr.code == 1) {
+            this.weatherData.img = require('../supervise/img/weather/1.png')
+          } else if (arr.code == 2) {
+            this.weatherData.img = require('../supervise/img/weather/0.png')
+          } else if (arr.code == 3) {
+            this.weatherData.img = require('../supervise/img/weather/1.png')
+          } else if (arr.code == 4) {
+            this.weatherData.img = require('../supervise/img/weather/4.png')
+          } else if (arr.code == 5) {
+            this.weatherData.img = require('../supervise/img/weather/5.png')
+          } else if (arr.code == 6) {
+            this.weatherData.img = require('../supervise/img/weather/6.png')
+          } else if (arr.code == 7) {
+            this.weatherData.img = require('../supervise/img/weather/5.png')
+          } else if (arr.code == 8) {
+            this.weatherData.img = require('../supervise/img/weather/6.png')
+          } else if (arr.code == 9) {
+            this.weatherData.img = require('../supervise/img/weather/9.png')
+          } else if (arr.code == 10) {
+            this.weatherData.img = require('../supervise/img/weather/10.png')
+          } else if (arr.code == 11) {
+            this.weatherData.img = require('../supervise/img/weather/11.png')
+          } else if (arr.code == 12) {
+            this.weatherData.img = require('../supervise/img/weather/12.png')
+          } else if (arr.code == 13) {
+            this.weatherData.img = require('../supervise/img/weather/13.png')
+          } else if (arr.code == 14) {
+            this.weatherData.img = require('../supervise/img/weather/14.png')
+          } else if (arr.code == 15) {
+            this.weatherData.img = require('../supervise/img/weather/15.png')
+          } else if (arr.code == 16) {
+            this.weatherData.img = require('../supervise/img/weather/16.png')
+          } else if (arr.code == 17) {
+            this.weatherData.img = require('../supervise/img/weather/17.png')
+          } else if (arr.code == 18) {
+            this.weatherData.img = require('../supervise/img/weather/17.png')
+          } else if (arr.code == 19) {
+            this.weatherData.img = require('../supervise/img/weather/19.png')
+          } else if (arr.code == 20) {
+            this.weatherData.img = require('../supervise/img/weather/20.png')
+          } else if (arr.code == 21) {
+            this.weatherData.img = require('../supervise/img/weather/21.png')
+          } else if (arr.code == 22) {
+            this.weatherData.img = require('../supervise/img/weather/22.png')
+          } else if (arr.code == 23) {
+            this.weatherData.img = require('../supervise/img/weather/23.png')
+          } else if (arr.code == 24) {
+            this.weatherData.img = require('../supervise/img/weather/24.png')
+          } else if (arr.code == 25) {
+            this.weatherData.img = require('../supervise/img/weather/25.png')
+          } else if (arr.code == 26) {
+            this.weatherData.img = require('../supervise/img/weather/26.png')
+          } else if (arr.code == 27) {
+            this.weatherData.img = require('../supervise/img/weather/26.png')
+          } else if (arr.code == 28) {
+            this.weatherData.img = require('../supervise/img/weather/28.png')
+          } else if (arr.code == 29) {
+            this.weatherData.img = require('../supervise/img/weather/28.png')
+          } else if (arr.code == 30) {
+            this.weatherData.img = require('../supervise/img/weather/30.png')
+          } else if (arr.code == 31) {
+            this.weatherData.img = require('../supervise/img/weather/31.png')
+          } else if (arr.code == 32) {
+            this.weatherData.img = require('../supervise/img/weather/32.png')
+          } else if (arr.code == 33) {
+            this.weatherData.img = require('../supervise/img/weather/32.png')
+          } else if (arr.code == 34) {
+            this.weatherData.img = require('../supervise/img/weather/34.png')
+          } else if (arr.code == 35) {
+            this.weatherData.img = require('../supervise/img/weather/34.png')
+          } else if (arr.code == 36) {
+            this.weatherData.img = require('../supervise/img/weather/36.png')
+          } else if (arr.code == 37) {
+            this.weatherData.img = require('../supervise/img/weather/37.png')
+          } else if (arr.code == 38) {
+            this.weatherData.img = require('../supervise/img/weather/38.png')
+          } else {
+            this.weatherData.img = require('../supervise/img/weather/99.png')
+          }
+          this.weatherData.text = arr.text
+          this.weatherData.temperature = arr.temperature
+          this.weatherData.wind_direction = arr.wind_direction
+          this.weatherData.wind_scale = arr.wind_scale
+          this.weatherData.clouds = arr.clouds
+        })
+        .catch(err => {
+          // this.$message.error('天气数据不存在');
+        })
     },
     //--------------------------------------------------------------------------------------------当日计划---------------------------------------
     //计划列表
@@ -2139,19 +2263,21 @@ export default {
         month: picker[1],
         day: picker[2]
       }
+
       function formatDate(now) {
         var year = now.getFullYear() //取得4位数的年份
         var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
         var date = now.getDate() //返回日期月份中的天数（1到31）
         return year + '-' + month + '-' + date
       }
+
       function tab(date1) {
         // var oDate1 =  new Date(date1)
         // var oDate2 = new Date()
         var oDate1 = new Date(date1)
         let c = new Date()
-        let b = (c.toLocaleDateString()).split('/')
-        let a = b[0]+'-'+b[1]+'-'+b[2]
+        let b = c.toLocaleDateString().split('/')
+        let a = b[0] + '-' + b[1] + '-' + b[2]
         var oDate2 = new Date(a)
         if (oDate1.getTime() > oDate2.getTime()) {
           return true
@@ -2160,13 +2286,14 @@ export default {
         }
         // if (oDate1.getTime() < oDate2.getTime()) {
         //   console.log(oDate1.getTime(),oDate2.getTime());
-          
+
         //   return false
         // } else {
-          
+
         //    return true
         // }
       }
+
       function tab1(date1) {
         var oDate1 = new Date(date1)
         var oDate2 = new Date()
@@ -2175,8 +2302,8 @@ export default {
         } else {
           return false
         }
-        
       }
+
       function tab2(date1, date2) {
         var oDate1 = new Date(date1)
         var oDate2 = new Date(date2)
@@ -2201,14 +2328,14 @@ export default {
             item.plan.totalTaskNum = 0
             item.plan.name = item.plan.name.slice(0, 2) + '-' + k
             for (const a of item.teams) {
-              a.team.completeTaskNum =0
-              a.team.totalTaskNum =0
+              a.team.completeTaskNum = 0
+              a.team.totalTaskNum = 0
               if (a.targets != undefined) {
                 for (const b of a.targets) {
-                  a.team.completeTaskNum = a.team.completeTaskNum +b.completeTaskNum
-                  a.team.totalTaskNum =a.team.totalTaskNum +b.totalTaskNum
-                  item.plan.completeTaskNum = item.plan.completeTaskNum +b.completeTaskNum
-                  item.plan.totalTaskNum =item.plan.totalTaskNum +b.totalTaskNum
+                  a.team.completeTaskNum = a.team.completeTaskNum + b.completeTaskNum
+                  a.team.totalTaskNum = a.team.totalTaskNum + b.totalTaskNum
+                  item.plan.completeTaskNum = item.plan.completeTaskNum + b.completeTaskNum
+                  item.plan.totalTaskNum = item.plan.totalTaskNum + b.totalTaskNum
                   b.isShow = false
                   b.clicked = false
                   b.code = b.target.object.code
@@ -2253,20 +2380,20 @@ export default {
               } else {
                 a.targets = []
               }
-              a.team.percentage = a.team.completeTaskNum / a.team.totalTaskNum 
+              a.team.percentage = a.team.completeTaskNum / a.team.totalTaskNum
               if (a.team.percentage == NaN) {
                 a.team.percentage = 0
-              }else{
-                a.team.percentage= a.team.percentage *100
-                a.team.percentage=Math.ceil(a.team.percentage) 
+              } else {
+                a.team.percentage = a.team.percentage * 100
+                a.team.percentage = Math.ceil(a.team.percentage)
               }
             }
-            item.plan.percentage =   item.plan.completeTaskNum / item.plan.totalTaskNum
+            item.plan.percentage = item.plan.completeTaskNum / item.plan.totalTaskNum
             if (item.plan.percentage == NaN) {
               item.plan.percentage = 0
-            }else{
-              item.plan.percentage= item.plan.percentage *100
-              item.plan.percentage=Math.ceil(item.plan.percentage) 
+            } else {
+              item.plan.percentage = item.plan.percentage * 100
+              item.plan.percentage = Math.ceil(item.plan.percentage)
             }
           }
           this.spinning = false
@@ -2317,7 +2444,9 @@ export default {
         iconSize: new T.Point(19, 27),
         iconAnchor: new T.Point(10, 25)
       })
-      let marker = new T.Marker(new T.LngLat(task.latlng.lng, task.latlng.lat), { icon: icon })
+      let marker = new T.Marker(new T.LngLat(task.latlng.lng, task.latlng.lat), {
+        icon: icon
+      })
       this.map.addOverLay(marker)
       if (task.clicked == true) {
         let circle = new T.Circle(task.latlng, 1000, {
@@ -2347,8 +2476,8 @@ export default {
     },
     //当日计划绘制河道，调查点内的任务
     planDayDrawSpot(taskPage) {
-      console.log(taskPage);
-      
+      console.log(taskPage)
+
       for (const item of taskPage.anomalous) {
         if (item.region.length == 1) {
           if (item.pic) {
@@ -2357,11 +2486,18 @@ export default {
               iconSize: new T.Point(41, 40),
               iconAnchor: new T.Point(21, 40)
             })
-            let markerTool = new T.Marker(item.latlng, {icon: icon, title: item.name, id: item.id })
+            let markerTool = new T.Marker(item.latlng, {
+              icon: icon,
+              title: item.name,
+              id: item.id
+            })
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
-          }else{
-            let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+          } else {
+            let markerTool = new T.Marker(item.latlng, {
+              title: item.name,
+              id: item.id
+            })
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
           }
@@ -2398,11 +2534,18 @@ export default {
               iconSize: new T.Point(41, 40),
               iconAnchor: new T.Point(21, 40)
             })
-            let markerTool = new T.Marker(item.latlng, {icon: icon, title: item.name, id: item.id })
+            let markerTool = new T.Marker(item.latlng, {
+              icon: icon,
+              title: item.name,
+              id: item.id
+            })
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
-          }else{
-            let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+          } else {
+            let markerTool = new T.Marker(item.latlng, {
+              title: item.name,
+              id: item.id
+            })
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
           }
@@ -2442,15 +2585,21 @@ export default {
               iconSize: new T.Point(41, 40),
               iconAnchor: new T.Point(21, 40)
             })
-            let markerTool = new T.Marker(item.latlng, {icon: icon, title: item.name, id: item.id })
+            let markerTool = new T.Marker(item.latlng, {
+              icon: icon,
+              title: item.name,
+              id: item.id
+            })
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
-          }else{
-            let markerTool = new T.Marker(item.latlng, { title: item.name, id: item.id })
+          } else {
+            let markerTool = new T.Marker(item.latlng, {
+              title: item.name,
+              id: item.id
+            })
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
           }
-         
         } else {
           let line = new T.Polyline(item.region, {
             color: 'blue', //线颜色
@@ -2505,12 +2654,14 @@ export default {
         month: picker[1],
         day: picker[2]
       }
-      planSave(data).then(res => {
+      planSave(data)
+        .then(res => {
           this.planList1.id = res.data.id
           this.planList1.name = res.data.name
           this.getinspectPointPage()
-        }) .catch(err => {
-          this.planList1.id 
+        })
+        .catch(err => {
+          this.planList1.id
         })
     },
     //调查点保存
@@ -2552,7 +2703,7 @@ export default {
     },
     //关闭调查点窗口
     handleCancel() {
-      this.map.clearOverLays() 
+      this.map.clearOverLays()
       this.getinspectPointPage()
       this.taskId = ''
       this.confirmLoading = false
@@ -2575,7 +2726,7 @@ export default {
       targetDel(id)
         .then(res => {
           this.$message.success('删除成功')
-          this.map.clearOverLays() 
+          this.map.clearOverLays()
           this.getinspectPointPage()
         })
         .catch(err => {
@@ -2584,13 +2735,10 @@ export default {
     },
     //当日计划显示河道调查点
     choosePointTask1(id) {
-      
       for (const item of this.planListPage) {
         for (const a of item.teams) {
           for (const b of a.targets) {
             if (b.target.id == id) {
-              
-              
               b.clicked = true
               if (b.code == 'point') {
                 let arr = []
@@ -2610,8 +2758,8 @@ export default {
     },
     choosePointTask(id) {
       for (const item of this.riverMontion) {
-        console.log(item);
-        
+        console.log(item)
+
         if (item.id === id) {
           if (item.code == 'point') {
             let arr = []
@@ -2686,7 +2834,7 @@ export default {
         fillOpacity: fillOpacity, // 填充透明度
         title: title,
         id: id,
-        lineData:lineData
+        lineData: lineData
       })
       //向地图上添加面
       this.map.addOverLay(this.polygon, {})
@@ -2820,18 +2968,18 @@ export default {
 
     //选中巡河方案
     selectPatrol() {},
-    addTaskBtn(id, name, code,aa) {
-      this.appendLatlngList=[]
-      if (aa.code=="point") {
-        this.appendLatlngList.push(aa.latlng) 
-      }else{
-        this.appendLatlngList=aa.latlng
+    addTaskBtn(id, name, code, aa) {
+      this.appendLatlngList = []
+      if (aa.code == 'point') {
+        this.appendLatlngList.push(aa.latlng)
+      } else {
+        this.appendLatlngList = aa.latlng
       }
       this.map.setViewport(this.appendLatlngList)
       this.map.setZoom('16')
-      for(const item of this.riverMontion){
+      for (const item of this.riverMontion) {
         if (item.objectId == id) {
-          item.isShow =true
+          item.isShow = true
         }
       }
       this.listAppend.planId = this.planList1.id
@@ -2843,23 +2991,23 @@ export default {
       this.cBtn = false
       // this.$refs.addTask.chooseLocation()
     },
-    addTaskBtnDay(planId, id, name, code,teaid,teamid,aa) {
+    addTaskBtnDay(planId, id, name, code, teaid, teamid, aa) {
       // console.log(aa);
-      
+
       // this.appendLatlngList=[]
       // if (latlng.code=="point") {
-      //   this.appendLatlngList.push(aa.latlng) 
+      //   this.appendLatlngList.push(aa.latlng)
       // }else{
       //   this.appendLatlngList=aa.latlng
       // }
       this.addTaskCode = '2'
-      for(const item of this.planListPage){
+      for (const item of this.planListPage) {
         for (const a of item.teams) {
           for (const b of a.targets) {
             if (b.target.objectName == name) {
               b.isShow = true
             }
-          } 
+          }
         }
       }
       this.listAppend.planId = planId
@@ -2878,18 +3026,17 @@ export default {
     },
     //生成计划
     newPlan_btn() {
-      
       var ids = []
       for (const item of this.riverMontion) {
-        for (const index of item.taskChoose){
+        for (const index of item.taskChoose) {
           ids.push(index)
-        } 
+        }
       }
       if (ids.length != 0) {
         this.addplanListId = this.planList1.id
         let data = {
-          ids:ids.join(','),
-          planId:this.planList1.id
+          ids: ids.join(','),
+          planId: this.planList1.id
         }
         taskChoose(data).then(res => {})
         this.ishidden = 2
@@ -2900,7 +3047,7 @@ export default {
     },
     //底部取消按钮
     canclePlanBtn() {
-      this.planList1.id =  this.addplanListId
+      this.planList1.id = this.addplanListId
       this.ishidden = 1
     },
     //底部下一步按钮
@@ -2910,7 +3057,7 @@ export default {
       // this.$refs.planList.getstaffInspectPage(this.planList1.id)
     },
     showPlanJudge(list) {
-      let arr =  false
+      let arr = false
       if (list.length != 0) {
         for (let i = 0; i < list.length; i++) {
           if (i + 1 == list.length) {
@@ -2920,15 +3067,13 @@ export default {
             } else {
               this.$message.warning('不能有空分组')
             }
-          }else{
-            if (list[i].taskList.length  == 0) {
+          } else {
+            if (list[i].taskList.length == 0) {
               this.$message.warning('不能有空分组')
               break
             } else {
-              
             }
           }
-          
         }
       } else {
         this.$message.warning('请先创建分组')
@@ -2940,7 +3085,7 @@ export default {
     },
     //底部上一步按钮
     previousBtn() {
-      this.planList1.id =  this.addplanListId
+      this.planList1.id = this.addplanListId
       this.ishidden = 2
     },
     //返回首页
@@ -2975,11 +3120,10 @@ export default {
         this.loadPoint()
       }
     },
-    changeInfo(key) {
-    },
+    changeInfo(key) {},
     searchItme(id) {
-      console.log(id);
-      
+      console.log(id)
+
       this.$refs.situtionInfo.show(id)
     },
     //今日计划模块修改时间
@@ -2988,31 +3132,31 @@ export default {
     },
     //加入已有计划
     addToPlan(id) {
-      
       var ids = []
       for (const item of this.riverMontion) {
         for (const index of item.taskChoose) ids.push(index)
       }
       if (ids.length == 0) {
         this.$message.warning('请先选择河道或调查点')
-      }else{
+      } else {
         this.addplanListId = this.planList1.id
         var data = {
           sourcePlanId: this.planList1.id,
           taskIds: ids.join(','),
           targetPlanId: id
         }
-        joinPlanTask(data).then(res => {
-          this.$refs.creatGroup.planGeneration(id)
-        }).catch(err => {
-          this.$message.error(err.response.data.message)
-          this.$refs.creatGroup.planGeneration(id)
-        })
+        joinPlanTask(data)
+          .then(res => {
+            this.$refs.creatGroup.planGeneration(id)
+          })
+          .catch(err => {
+            this.$message.error(err.response.data.message)
+            this.$refs.creatGroup.planGeneration(id)
+          })
         this.ishidden = 2
-        
-        this.planList1.id= id
+
+        this.planList1.id = id
       }
-      
     },
     showOk() {
       // var arrInfo =  this.asasd
@@ -3060,25 +3204,24 @@ export default {
         for (const reg of this.regulatoryPage) {
           for (const index of reg.teams) {
             for (const staffs of index.staffs) {
-              if (v==staffs.id) {
-                if (staffs.point.length>0) {
+              if (v == staffs.id) {
+                if (staffs.point.length > 0) {
                   let line = new T.Polyline(staffs.point, {
                     color: staffs.rgb, //线颜色
                     weight: 3, //线宽
-                    id: staffs.id,
+                    id: staffs.id
                   })
                   //向地图上添加线
                   this.map.addOverLay(line)
 
-                  let markerTool = new T.Marker(staffs.point[0], { })
+                  let markerTool = new T.Marker(staffs.point[0], {})
                   this.map.addOverLay(markerTool)
                 }
               }
             }
           }
         }
-      });
-      
+      })
     },
     isExistInArr(arr, item) {
       for (var i = 0; i < arr.length; i++) {
@@ -3192,12 +3335,15 @@ export default {
         year: picker[0],
         month: picker[1],
         day: picker[2],
-        from:'app'
+        from: 'app'
       }
       dataManual(data).then(res => {
         var arr = res.data.data
         for (const item of arr) {
-          var marker = new T.Marker(item.coordinate, { id: item.id, coordinate: item.coordinate })
+          var marker = new T.Marker(item.coordinate, {
+            id: item.id,
+            coordinate: item.coordinate
+          })
           this.map.addOverLay(marker)
           marker.addEventListener('click', this.taskPointClick)
         }
@@ -3227,21 +3373,21 @@ export default {
         var k = 0
         for (const item of arr) {
           k = k + 1
-          item.checkbox =[]
+          item.checkbox = []
           item.plan.name = item.plan.name.slice(0, 2) + '-' + k
           let aa = 0
           for (const a of item.teams) {
             for (const b of a.staffs) {
-              if (aa>9) {
-                 b.rgb=this.rbgList[0] 
-              }else{
-                 b.rgb=this.rbgList[aa] 
+              if (aa > 9) {
+                b.rgb = this.rbgList[0]
+              } else {
+                b.rgb = this.rbgList[aa]
               }
-              var points1 =[]
+              var points1 = []
               for (const cc of b.locus) {
                 points1.push(new T.LngLat(cc[0], cc[1]))
               }
-              aa = aa+1
+              aa = aa + 1
               b.id = b.staff.id
               b.name = b.staff.worker.name
               b.role = b.staff.role.name
@@ -3250,7 +3396,6 @@ export default {
           }
         }
         this.regulatoryPage = arr
-        
       })
       // var line = new T.Polyline(this.cardData, lineconfig) //创建线条的对象
       // //向地图上添加线
@@ -3265,7 +3410,9 @@ export default {
         iconSize: new T.Point(44, 34),
         iconAnchor: new T.Point(12, 31)
       })
-      var marker = new T.Marker(new T.LngLat(121.495505, 31.21098), { icon: icon })
+      var marker = new T.Marker(new T.LngLat(121.495505, 31.21098), {
+        icon: icon
+      })
       this.map.addOverLay(marker)
     },
     //添加河道按钮事件
@@ -3277,7 +3424,7 @@ export default {
       this.$refs.selectPatrol.show(this.riverList)
       this.$refs.addSurvey.close()
     },
-    addRiverRefresh(){
+    addRiverRefresh() {
       this.$refs.selectPatrol.show(this.riverList)
     },
     asdasdsadsa() {
@@ -3293,9 +3440,9 @@ export default {
         }
       } else {
         var lnglat = new T.LngLat(riverData.lng, riverData.lat)
-        
+
         var marker = new T.Marker(lnglat)
-        
+
         this.showPosition(marker, riverData)
         this.map.addOverLay(marker)
       }
@@ -3394,13 +3541,13 @@ export default {
     },
     // 确认追加任务
     confirmAddTask(e) {
-     this.newTaskObj = {
+      this.newTaskObj = {
         planId: this.planList1.id,
         objectId: id,
         objectName: name,
         isShow: false,
         object: code
-      } 
+      }
     },
     //添加调查点
     addSurveyPoint() {
@@ -3417,7 +3564,10 @@ export default {
         iconSize: new T.Point(19, 27),
         iconAnchor: new T.Point(10, 25)
       })
-      this.markerTool = new T.MarkTool(this.map, { icon: icon, follow: true })
+      this.markerTool = new T.MarkTool(this.map, {
+        icon: icon,
+        follow: true
+      })
       this.markerTool.open()
 
       this.markerTool.addEventListener('mouseup', this.addPointed)
@@ -3452,7 +3602,10 @@ export default {
     },
     pointTargetAround(taskPage) {
       for (const item of taskPage) {
-        let markerTool = new T.Marker(item.coordinate, { title: item.name, id: item.id })
+        let markerTool = new T.Marker(item.coordinate, {
+          title: item.name,
+          id: item.id
+        })
         this.map.addOverLay(markerTool)
       }
     },
@@ -3472,8 +3625,10 @@ export default {
       }
       this.map.setViewport(this.appendLatlngList)
       this.map.setZoom('16')
-      this.clickPoint = clickPoint 
-      this.markerTool1 = new T.MarkTool(this.map, {id:this.translateId})
+      this.clickPoint = clickPoint
+      this.markerTool1 = new T.MarkTool(this.map, {
+        id: this.translateId
+      })
       this.markerTool1.open()
       this.markerTool1.addEventListener('mouseup', this.addPointDate)
       // this.markerTool1.addEventListener('mouseup', this.addPointed)
@@ -3498,8 +3653,8 @@ export default {
       this.map.setViewport(this.appendLatlngList)
       this.map.setZoom('16')
       this.clickLine = clickLine
-      this.lineTool = new T.PolylineTool(this.map,{
-        id:this.translateId
+      this.lineTool = new T.PolylineTool(this.map, {
+        id: this.translateId
       })
       this.lineTool.open()
       this.lineTool.setTips(`<p style="padding:0px;">单击确认起点, 双击结束绘制</p>`)
@@ -3527,7 +3682,7 @@ export default {
         color: 'blue',
         weight: 3,
         opacity: 0.5,
-        id:this.translateId,
+        id: this.translateId,
         fillColor: '#FFFFFF',
         fillOpacity: 0.5
       })
@@ -3557,7 +3712,9 @@ export default {
         marker1.addEventListener('click', function(e) {
           var point = e.lnglat
           marker1 = new T.Marker(point)
-          var markerInfoWin = new T.InfoWindow(content, { offset: new T.Point(0, -30) })
+          var markerInfoWin = new T.InfoWindow(content, {
+            offset: new T.Point(0, -30)
+          })
           marker1.openInfoWindow(markerInfoWin, point)
         })
         // this.addClickHandler(content,marker1);
@@ -3693,29 +3850,31 @@ export default {
           data.region = data.region + item.lng + ',' + item.lat + '|'
         }
       }
-      console.log(data);
-      
+      console.log(data)
+
       data.status = 'incomplete'
       data.roleId = data.roleId.join(',')
-      inspectTaskSave(data).then(res => {
-        this.$message.success('成功')
-        this.getinspectPointPage()
-        this.getPage()
-        this.cancleBtn(this.listAppend.objectName)
-      }).catch(err => {
-        this.$message.error(err.response.data.message)
-      })
+      inspectTaskSave(data)
+        .then(res => {
+          this.$message.success('成功')
+          this.getinspectPointPage()
+          this.getPage()
+          this.cancleBtn(this.listAppend.objectName)
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
     },
     cancleBtn(name) {
-      if (this.addTaskCode =='1') {
-        for(const item of this.riverMontion){
+      if (this.addTaskCode == '1') {
+        for (const item of this.riverMontion) {
           if (item.objectName == name) {
-            item.isShow =false
+            item.isShow = false
           }
         }
       }
-      if (this.addTaskCode =='2') {
-        for(const item of this.planListPage){
+      if (this.addTaskCode == '2') {
+        for (const item of this.planListPage) {
           for (const a of item.teams) {
             for (const b of a.targets) {
               if (b.target.objectName == name) {
@@ -3748,12 +3907,11 @@ export default {
               lat: item.point[1]
             }
             point1.push(item)
-            
           }
           if (item.locationType.code == 'line') {
             this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
-              let markerTool
-             if (item.drawType.icon) {
+            let markerTool
+            if (item.drawType.icon) {
               let icon = new T.Icon({
                 iconUrl: item.drawType.icon,
                 iconSize: new T.Point(41, 40),
@@ -3775,7 +3933,10 @@ export default {
                 this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
               }
             } else {
-              markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+              markerTool = new T.Marker(item.line[0], {
+                title: item.innerName,
+                id: item.id
+              })
               this.map.addOverLay(markerTool)
             }
           }
@@ -3791,41 +3952,44 @@ export default {
               item.id,
               item.innerType.code
             )
-             let markerTool
-              if (item.drawType.icon) {
-                let icon = new T.Icon({
-                  iconUrl: item.drawType.icon,
-                  iconSize: new T.Point(41, 40),
-                  iconAnchor: new T.Point(21, 40)
-                })
-                markerTool = new T.Marker(item.polygon[0], {
-                  icon: icon,
-                  id: item.id,
-                  title: item.innerName,
-                  code: item.innerType.code
-                })
-                this.map.addOverLay(markerTool)
-                if (this.sharedChecked) {
-                  let points = []
-                  for (const point of item.polygon) {
-                    points.push([point.lng, point.lat])
-                  }
-                  item.pointsData = []
-                  item.pointsData.push(points)
-                  this.olSharedDrawPolygon(
-                    item.pointsData,
-                    item.id,
-                    'olMap1',
-                    item.frameColor,
-                    item.framePellucidity,
-                    item.shapeColor,
-                    item.shapePellucidity
-                  )
+            let markerTool
+            if (item.drawType.icon) {
+              let icon = new T.Icon({
+                iconUrl: item.drawType.icon,
+                iconSize: new T.Point(41, 40),
+                iconAnchor: new T.Point(21, 40)
+              })
+              markerTool = new T.Marker(item.polygon[0], {
+                icon: icon,
+                id: item.id,
+                title: item.innerName,
+                code: item.innerType.code
+              })
+              this.map.addOverLay(markerTool)
+              if (this.sharedChecked) {
+                let points = []
+                for (const point of item.polygon) {
+                  points.push([point.lng, point.lat])
                 }
-              } else {
-                markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
-                this.map.addOverLay(markerTool)
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(
+                  item.pointsData,
+                  item.id,
+                  'olMap1',
+                  item.frameColor,
+                  item.framePellucidity,
+                  item.shapeColor,
+                  item.shapePellucidity
+                )
               }
+            } else {
+              markerTool = new T.Marker(item.polygon[0], {
+                title: item.innerName,
+                id: item.id
+              })
+              this.map.addOverLay(markerTool)
+            }
           }
         }
         if (point1.length > 0) {
@@ -3892,7 +4056,10 @@ export default {
                 })
                 this.map.addOverLay(markerTool)
               } else {
-                markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+                markerTool = new T.Marker(item.line[0], {
+                  title: item.innerName,
+                  id: item.id
+                })
                 this.map.addOverLay(markerTool)
               }
               // markerTool.addEventListener('click', this.panoramaPointClick)
@@ -3926,7 +4093,10 @@ export default {
               } else {
                 // markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
                 // this.map.addOverLay(markerTool)
-                markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+                markerTool = new T.Marker(item.polygon[0], {
+                  title: item.innerName,
+                  id: item.id
+                })
                 this.map.addOverLay(markerTool)
               }
             }
@@ -3973,7 +4143,7 @@ export default {
       var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
         endDate: this.picker,
         innerType: 'riskMap'
       }
@@ -4000,8 +4170,8 @@ export default {
       var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
-        endDate: this.picker,
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
+        endDate: this.picker
       }
       getWaterStation(data)
         .then(res => {
@@ -4023,7 +4193,12 @@ export default {
               iconSize: new T.Point(41, 40),
               iconAnchor: new T.Point(21, 40)
             })
-            this.waterQualityMarker = new T.Marker(item.coordinate, { icon: icon,item: item, id: item.id, title: item.name })
+            this.waterQualityMarker = new T.Marker(item.coordinate, {
+              icon: icon,
+              item: item,
+              id: item.id,
+              title: item.name
+            })
             this.map.addOverLay(this.waterQualityMarker)
             // if (this.historyData) {
             //   this.waterQualityMarker.addEventListener('click', this.waterQualityHistoryClick)
@@ -4057,7 +4232,7 @@ export default {
           if (item.locationType.code == 'line') {
             this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, '', item.innerType.code)
             let markerTool
-             if (item.drawType.icon) {
+            if (item.drawType.icon) {
               let icon = new T.Icon({
                 iconUrl: item.drawType.icon,
                 iconSize: new T.Point(41, 40),
@@ -4079,7 +4254,10 @@ export default {
                 this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
               }
             } else {
-              markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+              markerTool = new T.Marker(item.line[0], {
+                title: item.innerName,
+                id: item.id
+              })
               this.map.addOverLay(markerTool)
             }
           }
@@ -4096,40 +4274,43 @@ export default {
               item.innerType.code
             )
             let markerTool
-              if (item.drawType.icon) {
-                let icon = new T.Icon({
-                  iconUrl: item.drawType.icon,
-                  iconSize: new T.Point(41, 40),
-                  iconAnchor: new T.Point(21, 40)
-                })
-                markerTool = new T.Marker(item.polygon[0], {
-                  icon: icon,
-                  id: item.id,
-                  title: item.innerName,
-                  code: item.innerType.code
-                })
-                this.map.addOverLay(markerTool)
-                if (this.sharedChecked) {
-                  let points = []
-                  for (const point of item.polygon) {
-                    points.push([point.lng, point.lat])
-                  }
-                  item.pointsData = []
-                  item.pointsData.push(points)
-                  this.olSharedDrawPolygon(
-                    item.pointsData,
-                    item.id,
-                    'olMap1',
-                    item.frameColor,
-                    item.framePellucidity,
-                    item.shapeColor,
-                    item.shapePellucidity
-                  )
+            if (item.drawType.icon) {
+              let icon = new T.Icon({
+                iconUrl: item.drawType.icon,
+                iconSize: new T.Point(41, 40),
+                iconAnchor: new T.Point(21, 40)
+              })
+              markerTool = new T.Marker(item.polygon[0], {
+                icon: icon,
+                id: item.id,
+                title: item.innerName,
+                code: item.innerType.code
+              })
+              this.map.addOverLay(markerTool)
+              if (this.sharedChecked) {
+                let points = []
+                for (const point of item.polygon) {
+                  points.push([point.lng, point.lat])
                 }
-              } else {
-                markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
-                this.map.addOverLay(markerTool)
+                item.pointsData = []
+                item.pointsData.push(points)
+                this.olSharedDrawPolygon(
+                  item.pointsData,
+                  item.id,
+                  'olMap1',
+                  item.frameColor,
+                  item.framePellucidity,
+                  item.shapeColor,
+                  item.shapePellucidity
+                )
               }
+            } else {
+              markerTool = new T.Marker(item.polygon[0], {
+                title: item.innerName,
+                id: item.id
+              })
+              this.map.addOverLay(markerTool)
+            }
           }
         }
         if (point.length > 0) {
@@ -4145,7 +4326,7 @@ export default {
       var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
         endDate: this.picker,
         mediaType: 'image'
       }
@@ -4165,7 +4346,7 @@ export default {
       var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
         endDate: this.picker,
         innerType: 'floatage'
       }
@@ -4199,16 +4380,16 @@ export default {
       this.getRiskSourceMapDrawPage(true)
     },
     //其他绘制数据
-    getOtherMapDrawPage(){
+    getOtherMapDrawPage() {
       var time = this.threePicker
       var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
         endDate: this.picker,
         innerType: 'other'
       }
-      mapdrawPage(data,).then(res => {
+      mapdrawPage(data).then(res => {
         let arr = res.data
         let ar = []
         arr.forEach(v => {
@@ -4227,7 +4408,7 @@ export default {
         this.otherPoints = ar
         // 点击切换重新绘制触发
         for (const item of this.otherList) {
-          if (item.clicked==true) {
+          if (item.clicked == true) {
             this.onWaterLandLoss(item.id, true)
           }
         }
@@ -4243,7 +4424,11 @@ export default {
             iconSize: new T.Point(41, 40),
             iconAnchor: new T.Point(21, 40)
           })
-          let marker = new T.Marker(item.coordinate, { icon: icon, id: item.id, title: item.name })
+          let marker = new T.Marker(item.coordinate, {
+            icon: icon,
+            id: item.id,
+            title: item.name
+          })
           this.map.addOverLay(marker)
           // marker.addEventListener('click', this.taskPointClick)
         }
@@ -4265,17 +4450,23 @@ export default {
             }
             if (item.locationType.code == 'line') {
               if (item.innerName) {
-                
-              }else{
-                item.innerName=''
+              } else {
+                item.innerName = ''
               }
-              this.lineDraw(item.line, item.frameColor, 3, item.framePellucidity, item.id, item.innerName, item.innerType.code)
+              this.lineDraw(
+                item.line,
+                item.frameColor,
+                3,
+                item.framePellucidity,
+                item.id,
+                item.innerName,
+                item.innerType.code
+              )
             }
             if (item.locationType.code == 'polygon') {
               if (item.innerName) {
-                
-              }else{
-                item.innerName=''
+              } else {
+                item.innerName = ''
               }
               this.noodlesDraw(
                 item.polygon,
@@ -4319,7 +4510,14 @@ export default {
     },
     //风险源绘制数据
     getRiskSourceMapDrawPage(riskSourceType) {
-      var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
+      var riskSourceLevel = qs.stringify(
+        {
+          riskSourceLevel: this.riskSourceLevel
+        },
+        {
+          indices: false
+        }
+      )
       var time = this.threePicker
       var picker = time.split('/')
       var data = {
@@ -4389,7 +4587,10 @@ export default {
                       })
                       this.map.addOverLay(markerTool)
                     } else {
-                      markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+                      markerTool = new T.Marker(item.line[0], {
+                        title: item.innerName,
+                        id: item.id
+                      })
                       this.map.addOverLay(markerTool)
                     }
                     // markerTool.addEventListener('click', this.panoramaPointClick)
@@ -4423,7 +4624,10 @@ export default {
                     } else {
                       // markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
                       // this.map.addOverLay(markerTool)
-                      markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+                      markerTool = new T.Marker(item.polygon[0], {
+                        title: item.innerName,
+                        id: item.id
+                      })
                       this.map.addOverLay(markerTool)
                     }
                   }
@@ -4437,17 +4641,17 @@ export default {
     },
     //获取排口绘制数据
     getDischargeMapDrawPage() {
-      if (this.dischargeLevel.length>0) {
+      if (this.dischargeLevel.length > 0) {
         var dischargeLevel = this.dischargeLevel.join(',')
-      }else{
-        var dischargeLevel=''
+      } else {
+        var dischargeLevel = ''
       }
       var time = this.threePicker
       var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        dischargeType:dischargeLevel,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        dischargeType: dischargeLevel,
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
         endDate: this.picker,
         innerType: 'discharge'
       }
@@ -4507,7 +4711,11 @@ export default {
           })
           this.map.addOverLay(markerTool)
         } else {
-          markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
+          markerTool = new T.Marker(item.latlng, {
+            title: item.innerName,
+            id: item.id,
+            code: item.innerType.code
+          })
           this.map.addOverLay(markerTool)
         }
         // if (item.innerType.code == 'riskSource') {
@@ -4605,170 +4813,187 @@ export default {
       }
     },
     //其他子栏数据统计
-    getOtherDataStatistics(){
+    getOtherDataStatistics() {
       var time = this.threePicker
       var picker = time.split('/')
-      
+
       this.otherList.forEach(v => {
         var data = {
           projectId: this.$store.state.id,
-          startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+          startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
           endDate: this.picker,
-          innerType : 'other',
-          typeId: v.id,
+          innerType: 'other',
+          typeId: v.id
         }
-        getMapdrawCount(data).then(res=>{
+        getMapdrawCount(data).then(res => {
           v.num = res.data
         })
-      });
+      })
     },
     //水质数据统计
-    regulatorWaterCount(){
+    regulatorWaterCount() {
       var time = this.threePicker
       var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
-        endDate: this.picker,
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
+        endDate: this.picker
       }
-      getRegulatorWaterCount(data).then(res=>{
+      getRegulatorWaterCount(data).then(res => {
         this.regulatorWaterCountData = res.data
       })
     },
     //调查点
-    pointCount(){
+    pointCount() {
       var time = this.threePicker
       var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
-        endDate: this.picker,
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
+        endDate: this.picker
       }
-      getPointCount(data).then(res=>{
+      getPointCount(data).then(res => {
         this.pointCountData = res.data
-        
       })
     },
     //数据统计
-    getDataStatistics(){
+    getDataStatistics() {
       var time = this.threePicker
       var picker = time.split('/')
       //风险源总数
       var data = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
         endDate: this.picker,
-        innerType : 'riskSource' 
+        innerType: 'riskSource'
       }
-      getMapdrawCount(data).then(res=>{
+      getMapdrawCount(data).then(res => {
         this.statisticsList.riskSource = res.data
       })
       //排口总数
       var data1 = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
         endDate: this.picker,
-        innerType : 'discharge' 
+        innerType: 'discharge'
       }
-      getMapdrawCount(data1).then(res=>{
+      getMapdrawCount(data1).then(res => {
         this.statisticsList.discharge = res.data
       })
       //漂浮物
       var data2 = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
         endDate: this.picker,
-        innerType : 'floatage' 
+        innerType: 'floatage'
       }
-      getMapdrawCount(data2).then(res=>{
+      getMapdrawCount(data2).then(res => {
         this.statisticsList.floatage = res.data
       })
       var data3 = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
         endDate: this.picker,
-        innerType : 'other' 
+        innerType: 'other'
       }
       //其他
-      getMapdrawCount(data3).then(res=>{
+      getMapdrawCount(data3).then(res => {
         this.statisticsList.other = res.data
       })
       var data4 = {
         projectId: this.$store.state.id,
-        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
         endDate: this.picker,
-        innerType : 'riskMap' 
+        innerType: 'riskMap'
       }
       //风险地图
-      getMapdrawCount(data4).then(res=>{
+      getMapdrawCount(data4).then(res => {
         this.statisticsList.riskMap = res.data
       })
       //风险源子项
       this.riskSourceList.forEach(v => {
         var data = {
           projectId: this.$store.state.id,
-          startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+          startDate: picker[0] + '-' + picker[1] + '-' + picker[2],
           endDate: this.picker,
-          innerType : 'riskSource' ,
-          typeId: v.id,
+          innerType: 'riskSource',
+          typeId: v.id
         }
-        getMapdrawCount(data).then(res=>{
+        getMapdrawCount(data).then(res => {
           v.num = res.data
-  
         })
-      });
+      })
     },
-    drawLine(date){
-       var myChart = echarts.init(document.getElementById('main1'));
-       myChart.setOption( {
+    drawLine(date) {
+      var myChart = echarts.init(document.getElementById('main1'))
+      myChart.setOption({
         xAxis: {
-          name : '潮时(Hrs)',
-          nameLocation :'center',
-          nameTextStyle:{
-             lineHeight: 56,
-             fontSize:15
+          name: '潮时(Hrs)',
+          nameLocation: 'center',
+          nameTextStyle: {
+            lineHeight: 56,
+            fontSize: 15
           },
-          axisLabel:{
-             show : true
+          axisLabel: {
+            show: true
           },
           type: 'category',
-          data: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','24:00']
+          data: [
+            '00:00',
+            '01:00',
+            '02:00',
+            '03:00',
+            '04:00',
+            '05:00',
+            '06:00',
+            '07:00',
+            '08:00',
+            '09:00',
+            '10:00',
+            '11:00',
+            '12:00',
+            '13:00',
+            '14:00',
+            '15:00',
+            '16:00',
+            '17:00',
+            '18:00',
+            '19:00',
+            '20:00',
+            '21:00',
+            '22:00',
+            '23:00',
+            '24:00'
+          ]
         },
         tooltip: {
-            trigger: 'item',
+          trigger: 'item'
         },
         yAxis: {
-           nameLocation :'center',
-            nameTextStyle:{
-              lineHeight: 56,
-              fontSize:15
-            },
-            type: 'value',
-            name : '潮高(cm)',
+          nameLocation: 'center',
+          nameTextStyle: {
+            lineHeight: 56,
+            fontSize: 15
+          },
+          type: 'value',
+          name: '潮高(cm)'
         },
-        series: [{
+        series: [
+          {
             data: date,
             type: 'line',
             smooth: true
-        }]
+          }
+        ]
       })
-    },
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
 // @import '../../assets/css/monitor.less';
-.river_risk_alert {
-  position: absolute;
-  right: 404px;
-  top: 75px;
-  width: 180px;
-  background-color: white;
-  z-index: 889;
-  border-radius: 4px;
-  box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.5);
-}
+
 .mouse_alert {
   position: absolute;
   z-index: 999;
@@ -4778,11 +5003,13 @@ export default {
   padding: 0 4px;
   border-radius: 3px;
   box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.5);
+
   span {
     color: rgba(255, 0, 0, 0.8);
     font-size: 14px;
   }
 }
+
 .weather_alert {
   display: block;
   position: absolute;
@@ -4790,6 +5017,7 @@ export default {
   top: -13px;
   z-index: 888;
   padding-left: 20px;
+
   .weather_content {
     width: 500px;
     height: 500px;
@@ -4797,10 +5025,12 @@ export default {
     box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.4);
     border-radius: 10px;
     padding: 10px;
+
     .weather_basic {
       width: 100%;
       display: flex;
       flex-wrap: wrap;
+
       .weather_basic_content {
         width: 50%;
         color: #595959;
@@ -4808,15 +5038,17 @@ export default {
         margin-bottom: 12px;
       }
     }
+
     .weather24 {
       padding: 15px 9px;
       box-sizing: border-box;
       width: 100%;
-      
+
       border-top: 1px solid rgba(216, 216, 216, 0.5);
       border-bottom: 1px solid rgba(216, 216, 216, 0.5);
       font-size: 12px;
       display: flex;
+
       .time24 {
         width: 30px;
         margin-right: 22px;
@@ -4826,12 +5058,15 @@ export default {
     }
   }
 }
+
 .splitter-pane splitter-paneL vertical {
   width: 72%;
 }
+
 .splitter-pane-resizer vertical {
   left: 72%;
 }
+
 .splitter-pane splitter-paneR vertical {
   width: 28%;
 }
@@ -4841,10 +5076,12 @@ export default {
   height: calc(100vh - 157px);
   overflow: auto;
 }
+
 .addTask_info {
   width: 100%;
   // border-top: 1px solid #e8e8e8;
 }
+
 .addTask_title {
   width: 100%;
   height: 34px;
@@ -4854,10 +5091,12 @@ export default {
   padding-left: 15px;
   background-color: #f5f5f5;
 }
+
 .ant-form-item {
   margin-bottom: 3px;
   // margin-bottom:0;
 }
+
 .addTask_from {
   padding-left: 20px;
   text-align: center;
