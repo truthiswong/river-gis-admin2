@@ -8,8 +8,17 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '首页'  },
-    redirect: window.localStorage.getItem('DefaultRoutePath'),
+    redirect: '/home',
     children: [
+      {
+        path: '/home',
+        name: 'home',
+        component: RouteView,
+        hideChildrenInMenu: true,
+        hidden: true,
+        component: () => import('@/views/dashboard/Home'),
+        meta: { title: '首页', keepAlive: true, icon: bxAnaalyse, permission: [ 'xh' ]}
+      },
       // dashboard
       {
         path: '/dashboard',
@@ -19,12 +28,6 @@ export const asyncRouterMap = [
         hideChildrenInMenu: true,
         meta: { title: '立体巡河实况', keepAlive: true, icon: bxAnaalyse, permission: [ 'xh' ]},
         children: [
-          // {
-          //   path: '/dashboard/home',
-          //   name: 'Home',
-          //   component: () => import('@/views/dashboard/Home'),
-          //   meta: { title: '首页', keepAlive: true, permission: [ 'dashboard' ] }
-          // },
           {
             path: '/dashboard/analysis',
             name: 'Analysis',
