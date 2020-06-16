@@ -64,8 +64,8 @@ export default {
 
 <style lang="less" scoped>
 .page-header {
-  background: #fff;
-  padding: 32px 32px 0;
+  // background: #fff;
+  padding: 0 32px;
   border-bottom: 1px solid #e8e8e8;
 
   .breadcrumb {
