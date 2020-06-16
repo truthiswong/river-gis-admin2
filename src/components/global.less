@@ -5,6 +5,7 @@ body {
   &.colorWeak {
     filter: invert(80%);
   }
+
   &.userLayout {
     overflow: auto;
   }
@@ -30,11 +31,14 @@ body {
       .ant-table-content {
         overflow-y: auto;
       }
+
       .ant-table-body {
         min-width: 800px;
       }
     }
+
     .topmenu {
+
       /* 必须为 topmenu  才能启用流式布局 */
       &.content-width-Fluid {
         .header-index-wide {
@@ -47,6 +51,7 @@ body {
   &.mobile {
     .sidemenu {
       .ant-header-fixedHeader {
+
         &.ant-header-side-opened,
         &.ant-header-side-closed {
           width: 100%;
@@ -65,6 +70,7 @@ body {
     padding: 0 24px;
     cursor: pointer;
     transition: color 0.3s;
+
     &:hover {
       background: rgba(0, 0, 0, 0.025);
     }
@@ -87,22 +93,27 @@ body {
         width: 100%;
       }
     }
+
     /* 必须为 topmenu  才能启用流式布局 */
     &.content-width-Fluid {
       .header-index-wide {
         max-width: unset;
+
         .header-index-left {
           flex: 1 1 1000px;
-          .logo{
+
+          .logo {
             margin-left: 25px;
           }
-          .ant-menu.ant-menu-horizontal{
+
+          .ant-menu.ant-menu-horizontal {
             max-width: calc(100vw - 190px - 372px - 25px);
             flex: 1 1 calc(100vw - 190px - 372px - 25px);
           }
         }
-        .header-index-right{
-          margin-right:25px; 
+
+        .header-index-right {
+          margin-right: 25px;
         }
       }
 
@@ -139,6 +150,13 @@ body {
     position: relative;
   }
 
+  // 头部路由样式
+  .ant-menu-dark,
+  .ant-menu-dark .ant-menu-sub {
+    color: rgba(255, 255, 255, 0.65);
+    background: rgba(0, 0, 0, 0);
+  }
+
   .header,
   .top-nav-header-index {
     .user-wrapper {
@@ -159,7 +177,7 @@ body {
 
         .avatar {
           margin: 20px 8px 20px 0;
-          color: #1890ff;
+          color: #41B1D4;
           background: hsla(0, 0%, 100%, 0.85);
           vertical-align: middle;
         }
@@ -171,10 +189,26 @@ body {
       }
     }
 
+    // 路由选中背景色
+    .ant-menu-item-selected {
+      background-color: #41B1D4;
+      color: #fff;
+    }
+    .ant-menu-horizontal>.ant-menu-item-selected>a {
+      color: #FFFFFF;
+    }
+
+    .ant-menu-dark .ant-menu-submenu-selected,
+    .ant-menu-dark .ant-menu-submenu-title:hover {
+      background-color: #41B1D4;
+      color: #fff;
+    }
+
     &.dark {
       .user-wrapper {
         .action {
           color: rgba(255, 255, 255, 0.85);
+
           a {
             color: rgba(255, 255, 255, 0.85);
           }
@@ -201,6 +235,7 @@ body {
             flex: 0 0 56px;
             text-align: center;
             line-height: 58px;
+
             h1 {
               display: none;
             }
@@ -216,22 +251,25 @@ body {
             }
           }
         }
+
         //
       }
     }
   }
 
   &.tablet {
+
     // overflow: hidden; text-overflow:ellipsis; white-space: nowrap;
     .top-nav-header-index {
       .header-index-wide {
         .header-index-left {
-          .logo > a {
+          .logo>a {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
           }
         }
+
         .ant-menu.ant-menu-horizontal {
           flex: 1 1 auto;
           white-space: normal;
@@ -256,8 +294,8 @@ body {
         max-width: 835px;
         flex: 0 1 835px;
         border: none;
-        height: 32px;
-        line-height: 32px;
+        height: 64px;
+        line-height: 64px;
         margin: auto;
         text-align: right;
       }
@@ -274,6 +312,7 @@ body {
           line-height: 64px;
           transition: all 0.3s;
           overflow: hidden;
+
           // header图片
           img,
           svg {
@@ -353,8 +392,10 @@ body {
       background-color: rgb(0, 21, 41);
     }
   }
+
   &.light {
     box-shadow: none;
+
     .ant-drawer-content {
       background-color: #fff;
     }
@@ -442,6 +483,7 @@ body {
     user-select: none;
   }
 }
+
 .user-dropdown-menu-wrapper.ant-dropdown-menu {
   padding: 4px 0;
 
@@ -449,9 +491,9 @@ body {
     width: 160px;
   }
 
-  .ant-dropdown-menu-item > .anticon:first-child,
-  .ant-dropdown-menu-item > a > .anticon:first-child,
-  .ant-dropdown-menu-submenu-title > .anticon:first-child .ant-dropdown-menu-submenu-title > a > .anticon:first-child {
+  .ant-dropdown-menu-item>.anticon:first-child,
+  .ant-dropdown-menu-item>a>.anticon:first-child,
+  .ant-dropdown-menu-submenu-title>.anticon:first-child .ant-dropdown-menu-submenu-title>a>.anticon:first-child {
     min-width: 12px;
     margin-right: 8px;
   }
@@ -475,11 +517,12 @@ body {
         vertical-align: middle;
       }
 
-      > .ant-form-item-label {
+      >.ant-form-item-label {
         line-height: 32px;
         padding-right: 8px;
         width: auto;
       }
+
       .ant-form-item-control {
         height: 32px;
         line-height: 32px;
@@ -503,78 +546,130 @@ body {
     }
   }
 }
+
 // 自定义tab标签样式
 .custom_tabs .ant-tabs-nav {
   width: 100%;
 }
+
 .custom_tabs .ant-tabs-bar {
   margin: 0;
 }
+
 .custom_tabs .ant-tabs-nav .ant-tabs-tab {
   width: 50%;
   text-align: center;
   margin: 0;
 }
+
 // 自定义手风琴头部
-.custom_list > .ant-collapse-header {
+.custom_list>.ant-collapse-header {
   padding: 5px 0 5px 40px !important;
 }
+
 // 自定义手风琴内部
-.custom_list .ant-collapse-content > .ant-collapse-content-box {
+.custom_list .ant-collapse-content>.ant-collapse-content-box {
   padding: 0;
 }
+
 // 自定义手机照片列表
 .phone_list {
   .ant-list-item-content {
     flex-direction: column;
   }
 }
+
 // 自定义评论列表头
 .custom_comment .ant-comment-inner {
   padding: 5px 0;
 }
+
+// 气泡卡片
+.ant-popover-inner {
+  background-color: #fff;
+  border-radius: 10px !important;
+}
+
+.ant-popover-inner-content {
+  padding: 4px 10px !important;
+  color: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(46, 64, 129, 1);
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+
+// // 开关
+// .ant-switch-checked {
+//   background-color: rgba(0, 204, 255, 1) !important;
+// }
+// // 单选框
+// .ant-radio-checked .ant-radio-inner {
+//   border-color: rgba(0, 204, 255, 1) !important;
+// }
+// .ant-radio-inner:after {
+//   background-color: rgba(0, 204, 255, 1) !important;
+// }
+
+// 设置隐藏
+.setting-drawer-index-handle {
+  display: none !important;
+}
+
 // 卡片
 .custom_card {
   .ant-card-head {
     padding: 0 10px;
     min-height: 20px;
+
     .ant-card-head-title {
       padding: 5px 0;
     }
   }
+
   .ant-card-body {
     padding: 10px;
   }
 }
+
 // 测距
 .ant-layout .tdt-label1 {
   box-sizing: content-box;
 }
+
 .ant-layout .tdt-label1 span {
   box-sizing: content-box;
 }
+
 .tdt-container a {
   box-sizing: content-box;
 }
-.tdt-container .tdt-img1, .tdt-img2, .tdt-img3 {
+
+.tdt-container .tdt-img1,
+.tdt-img2,
+.tdt-img3 {
   padding: 0;
 }
+
 .tdt-container .tdt-img2 {
   background-position: -42px -1px;
 }
+
 .ant-layout .tdt-label-m {
   box-sizing: content-box;
 }
+
 // 天地图的logo
-.tdt-touch .tdt-control-copyright{
+.tdt-touch .tdt-control-copyright {
   display: none;
 }
+
 // 天地图比例尺
-.tdt-control-container .tdt-bottom.tdt-left{
-  background-color: rgba(255,255,255,0.8);
+.tdt-control-container .tdt-bottom.tdt-left {
+  background-color: rgba(255, 255, 255, 0.8);
   padding: 17px 7px 0 0;
   border-radius: 4px;
 }
+
 // 天地图marker
 // .tdt-label-m {
 //   display: none;
@@ -597,12 +692,10 @@ body {
   display: none;
 }
 
-.tui-image-editor-header-logo{
+.tui-image-editor-header-logo {
   display: none;
 }
 
 .tui-image-editor-container .tui-image-editor-main {
   top: 0;
 }
-
-
