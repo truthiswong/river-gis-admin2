@@ -2,7 +2,12 @@
   <div class="supervise">
     <div class="doubleBall" v-show="doubleBallTimeControl">{{defaultTime}}</div>
     <div class="doubleBall1" v-show="doubleBallTimeControl">{{defaultRightTime}}</div>
-    <div id="map" ref="worldMap" v-show="!sharedChecked && !swipeChecked">
+    <div
+      id="map"
+      @click="rightIcon = false"
+      ref="worldMap"
+      v-show="!sharedChecked && !swipeChecked"
+    >
       <div class="time_quantum" v-show="!canDownload">{{historyData?timeQuantum:defaultTime}}</div>
       <div class="compass_pointer" @click="compass" title="指北针">
         <img class="pointer" src="../../assets/img/compassPointer.png" alt="指北针" />
@@ -54,10 +59,11 @@
               :format="dateFormat"
             />
           </template>
-          <template slot="title">
-            <span>设置时间段</span>
-          </template>
-          <a-button type="primary" icon="setting" block></a-button>
+          <a-button
+            icon="setting"
+            shape="circle"
+            style="background-color: rgba(32, 56, 104, 1);color: white;"
+          ></a-button>
         </a-popover>
       </div>
     </div>
@@ -105,39 +111,29 @@
               :format="dateFormat"
             />
           </template>
-          <template slot="title">
-            <span>设置时间段</span>
-          </template>
-          <a-button type="primary" icon="setting" block></a-button>
+          <a-button
+            icon="setting"
+            shape="circle"
+            style="background-color: rgba(32, 56, 104, 1);color: white;"
+          ></a-button>
         </a-popover>
       </div>
     </div>
+    <!-- 天气 -->
     <div class="weather" v-show="!sharedChecked && !swipeChecked">
-      <img :src="weatherData.img" alt="天气" />
-      <h3>{{weatherData.temperature}}</h3>
-      <div class="text">
-        <div class="top">
-          <span class="degree_logo">℃</span>
-          <span class="weather_detail">{{weatherData.text}}(实时)</span>
-          <span class="date">{{defaultTime}}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between">
-          <div class="weather_basic_content">
-            <img src="./img/wind.png" alt style="margin-right:5px;height:12px;width:12px" />
-            <span>{{weatherData.wind_direction}}风 {{weatherData.wind_scale}}级</span>
-          </div>
-          <div class="weather_basic_content">
-            <img src="./img/cloudiness.png" alt style="margin-right:5px;height:12px;width:12px" />
-            <span>{{weatherData.clouds}}%</span>
-          </div>
-        </div>
+      <div>
+        <img v-show="weatherData.img" :src="weatherData.img" alt="天气" />
+      </div>
+      <div>
+        <p>实时天气: {{weatherData.text}}</p>
+        <p>风力: {{weatherData.wind_scale}}级</p>
       </div>
       <div class="weather_right">
         <a-icon
           class="right_icon"
           type="caret-left"
           :class="rightIcon == true ? 'right_icon_active':''"
-          @click="rightIconClick"
+          @click="rightIcon = !rightIcon"
         />
         <!-- 天气弹窗 -->
         <div class="weather_alert" v-show="rightIcon">
@@ -150,31 +146,6 @@
               >{{item.portName}}</a-select-option>
             </a-select>
             <div id="main1" style="width:500px;height:450px"></div>
-            <!-- <div class="weather_basic">
-              <div class="weather_basic_content">
-                <img src="./img/water.png" alt style="margin-right:5px;height:12px;width:12px" />
-                <span></span>
-              </div>
-              <div class="weather_basic_content">
-                <img src="./img/wind.png" alt style="margin-right:5px;height:12px;width:12px" />
-                <span>{{weatherData.wind_direction}}风 {{weatherData.wind_scale}}级</span>
-              </div>
-              <div class="weather_basic_content">
-                <img src="./img/cloudiness.png" alt style="margin-right:5px;height:12px;width:12px" />
-                <span>{{weatherData.clouds}}</span>
-              </div>
-            </div>
-            <div class="weather24">-->
-            <!-- <div class="time24" v-for="item in weatherList" :key="item.id">
-                <div>{{item.temperature}}</div>
-
-              </div>
-              <div class="time24" v-for="item in weatherList" :key="item.id">
-                <div style="text-align:center;">{{item.temperature}}</div>
-                <img src="./img/fine.png" alt style="margin:12px 5px;height:19px;width:19px" />
-                <div style="text-align:center;">{{item.time}}</div>
-              </div>
-            </div>-->
           </div>
         </div>
       </div>
@@ -433,8 +404,11 @@
       <input id="swipe" class="swipe" type="range" />
     </div>
     <ul class="menu" :class="{menu_right:(sharedChecked || swipeChecked)}">
+      <!-- <li @click="setCenter">
+        <img src="../../assets/historyIcon.png" alt="历史" />
+      </li> -->
       <li @click="setCenter">
-        <img src="../../assets/img/restoration.png" alt="复位" title="复位" />
+        <img src="../../assets/restoration.png" alt="复位" />
       </li>
       <li
         @click="toolsShowFun"
@@ -445,36 +419,35 @@
       </li>
       <li>
         <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-          <template slot="content">
-            <a-row style="width: 100%;">
+          <div slot="content" style="width:120px;">
+            <a-row>
+              <a-radio-group v-model="mapType" @change="onMapChange">
+                <a-col :span="24">
+                  <a-radio value="a">
+                    <span style="margin-left:10px;">2D影像图</span>
+                  </a-radio>
+                </a-col>
+                <a-col :span="24">
+                  <a-radio value="b">
+                    <span style="margin-left:10px;">卫星影像图</span>
+                  </a-radio>
+                </a-col>
+              </a-radio-group>
+            </a-row>
+            <a-row>
               <a-col :span="24">
-                <a-radio-group @change="onMapChange" v-model="mapType">
-                  <a-radio-button value="a">2D影像图</a-radio-button>
-                  <a-radio-button value="b">卫星影像图</a-radio-button>
-                </a-radio-group>
-              </a-col>
-            </a-row>
-            <a-row style="width: 100%; margin-top: 8px;">
-              <a-col :span="16">
-                <span>道路标注</span>
-              </a-col>
-              <a-col :span="8" style="text-align: right;">
                 <a-switch size="small" v-model="roadWordChange" @click="onRoadChangeSwitch" />
+                <span style="margin-left:7px;">道路标注</span>
               </a-col>
             </a-row>
-            <a-row style="width: 100%; margin-top: 8px;">
-              <a-col :span="16">
-                <span>正射开关</span>
-              </a-col>
-              <a-col :span="8" style="text-align: right;">
+            <a-row>
+              <a-col :span="24">
                 <a-switch size="small" v-model="layerImageChange" @click="onLayerImageSwitch" />
+                <span style="margin-left:7px;">正射开关</span>
               </a-col>
             </a-row>
-          </template>
-          <template slot="title">
-            <span>图像</span>
-          </template>
-          <img src="../../assets/img/map.png" alt="图像" title="图像" />
+          </div>
+          <img src="../../assets/mapIcon.png" alt="图像" title="图像" />
         </a-popover>
       </li>
       <li v-show="!(this.sharedChecked || this.swipeChecked)">
@@ -486,240 +459,199 @@
           title="截图"
         />
       </li>
-      <li @click="mapZoomIn">
-        <img src="../../assets/img/max.png" alt="放大" title="放大" />
-      </li>
-      <li @click="mapZoomOut">
-        <img src="../../assets/img/min.png" alt="缩小" title="缩小" />
+      <li style="border-radius: 40px;">
+        <img @click="mapZoomIn" src="../../assets/max.png" alt="放大" />
+        <img @click="mapZoomOut" src="../../assets/min.png" alt="缩小" />
       </li>
       <li>
         <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
           <template slot="content" style="overflow-y: scroll;">
-            <a-list size="small">
-              <a-list-item v-show="!(this.sharedChecked || this.swipeChecked)">
+            <a-row
+              v-show="!(this.sharedChecked || this.swipeChecked)"
+              style="width:160px"
+              type="flex"
+              justify="space-between"
+              align="middle"
+            >
+              <a-col :span="20">
+                <p style="margin:0;">查看历史数据</p>
+              </a-col>
+              <a-col :span="4" style="text-align: right;">
+                <a-switch size="small" v-model="historyData" @click="onHistoryData" />
+              </a-col>
+            </a-row>
+            <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+              <a-col :span="20">
+                <p style="margin:0;">河道显示</p>
+              </a-col>
+              <a-col :span="4" style="text-align: right;">
+                <a-switch size="small" v-model="riverShow" />
+              </a-col>
+            </a-row>
+            <a-row
+              v-show="listItemLeftRight==true"
+              style="width:160px"
+              type="flex"
+              justify="space-between"
+              align="middle"
+            >
+              <a-col :span="20">
+                <p style="margin:0;">左右岸</p>
+              </a-col>
+              <a-col :span="4" style="text-align: right;">
+                <a-switch size="small" v-model="leftRight" @click="leftRightSwitch" />
+              </a-col>
+            </a-row>
+            <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+              <a-col :span="20">
+                <p style="margin:0;">街道显示</p>
+              </a-col>
+              <a-col :span="4" style="text-align: right;">
+                <a-switch size="small" v-model="streetShow" />
+              </a-col>
+            </a-row>
+            <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+              <a-col :span="20">
+                <p style="margin:0;">双球对比</p>
+              </a-col>
+              <a-col :span="4" style="text-align: right;">
+                <a-switch size="small" v-model="sharedChecked" @click="sharedView" />
+              </a-col>
+            </a-row>
+            <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
+              <template slot="content">
                 <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                  <a-col :span="18">
-                    <p style="margin:0;">查看历史数据</p>
+                  <a-col :span="20">
+                    <p style="margin:0;">手机照片</p>
                   </a-col>
-                  <a-col :span="6">
-                    <a-switch size="small" v-model="historyData" @click="onHistoryData" />
+                  <a-col :span="4" style="text-align: right;">
+                    <a-switch size="small" v-model="phonePhoto" />
                   </a-col>
                 </a-row>
-              </a-list-item>
-              <a-list-item>
-                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                  <a-col :span="18">
-                    <p style="margin:0;">河道显示</p>
+                <a-row
+                  v-show="!(this.sharedChecked || this.swipeChecked)"
+                  style="width:160px"
+                  type="flex"
+                  justify="space-between"
+                  align="middle"
+                >
+                  <a-col :span="20">
+                    <p style="margin:0;">无人机照片</p>
                   </a-col>
-                  <a-col :span="6">
-                    <a-switch size="small" v-model="riverShow" />
-                  </a-col>
-                </a-row>
-              </a-list-item>
-              <a-list-item v-show="listItemLeftRight==true">
-                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                  <a-col :span="18">
-                    <p style="margin:0;">左右岸</p>
-                  </a-col>
-                  <a-col :span="6">
-                    <a-switch size="small" v-model="leftRight" @click="leftRightSwitch" />
+                  <a-col :span="4" style="text-align: right;">
+                    <a-switch size="small" v-model="UAVPhoto" />
                   </a-col>
                 </a-row>
-              </a-list-item>
-              <a-list-item>
                 <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                  <a-col :span="18">
-                    <p style="margin:0;">街道显示</p>
+                  <a-col :span="20">
+                    <p style="margin:0;">360全景图</p>
                   </a-col>
-                  <a-col :span="6">
-                    <a-switch size="small" v-model="streetShow" />
+                  <a-col :span="4" style="text-align: right;">
+                    <a-switch size="small" v-model="panorama" />
                   </a-col>
                 </a-row>
-              </a-list-item>
-              <!-- <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-                <template slot="content">
-                  <a-list size="small">
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">双球对比</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="sharedChecked" @click="sharedView" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">卷帘对比</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="swipeChecked" @click="layerSwipe" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                  </a-list>
-                </template>
-                <template slot="title">
-                  <span>影像对比</span>
-                </template>
-                <a-list-item>
-                  <p style="margin:0;">影像对比</p>
-                </a-list-item>
-              </a-popover>-->
-              <a-list-item>
+              </template>
+              <p style="margin:0;">影像管理</p>
+            </a-popover>
+            <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
+              <template slot="content">
                 <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                  <a-col :span="18">
-                    <p style="margin:0;">双球对比</p>
+                  <a-col :span="20">
+                    <img
+                      style="width:20px;height:20px;margin-right:5px;"
+                      src="../dashboard/img/riverRisk.png"
+                    />
+                    <span>河岸风险源({{statisticsList.riskSource}})</span>
                   </a-col>
-                  <a-col :span="6">
-                    <a-switch size="small" v-model="sharedChecked" @click="sharedView" />
+                  <a-col :span="4" style="text-align: right;">
+                    <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
                   </a-col>
                 </a-row>
-              </a-list-item>
-              <!-- <a-list-item>
                 <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                  <a-col :span="18">
-                    <p style="margin:0;">卷帘对比</p>
+                  <a-col :span="20">
+                    <img
+                      style="width:20px;height:20px;margin-right:5px;"
+                      src="../dashboard/img/riskMap.png"
+                    />
+                    <span>风险地图({{statisticsList.riskMap}})</span>
                   </a-col>
-                  <a-col :span="6">
-                    <a-switch size="small" v-model="swipeChecked" @click="layerSwipe" />
+                  <a-col :span="4" style="text-align: right;">
+                    <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
                   </a-col>
                 </a-row>
-              </a-list-item>-->
-              <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-                <template slot="content">
-                  <a-list size="small">
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">手机照片</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="phonePhoto" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <a-list-item v-show="!(this.sharedChecked || this.swipeChecked)">
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">无人机照片</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="UAVPhoto" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">360全景图</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="panorama" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                  </a-list>
-                </template>
-                <template slot="title">
-                  <span>影像管理</span>
-                </template>
-                <a-list-item>
-                  <p style="margin:0;">影像管理</p>
-                </a-list-item>
-              </a-popover>
-              <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-                <template slot="content">
-                  <a-list size="small">
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">河岸风险源({{statisticsList.riskSource}})</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">风险地图({{statisticsList.riskMap}})</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">水质数据({{regulatorWaterCountData}})</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="waterQuality" @click="onWaterQuality" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">水面漂浮物({{statisticsList.floatage}})</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="waterFlotage" @click="onWaterFlotage" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">排口({{statisticsList.discharge}})</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="outlet" @click="onOutlet" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">专项调查点({{pointCountData}})</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="surveyPoint" @click="onSurveyPoint" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                  </a-list>
-                </template>
-                <template slot="title">
-                  <span>风险管理</span>
-                </template>
-                <a-list-item>
-                  <p style="margin:0;">风险管理</p>
-                </a-list-item>
-              </a-popover>
-              <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-                <template slot="content">
-                  <a-list size="small">
-                    <a-list-item v-for="item in otherList" :key="item.id">
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">{{item.name}}({{item.num}})</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch
-                            size="small"
-                            v-model="item.clicked"
-                            @click="onOther(item.id,item.clicked)"
-                          />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <!-- <a-list-item>
+                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                  <a-col :span="20">
+                    <img
+                      style="width:20px;height:20px;margin-right:5px;"
+                      src="../dashboard/img/waterQualityIcon.png"
+                    />
+                    <span>水质数据({{regulatorWaterCountData}})</span>
+                  </a-col>
+                  <a-col :span="4" style="text-align: right;">
+                    <a-switch size="small" v-model="waterQuality" @click="onWaterQuality" />
+                  </a-col>
+                </a-row>
+                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                  <a-col :span="20">
+                    <img
+                      style="width:20px;height:20px;margin-right:5px;"
+                      src="../dashboard/img/waterFlotageIcon.png"
+                    />
+                    <span>水面漂浮物({{statisticsList.floatage}})</span>
+                  </a-col>
+                  <a-col :span="4" style="text-align: right;">
+                    <a-switch size="small" v-model="waterFlotage" @click="onWaterFlotage" />
+                  </a-col>
+                </a-row>
+                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                  <a-col :span="20">
+                    <img
+                      style="width:20px;height:20px;margin-right:5px;"
+                      src="../dashboard/img/outletIcon.png"
+                    />
+                    <span>排口({{statisticsList.discharge}})</span>
+                  </a-col>
+                  <a-col :span="4" style="text-align: right;">
+                    <a-switch size="small" v-model="outlet" @click="onOutlet" />
+                  </a-col>
+                </a-row>
+                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                  <a-col :span="20">
+                    <img
+                      style="width:20px;height:20px;margin-right:5px;"
+                      src="../dashboard/img/surveyPointIcon1.png"
+                    />
+                    <span>专项调查点({{pointCountData}})</span>
+                  </a-col>
+                  <a-col :span="4" style="text-align: right;">
+                    <a-switch size="small" v-model="surveyPoint" @click="onSurveyPoint" />
+                  </a-col>
+                </a-row>
+              </template>
+              <p style="margin:0;">风险管理</p>
+            </a-popover>
+            <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
+              <template slot="content">
+                <a-row
+                  v-for="item in otherList"
+                  :key="item.id"
+                  style="width:160px"
+                  type="flex"
+                  justify="space-between"
+                  align="middle"
+                >
+                  <a-col :span="20">
+                    <p style="margin:0;">{{item.name}}({{item.num}})</p>
+                  </a-col>
+                  <a-col :span="4" style="text-align: right;">
+                    <a-switch
+                      size="small"
+                      v-model="item.clicked"
+                      @click="onOther(item.id,item.clicked)"
+                    />
+                  </a-col>
+                </a-row>
+                <!-- <a-list-item>
                       <a-row style="width:160px" type="flex" justify="space-between" align="middle">
                         <a-col :span="18">
                           <p style="margin:0;">水面率</p>
@@ -758,22 +690,12 @@
                           <a-switch size="small" v-model="landAndWater" @click="onLandAndWater" />
                         </a-col>
                       </a-row>
-                    </a-list-item>-->
-                  </a-list>
-                </template>
-                <template slot="title">
-                  <span>其他</span>
-                </template>
-                <a-list-item>
-                  <p style="margin:0;">其他({{statisticsList.other}})</p>
-                </a-list-item>
-              </a-popover>
-            </a-list>
+                </a-list-item>-->
+              </template>
+              <p style="margin:0;">其他({{statisticsList.other}})</p>
+            </a-popover>
           </template>
-          <template slot="title">
-            <span>更多</span>
-          </template>
-          <img src="../../assets/img/more.png" alt="更多" title="更多" @click="getMapPageData()" />
+          <img src="../../assets/more.png" alt="更多" title="更多" @click="getMapPageData()" />
         </a-popover>
       </li>
     </ul>
@@ -863,11 +785,26 @@
         class="tools_card_close"
       />
       <a-radio-group>
-        <a-radio-button value="0" @click="toolIndexFun(1)">点</a-radio-button>
-        <a-radio-button value="1" @click="toolIndexFun(2)">线</a-radio-button>
-        <a-radio-button value="2" @click="toolIndexFun(3)">面</a-radio-button>
-        <a-radio-button value="3" @click="toolIndexFun(4)">测面</a-radio-button>
-        <a-radio-button value="4" @click="toolIndexFun(5)">测距</a-radio-button>
+        <a-radio-button value="0" @click="toolIndexFun(1)">
+          <img style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;" src="./img/toolIcon1.png" alt="">
+          <span style="vertical-align: middle;">点</span>
+        </a-radio-button>
+        <a-radio-button value="1" @click="toolIndexFun(2)">
+          <img style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;" src="./img/toolIcon2.png" alt="">
+          <span style="vertical-align: middle;">线</span>
+        </a-radio-button>
+        <a-radio-button value="2" @click="toolIndexFun(3)">
+          <img style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;" src="./img/toolIcon3.png" alt="">
+          <span style="vertical-align: middle;">面</span>
+        </a-radio-button>
+        <a-radio-button value="3" @click="toolIndexFun(4)">
+          <img style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;" src="./img/toolIcon5.png" alt="">
+          <span style="vertical-align: middle;">测面</span>
+        </a-radio-button>
+        <a-radio-button value="4" @click="toolIndexFun(5)">
+          <img style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;" src="./img/toolIcon4.png" alt="">
+          <span style="vertical-align: middle;">测距</span>
+        </a-radio-button>
       </a-radio-group>
     </a-card>
     <!-- 鼠标跟随弹窗 -->
@@ -910,7 +847,14 @@
       :msg="panoramaData"
       @exitPanorama="closePanorma"
     ></look-panorama>
-    <a-modal title="无人机照片" :visible="UAVPhotosModal" @ok="UAVPhotosOk" @cancel="UAVPhotosOk">
+    <a-modal
+      title="无人机照片"
+      :visible="UAVPhotosModal"
+      @ok="UAVPhotosOk"
+      @cancel="UAVPhotosOk"
+      :maskClosable="false"
+      :mask="false"
+    >
       <div>点击坐标: {{UAVPhotosCoordinate}}</div>
       <div style="margin-top:10px;max-height: 600px;overflow-y: scroll;">
         <viewer style="margin:5px" :images="uavPhotoList">
@@ -926,6 +870,8 @@
       :visible="otherModal"
       :footer="null"
       @cancel="otherCancel"
+      :maskClosable="false"
+      :mask="false"
     >
       <span style="margin: 0 0 0 80px;">坐标: {{otherLatlng.lat}},{{otherLatlng.lng}}</span>
       <a-form class="from" style="margin-top:20px">
@@ -1243,17 +1189,49 @@ export default {
       panorama: false, // 360照片
       panoramaAlertShow: false,
       panoramaPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.21493, lng: 121.49566 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.22344, lng: 121.47892 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.20649, lng: 121.47712 } }
+        {
+          id: 0,
+          name: '监测点1',
+          clicked: false,
+          latlng: {
+            lat: 31.21493,
+            lng: 121.49566
+          }
+        },
+        {
+          id: 1,
+          name: '监测点2',
+          clicked: false,
+          latlng: {
+            lat: 31.22344,
+            lng: 121.47892
+          }
+        },
+        {
+          id: 2,
+          name: '监测点3',
+          clicked: false,
+          latlng: {
+            lat: 31.20649,
+            lng: 121.47712
+          }
+        }
       ],
       labelCol: {
-        xs: { span: 18 },
-        sm: { span: 6 }
+        xs: {
+          span: 18
+        },
+        sm: {
+          span: 6
+        }
       },
       wrapperCol: {
-        xs: { span: 18 },
-        sm: { span: 16 }
+        xs: {
+          span: 18
+        },
+        sm: {
+          span: 16
+        }
       },
       panoramaData: {
         id: '',
@@ -1289,9 +1267,33 @@ export default {
       ],
       phonePhotoPointsList: [], //没有经纬度的手机照片
       UAVPhotoPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.24493, lng: 121.52566 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.25344, lng: 121.50892 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.23649, lng: 121.50712 } }
+        {
+          id: 0,
+          name: '监测点1',
+          clicked: false,
+          latlng: {
+            lat: 31.24493,
+            lng: 121.52566
+          }
+        },
+        {
+          id: 1,
+          name: '监测点2',
+          clicked: false,
+          latlng: {
+            lat: 31.25344,
+            lng: 121.50892
+          }
+        },
+        {
+          id: 2,
+          name: '监测点3',
+          clicked: false,
+          latlng: {
+            lat: 31.23649,
+            lng: 121.50712
+          }
+        }
       ],
 
       riskMap: false, // 风险地图
@@ -1301,22 +1303,34 @@ export default {
           name: '黄浦江',
           clicked: true,
           lineData: [
-            { lat: 31.21882, lng: 121.50364 },
-            { lat: 31.21265, lng: 121.50227 },
-            { lat: 31.20583, lng: 121.49703 },
-            { lat: 31.19915, lng: 121.49197 }
+            {
+              lat: 31.21882,
+              lng: 121.50364
+            },
+            {
+              lat: 31.21265,
+              lng: 121.50227
+            },
+            {
+              lat: 31.20583,
+              lng: 121.49703
+            },
+            {
+              lat: 31.19915,
+              lng: 121.49197
+            }
           ]
         }
       ],
       waterQuality: false, // 水质监测点
       waterQualityPoints: [
         /*{
-          id: 0,
-          name: '水质监测点1',
-          clicked: false,
-          imgUrl: require('./img/waterQualityIcon1.png'),
-          latlng: { lat: 31.21935, lng: 121.50035 }
-        }*/
+            id: 0,
+            name: '水质监测点1',
+            clicked: false,
+            imgUrl: require('./img/waterQualityIcon1.png'),
+            latlng: { lat: 31.21935, lng: 121.50035 }
+          }*/
       ],
       rightWaterQualityPoints: [],
       waterFlotage: false, // 水面漂浮物
@@ -1332,21 +1346,93 @@ export default {
       riverRiskPointsRight: [], // 右侧河岸风险源数据
       waterLandLoss: false, // 水土流失
       waterLandLossPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.09999, lng: 121.50333 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.16666, lng: 121.48333 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.05555, lng: 121.49666 } }
+        {
+          id: 0,
+          name: '监测点1',
+          clicked: false,
+          latlng: {
+            lat: 31.09999,
+            lng: 121.50333
+          }
+        },
+        {
+          id: 1,
+          name: '监测点2',
+          clicked: false,
+          latlng: {
+            lat: 31.16666,
+            lng: 121.48333
+          }
+        },
+        {
+          id: 2,
+          name: '监测点3',
+          clicked: false,
+          latlng: {
+            lat: 31.05555,
+            lng: 121.49666
+          }
+        }
       ],
       waterRatio: false, // 水面率
       waterRatioPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.26023, lng: 121.50565 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.2396, lng: 121.5164 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.22994, lng: 121.50955 } }
+        {
+          id: 0,
+          name: '监测点1',
+          clicked: false,
+          latlng: {
+            lat: 31.26023,
+            lng: 121.50565
+          }
+        },
+        {
+          id: 1,
+          name: '监测点2',
+          clicked: false,
+          latlng: {
+            lat: 31.2396,
+            lng: 121.5164
+          }
+        },
+        {
+          id: 2,
+          name: '监测点3',
+          clicked: false,
+          latlng: {
+            lat: 31.22994,
+            lng: 121.50955
+          }
+        }
       ],
       bottomMud: false, // 底泥
       bottomMudPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.23564, lng: 121.51066 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24315, lng: 121.49606 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.23668, lng: 121.49656 } }
+        {
+          id: 0,
+          name: '监测点1',
+          clicked: false,
+          latlng: {
+            lat: 31.23564,
+            lng: 121.51066
+          }
+        },
+        {
+          id: 1,
+          name: '监测点2',
+          clicked: false,
+          latlng: {
+            lat: 31.24315,
+            lng: 121.49606
+          }
+        },
+        {
+          id: 2,
+          name: '监测点3',
+          clicked: false,
+          latlng: {
+            lat: 31.23668,
+            lng: 121.49656
+          }
+        }
       ],
       surveyPoint: false, // 专项调查点
       pointCountData: '', //专项调查点统计
@@ -1363,15 +1449,63 @@ export default {
       moreLoadOnce: '1', // 加载次数
       riverLink: false, // 河道连通性
       riverLinkPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.23841, lng: 121.516833 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24611, lng: 121.49364 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.26, lng: 121.51684 } }
+        {
+          id: 0,
+          name: '监测点1',
+          clicked: false,
+          latlng: {
+            lat: 31.23841,
+            lng: 121.516833
+          }
+        },
+        {
+          id: 1,
+          name: '监测点2',
+          clicked: false,
+          latlng: {
+            lat: 31.24611,
+            lng: 121.49364
+          }
+        },
+        {
+          id: 2,
+          name: '监测点3',
+          clicked: false,
+          latlng: {
+            lat: 31.26,
+            lng: 121.51684
+          }
+        }
       ],
       landAndWater: false, // 水陆分布
       landAndWaterPoints: [
-        { id: 0, name: '监测点1', clicked: false, latlng: { lat: 31.25031, lng: 121.51681 } },
-        { id: 1, name: '监测点2', clicked: false, latlng: { lat: 31.24304, lng: 121.49392 } },
-        { id: 2, name: '监测点3', clicked: false, latlng: { lat: 31.2645, lng: 121.49356 } }
+        {
+          id: 0,
+          name: '监测点1',
+          clicked: false,
+          latlng: {
+            lat: 31.25031,
+            lng: 121.51681
+          }
+        },
+        {
+          id: 1,
+          name: '监测点2',
+          clicked: false,
+          latlng: {
+            lat: 31.24304,
+            lng: 121.49392
+          }
+        },
+        {
+          id: 2,
+          name: '监测点3',
+          clicked: false,
+          latlng: {
+            lat: 31.2645,
+            lng: 121.49356
+          }
+        }
       ],
       otherLatlng: {},
       drawPage: [],
@@ -1380,7 +1514,7 @@ export default {
       screenshotdataUrl: '',
       itgePortId: '',
       tigePage: [], //潮汐列表
-      rightIcon: false
+      rightIcon: false //天气弹窗
     }
   },
   watch: {
@@ -1433,16 +1567,32 @@ export default {
     // 初始化地图控件
     let zoom = 14
     let twoDimensionURL = `http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
-    this.mapLayer2d = new T.TileLayer(twoDimensionURL, { minZoom: 4, maxZoom: 18, zIndex: 10 })
+    this.mapLayer2d = new T.TileLayer(twoDimensionURL, {
+      minZoom: 4,
+      maxZoom: 18,
+      zIndex: 10
+    })
     let satelliteURL = `http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
-    this.mapLayerSatellite = new T.TileLayer(satelliteURL, { minZoom: 4, maxZoom: 18, zIndex: 10 })
+    this.mapLayerSatellite = new T.TileLayer(satelliteURL, {
+      minZoom: 4,
+      maxZoom: 18,
+      zIndex: 10
+    })
     // 创建自定义图层对象
     let wordLabel = `http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=a659a60049b130a5d1fececfd5a6b822`
-    this.mapLayerWord = new T.TileLayer(wordLabel, { minZoom: 4, maxZoom: 18, zIndex: 15 })
+    this.mapLayerWord = new T.TileLayer(wordLabel, {
+      minZoom: 4,
+      maxZoom: 18,
+      zIndex: 15
+    })
     // 正射影像
     if (this.layerImageChange) {
       this.mapImage = `${this.$store.state.serverUrl}/server/data/admin/regulator/uav/data/mbtiles?year=${this.mapYear}&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${this.$store.state.id}&Authorization=${token}`
-      this.mapLayerImage = new T.TileLayer(this.mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
+      this.mapLayerImage = new T.TileLayer(this.mapImage, {
+        minZoom: 4,
+        maxZoom: 23,
+        zIndex: 12
+      })
     }
     this.map = new T.Map('map', {
       minZoom: 4,
@@ -1464,9 +1614,6 @@ export default {
     // this.tideList()
   },
   methods: {
-    rightIconClick() {
-      this.rightIcon = !this.rightIcon
-    },
     tideList() {
       var picker = this.defaultTime.split('-')
       var data = {
@@ -2284,7 +2431,14 @@ export default {
     //风险源绘制数据
     getRiskSourceMapDrawPage(riskSourceType) {
       this.removeOverLays(this.riverRiskPoints)
-      var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
+      var riskSourceLevel = qs.stringify(
+        {
+          riskSourceLevel: this.riskSourceLevel
+        },
+        {
+          indices: false
+        }
+      )
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
@@ -2332,7 +2486,14 @@ export default {
     },
     //右侧风险源绘制数据
     getRiskSourceMapDrawPageRight(riskSourceType) {
-      var riskSourceLevel = qs.stringify({ riskSourceLevel: this.riskSourceLevel }, { indices: false })
+      var riskSourceLevel = qs.stringify(
+        {
+          riskSourceLevel: this.riskSourceLevel
+        },
+        {
+          indices: false
+        }
+      )
       if (this.historyData) {
         var data = {
           projectId: this.$store.state.id,
@@ -2629,12 +2790,21 @@ export default {
       if (this.toolsCard) {
         if (this.markerTool) {
           this.markerTool.clear()
+          this.markerTool.close()
         }
         if (this.lineTool) {
           this.lineTool.clear()
+          this.lineTool.close()
         }
         if (this.polygonTool) {
           this.polygonTool.clear()
+          this.polygonTool.close()
+        }
+        if (this.polygonToolNum) {
+          this.polygonToolNum.close()
+        }
+        if (this.lineToolNum) {
+          this.lineToolNum.close()
         }
       }
       this.toolsCard = !this.toolsCard
@@ -2670,7 +2840,9 @@ export default {
         if (this.markerTool) {
           this.markerTool.clear()
         }
-        this.markerTool = new T.MarkTool(this.map, { follow: true })
+        this.markerTool = new T.MarkTool(this.map, {
+          follow: true
+        })
         this.markerTool.open()
         this.markerTool.addEventListener('mouseup', this.toolDrawn)
       } else if (index === 2) {
@@ -2692,11 +2864,15 @@ export default {
         this.polygonTool.addEventListener('draw', this.toolDrawn)
       } else if (index === 4) {
         // 工具-测面
-        this.polygonToolNum = new T.PolygonTool(this.map, { showLabel: true })
+        this.polygonToolNum = new T.PolygonTool(this.map, {
+          showLabel: true
+        })
         this.polygonToolNum.open()
       } else if (index === 5) {
         // 工具-测距
-        this.lineToolNum = new T.PolylineTool(this.map, { showLabel: true })
+        this.lineToolNum = new T.PolylineTool(this.map, {
+          showLabel: true
+        })
         this.lineToolNum.open()
         this.lineToolNum.setTips(`<p style="padding:0px;">单击确认起点, 双击结束绘制</p>`)
       }
@@ -3238,7 +3414,11 @@ export default {
           }&month=${picker[1]}&day=${picker[2]}&x={x}&y={y}&z={z}&X-TENANT-ID=${this.$store.state.tenantId}&projectId=${
             this.$store.state.id
           }&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
-          this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
+          this.mapLayerImage = new T.TileLayer(mapImage, {
+            minZoom: 4,
+            maxZoom: 23,
+            zIndex: 12
+          })
           this.map.addLayer(this.mapLayerImage)
         }
         this.tideList()
@@ -3369,7 +3549,11 @@ export default {
               }&month=${this.mapMonth}&day=${this.mapDay}&x={x}&y={y}&z={z}&X-TENANT-ID=${
                 this.$store.state.tenantId
               }&projectId=${this.$store.state.id}&Authorization=${Vue.ls.get(ACCESS_TOKEN)}`
-              this.mapLayerImage = new T.TileLayer(mapImage, { minZoom: 4, maxZoom: 23, zIndex: 12 })
+              this.mapLayerImage = new T.TileLayer(mapImage, {
+                minZoom: 4,
+                maxZoom: 23,
+                zIndex: 12
+              })
               this.map.addLayer(this.mapLayerImage)
             }
             if (this.sharedChecked && this.layerImageChange) {
@@ -3707,13 +3891,16 @@ export default {
       var mapWidth = document.getElementById('map').offsetWidth
       var mapHeight = document.getElementById('map').offsetHeight
       htmlToImage
-        .toPng(node, { width: mapWidth, height: mapHeight })
+        .toPng(node, {
+          width: mapWidth,
+          height: mapHeight
+        })
         .then(dataUrl => {
-          this.downloadFile('map' + this.getNowTime() + '.png', dataUrl)
-          window.nativeNodeSvg.style.transform = `translate3d(${window.transXXX}px, ${window.transYYY}px, 0px)`
           setTimeout(() => {
             this.canDownload = true
           }, 1500)
+          this.downloadFile('map' + this.getNowTime() + '.png', dataUrl)
+          window.nativeNodeSvg.style.transform = `translate3d(${window.transXXX}px, ${window.transYYY}px, 0px)`
         })
         .catch(function(error) {
           console.error('oops, something went wrong!', error)
@@ -3726,7 +3913,13 @@ export default {
       evt.initEvent('click', true, true) //initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为
       aLink.download = fileName
       aLink.href = URL.createObjectURL(blob)
-      aLink.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window })) //兼容火狐
+      aLink.dispatchEvent(
+        new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          view: window
+        })
+      ) //兼容火狐
     },
     //base64转blob
     base64ToBlob(code) {
@@ -3738,7 +3931,9 @@ export default {
       for (let i = 0; i < rawLength; ++i) {
         uInt8Array[i] = raw.charCodeAt(i)
       }
-      return new Blob([uInt8Array], { type: contentType })
+      return new Blob([uInt8Array], {
+        type: contentType
+      })
     },
     // 获取当前时间
     getNowTime() {
@@ -4335,7 +4530,10 @@ export default {
     },
     // 添加标注
     drawAllPoint(latlng, index, id) {
-      let markerTool = new T.Marker(latlng, { title: index, id: id })
+      let markerTool = new T.Marker(latlng, {
+        title: index,
+        id: id
+      })
       this.map.addOverLay(markerTool)
       markerTool.addEventListener('click', this.taskPointClick)
     },
@@ -4679,7 +4877,11 @@ export default {
             iconSize: new T.Point(41, 40),
             iconAnchor: new T.Point(21, 40)
           })
-          markerTool = new T.Marker(item.latlng, { icon: icon, title: item.name, id: item.id })
+          markerTool = new T.Marker(item.latlng, {
+            icon: icon,
+            title: item.name,
+            id: item.id
+          })
           this.map.addOverLay(markerTool)
           markerTool.addEventListener('click', this.panoramaPointClick)
         }
@@ -5166,7 +5368,9 @@ export default {
             </div>
           `
           let point = e.target.options.item.coordinate
-          this.markerInfoWin = new T.InfoWindow(html, { offset: new T.Point(0, -30) }) // 创建信息窗口对象
+          this.markerInfoWin = new T.InfoWindow(html, {
+            offset: new T.Point(0, -30)
+          }) // 创建信息窗口对象
           this.map.openInfoWindow(this.markerInfoWin, point) //开启信息窗口
         })
         .catch(err => {})
@@ -5210,7 +5414,10 @@ export default {
                 this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
               }
             } else {
-              markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+              markerTool = new T.Marker(item.line[0], {
+                title: item.innerName,
+                id: item.id
+              })
               markerTool.addEventListener('click', this.floatageClick)
               this.map.addOverLay(markerTool)
             }
@@ -5377,7 +5584,10 @@ export default {
                 this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
               }
             } else {
-              markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+              markerTool = new T.Marker(item.line[0], {
+                title: item.innerName,
+                id: item.id
+              })
               markerTool.addEventListener('click', this.sourceRiskClick)
               this.map.addOverLay(markerTool)
             }
@@ -5427,7 +5637,10 @@ export default {
                 )
               }
             } else {
-              markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+              markerTool = new T.Marker(item.polygon[0], {
+                title: item.innerName,
+                id: item.id
+              })
               markerTool.addEventListener('click', this.sourceRiskClick)
               this.map.addOverLay(markerTool)
             }
@@ -5525,7 +5738,11 @@ export default {
           })
           this.map.addOverLay(markerTool)
         } else {
-          markerTool = new T.Marker(item.latlng, { title: item.innerName, id: item.id, code: item.innerType.code })
+          markerTool = new T.Marker(item.latlng, {
+            title: item.innerName,
+            id: item.id,
+            code: item.innerType.code
+          })
           this.map.addOverLay(markerTool)
         }
         if (item.innerType.code == 'riskSource') {
@@ -5710,7 +5927,10 @@ export default {
                   this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
                 }
               } else {
-                markerTool = new T.Marker(item.line[0], { title: item.innerName, id: item.id })
+                markerTool = new T.Marker(item.line[0], {
+                  title: item.innerName,
+                  id: item.id
+                })
                 markerTool.addEventListener('click', this.sourceRiskClick)
                 this.map.addOverLay(markerTool)
               }
@@ -5760,7 +5980,10 @@ export default {
                   )
                 }
               } else {
-                markerTool = new T.Marker(item.polygon[0], { title: item.innerName, id: item.id })
+                markerTool = new T.Marker(item.polygon[0], {
+                  title: item.innerName,
+                  id: item.id
+                })
                 markerTool.addEventListener('click', this.sourceRiskClick)
                 this.map.addOverLay(markerTool)
               }
@@ -6085,7 +6308,11 @@ export default {
             iconSize: new T.Point(41, 40),
             iconAnchor: new T.Point(21, 40)
           })
-          let marker = new T.Marker(item.coordinate, { icon: icon, id: item.id, title: item.name })
+          let marker = new T.Marker(item.coordinate, {
+            icon: icon,
+            id: item.id,
+            title: item.name
+          })
           marker.addEventListener('click', this.taskPointClick)
           this.map.addOverLay(marker)
         }
@@ -6323,7 +6550,10 @@ export default {
     },
     // 添加标注
     drawAllPoint(latlng, index, id) {
-      let markerTool = new T.Marker(latlng, { title: index, id: id })
+      let markerTool = new T.Marker(latlng, {
+        title: index,
+        id: id
+      })
       this.map.addOverLay(markerTool)
       markerTool.addEventListener('click', this.taskPointClick)
     },
@@ -6359,11 +6589,18 @@ export default {
             range: [2, 400]
           }
         ]
-        let marker = new T.Marker(item.latlng, { icon: icon, id: item.id, title: item.name })
+        let marker = new T.Marker(item.latlng, {
+          icon: icon,
+          id: item.id,
+          title: item.name
+        })
         arrayObj.push(marker)
         marker.addEventListener('click', this.taskImageClick)
       }
-      this.MarkerClusterer = new T.MarkerClusterer(this.map, { markers: arrayObj, styles: styles })
+      this.MarkerClusterer = new T.MarkerClusterer(this.map, {
+        markers: arrayObj,
+        styles: styles
+      })
     },
     // 任务照片点击
     taskImageClick(e) {
@@ -6442,7 +6679,9 @@ export default {
       if (this.cp) {
         this.cp.removeEvent()
       }
-      this.cp = new T.CoordinatePickup(this.map, { callback: this.getLngLat })
+      this.cp = new T.CoordinatePickup(this.map, {
+        callback: this.getLngLat
+      })
       this.cp.addEvent()
     },
     getLngLat(lnglat) {
@@ -6581,20 +6820,24 @@ export default {
   padding: 0 4px;
   border-radius: 3px;
   box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.5);
+
   span {
     color: rgba(255, 0, 0, 0.8);
     font-size: 14px;
   }
 }
+
 .supervise {
   position: relative;
   height: calc(100vh - 64px);
   width: 100vw;
 }
+
 .vmap {
   width: 100%;
   height: 100%;
 }
+
 .showMap {
   position: absolute;
   top: 0;
@@ -6603,14 +6846,17 @@ export default {
   z-index: 555;
   // display: none;
 }
+
 .main {
   width: 100%;
   height: calc(100vh - 64px);
 }
+
 .lmap {
   width: 100%;
   height: 95%;
 }
+
 .swipe {
   position: absolute;
   bottom: 10px;
@@ -6618,6 +6864,7 @@ export default {
   z-index: 888;
   width: 100%;
 }
+
 @media (min-width: 800px) {
   .half {
     padding: 0 10px;
@@ -6626,23 +6873,25 @@ export default {
     float: left;
   }
 }
+
 #map {
   width: 100%;
   height: 100%;
   position: relative;
 }
+
 .weather {
   position: absolute;
-  left: 80px;
+  left: 60px;
   top: 10px;
-  width: 400px;
-  height: 65px;
+  width: 220px;
+  height: 50px;
   z-index: 888;
-  background-color: rgba(255, 255, 255, 1);
+  background-color: rgba(24, 44, 117, 0.95);
+  color: white;
   opacity: 0.9;
   border-radius: 10px;
-  border: 1px solid rgb(204, 204, 204);
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
   padding: 13px;
   display: flex;
   display: -webkit-flex;
@@ -6652,14 +6901,19 @@ export default {
   -webkit-align-items: center;
   justify-items: center;
   -webkit-justify-items: center;
+
   img {
-    width: 40px;
+    width: 32px;
+    height: 32px;
   }
-  h3 {
-    font-size: 45px;
-    line-height: 45px;
+
+  p {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 20px;
     margin: 0;
   }
+
   .text {
     width: 225px;
     height: 100%;
@@ -6668,20 +6922,24 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     -webkit-justify-content: space-between;
+
     div {
       font-size: 15px;
       line-height: 17px;
       font-weight: 600;
       color: rgba(45, 45, 45, 1);
       margin: 0;
+
       .weather_detail {
         margin-left: 14px;
       }
+
       .date {
         margin-left: 16px;
         color: rgba(140, 159, 173, 1);
       }
     }
+
     p {
       font-weight: 600;
       color: rgba(45, 45, 45, 1);
@@ -6690,36 +6948,29 @@ export default {
       margin: 0;
     }
   }
+
   .weather_right {
     position: relative;
-    width: 46px;
+    width: 40px;
     height: 100%;
     border-left: 1px solid rgba(216, 216, 216, 0.56);
     display: flex;
     display: -webkit-flex;
     align-items: center;
     -webkit-align-items: center;
-    padding-left: 10px;
+    padding-left: 6px;
+
     .right_icon {
       font-size: 18px;
       padding: 10px;
       transition: 0.5s;
-      -moz-transition: 0.5s; /* Firefox 4 */
-      -webkit-transition: 0.5s; /* Safari and Chrome */
+      -moz-transition: 0.5s;
+      /* Firefox 4 */
+      -webkit-transition: 0.5s;
+      /* Safari and Chrome */
     }
   }
-  // .weather_right:hover {
-  //   .weather_alert {
-  //     display: block;
-  //   }
-  //   .right_icon {
-  //     color: #1890ff;
-  //     transform: rotate(180deg);
-  //     -ms-transform: rotate(180deg); /* IE 9 */
-  //     -moz-transform: rotate(180deg); /* Firefox */
-  //     -webkit-transform: rotate(180deg); /* Safari 和 Chrome */
-  //   }
-  // }
+
   .right_icon_active {
     color: #1890ff;
     transform: rotate(180deg);
@@ -6730,6 +6981,7 @@ export default {
     -webkit-transform: rotate(180deg);
     /* Safari 和 Chrome */
   }
+
   .weather_alert {
     display: block;
     position: absolute;
@@ -6737,6 +6989,7 @@ export default {
     top: -13px;
     z-index: 888;
     padding-left: 20px;
+
     .weather_content {
       width: 500px;
       height: 500px;
@@ -6744,10 +6997,12 @@ export default {
       box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.4);
       border-radius: 10px;
       padding: 10px;
+
       .weather_basic {
         width: 100%;
         display: flex;
         flex-wrap: wrap;
+
         .weather_basic_content {
           width: 50%;
           color: #595959;
@@ -6755,6 +7010,7 @@ export default {
           margin-bottom: 12px;
         }
       }
+
       .weather24 {
         padding: 15px 9px;
         box-sizing: border-box;
@@ -6763,6 +7019,7 @@ export default {
         border-bottom: 1px solid rgba(216, 216, 216, 0.5);
         font-size: 12px;
         display: flex;
+
         .time24 {
           width: 30px;
           margin-right: 22px;
@@ -6773,14 +7030,16 @@ export default {
     }
   }
 }
+
 .time_line {
   position: absolute;
-  // left: 0;
   top: 0;
-  width: 68px;
+  width: 60px;
   height: calc(100% - 40px);
-  background-color: rgba(255, 255, 255, 0.9);
+  /* background-color: rgba(255, 255, 255, 0.9); */
   z-index: 888;
+  /* margin-left: 10px; */
+
   ul {
     width: 100%;
     height: calc(100% - 35px);
@@ -6788,79 +7047,115 @@ export default {
     margin: 0;
     padding: 0;
     list-style-type: none;
+
     li {
       width: 100%;
       position: relative;
       font-size: 0;
       text-align: center;
+
       .time_item {
         position: relative;
         display: block;
         width: 100%;
         cursor: pointer;
         text-align: center;
-        padding: 5px 0;
+        padding: 2px 0;
+
         .line_style {
           display: block;
           text-align: center;
           width: 20px;
           margin: auto;
+
           .line {
             width: 20px;
-            height: 2px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
           }
+
           .time_bg_red {
-            background-color: rgb(249, 56, 56);
+            background-color: rgba(247, 255, 0, 1);
           }
+
           .time_bg_blue {
-            background-color: rgb(116, 196, 73);
+            background-color: rgba(12, 204, 243, 1);
           }
+
           .time_bg_gray {
-            background-color: rgb(204, 204, 204);
-            width: 4px;
+            background-color: rgba(255, 255, 255, 1);
           }
         }
+
         p {
           display: none;
           margin: 0;
           width: 100%;
           font-size: 12px;
           text-align: center;
+
           span {
             display: inline-block;
             width: 20px;
             height: 20px;
-            color: white;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            color: #333333;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
           }
         }
+
         .time_bg_red {
-          background-color: rgb(249, 56, 56);
+          background-color: rgba(247, 255, 0, 1);
         }
+
         .time_bg_blue {
-          background-color: rgb(116, 196, 73);
+          background-color: rgba(12, 204, 243, 1);
         }
+
         .time_bg_gray {
-          background-color: rgb(204, 204, 204);
+          background-color: rgba(255, 255, 255, 1);
         }
       }
+
       .time_item:hover {
         p {
           display: block;
+          border-radius: 50%;
+
+          span {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+          }
         }
+
         .line_style {
           display: none;
         }
       }
+
       .time_item_clicked {
         p {
           display: block;
+          border-radius: 50%;
         }
+
         .line_style {
           display: none;
         }
       }
     }
   }
+
   .time_set {
     position: absolute;
     bottom: 4px;
@@ -6869,9 +7164,11 @@ export default {
     text-align: center;
   }
 }
+
 .time_line_right {
-  right: 0;
+  right: 0px;
 }
+
 .river_risk_alert {
   position: absolute;
   right: 220px;
@@ -6882,6 +7179,7 @@ export default {
   border-radius: 4px;
   box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.5);
 }
+
 .accordion_alert {
   position: absolute;
   right: 10px;
@@ -6894,6 +7192,7 @@ export default {
   border-radius: 4px;
   box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.5);
 }
+
 .tools_card {
   position: absolute;
   left: 0;
@@ -6901,11 +7200,12 @@ export default {
   bottom: 10px;
   margin: auto;
   text-align: center;
-  width: 278px;
+  width: 396px;
   background-color: white;
   z-index: 889;
   border-radius: 4px;
   box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.5);
+
   .tools_card_close {
     position: absolute;
     top: -10px;
@@ -6913,6 +7213,7 @@ export default {
     z-index: 890;
   }
 }
+
 .tool_card {
   position: absolute;
   right: 10px;
@@ -6929,6 +7230,7 @@ export default {
   right: 200px;
   top: 2px;
 }
+
 .time_quantum {
   position: absolute;
   left: 10px;
@@ -6939,48 +7241,53 @@ export default {
   border-radius: 4px;
   background-color: rgba(255, 255, 255, 0.9);
 }
+
 .compass_pointer {
   position: absolute;
   right: 10px;
   top: 10px;
-  width: 56px;
-  height: 56px;
+  width: 90px;
+  height: 90px;
   z-index: 880;
   border-radius: 50%;
-  padding: 13px;
-  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
-  background: white url('../../assets/img/leftRightArrows.png') no-repeat center center / 80%;
+  padding: 24px;
+  /* box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4); */
+  background: url('../../assets/img/leftRightArrows.png') no-repeat center center / 80%;
   text-align: center;
+
   .pointer {
     width: 30px;
-    height: 30px;
+    height: 44px;
     transform: rotate(0deg);
   }
 }
+
 .menu {
   position: fixed;
   right: 20px;
   bottom: 10px;
-  width: 36px;
+  width: 40px;
   z-index: 888;
   margin: 0;
   padding: 0;
 
   list-style-type: none;
+
   li {
     width: 100%;
-    background: white;
+    background: rgba(24, 44, 117, 1);
     border-radius: 50%;
-
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
     margin-top: 10px;
+
     img {
       width: 100%;
-      height: 36px;
-      padding: 10px;
+      height: 40px;
+      padding: 5px;
     }
   }
 }
+
 .menu_right {
   right: 80px;
 }
@@ -6991,8 +7298,10 @@ export default {
   margin: 0;
   padding: 0;
   list-style-type: none;
+
   .phone_list {
     padding: 0;
+
     img {
       width: 100%;
     }
@@ -7002,6 +7311,7 @@ export default {
 .ant-col-6 {
   text-align: right;
 }
+
 .doubleBall {
   position: absolute;
   left: 80px;
@@ -7012,6 +7322,7 @@ export default {
   font-weight: 600;
   background: #fff;
 }
+
 .doubleBall1 {
   position: absolute;
   left: 855px;
