@@ -213,7 +213,8 @@ export default {
       */
       // this.$router.push({ name: 'analysis' })
       this.$router.push({
-        path: window.localStorage.getItem('DefaultRoutePath')
+        // path: window.localStorage.getItem('DefaultRoutePath')
+        path: '/home'
       })
       // 延迟 1 秒显示欢迎信息
       setTimeout(() => {
@@ -289,7 +290,7 @@ export default {
       transition: color 0.3s;
 
       &:hover {
-        color: #1890ff;
+        color: #41B1D4;
       }
     }
 
