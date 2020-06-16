@@ -9,9 +9,9 @@
       </a>-->
       <!-- nav通知 -->
       <!-- <notice-icon class="action"/> -->
-      <!-- 河流选择 -->
+      <!-- 河流项目选择 -->
       <river-select></river-select>
-      <a-dropdown>
+      <a-dropdown :trigger="['click']">
         <span class="action ant-dropdown-link user-dropdown-menu">
           <a-avatar class="avatar" size="small" :src="avatar" />
           <span>{{ nickname }}</span>
