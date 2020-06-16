@@ -9,6 +9,7 @@
     :centered="true"
     :footer="null"
     :maskClosable="false"
+    :mask="false"
     :destroyOnClose="true"
   >
     <a-spin :spinning="confirmLoading">

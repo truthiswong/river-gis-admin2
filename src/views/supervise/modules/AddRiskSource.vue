@@ -8,6 +8,7 @@
     @cancel="handleCancel"
     :centered="true"
     :maskClosable="false"
+    :mask="false"
     :footer="null"
   >
     <a-spin :spinning="confirmLoading">

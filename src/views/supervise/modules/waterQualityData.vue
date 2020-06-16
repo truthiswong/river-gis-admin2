@@ -9,6 +9,7 @@
     :width="1000"
     :centered="true"
     :maskClosable="false"
+    :mask="false"
   >
     <el-form :inline="true"  class="demo-form-inline">
       <el-form-item label="断面编号:">

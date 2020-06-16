@@ -5,9 +5,9 @@
     :visible="visible"
     @cancel="handleCancel"
     :confirmLoading="confirmLoading"
-    :mask="true"
     :maskClosable="false"
     :centered="true"
+    :mask="false"
     :footer="null"
   >
     <a-spin :spinning="confirmLoading">

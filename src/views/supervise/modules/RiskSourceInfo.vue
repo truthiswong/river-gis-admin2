@@ -6,7 +6,7 @@
     :confirmLoading="confirmLoading"
     @ok="handleSubmit"
     @cancel="handleCancel"
-    :mask="true"
+    :mask="false"
     :centered="true"
     class="comment_model"
     :bodyStyle="{margin: 0, left:0}"
