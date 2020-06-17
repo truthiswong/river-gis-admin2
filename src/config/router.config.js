@@ -148,6 +148,12 @@ export const asyncRouterMap = [
             component: () => import('@/views/settings/staffManage'),
             meta: { title: '用户管理', keepAlive: false, permission: [ 'user' ] }
           },
+          {
+            path: '/settings/DataStatistics',
+            name: 'DataStatistics',
+            component: () => import('@/views/settings/DataStatistics'),
+            meta: { title: '数据统计汇总', keepAlive: false, permission: [ 'task' ] }
+          },
         ]
       },
       {
