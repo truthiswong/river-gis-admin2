@@ -7314,22 +7314,24 @@ export default {
 
 .doubleBall {
   position: absolute;
-  left: 80px;
+  left: 70px;
   top: 8px;
-  z-index: 99999;
-  color: #000;
-  padding: 5px;
+  z-index: 998;
+  color: #333;
+  padding: 4px 10px;
+  border-radius: 4px;
   font-weight: 600;
   background: #fff;
 }
 
 .doubleBall1 {
   position: absolute;
-  left: 855px;
+  right: 70px;
   top: 8px;
-  z-index: 99999;
-  color: #000;
-  padding: 5px;
+  z-index: 998;
+  color: #333;
+  padding: 4px 10px;
+  border-radius: 4px;
   font-weight: 600;
   background: #fff;
 }
