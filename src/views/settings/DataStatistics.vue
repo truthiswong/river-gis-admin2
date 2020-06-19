@@ -200,6 +200,7 @@ export default {
     },
     onExport(index) {
       let dataurl = ''
+      return
       if (index == 1) {
         // 巡河汇总表
         if (this.dateString1.length <= 0) {
