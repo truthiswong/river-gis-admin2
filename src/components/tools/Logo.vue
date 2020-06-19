@@ -1,6 +1,6 @@
 <template>
   <div class="logo" title="城市河道水质风险评估系统">
-    <router-link :to="{name:'dashboard'}">
+    <router-link :to="{name:'home'}">
       <img src="../../assets/logo.png" alt="logo">
       <h1 v-if="showTitle">{{ title }}</h1>
     </router-link>
