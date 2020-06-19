@@ -1,6 +1,5 @@
 <template>
   <a-modal
-    :title="'水体名称:'+name"
     :visible="visible"
     :confirmLoading="confirmLoading"
     @ok="handleSubmit"
@@ -10,7 +9,14 @@
     :centered="true"
     :maskClosable="false"
     :mask="false"
+    class="custom_modal"
   >
+    <template slot="closeIcon">
+      <a-icon type="close-circle" />
+    </template>
+    <template slot="title">
+      <span>水体名称{{name}}</span>
+    </template>
     <el-form :inline="true"  class="demo-form-inline">
       <el-form-item label="断面编号:">
         <div>{{list.number}}</div>

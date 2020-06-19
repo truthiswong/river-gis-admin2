@@ -1066,14 +1066,16 @@
     <!-- 河道信息弹框 -->
     <a-modal
       :visible="infoVisible"
-      :closable="false"
       :mask="false"
       :width="400"
-      class="cmModal"
+      class="cmModal custom_modal"
       @ok="showOk"
       :confirmLoading="confirmLoading"
       @cancel="showCancel"
     >
+      <template slot="closeIcon">
+        <a-icon type="close-circle" />
+      </template>
       <template slot="title">
         <span>河道信息</span>
       </template>
@@ -1084,14 +1086,16 @@
     <!-- 推荐巡河方案 -->
     <a-modal
       :visible="infoVisibleRecommend"
-      :closable="false"
       :mask="false"
       :width="400"
-      class="cmModal"
+      class="cmModal custom_modal"
       @ok="recommendOk"
       :confirmLoading="confirmLoading"
       @cancel="recommendCancel"
     >
+      <template slot="closeIcon">
+        <a-icon type="close-circle" />
+      </template>
       <template slot="title">
         <span>河道信息</span>
       </template>
@@ -1102,13 +1106,16 @@
     <!-- 添加调查点信息弹框 -->
     <a-modal
       :visible="inspectVisible"
-      :closable="false"
       :mask="false"
       :width="400"
+      class="custom_modal"
       @ok="handleOk"
       :confirmLoading="confirmLoading"
       @cancel="handleCancel"
     >
+      <template slot="closeIcon">
+        <a-icon type="close-circle" />
+      </template>
       <template slot="title">
         <span>调查点编辑/添加</span>
       </template>

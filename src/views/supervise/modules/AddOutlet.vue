@@ -1,17 +1,22 @@
 <template>
   <a-modal
-    title="排口"
     :width="980"
     :visible="visible"
     :confirmLoading="confirmLoading"
     @ok="saveClick"
     @cancel="handleCancel"
     :centered="true"
-    :footer="null"
     :maskClosable="false"
     :mask="false"
     :destroyOnClose="true"
+    class="custom_modal"
   >
+    <template slot="closeIcon">
+        <a-icon type="close-circle" />
+      </template>
+      <template slot="title">
+        <span>排口</span>
+      </template>
     <a-spin :spinning="confirmLoading">
       <a-form class="from">
         <h3>基本信息</h3>
@@ -147,12 +152,11 @@
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="首次发现时间">
               <a-date-picker
-                :allowClear='false'
-                   :value="moment(list.discoveryTime, 'YYYY-MM-DD')"
-                    @change="onChange1"
-                    style="width: 100%"
-                  />
-                   
+                :allowClear="false"
+                :value="moment(list.discoveryTime, 'YYYY-MM-DD')"
+                @change="onChange1"
+                style="width: 100%"
+              />
             </a-form-item>
           </a-col>
         </a-row>
@@ -249,7 +253,7 @@
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="建成时间">
               <a-date-picker
-                :allowClear='false'
+                :allowClear="false"
                 :value="moment(list.activateTime, 'YYYY-MM-DD')"
                 @change="onChange"
                 style="width: 100%"
@@ -304,29 +308,40 @@
                 <a-button type="primary" icon="plus" v-show="jurisdiction">上传</a-button>
               </el-upload>
               <div style="display:flex;flex-wrap:wrap">
-                 <span >
-                  <viewer :images="attachmentJpg" >
-                    <img v-for="item in attachmentJpg" :key="item.id" :src="item.media" alt style="width:70px;height:70px;margin:0 4px 4px 0;"  />
-                  </viewer >
-                  <div style="width:70px;margin:0 4px 4px 0;display: inline-block"  v-for="item in attachmentJpg" :key="item.id" v-show="jurisdiction"> 
-                     <a-popconfirm
-                        title="确定删除吗？"
-                        @confirm="mediaDelete(item.id)"
-                      >
-                        <a-icon slot="icon" type="question-circle-o" style="color: red" />
-                        <a-button type="primary" >删除</a-button>
-                      </a-popconfirm>
+                <span>
+                  <viewer :images="attachmentJpg">
+                    <img
+                      v-for="item in attachmentJpg"
+                      :key="item.id"
+                      :src="item.media"
+                      alt
+                      style="width:70px;height:70px;margin:0 4px 4px 0;"
+                    />
+                  </viewer>
+                  <div
+                    style="width:70px;margin:0 4px 4px 0;display: inline-block"
+                    v-for="item in attachmentJpg"
+                    :key="item.id"
+                    v-show="jurisdiction"
+                  >
+                    <a-popconfirm title="确定删除吗？" @confirm="mediaDelete(item.id)">
+                      <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                      <a-button type="primary">删除</a-button>
+                    </a-popconfirm>
                   </div>
-                 
                 </span>
               </div>
-             
             </a-form-item>
           </a-col>
         </a-row>
         <h3 style="margin-top: 10px;">
           督办单
-          <a-button size="small" style="margin-left:10px;" @click="addSheet()" v-show="jurisdiction">添加</a-button>
+          <a-button
+            size="small"
+            style="margin-left:10px;"
+            @click="addSheet()"
+            v-show="jurisdiction"
+          >添加</a-button>
         </h3>
         <div v-show="sheet" style="margin-bottom:20px;">
           <a-select
@@ -363,23 +378,24 @@
               <a v-show="jurisdiction">删除</a>
             </a-popconfirm>
             <a-divider type="vertical" />
-            <a :href="record.attachment" :download="record.documentName"   target="_blank" >下载</a>
+            <a :href="record.attachment" :download="record.documentName" target="_blank">下载</a>
           </template>
         </a-table>
       </a-form>
-      <a-divider orientation="left"></a-divider>
-      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
-        <a-col :span="3">
-          <a-button block @click="handleCancel">取消</a-button>
-        </a-col>
-        <a-col :span="3">
-          <a-button block @click="handleDelete">删除</a-button>
-        </a-col>
-        <a-col :span="3">
-          <a-button block @click="saveClick">保存</a-button>
-        </a-col>
-      </a-row>
     </a-spin>
+    <template slot="footer">
+        <a-row style="width:100%;" type="flex" justify="space-around" v-show="jurisdiction">
+          <a-col :span="3">
+            <a-button block @click="handleCancel">取消</a-button>
+          </a-col>
+          <a-col :span="3">
+            <a-button block @click="handleDelete">删除</a-button>
+          </a-col>
+          <a-col :span="3">
+            <a-button block @click="saveClick">保存</a-button>
+          </a-col>
+        </a-row>
+      </template>
   </a-modal>
 </template>
 
@@ -404,8 +420,8 @@ import {
 export default {
   data() {
     return {
-       jurisdiction:this.$store.state.operationPermission[1],//权限
-       currentAreaDisabled:false,
+      jurisdiction: this.$store.state.operationPermission[1], //权限
+      currentAreaDisabled: false,
       sheet: false,
       sheetList: [],
       sheetId: [],
@@ -442,7 +458,7 @@ export default {
         linktel: '',
         blockoffStatus: '',
         statement: '',
-        discoveryTime:moment(new Date()).format('YYYY-MM-DD'),
+        discoveryTime: moment(new Date()).format('YYYY-MM-DD'),
         activateTime: moment(new Date()).format('YYYY-MM-DD'),
         registrationState: '',
         approveState: '',
@@ -546,7 +562,6 @@ export default {
           if (arr.river.supervisoryLevel) {
             this.list.supervisoryLevel = arr.river.supervisoryLevel.name
           }
-          
         }
         if (arr.street) {
           this.list.streetId = arr.street.id
@@ -556,15 +571,15 @@ export default {
           this.list.code = arr.river.code
         }
         this.list.controller = arr.river.controller
-        
+
         if (arr.river.priority == true) {
           this.list.priority = '重点'
         } else if (arr.river.priority == false) {
           this.list.priority = '非重点'
         }
         if (arr.coordinate) {
-          this.list.lat=arr.coordinate[0]
-          this.list.lng=arr.coordinate[1]
+          this.list.lat = arr.coordinate[0]
+          this.list.lng = arr.coordinate[1]
         }
         this.list.tworiver = arr.street.controller
         this.list.address = arr.address
@@ -573,7 +588,7 @@ export default {
         if (arr.type) {
           this.list.type = arr.type.code
         }
-        
+
         this.list.landmarkLocation = arr.landmarkLocation
         this.list.accurateLocation = arr.accurateLocation
         this.list.innerCode = arr.innerCode
@@ -581,7 +596,7 @@ export default {
         if (arr.letway) {
           this.list.letway = arr.letway.code
         }
-        
+
         this.list.enterRiverWay = arr.enterRiverWay
         this.list.enterRiverSize = arr.enterRiverSize
         this.list.yearLetSize = arr.yearLetSize
@@ -603,7 +618,7 @@ export default {
         this.list.innerName = arr.innerName
         this.list.functionName = arr.functionName
         mediaList(this.list.drawId).then(res => {
-          this.attachmentJpg = res.data.slice(0,3)
+          this.attachmentJpg = res.data.slice(0, 3)
         })
       })
     },
@@ -721,7 +736,7 @@ export default {
     },
     saveClick() {
       let data = this.list
-      data.coordinate=this.list.lat+','+this.list.lng
+      data.coordinate = this.list.lat + ',' + this.list.lng
       data.billId = this.dataSourceId.join(',')
       mapdrawDischargeSave(data)
         .then(res => {
@@ -739,7 +754,7 @@ export default {
       this.fileList = []
       mediaList(this.list.drawId).then(res => {
         console.log(res.data)
-        this.attachmentJpg = res.data.slice(0,3)
+        this.attachmentJpg = res.data.slice(0, 3)
       })
     },
     handleRemove(err) {
@@ -751,7 +766,7 @@ export default {
         .then(res => {
           this.$message.success('删除成功')
           mediaList(this.list.drawId).then(res => {
-            this.attachmentJpg = res.data.slice(0,3)
+            this.attachmentJpg = res.data.slice(0, 3)
           })
         })
         .catch(err => {

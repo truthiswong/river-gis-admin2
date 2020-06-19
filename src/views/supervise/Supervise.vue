@@ -854,6 +854,7 @@
       @cancel="UAVPhotosOk"
       :maskClosable="false"
       :mask="false"
+      class="custom_modal"
     >
       <div>点击坐标: {{UAVPhotosCoordinate}}</div>
       <div style="margin-top:10px;max-height: 600px;overflow-y: scroll;">
@@ -872,6 +873,7 @@
       @cancel="otherCancel"
       :maskClosable="false"
       :mask="false"
+      class="custom_modal"
     >
       <span style="margin: 0 0 0 80px;">坐标: {{otherLatlng.lat}},{{otherLatlng.lng}}</span>
       <a-form class="from" style="margin-top:20px">
@@ -882,8 +884,9 @@
           <a-input placeholder v-model="otherModalList.locationName" style="width:200px" />
         </a-form-item>
       </a-form>
+      <div slot="footer">
       <a-row
-        style="width:100%; margin-top:10px;"
+        style="width:100%;"
         type="flex"
         justify="space-around"
         v-show="jurisdiction"
@@ -898,6 +901,7 @@
           <a-button block @click="otherOk">保存</a-button>
         </a-col>
       </a-row>
+    </div>
     </a-modal>
   </div>
 </template>
@@ -7200,7 +7204,7 @@ export default {
   bottom: 10px;
   margin: auto;
   text-align: center;
-  width: 396px;
+  width: 400px;
   background-color: white;
   z-index: 889;
   border-radius: 4px;

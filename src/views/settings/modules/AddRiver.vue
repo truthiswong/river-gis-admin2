@@ -1,6 +1,5 @@
 <template>
   <a-modal
-    title="添加河道"
     :width="980"
     :visible="visible"
     :confirmLoading="confirmLoading"
@@ -9,8 +8,14 @@
     @cancel="handleCancel"
     :mask="true"
     :centered="true"
-    :footer="null"
+    class="custom_modal"
   >
+    <template slot="closeIcon">
+      <a-icon type="close-circle" />
+    </template>
+    <template slot="title">
+      <span>添加河道</span>
+    </template>
     <a-spin :spinning="confirmLoading">
       <a-form class="from">
         <p>基础信息</p>
@@ -258,28 +263,17 @@
           </a-col>
         </a-row>
       </a-form>
-      <a-divider orientation="left"></a-divider>
-      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
-        <!-- <a-button-group>
-            <a-button>取消</a-button>
-            <a-button>保存</a-button>
-            <a-button>修改河道区域</a-button>
-            <a-button>关闭河道</a-button>
-        </a-button-group>-->
+    </a-spin>
+    <template slot="footer">
+      <a-row style="width:100%;" type="flex" justify="space-around" v-show="jurisdiction">
         <a-col :span="6">
           <a-button block @click="handleCancel">取消</a-button>
         </a-col>
         <a-col :span="6">
           <a-button block @click="saveRiver" >保存</a-button>
         </a-col>
-        <!-- <a-col :span="3">
-            <a-button block>修改河道区域</a-button>
-          </a-col>
-          <a-col :span="3">
-            <a-button block>关闭河道</a-button>
-        </a-col>-->
       </a-row>
-    </a-spin>
+    </template>
   </a-modal>
 </template>
 

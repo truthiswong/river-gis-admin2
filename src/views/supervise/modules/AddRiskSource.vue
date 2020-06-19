@@ -1,6 +1,5 @@
 <template>
   <a-modal
-    title="风险源"
     :width="980"
     :visible="visible"
     :confirmLoading="confirmLoading"
@@ -9,8 +8,14 @@
     :centered="true"
     :maskClosable="false"
     :mask="false"
-    :footer="null"
+    class="custom_modal"
   >
+    <template slot="closeIcon">
+      <a-icon type="close-circle" />
+    </template>
+    <template slot="title">
+      <span>风险源</span>
+    </template>
     <a-spin :spinning="confirmLoading">
       <a-form class="from" :form="form">
         <h3>名称</h3>
@@ -304,13 +309,9 @@
           </template>
         </a-table>
       </a-form>
-      <a-divider orientation="left"></a-divider>
-      <a-row
-        style="width:100%; margin-top:10px;"
-        type="flex"
-        justify="space-around"
-        v-show="jurisdiction"
-      >
+    </a-spin>
+    <template slot="footer">
+      <a-row style="width:100%;" type="flex" justify="space-around" v-show="jurisdiction">
         <a-col :span="3">
           <a-button block @click="handleCancel">取消</a-button>
         </a-col>
@@ -321,7 +322,7 @@
           <a-button block @click="saveClick">保存</a-button>
         </a-col>
       </a-row>
-    </a-spin>
+    </template>
   </a-modal>
 </template>
 

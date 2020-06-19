@@ -1,6 +1,5 @@
 <template>
   <a-modal
-    :title="name +'信息'"
     :width="450"
     :visible="visible"
     :confirmLoading="confirmLoading"
@@ -8,11 +7,16 @@
     @cancel="handleCancel"
     :mask="false"
     :centered="true"
-    class="comment_model"
+    class="comment_model custom_modal"
     :bodyStyle="{margin: 0, left:0}"
-    :footer="null"
     :maskClosable="false"
   >
+    <template slot="closeIcon">
+      <a-icon type="close-circle" />
+    </template>
+    <template slot="title">
+      <span>{{name}}信息</span>
+    </template>
     <div v-show="show">
       <a-row>
         <a-col :span="12">
@@ -36,8 +40,8 @@
         style
       >
         <a-list-item slot="renderItem" slot-scope="item" class="comment_list">
-          <a-comment  :avatar="item.avatar">
-            <p slot='author' style="width:50px;padding:0;margin:0;color:#000000">{{item.author}}</p>
+          <a-comment :avatar="item.avatar">
+            <p slot="author" style="width:50px;padding:0;margin:0;color:#000000">{{item.author}}</p>
             <div class="comment_level">
               <p
                 v-show="code == 'riskSource'"
@@ -47,7 +51,7 @@
             </div>
             <p slot="content" style="ma">{{'管理建议: ' + item.comment}}</p>
             <div class="comment_img" v-show="item.imgList.length > 0">
-              <viewer :images="item.imgList" >
+              <viewer :images="item.imgList">
                 <img v-for="img in item.imgList" :key="img" :src="img" :alt="img" />
               </viewer>
             </div>
@@ -56,9 +60,14 @@
                 <a-tooltip slot="datetime" :title="item.datetime">
                   <span>{{item.datetime}}</span>
                 </a-tooltip>
-                <a-popconfirm title="确定删除吗？" @confirm="confirmDelete(item.id)" @cancel="cancelDelete" v-show="jurisdiction">
+                <a-popconfirm
+                  title="确定删除吗？"
+                  @confirm="confirmDelete(item.id)"
+                  @cancel="cancelDelete"
+                  v-show="jurisdiction"
+                >
                   <a-icon slot="icon" type="question-circle-o" style="color: red" />
-                  <a-button size="small" >删除</a-button>
+                  <a-button size="small">删除</a-button>
                 </a-popconfirm>
               </div>
             </template>
@@ -127,11 +136,18 @@
 import Vue from 'vue'
 import moment from 'moment'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-import { riskDetails, dischargeDetails, floatageDetails, commentMapdraw, commentMapdrawSave, commentRemove } from '@/api/login'
+import {
+  riskDetails,
+  dischargeDetails,
+  floatageDetails,
+  commentMapdraw,
+  commentMapdrawSave,
+  commentRemove
+} from '@/api/login'
 export default {
   data() {
     return {
-      jurisdiction:this.$store.state.operationPermission[1],//权限
+      jurisdiction: this.$store.state.operationPermission[1], //权限
       name: '',
       fileList: [],
       code: '',
@@ -253,7 +269,7 @@ export default {
           if (arr.river) {
             arr.river = arr.river.name
           }
-          
+
           this.list = arr
         })
       }
@@ -295,7 +311,6 @@ export default {
           if (v.creator) {
             v.author = v.creator.name
           }
-          
         })
         this.data = res.data.data
       })
@@ -375,9 +390,7 @@ export default {
         this.getCommentMapdraw()
       })
     },
-    cancelDelete() {
-
-    },
+    cancelDelete() {},
     handleCancel() {
       this.show = true
       this.show_type = false
