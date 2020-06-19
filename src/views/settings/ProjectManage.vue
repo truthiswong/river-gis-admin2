@@ -342,10 +342,12 @@ export default {
       this.equipmentList.id = row.id
       // this.equipmentList.projectParentName = projectParentName
       this.equipmentList.projectName = row.name
+      this.equipmentList.latlng = `${row.coordinate[0]}, ${row.coordinate[1]}`
       this.equipmentList.number = row.interval.code
       this.addProject()
     },
     handleOk1(e) {
+      console.log(this.equipmentList.latlng)
       if (!this.equipmentList.projectName) {
         this.$message.error('项目名不能为空')
       } else if (!this.equipmentList.latlng) {
