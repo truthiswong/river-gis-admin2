@@ -615,19 +615,36 @@ body {
 .setting-drawer-index-handle {
   display: none !important;
 }
+
 // 自定义模态框样式
 .custom_modal {
   .ant-modal-content {
-    background: rgba(151, 145, 136, 0.9);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    z-index: 9;
+    // background: url("https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2798491980,1963709037&fm=26&gp=0.jpg") no-repeat fixed;
+    // background-size: 100% 100%;
+    background: rgba(151, 145, 136, 0);
+    border: 1px solid rgba(46, 64, 129, 1);
+    // box-shadow: 0px 0px 4px 1px #2e4081;
   }
 
   .ant-modal-content::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(151, 145, 136, 0.95);
     filter: blur(2px);
+    z-index: -1;
   }
 
   .ant-modal-header {
     background: rgba(151, 145, 136, 0);
     border-bottom: 1px solid #2E4081;
+
     .ant-modal-title {
       color: #2E4081;
     }
@@ -637,8 +654,114 @@ body {
     color: #2E4081;
   }
 
+  .ant-modal-close:hover {
+    color: #00ccff;
+  }
+
   .ant-modal-footer {
     border-top: 1px solid #2E4081;
+
+  }
+
+  // input 输入框
+  .ant-input[disabled] {
+    background-color: rgba(0, 0, 0, 0);
+    border: 1px solid rgba(32, 32, 32, 1);
+  }
+
+  .ant-input {
+    background-color: rgba(0, 0, 0, 0);
+    border: 1px solid rgba(32, 32, 32, 1);
+  }
+
+  .ant-input::placeholder {
+    color: #202020;
+  }
+
+  input:-internal-autofill-selected {
+    -webkit-appearance: menulist-button;
+    background-color: rgba(0, 0, 0, 0) !important;
+    background-image: none !important;
+    color: -internal-light-dark-color(#202020, #202020) !important;
+  }
+
+  input {
+    height: 0;
+    padding: 1.3em .6em;
+    background-clip: content-box;
+  }
+
+  input::first-line {
+    color: #202020;
+  }
+
+  // select 下拉框
+  .ant-select-selection {
+    background-color: rgba(0, 0, 0, 0);
+    border: 1px solid rgba(32, 32, 32, 1);
+  }
+
+  .ant-select-selection__clear {
+    color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(151, 145, 136, 0.95);
+  }
+
+  .ant-select-selection--multiple .ant-select-selection__choice {
+    background-color: rgba(0, 0, 0, 0);
+    border: 1px solid rgba(32, 32, 32, 1);
+  }
+
+  // 按钮
+  .ant-btn {
+    background-color: rgba(0, 0, 0, 0);
+    border: 1px solid rgba(32, 32, 32, 1);
+    color: #202020;
+  }
+
+  .ant-btn:hover {
+    background-color: rgba(0, 0, 0, 0);
+    color: #00ccff;
+  }
+
+  // 日期选择
+  .ant-calendar-picker-clear {
+    background-color: rgba(151, 145, 136, 0.95);
+  }
+
+  // element 日期选择
+  .el-input--prefix .el-input__inner {
+    background: rgba(0, 0, 0, 0);
+    border: 1px solid rgba(32, 32, 32, 1);
+    color: #202020;
+  }
+
+  .el-input--prefix .el-input__inner::placeholder {
+    color: #202020;
+  }
+
+  .el-input__prefix,
+  .el-input__suffix {
+    color: #202020;
+  }
+
+  // table 表格
+  .ant-table-small.ant-table-bordered .ant-table-content {
+    border-right: 1px solid rgba(32, 32, 32, 1);
+  }
+
+  .ant-table-small {
+    border: 1px solid rgba(32, 32, 32, 1);
+  }
+
+  .ant-table-bordered .ant-table-thead>tr>th,
+  .ant-table-bordered .ant-table-tbody>tr>td {
+    border-right: 1px solid rgba(32, 32, 32, 1);
+  }
+
+  .ant-table-placeholder {
+    background: rgba(0, 0, 0, 0);
+    border-top: 1px solid rgba(32, 32, 32, 1);
+    border-bottom: 1px solid rgba(32, 32, 32, 1);
   }
 }
 
