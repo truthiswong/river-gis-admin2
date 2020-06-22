@@ -143,7 +143,7 @@
 </template>
 
 <script>
-import { onExport1, onExport2, onExport3} from '@/api/statistics'
+import { onExport1, onExport2, onExport3, onExport4, onExport5, onExport6, onExport7, onExport8, onExport9, onExport10, onExport11} from '@/api/statistics'
 
 export default {
   data() {
@@ -159,7 +159,8 @@ export default {
       dateString9: [],
       dateString10: [],
       dateString11: [],
-      data: []
+      loadingDownload: false,
+      dataUrl: ''
     }
   },
   watch: {},
@@ -199,8 +200,6 @@ export default {
       this.dateString11 = dateString
     },
     onExport(index) {
-      let dataurl = ''
-      return
       if (index == 1) {
         // 巡河汇总表
         if (this.dateString1.length <= 0) {
@@ -213,8 +212,11 @@ export default {
             endDate: this.dateString1[1]
           }
           onExport1(data).then(res => {
-            let arr = res.data
-            console.log(arr)
+            if (res.success) {
+              this.download(res.data, `巡河汇总表${this.dateString1[0]}~${this.dateString1[1]}`)
+            } else {
+              return
+            }
           })
         }
       } else if (index == 2) {
@@ -223,84 +225,197 @@ export default {
           this.$message.warning('请选择日期')
           return
         } else {
-          dataurl = '2.doc'
+          let data = {
+            projectId: this.$store.state.id,
+            startDate: this.dateString2[0],
+            endDate: this.dateString2[1]
+          }
+          onExport2(data).then(res => {
+            if (res.success) {
+              this.download(res.data, `河道调查统计${this.dateString2[0]}~${this.dateString2[1]}`)
+            } else {
+              return
+            }
+          })
         }
       } else if (index == 3) {
         // 排口数量汇总
-        if (this.dateString2.length <= 0) {
+        if (this.dateString3.length <= 0) {
           this.$message.warning('请选择日期')
           return
         } else {
-          dataurl = '2.doc'
+          let data = {
+            projectId: this.$store.state.id,
+            startDate: this.dateString3[0],
+            endDate: this.dateString3[1]
+          }
+          onExport3(data).then(res => {
+            if (res.success) {
+              this.download(res.data, `排口数量汇总${this.dateString3[0]}~${this.dateString3[1]}`)
+            } else {
+              return
+            }
+          })
         }
       } else if (index == 4) {
         // 风险源数量汇总
-        if (this.dateString2.length <= 0) {
+        if (this.dateString4.length <= 0) {
           this.$message.warning('请选择日期')
           return
         } else {
-          dataurl = '2.doc'
+          let data = {
+            projectId: this.$store.state.id,
+            startDate: this.dateString4[0],
+            endDate: this.dateString4[1]
+          }
+          onExport4(data).then(res => {
+            if (res.success) {
+              this.download(res.data, `风险源数量汇总${this.dateString4[0]}~${this.dateString4[1]}`)
+            } else {
+              return
+            }
+          })
         }
       } else if (index == 5) {
         // 风险源变化统计
-        if (this.dateString2.length <= 0) {
+        if (this.dateString5.length <= 0) {
           this.$message.warning('请选择日期')
           return
         } else {
-          dataurl = '2.doc'
+          let data = {
+            projectId: this.$store.state.id,
+            startDate: this.dateString5[0],
+            endDate: this.dateString5[1]
+          }
+          onExport5(data).then(res => {
+            if (res.success) {
+              this.download(res.data, `风险源变化统计${this.dateString5[0]}~${this.dateString5[1]}`)
+            } else {
+              return
+            }
+          })
         }
       } else if (index == 6) {
         // 排口变化统计
-        if (this.dateString2.length <= 0) {
+        if (this.dateString6.length <= 0) {
           this.$message.warning('请选择日期')
           return
         } else {
-          dataurl = '2.doc'
+          let data = {
+            projectId: this.$store.state.id,
+            startDate: this.dateString6[0],
+            endDate: this.dateString6[1]
+          }
+          onExport6(data).then(res => {
+            if (res.success) {
+              this.download(res.data, `排口变化统计${this.dateString6[0]}~${this.dateString6[1]}`)
+            } else {
+              return
+            }
+          })
         }
       } else if (index == 7) {
         // 风险源明细
-        if (this.dateString2.length <= 0) {
+        if (this.dateString7.length <= 0) {
           this.$message.warning('请选择日期')
           return
         } else {
-          dataurl = '2.doc'
+          let data = {
+            projectId: this.$store.state.id,
+            startDate: this.dateString7[0],
+            endDate: this.dateString7[1]
+          }
+          onExport7(data).then(res => {
+            if (res.success) {
+              this.download(res.data, `风险源明细${this.dateString7[0]}~${this.dateString7[1]}`)
+            } else {
+              return
+            }
+          })
         }
       } else if (index == 8) {
         // 排口明细
-        if (this.dateString2.length <= 0) {
+        if (this.dateString8.length <= 0) {
           this.$message.warning('请选择日期')
           return
         } else {
-          dataurl = '2.doc'
+          let data = {
+            projectId: this.$store.state.id,
+            startDate: this.dateString8[0],
+            endDate: this.dateString8[1]
+          }
+          onExport8(data).then(res => {
+            if (res.success) {
+              this.download(res.data, `排口明细${this.dateString8[0]}~${this.dateString8[1]}`)
+            } else {
+              return
+            }
+          })
         }
       } else if (index == 9) {
         // 水面漂浮物明细
-        if (this.dateString2.length <= 0) {
+        if (this.dateString9.length <= 0) {
           this.$message.warning('请选择日期')
           return
         } else {
-          dataurl = '2.doc'
+          let data = {
+            projectId: this.$store.state.id,
+            startDate: this.dateString9[0],
+            endDate: this.dateString9[1]
+          }
+          onExport9(data).then(res => {
+            if (res.success) {
+              this.download(res.data, `水面漂浮物明细${this.dateString9[0]}~${this.dateString9[1]}`)
+            } else {
+              return
+            }
+          })
         }
       } else if (index == 10) {
         // 督办单明细
-        if (this.dateString2.length <= 0) {
+        if (this.dateString10.length <= 0) {
           this.$message.warning('请选择日期')
           return
         } else {
-          dataurl = '2.doc'
+          let data = {
+            projectId: this.$store.state.id,
+            startDate: this.dateString10[0],
+            endDate: this.dateString10[1]
+          }
+          onExport10(data).then(res => {
+            if (res.success) {
+              this.download(res.data, `督办单明细${this.dateString10[0]}~${this.dateString10[1]}`)
+            } else {
+              return
+            }
+          })
         }
       } else if (index == 11) {
         // 水质数据统计
-        if (this.dateString2.length <= 0) {
+        if (this.dateString11.length <= 0) {
           this.$message.warning('请选择日期')
           return
         } else {
-          dataurl = '2.doc'
+          let data = {
+            projectId: this.$store.state.id,
+            startDate: this.dateString11[0],
+            endDate: this.dateString11[1]
+          }
+          onExport11(data).then(res => {
+            if (res.success) {
+              this.download(res.data, `水质数据统计${this.dateString11[0]}~${this.dateString11[1]}`)
+            } else {
+              return
+            }
+          })
         }
       }
+    },
+    download(url, name) {
+      console.log(name)
       let down = document.createElement('a')
-      down.href = dataurl
-      down.download = '' // 默认为文件的名字
+      down.href = url
+      down.download = name // 默认为文件的名字
       document.body.appendChild(down)
       down.click()
       down.remove()
