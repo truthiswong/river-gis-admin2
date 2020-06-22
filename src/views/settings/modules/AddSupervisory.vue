@@ -1,14 +1,21 @@
 <template>
   <a-modal
-    title="添加督办单"
     :width="640"
     :visible="visible"
     :confirmLoading="confirmLoading"
     @ok="handleSubmit"
     @cancel="handleCancel"
+    :mask="false"
     :centered="true"
     :maskClosable="false"
+    class="custom_modal"
   >
+    <template slot="closeIcon">
+      <a-icon type="close-circle" />
+    </template>
+    <template slot="title">
+      <span>添加督办单</span>
+    </template>
     <a-spin :spinning="confirmLoading">
       <a-form>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="督办单名称">

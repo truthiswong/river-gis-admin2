@@ -24,8 +24,14 @@
        :confirmLoading="confirmLoading"
       @cancel="cancleBtn"
       :maskClosable="false"
-      class="modal_plan"
+      class="modal_plan custom_modal"
     >
+      <template slot="closeIcon">
+        <a-icon type="close-circle" />
+      </template>
+      <template slot="title">
+        <span>计划</span>
+      </template>
       <span class="editIcon" @click="editModalTitle" v-if="editShow">
         <a-icon type="edit" />
       </span>

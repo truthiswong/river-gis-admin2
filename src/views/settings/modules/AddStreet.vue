@@ -1,23 +1,28 @@
 <template>
   <a-modal
-    title="添加街道"
     :width="400"
     :visible="visible"
     :confirmLoading="confirmLoading"
     :maskClosable="false"
     @ok="handleSubmit"
     @cancel="handleCancel"
-    :mask="true"
+    :mask="false"
     :centered="true"
-    :footer='null'
+    class="custom_modal"
   >
+    <template slot="closeIcon">
+      <a-icon type="close-circle" />
+    </template>
+    <template slot="title">
+      <span>添加街道</span>
+    </template>
     <a-spin :spinning="confirmLoading">
       <a-form class="from">
         <p>街道信息</p>
         <a-row style="width:100%">
           <a-col :span="24">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="街道名称">
-              <a-input placeholder="请输入街道名称" v-model="list.name"/>
+              <a-input placeholder="请输入街道名称" v-model="list.name" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -25,53 +30,55 @@
         <a-row style="width:100%">
           <a-col :span="24">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="姓名">
-              <a-input placeholder="请输入姓名" v-model="list.controller"/>
+              <a-input placeholder="请输入姓名" v-model="list.controller" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
           <a-col :span="24">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="职位">
-              <a-input placeholder="请输入职位" v-model="list.job"/>
+              <a-input placeholder="请输入职位" v-model="list.job" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
           <a-col :span="24">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="联系电话">
-              <a-input placeholder="请输入联系电话" v-model="list.tel"/>
+              <a-input placeholder="请输入联系电话" v-model="list.tel" />
             </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
-          <a-col :span="6">
-            <a-button type="primary" block @click="handleCancel">取消</a-button>
-          </a-col>
-          <a-col :span="6">
-            <a-button type="primary" block @click="SaveStreet" >保存</a-button>
           </a-col>
         </a-row>
       </a-form>
     </a-spin>
+    <template slot="footer">
+      <a-row type="flex" justify="space-around" v-show="jurisdiction">
+        <a-col :span="6">
+          <a-button type="primary" block @click="handleCancel">取消</a-button>
+        </a-col>
+        <a-col :span="6">
+          <a-button type="primary" block @click="SaveStreet">保存</a-button>
+        </a-col>
+      </a-row>
+    </template>
   </a-modal>
 </template> 
 
 <script>
 const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters']
-import { informationStreet,getSaveStreet } from '@/api/login'
+import { informationStreet, getSaveStreet } from '@/api/login'
 export default {
   data() {
     return {
-      jurisdiction:this.$store.state.operationPermission[3],//权限
-      save:'1',
-      list:{
-        id:'',
-        name:'',
-        controller:'',
-        job:'',
-        tel:'',
+      jurisdiction: this.$store.state.operationPermission[3], //权限
+      save: '1',
+      list: {
+        id: '',
+        name: '',
+        controller: '',
+        job: '',
+        tel: ''
       },
-      region:[],
+      region: [],
       labelCol: {
         xs: { span: 18 },
         sm: { span: 6 }
@@ -95,8 +102,8 @@ export default {
     add(currentLnglats) {
       this.save = '1'
       this.visible = true
-      if (currentLnglats!=undefined) {
-        this.region=currentLnglats
+      if (currentLnglats != undefined) {
+        this.region = currentLnglats
       }
     },
     add1() {
@@ -104,69 +111,68 @@ export default {
       this.visible = true
     },
     //街道详情
-    getStreet(id){
-      informationStreet(id).then(res => {
-        let arr = res.data
-        console.log(arr);
-        this.list.controller= arr.controller
-        this.list.id= arr.id
-        this.list.job= arr.job
-        this.list.name= arr.name
-        this.list.tel= arr.tel
-        this.region= arr.region
-      }).catch(err => {
-
-      })
+    getStreet(id) {
+      informationStreet(id)
+        .then(res => {
+          let arr = res.data
+          console.log(arr)
+          this.list.controller = arr.controller
+          this.list.id = arr.id
+          this.list.job = arr.job
+          this.list.name = arr.name
+          this.list.tel = arr.tel
+          this.region = arr.region
+        })
+        .catch(err => {})
     },
     //河道保存
-    SaveStreet(){   
+    SaveStreet() {
       var data = {
-        id:this.list.id,
-        projectId:this.$store.state.id,
-        name:this.list.name,
-        controller:this.list.controller,
-        job:this.list.job,
-        tel:this.list.tel,
+        id: this.list.id,
+        projectId: this.$store.state.id,
+        name: this.list.name,
+        controller: this.list.controller,
+        job: this.list.job,
+        tel: this.list.tel
       }
       for (let i = 0; i < this.region.length; i++) {
         if (i == 0) {
-          data.region =  this.region[i].lng +','+ this.region[i].lat + '|'
-        }else if(i ==this.region.length-1 ){
-          data.region = data.region +  this.region[i].lng +','+ this.region[i].lat
-        }else{
-          data.region = data.region +  this.region[i].lng +','+ this.region[i].lat + '|'
+          data.region = this.region[i].lng + ',' + this.region[i].lat + '|'
+        } else if (i == this.region.length - 1) {
+          data.region = data.region + this.region[i].lng + ',' + this.region[i].lat
+        } else {
+          data.region = data.region + this.region[i].lng + ',' + this.region[i].lat + '|'
         }
       }
       if (this.save == '1') {
-        getSaveStreet(data).then(res => {
-          this.$message.success('保存成功')
-          this.handleCancel()
-          this.$parent.getStreetShowList();
-          
-        }).catch(err => {
-          this.$message.error(err.response.data.message)
-        })
-      }else{
-        this.$parent.uploadSave(data);
+        getSaveStreet(data)
+          .then(res => {
+            this.$message.success('保存成功')
+            this.handleCancel()
+            this.$parent.getStreetShowList()
+          })
+          .catch(err => {
+            this.$message.error(err.response.data.message)
+          })
+      } else {
+        this.$parent.uploadSave(data)
         this.handleCancel()
       }
-      
     },
     //关闭取消输入框
-    handleCancel(){
+    handleCancel() {
       this.visible = false
-      this.list.id=''
-      this.list.name=''
-      this.list.controller=''
-      this.list.job=''
-      this.list.tel=''
-      this.region=[]
+      this.list.id = ''
+      this.list.name = ''
+      this.list.controller = ''
+      this.list.job = ''
+      this.list.tel = ''
+      this.region = []
       this.$emit('cancel')
     },
     // 添加河流
     addRiver(value) {
       console.log(value)
-
     },
     // 风险源类型
     handleChange(selectedItems) {
@@ -211,11 +217,11 @@ export default {
     // },
     // 选择地址
     onChange(value, selectedOptions) {
-      console.log(value, selectedOptions);
+      console.log(value, selectedOptions)
     },
     filter(inputValue, path) {
-      return (path.some(option => (option.label).toLowerCase().indexOf(inputValue.toLowerCase()) > -1));
-    },
+      return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1)
+    }
   }
 }
 </script>

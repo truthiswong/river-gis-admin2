@@ -7,14 +7,14 @@
     <span class="closeSearch_r" @click="close">
       <a-icon type="close" />
     </span>
-    <div class="searchInfo">
+    <div class="searchInfo" style="padding: 0 10px">
       <!-- <a-input placeholder="请输入河道名称" style="text-align:left;width: 240px;"/>
       <a-button shape="circle" icon="search" class="searchRiverBtn"/>-->
       <a-select
         showSearch
         :value="value"
         placeholder="请选择"
-        style="width: 90%"
+        style="width: 100%"
         v-model="list"
         :allowClear="true"
         :filterOption="filterOption"

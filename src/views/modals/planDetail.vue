@@ -1,13 +1,12 @@
 <template>
   <a-modal
-    :title="name"
     :width="1200"
     :visible="visible"
     @ok="submitPlan"
      :confirmLoading="confirmLoading"
     @cancel="cancleBtn"
     :maskClosable="false"
-    class="palnDetail_modal"
+    class="palnDetail_modal custom_modal"
   >
     <!-- <span class="editIcon" @click="editModalTitle" v-if="editShow">
       <a-icon type="edit" />
@@ -15,6 +14,12 @@
     <!-- <span style="position:absolute;top:12px;left:200px;" v-if="!editShow">
       <a-input placeholder style="width:150px;margin-left:20px;" />
     </span> -->
+    <template slot="closeIcon">
+      <a-icon type="close-circle" />
+    </template>
+    <template slot="title">
+      <span>{{name}}</span>
+    </template>
     <div class="planDetail_info">
       <a-row style="padding-bottom:10px;">
         <a-col :span="3" style="font-size:15px;">下发时间:</a-col>

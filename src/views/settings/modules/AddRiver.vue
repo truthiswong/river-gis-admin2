@@ -6,7 +6,7 @@
     :maskClosable="false"
     @ok="handleSubmit"
     @cancel="handleCancel"
-    :mask="true"
+    :mask="false"
     :centered="true"
     class="custom_modal"
   >
@@ -576,6 +576,7 @@ export default {
       console.log(`selected ${value}`)
     },
     handleSubmit() {
+      console.log(11111)
       const {
         form: { validateFields }
       } = this

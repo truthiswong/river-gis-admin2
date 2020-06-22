@@ -13,8 +13,14 @@
           </a-card>
         </div>
         <div style="width:100%;margin-left:20px">
-          <div v-if="treeId==true" >
-            <a-button type="primary" icon="plus" @click="visible=true" v-show="jurisdiction" style="margin-bottom:15px">添加</a-button>
+          <div v-if="treeId==true">
+            <a-button
+              type="primary"
+              icon="plus"
+              @click="visible=true"
+              v-show="jurisdiction"
+              style="margin-bottom:15px"
+            >添加</a-button>
             <a-table :columns="columns" :dataSource="data" bordered>
               <template slot="operation" slot-scope="row">
                 <div v-show="jurisdiction">
@@ -34,7 +40,13 @@
             </a-table>
           </div>
           <div v-else>
-            <a-button type="primary" icon="plus" @click="addProject" style="margin-bottom:15px" v-show="jurisdiction">添加</a-button>
+            <a-button
+              type="primary"
+              icon="plus"
+              @click="addProject"
+              style="margin-bottom:15px"
+              v-show="jurisdiction"
+            >添加</a-button>
             <a-table :columns="columns1" :dataSource="data1" bordered>
               <template slot="operation" slot-scope="row">
                 <div v-show="jurisdiction">
@@ -57,13 +69,19 @@
       </div>
     </a-card>
     <a-modal
-      title="添加一级项目"
       :maskClosable="false"
       :centered="true"
       v-model="visible"
       @ok="handleOk"
       @cancel="handleCancel"
+      class="custom_modal"
     >
+      <template slot="closeIcon">
+        <a-icon type="close-circle" />
+      </template>
+      <template slot="title">
+        <span>添加一级项目</span>
+      </template>
       <el-form ref="formValidate" :model="equipmentList" :rules="ruleValidate">
         <el-form-item label="项目名称" prop="projectParentName">
           <el-input
@@ -75,7 +93,6 @@
       </el-form>
     </a-modal>
     <a-modal
-      title="添加二级项目"
       :maskClosable="false"
       :destroyOnClose="true"
       :width="980"
@@ -83,7 +100,14 @@
       v-model="equipmentModel"
       @ok="handleOk1"
       @cancel="handleCancel1"
+      class="custom_modal"
     >
+      <template slot="closeIcon">
+        <a-icon type="close-circle" />
+      </template>
+      <template slot="title">
+        <span>添加二级项目</span>
+      </template>
       <el-form ref="formValidate" :model="equipmentList" :rules="ruleValidate" label-width="100px">
         <a-row>
           <a-col :span="12">
@@ -184,7 +208,7 @@ const columns1 = [
 export default {
   data() {
     return {
-      jurisdiction:this.$store.state.operationPermission[10],//权限
+      jurisdiction: this.$store.state.operationPermission[10], //权限
       id: '',
       treeId: true,
       treeData,
@@ -244,7 +268,7 @@ export default {
         this.markerTool.close()
       }
       this.equipmentList.latlng = ''
-      this.markerTool = new T.MarkTool(this.map, {follow: true});
+      this.markerTool = new T.MarkTool(this.map, { follow: true })
       this.markerTool.open()
       this.markerTool.addEventListener('mouseup', this.getLngLat)
     },

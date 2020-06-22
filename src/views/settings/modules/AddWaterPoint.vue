@@ -1,16 +1,21 @@
 <template>
   <a-modal
-    title="添加水质监测点"
     :width="800"
     :visible="visible"
     :confirmLoading="confirmLoading"
     @ok="handleSubmit"
     @cancel="handleCancel"
-    :mask="true"
+    :mask="false"
     :centered="true"
-    :footer="null"
     :maskClosable="false"
+    class="custom_modal"
   >
+    <template slot="closeIcon">
+      <a-icon type="close-circle" />
+    </template>
+    <template slot="title">
+      <span>添加水质监测点</span>
+    </template>
     <a-spin :spinning="confirmLoading">
       <a-form class="from">
         <a-row style="width:100%">
@@ -47,12 +52,12 @@
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="经度">
-              <a-input readOnly v-model="list.lng" placeholder="经度" />
+              <a-input readonly v-model="list.lng" placeholder="经度" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="纬度">
-              <a-input readOnly v-model="list.lat" placeholder="纬度" />
+              <a-input readonly v-model="list.lat" placeholder="纬度" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -60,8 +65,12 @@
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="水体名称">
               <!-- <a-input v-model="list.waterName" placeholder="水体名称" /> -->
-              <a-select placeholder="水体名称" v-model="list.riverId"  @change="riverChange">
-                <a-select-option v-for="(item, index) in riverShowList" :key="index" :value="item.id">{{item.name}}</a-select-option>
+              <a-select placeholder="水体名称" v-model="list.riverId" @change="riverChange">
+                <a-select-option
+                  v-for="(item, index) in riverShowList"
+                  :key="index"
+                  :value="item.id"
+                >{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -92,7 +101,11 @@
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="所在街道">
               <a-select placeholder="所在街道" v-model="list.streetId">
-                <a-select-option v-for="(item, index) in streetShowList" :key="index" :value="item.id">{{item.name}}</a-select-option>
+                <a-select-option
+                  v-for="(item, index) in streetShowList"
+                  :key="index"
+                  :value="item.id"
+                >{{item.name}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -133,16 +146,18 @@
             </a-form-item>
           </a-col>
         </a-row>
-        <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
-          <a-col :span="4">
-            <a-button type="primary" block @click="handleCancel">取消</a-button>
-          </a-col>
-          <a-col :span="4">
-            <a-button type="primary" block @click="handleSave">保存</a-button>
-          </a-col>
-        </a-row>
       </a-form>
     </a-spin>
+    <template slot="footer">
+      <a-row style="width:100%;" type="flex" justify="space-around" v-show="jurisdiction">
+        <a-col :span="4">
+          <a-button type="primary" block @click="handleCancel">取消</a-button>
+        </a-col>
+        <a-col :span="4">
+          <a-button type="primary" block @click="handleSave">保存</a-button>
+        </a-col>
+      </a-row>
+    </template>
   </a-modal>
 </template>
 
@@ -155,7 +170,7 @@ export default {
   },
   data() {
     return {
-      jurisdiction:this.$store.state.operationPermission[5],//权限
+      jurisdiction: this.$store.state.operationPermission[5], //权限
       list: {
         id: '',
         projectId: this.$store.state.id,
@@ -179,8 +194,8 @@ export default {
         originalCode: '',
         remark: '',
         address: '',
-        streetId:'',
-        riverId:''
+        streetId: '',
+        riverId: ''
       },
       labelCol: {
         xs: { span: 18 },
@@ -192,8 +207,8 @@ export default {
       },
       visible: false,
       confirmLoading: false,
-      riverShowList:[],
-      streetShowList:[],
+      riverShowList: [],
+      streetShowList: [],
       selectedItems: [] //风险源类型
     }
   },
@@ -204,7 +219,7 @@ export default {
   },
   mounted() {},
   methods: {
-    add(e, type,riverShowList,streetShowList) {
+    add(e, type, riverShowList, streetShowList) {
       this.riverShowList = riverShowList
       this.streetShowList = streetShowList
       if (type == 1) {
@@ -216,7 +231,7 @@ export default {
       this.list.lat = e.lat
       this.visible = true
     },
-    add1(id,riverShowList,streetShowList) {
+    add1(id, riverShowList, streetShowList) {
       this.riverShowList = riverShowList
       this.streetShowList = streetShowList
       testingDetail(id)
@@ -317,16 +332,16 @@ export default {
       this.list.streetId = ''
       this.$emit('cancel')
     },
-    riverChange(value){
+    riverChange(value) {
       for (const item of this.riverShowList) {
-        if (value==item.id) {
+        if (value == item.id) {
           this.list.waterCode = item.code
-          if (item.supervisoryLevel !=null) {
+          if (item.supervisoryLevel != null) {
             this.list.manageLevel = item.supervisoryLevel.name
-          }else{
-             this.list.manageLevel =''
+          } else {
+            this.list.manageLevel = ''
           }
-          
+
           break
         }
       }

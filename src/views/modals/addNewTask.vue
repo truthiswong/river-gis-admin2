@@ -1,12 +1,18 @@
 <template>
   <div>
     <a-modal
-      title="追加任务"
       :visible="visible"
       @ok="submitPlan"
       @cancel="cancleBtn"
       :maskClosable="false"
+      class="custom_modal"
     >
+      <template slot="closeIcon">
+        <a-icon type="close-circle" />
+      </template>
+      <template slot="title">
+        <span>追加任务</span>
+      </template>
       <a-form :form="addPlan" @submit="submitPlan" style="margin:10px 0;">
         <a-form-item label="名称" :label-col="{span:6}" :wrapper-col="{span:16}">
           <a-input placeholder="请输入任务名称"></a-input>

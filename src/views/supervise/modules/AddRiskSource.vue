@@ -311,7 +311,7 @@
       </a-form>
     </a-spin>
     <template slot="footer">
-      <a-row style="width:100%;" type="flex" justify="space-around" v-show="jurisdiction">
+      <a-row class="custom_modal_footer" type="flex" justify="space-around" v-show="jurisdiction">
         <a-col :span="3">
           <a-button block @click="handleCancel">取消</a-button>
         </a-col>

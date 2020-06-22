@@ -5,8 +5,11 @@
     :width="510"
     @cancel="cmtHandle"
     :maskClosable="false"
-    class="cmModal"
+    class="cmModal custom_modal"
   >
+    <template slot="closeIcon">
+      <a-icon type="close-circle" />
+    </template>
     <template slot="title">
       <div>外勤反馈</div>
       <!-- <span style="background-color:#EBF5FF;border:1px solid #e8e8e8;border-radius: 50%;padding:8px 10px;">张</span> -->

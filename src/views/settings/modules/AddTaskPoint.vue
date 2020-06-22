@@ -1,15 +1,20 @@
 <template>
   <a-modal
-    :title="title"
     :width="400"
     :visible="visible"
     :confirmLoading="confirmLoading"
     @cancel="handleCancel"
-    :mask="true"
+    :mask="false"
     :centered="true"
-    :footer="null"
     :maskClosable="false"
+    class="custom_modal"
   >
+    <template slot="closeIcon">
+      <a-icon type="close-circle" />
+    </template>
+    <template slot="title">
+      <span>{{title}}</span>
+    </template>
     <a-spin :spinning="confirmLoading">
       <a-row style="width:100%" type="flex" justify="space-between" align="middle">
         <a-col :span="6">任务点名称</a-col>
@@ -52,7 +57,9 @@
           <a-input placeholder="请输入月计划次数" v-model="list.times"/>
         </a-col>
       </a-row>
-      <a-row style="width:100%; margin-top:10px;" type="flex" justify="space-around" v-show="jurisdiction">
+    </a-spin>
+    <template slot="footer">
+      <a-row style="width:100%;" type="flex" justify="space-around" v-show="jurisdiction">
         <a-col :span="6">
           <a-button type="primary" block @click="handleCancel">取消</a-button>
         </a-col>
@@ -60,7 +67,7 @@
           <a-button type="primary" block @click="handSave">保存</a-button>
         </a-col>
       </a-row>
-    </a-spin>
+    </template>
   </a-modal>
 </template>
 

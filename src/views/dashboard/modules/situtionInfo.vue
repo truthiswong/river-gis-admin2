@@ -1,12 +1,18 @@
 <template>
   <a-modal
-    title="任务完成情况"
     :visible="visible"
     :width="600"
     @ok="handleOk"
     @cancel="handleOk"
     :maskClosable="false"
+    class="custom_modal"
   >
+    <template slot="closeIcon">
+      <a-icon type="close-circle" />
+    </template>
+    <template slot="title">
+      <div>任务完成情况</div>
+    </template>
     <div class="sitution_info">
       <div class v-if="sitution == 'uav'">
         <div class="title">任务信息</div>

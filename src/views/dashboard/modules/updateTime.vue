@@ -6,6 +6,7 @@
     @cancel="updateCancel"
     :maskClosable="false"
     :width="300"
+    class="custom_modal"
   >
     <a-date-picker @change="updateDate" style="width:100%;" />
   </a-modal>
