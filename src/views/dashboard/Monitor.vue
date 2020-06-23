@@ -531,9 +531,8 @@
                                 style="display:inline-block;width:40%;margin-right:10px;"
                               >取消</a-button>
                               <a-button
-                                type="primary"
                                 @click="addPlanInfo"
-                                style="display:inline-block;width:40%;color:#FFFFFF;"
+                                style="display:inline-block;width:40%;color:#FFFFFF;background:rgba(32,56,104,1);"
                               >添加</a-button>
                             </a-form-item>
                           </a-form>
@@ -999,7 +998,7 @@
                   <!-- <a-button class="groupBtn" @click="newPlan_btn" >生成计划</a-button> -->
                 </a-col>
                 <a-col :span="10">
-                  <a-popover title="加入计划" placement="topLeft" trigger="click" :width="100">
+                  <a-popover placement="topLeft" trigger="click" :width="100">
                     <template slot="content">
                       <a-list size="small">
                         <a-list-item v-for="item in planExisting" :key="item.id">
@@ -5086,6 +5085,8 @@ export default {
 
 .addTask_info {
   width: 100%;
+  background-color: #ffffff;
+  color: #203868;
   // border-top: 1px solid #e8e8e8;
 }
 

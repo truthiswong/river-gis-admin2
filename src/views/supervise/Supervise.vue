@@ -62,7 +62,7 @@
           <a-button
             icon="setting"
             shape="circle"
-            style="background-color: rgba(32, 56, 104, 1);color: white;"
+            style="background-color: rgba(32, 56, 104, 1);color: white;width: 25px;height: 25px;line-height:23px;"
           ></a-button>
         </a-popover>
       </div>
@@ -114,7 +114,7 @@
           <a-button
             icon="setting"
             shape="circle"
-            style="background-color: rgba(32, 56, 104, 1);color: white;"
+            style="background-color: rgba(32, 56, 104, 1);color: white;width: 25px;height: 25px;line-height:23px;"
           ></a-button>
         </a-popover>
       </div>
