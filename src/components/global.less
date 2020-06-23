@@ -176,7 +176,7 @@ body {
         }
 
         .avatar {
-          margin: 20px 8px 20px 0;
+          margin: 20px 0;
           color: #41B1D4;
           background: hsla(0, 0%, 100%, 0.85);
           vertical-align: middle;
@@ -252,8 +252,6 @@ body {
             }
           }
         }
-
-        //
       }
     }
   }
@@ -576,6 +574,7 @@ body {
 // 自定义手机照片列表
 .phone_list {
   flex-direction: column;
+
   .ant-list-item-content {
     flex-direction: column;
   }
@@ -668,6 +667,38 @@ body {
 
   }
 
+  // tabs
+  .ant-tabs-bar {
+    border-bottom: 1px solid #202020;
+  }
+
+  .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {
+    border: 1px solid #202020;
+    background: rgba(0, 0, 0, 0);
+  }
+
+  .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
+    background: rgba(0, 0, 0, 0);
+    border-color: #2E4081;
+    color: #00ccff;
+  }
+
+  // 数字输入框
+  .ant-input-number {
+    color: rgba(0, 0, 0, 0.65);
+    background-color: rgba(0, 0, 0, 0);
+    border: 1px solid #202020;
+
+    .ant-input-number-handler-wrap {
+      border-left: 1px solid #00ccff;
+      background: rgba(0, 0, 0, 0);
+
+      .ant-input-number-handler-down {
+        border-top: 1px solid #00ccff;
+      }
+    }
+  }
+
   // input 输入框
   .ant-input[disabled] {
     background-color: rgba(0, 0, 0, 0);
@@ -691,9 +722,9 @@ body {
   }
 
   input {
-    height: 0;
-    padding: 1.3em .6em;
-    background-clip: content-box;
+    // height: 0;
+    // padding: 1.3em .6em;
+    // background-clip: content-box;
   }
 
   input::first-line {

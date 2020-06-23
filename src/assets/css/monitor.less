@@ -438,110 +438,120 @@
   width: 100%;
   height: calc(100vh - 64px);
   background-color: rgba(0, 0, 0, 0.7);
-}
 
-.right-body {
-  width: 100%;
+  .right-body {
+    width: 100%;
 
-  .custom_tabs {
-    .ant-tabs-nav .ant-tabs-tab {
+    .custom_tabs {
+      .ant-tabs-nav .ant-tabs-tab {
+        color: #FFFFFF;
+        background-color: rgba(0, 0, 0, 1);
+      }
+
+      .ant-tabs-nav .ant-tabs-tab-active {
+        // color: #FFFFFF;
+        font-weight: 500;
+        background-color: rgba(32, 56, 104, 1);
+      }
+
+      .ant-tabs-ink-bar {
+        background-color: #ffffff;
+      }
+    }
+
+    .ant-card {
+      width: 100%;
+      height: calc(100vh - 64px);
+      margin: 0;
+      padding: 0;
+    }
+
+    .ant-card-head {
+      position: absolute;
+      top: 0;
+      z-index: 5;
+      width: 100%;
+    }
+
+    .ant-card-body {
+      width: 100%;
+      overflow: auto;
+      position: absolute;
+      top: 48px;
+      z-index: 10;
+      bottom: 38px;
+      margin-bottom: 25px;
+      padding-top: 0;
+    }
+
+    .ant-tabs .ant-tabs-large-bar .ant-tabs-tab {
+      width: 50%;
+    }
+
+    .riverInfo {
+      width: 100%;
+      text-align: center;
+    }
+
+    .river_info {
+      width: 100%;
+      border: 1px solid #e8e8e8;
+      text-align: left;
+      padding: 8px 0;
+      padding-left: 15px;
+      display: inline-block;
+      background-color: #203868;
+      position: relative;
       color: #FFFFFF;
-      background-color: rgba(0, 0, 0, 1);
     }
 
-    .ant-tabs-nav .ant-tabs-tab-active {
-      // color: #FFFFFF;
-      font-weight: 500;
-      background-color: rgba(32, 56, 104, 1);
+    .ant-form-item-label label {
+      color: #203868;
     }
 
-    .ant-tabs-ink-bar {
-      background-color: #ffffff;
+    .ant-tree-title {
+      color: #FFFFFF;
     }
+
+    .addTaskBtn {
+      text-align: center;
+      padding-top: 10px;
+    }
+
+    .addTask_btn {
+      margin-top: 20px;
+      margin-bottom: 15px;
+      width: 90%;
+    }
+
+    .addTaskBtn .anticon {
+      font-size: 10px;
+      color: #1890ff;
+      line-height: 1.499;
+    }
+
+    .addTaskBtn .ant-btn {
+      color: #1890ff;
+    }
+
+    .addPlan_foot {
+      text-align: center;
+      position: absolute;
+      margin-top: 20px;
+      bottom: 0;
+      width: 100%;
+      height: 50px;
+      line-height: 38px;
+      z-index: 200;
+    }
+
+    .ant-collapse-content>.ant-collapse-content-box {
+      padding: 0;
+    }
+
   }
-
 }
 
-.right-body .ant-card {
-  width: 100%;
-  height: calc(100vh - 64px);
-  margin: 0;
-  padding: 0;
-}
-
-.right-body .ant-card-head {
-  position: absolute;
-  top: 0;
-  z-index: 5;
-  width: 100%;
-}
-
-.right-body .ant-card-body {
-  width: 100%;
-  overflow: auto;
-  position: absolute;
-  top: 48px;
-  z-index: 10;
-  bottom: 38px;
-  margin-bottom: 25px;
-  padding-top: 0;
-}
-
-.right-body .ant-tabs .ant-tabs-large-bar .ant-tabs-tab {
-  width: 50%;
-}
-
-.riverInfo {
-  width: 100%;
-  text-align: center;
-}
-
-.river_info {
-  width: 100%;
-  border: 1px solid #e8e8e8;
-  text-align: left;
-  padding: 8px 0;
-  padding-left: 15px;
-  display: inline-block;
-  background-color: #EBF5FF;
-  position: relative;
-}
-
-.addTaskBtn {
-  text-align: center;
-  padding-top: 10px;
-}
-
-.addTask_btn {
-  margin-top: 20px;
-  margin-bottom: 15px;
-  width: 90%;
-}
-
-.addTaskBtn .anticon {
-  font-size: 10px;
-  color: #1890ff;
-  line-height: 1.499;
-}
-
-.addTaskBtn .ant-btn {
-  color: #1890ff;
-}
-
-.addPlan_foot {
-  text-align: center;
-  position: absolute;
-  margin-top: 20px;
-  bottom: 0;
-  width: 100%;
-  height: 50px;
-  line-height: 38px;
-  z-index: 200;
-}
-
-.right-body .ant-collapse-content>.ant-collapse-content-box {
-  padding: 0;
-}
 
 .planProgress {
   padding: 16px;

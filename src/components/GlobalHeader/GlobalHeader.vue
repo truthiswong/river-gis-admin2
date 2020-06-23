@@ -22,10 +22,10 @@
           <user-menu></user-menu>
         </div>
         <div v-else :class="['top-nav-header-index', theme]">
-          <div class="header-index-wide">
-            <div class="header-index-left">
+          <div class="header-index-wide" style="max-width: 5000px;padding-left: 10px;">
+            <div class="header-index-left" style="flex: 0 1 3000px;">
               <logo class="top-nav-header" :show-title="device !== 'mobile'" />
-              <s-menu v-if="device !== 'mobile'" mode="horizontal" :menu="menus" :theme="theme" />
+              <s-menu v-if="device !== 'mobile'" mode="horizontal" style="max-width: 3000px;flex: 0 1 3000px;margin-right:10px;" :menu="menus" :theme="theme" />
               <a-icon
                 v-else
                 class="trigger"
