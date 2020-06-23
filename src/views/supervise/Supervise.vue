@@ -197,7 +197,6 @@
             <a-list-item class="phone_list" v-for="item in phonePhotoPointsList" :key="item.id">
               <img :src="item.imgUrl" alt />
               <a-row style="width:100%" type="flex" justify="space-between" align="middle">
-                <!-- <a-col :span="6">坐标点</a-col> -->
                 <a-col :span="24">
                   <a-input placeholder="选择坐标点" read-only v-model="item.latlng"></a-input>
                 </a-col>

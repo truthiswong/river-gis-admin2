@@ -5,60 +5,56 @@
       <ul class="menu">
         <li>
           <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-            <template slot="content">
-              <a-row style="width: 100%;">
+            <div slot="content" style="width:120px;">
+              <a-row>
+                <a-radio-group v-model="mapType" @change="onMapChange">
+                  <a-col :span="24">
+                    <a-radio value="a">
+                      <span style="margin-left:10px;">2D影像图</span>
+                    </a-radio>
+                  </a-col>
+                  <a-col :span="24">
+                    <a-radio value="b">
+                      <span style="margin-left:10px;">卫星影像图</span>
+                    </a-radio>
+                  </a-col>
+                </a-radio-group>
+              </a-row>
+              <a-row>
                 <a-col :span="24">
-                  <a-radio-group @change="onMapChange" v-model="mapType">
-                    <a-radio-button value="a">2D影像图</a-radio-button>
-                    <a-radio-button value="b">卫星影像图</a-radio-button>
-                  </a-radio-group>
-                </a-col>
-              </a-row>
-              <a-row style="width: 100%; margin-top: 8px;">
-                <a-col :span="16">
-                  <span>道路标注</span>
-                </a-col>
-                <a-col :span="8" style="text-align: right;">
                   <a-switch size="small" v-model="roadWordChange" @click="onChangeSwitch" />
+                  <span style="margin-left:7px;">道路标注</span>
                 </a-col>
               </a-row>
-            </template>
-            <template slot="title">
-              <span>图像</span>
-            </template>
-            <img src="../../assets/img/map.png" alt="图像" title="图像" />
+            </div>
+            <img src="../../assets/mapIcon.png" alt="图像" title="图像" />
           </a-popover>
+        </li>
+        <li style="border-radius: 40px;">
+          <img @click="mapZoomIn" src="../../assets/max.png" alt="放大" />
+          <img @click="mapZoomOut" src="../../assets/min.png" alt="缩小" />
         </li>
         <li>
           <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
             <template slot="content" style="overflow-y: scroll;">
-              <a-list size="small">
-                <a-list-item>
-                  <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                    <a-col :span="18">
-                      <p style="margin:0;">街道</p>
-                    </a-col>
-                    <a-col :span="6">
-                      <a-switch size="small" v-model="streetShow" />
-                    </a-col>
-                  </a-row>
-                </a-list-item>
-                <a-list-item>
-                  <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                    <a-col :span="18">
-                      <p style="margin:0;">左右岸</p>
-                    </a-col>
-                    <a-col :span="6">
-                      <a-switch size="small" v-model="leftRight" />
-                    </a-col>
-                  </a-row>
-                </a-list-item>
-              </a-list>
+              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                <a-col :span="18">
+                  <p style="margin:0;">街道</p>
+                </a-col>
+                <a-col :span="6">
+                  <a-switch size="small" v-model="streetShow" />
+                </a-col>
+              </a-row>
+              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                <a-col :span="18">
+                  <p style="margin:0;">左右岸</p>
+                </a-col>
+                <a-col :span="6">
+                  <a-switch size="small" v-model="leftRight" />
+                </a-col>
+              </a-row>
             </template>
-            <template slot="title">
-              <span>更多</span>
-            </template>
-            <img src="../../assets/img/more.png" alt="更多" title="更多" />
+            <img src="../../assets/more.png" alt="更多" title="更多" />
           </a-popover>
         </li>
       </ul>
@@ -109,7 +105,7 @@
             </a-row>
           </a-list-item>
         </a-list>
-        <a-popover title trigger="click" v-model="addRiverShow" class="bottom_add" >
+        <a-popover title trigger="click" v-model="addRiverShow" class="bottom_add">
           <template slot="content">
             <a-button block @click="addDrawRiver()">绘制</a-button>
             <el-upload
@@ -169,12 +165,12 @@ export default {
       peopleDetection: false, // 人工监测点
       riverShow: false, // 河道
       streetShow: false, // 街道
-      leftRight:false,
+      leftRight: false,
       once: 0, // 移入次数
       riverShowList: [], // 河道
       streetShowList: [], //街道
       polygonStreet: {}, // 街道对象
-      jurisdiction:this.$store.state.operationPermission[2],//权限
+      jurisdiction: this.$store.state.operationPermission[2], //权限
       upload: '0',
       fileList: [], //上传列表
       spotList: {
@@ -240,13 +236,11 @@ export default {
     streetShow() {
       this.watchAllSwitch()
     },
-    leftRight(){
+    leftRight() {
       this.leftRightSwitch()
-    },
+    }
   },
   mounted() {
-    console.log(this);
-    
     let token = Vue.ls.get(ACCESS_TOKEN)
     let zoom = 14
     let twoDimensionURL =
@@ -284,7 +278,7 @@ export default {
           arr.forEach(v => {
             v.lineData = v.region
             v.clicked = false
-             let points = []
+            let points = []
             for (const point of v.leftBankRegion) {
               points.push(new T.LngLat(point[0], point[1]))
             }
@@ -295,12 +289,20 @@ export default {
             }
             v.rightBankRegion = points1
           })
-         this.leftRightSwitch()
+          this.leftRightSwitch()
           this.riverShowList = arr
           this.defaultRiver = this.riverShowList[0].name
           this.drawAllRiver()
         })
         .catch(err => {})
+    },
+    // 放大
+    mapZoomIn() {
+      this.map.zoomIn()
+    },
+    // 缩小
+    mapZoomOut() {
+      this.map.zoomOut()
     },
     // 图像
     onMapChange(e) {
@@ -326,10 +328,10 @@ export default {
         .then(res => {
           let arr = res.data.data
           arr.forEach(v => {
-            if (v.region==null) {
-               v.lineData = []
-            }else{
-               v.lineData = v.region
+            if (v.region == null) {
+              v.lineData = []
+            } else {
+              v.lineData = v.region
             }
             v.clicked = false
           })
@@ -338,10 +340,10 @@ export default {
         })
         .catch(err => {})
     },
-    leftRightSwitch(){
+    leftRightSwitch() {
       if (this.leftRight) {
         for (const item of this.riverShowList) {
-          if (item.leftBankRegion.length>0) {
+          if (item.leftBankRegion.length > 0) {
             let polygonStreet = new T.Polygon(item.leftBankRegion, {
               color: 'yellow', //线颜色
               weight: 3, //线宽
@@ -349,13 +351,12 @@ export default {
               fillColor: '#FFFFFF', //填充颜色
               fillOpacity: 0, // 填充透明度
               title: item.name, // 名字
-              id: item.id+'1' // id
+              id: item.id + '1' // id
             })
             //向地图上添加线
             this.map.addOverLay(polygonStreet)
           }
-          if (item.rightBankRegion.length>0) {
-            
+          if (item.rightBankRegion.length > 0) {
             let polygonStreet1 = new T.Polygon(item.rightBankRegion, {
               color: 'yellow', //线颜色
               weight: 3, //线宽
@@ -363,7 +364,7 @@ export default {
               fillColor: '#FFFFFF', //填充颜色
               fillOpacity: 0, // 填充透明度
               title: item.name, // 名字
-              id: item.id+'2' // id
+              id: item.id + '2' // id
             })
             //向地图上添加线
             this.map.addOverLay(polygonStreet1)
@@ -372,10 +373,10 @@ export default {
       } else {
         for (const overlay of this.map.getOverlays()) {
           for (const item of this.riverShowList) {
-            if (item.id+'1' == overlay.options.id) { 
+            if (item.id + '1' == overlay.options.id) {
               this.map.removeOverLay(overlay)
             }
-            if (item.id+'2' == overlay.options.id) { 
+            if (item.id + '2' == overlay.options.id) {
               this.map.removeOverLay(overlay)
             }
           }
@@ -407,7 +408,7 @@ export default {
       } else {
         for (const overlay of this.map.getOverlays()) {
           for (const item of this.streetShowList) {
-            if (item.id == overlay.options.id) { 
+            if (item.id == overlay.options.id) {
               this.map.removeOverLay(overlay)
             }
           }
@@ -514,9 +515,10 @@ export default {
           this.map.clearOverLays()
           this.$message.success('删除成功')
           this.getList()
-        }).catch(err => {
-            this.$message.error(err.response.data.message)
-          })
+        })
+        .catch(err => {
+          this.$message.error(err.response.data.message)
+        })
       this.defaultRiver = null
     },
     cancelDelete(e) {
@@ -657,16 +659,14 @@ export default {
       this.spotList.startZoneId = data.startZoneId
       this.spotList.destZoneId = data.destZoneId
       this.$refs.upload.submit()
-      
-      
     },
     del1() {
       this.upload = '0'
       this.fileList = []
     },
     handleSuccess(response, file, fileList) {
-      console.log(this.$refs);
-      
+      console.log(this.$refs)
+
       this.$refs.addRiver.submitUpload(response.data.info.id)
       console.log(response.data.info.id)
 
@@ -771,21 +771,22 @@ export default {
   position: absolute;
   right: 10px;
   bottom: 10px;
-  width: 36px;
+  width: 40px;
   z-index: 888;
   margin: 0;
   padding: 0;
   list-style-type: none;
   li {
     width: 100%;
-    background: white;
+    background: rgba(24, 44, 117, 1);
     border-radius: 50%;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
     margin-top: 10px;
+
     img {
       width: 100%;
-      height: 36px;
-      padding: 10px;
+      height: 40px;
+      padding: 5px;
     }
   }
 }
@@ -794,7 +795,7 @@ export default {
 }
 </style>
 <style >
-.ant-form input[type='file']{
-  display:none
+.ant-form input[type='file'] {
+  display: none;
 }
 </style>
