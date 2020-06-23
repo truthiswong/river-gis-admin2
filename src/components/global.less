@@ -575,6 +575,7 @@ body {
 
 // 自定义手机照片列表
 .phone_list {
+  flex-direction: column;
   .ant-list-item-content {
     flex-direction: column;
   }
@@ -623,8 +624,6 @@ body {
     height: 100%;
     box-sizing: border-box;
     z-index: 9;
-    // background: url("https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2798491980,1963709037&fm=26&gp=0.jpg") no-repeat fixed;
-    // background-size: 100% 100%;
     background: rgba(151, 145, 136, 0);
     border: 1px solid rgba(46, 64, 129, 1);
     // box-shadow: 0px 0px 4px 1px #2e4081;
@@ -634,8 +633,14 @@ body {
     content: "";
     position: absolute;
     top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
     width: 100%;
     height: 100%;
+    // background: url("https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2798491980,1963709037&fm=26&gp=0.jpg") no-repeat fixed;
+    // background-size: 100% 100%;
     background: rgba(151, 145, 136, 0.95);
     filter: blur(2px);
     z-index: -1;
