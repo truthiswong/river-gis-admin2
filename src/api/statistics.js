@@ -14,7 +14,7 @@ import {
  * @param parameter
  * @returns {*}
  */
-//巡河汇总
+//1.巡河汇总
 export function onExport1(parameter) {
   return axios({
     url: '/server/data/admin/stat/inspect/summary',
@@ -22,7 +22,7 @@ export function onExport1(parameter) {
     data: parameter
   })
 }
-//河道调查统计
+//2.河道调查统计
 export function onExport2(parameter) {
   return axios({
     url: '/server/data/admin/stat/inspect/river',
@@ -30,15 +30,15 @@ export function onExport2(parameter) {
     data: parameter
   })
 }
-//风险源数量数量汇总
+//3.排口数量汇总
 export function onExport3(parameter) {
   return axios({
-    url: '/server/data/admin/stat/risksource/summary',
+    url: '/server/data/admin/stat/discharge/summary',
     method: 'post',
     data: parameter
   })
 }
-//风险源数量汇总
+//4.风险源数量汇总
 export function onExport4(parameter) {
   return axios({
     url: '/server/data/admin/stat/risksource/summary',
@@ -46,23 +46,23 @@ export function onExport4(parameter) {
     data: parameter
   })
 }
-//风险源变化统计
+//5.风险源变化统计
 export function onExport5(parameter) {
   return axios({
-    url: '/server/data/admin/stat/risksource/summary',
+    url: '/server/data/admin/stat/risksource/compare',
     method: 'post',
     data: parameter
   })
 }
-//排口变化统计
+//6.排口变化统计
 export function onExport6(parameter) {
   return axios({
-    url: '/server/data/admin/stat/risksource/summary',
+    url: '/server/data/admin/stat/discharge/compare',
     method: 'post',
     data: parameter
   })
 }
-//风险源明细
+//7.风险源明细
 export function onExport7(parameter) {
   return axios({
     url: '/server/data/admin/stat/risksource/summary',
@@ -70,7 +70,7 @@ export function onExport7(parameter) {
     data: parameter
   })
 }
-//排口明细
+//8.排口明细
 export function onExport8(parameter) {
   return axios({
     url: '/server/data/admin/stat/risksource/summary',
@@ -78,7 +78,7 @@ export function onExport8(parameter) {
     data: parameter
   })
 }
-//水面漂浮物明细
+//9.水面漂浮物明细
 export function onExport9(parameter) {
   return axios({
     url: '/server/data/admin/stat/risksource/summary',
@@ -86,7 +86,7 @@ export function onExport9(parameter) {
     data: parameter
   })
 }
-//督办单明细
+//10.督办单明细
 export function onExport10(parameter) {
   return axios({
     url: '/server/data/admin/stat/risksource/summary',
@@ -94,7 +94,7 @@ export function onExport10(parameter) {
     data: parameter
   })
 }
-//水质数据统计
+//11.水质数据统计
 export function onExport11(parameter) {
   return axios({
     url: '/server/data/admin/stat/risksource/summary',
