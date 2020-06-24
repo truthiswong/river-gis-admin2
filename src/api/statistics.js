@@ -65,7 +65,7 @@ export function onExport6(parameter) {
 //7.风险源明细
 export function onExport7(parameter) {
   return axios({
-    url: '/server/data/admin/stat/risksource/summary',
+    url: '/server/data/admin/stat/risksource/list',
     method: 'post',
     data: parameter
   })
@@ -73,7 +73,7 @@ export function onExport7(parameter) {
 //8.排口明细
 export function onExport8(parameter) {
   return axios({
-    url: '/server/data/admin/stat/risksource/summary',
+    url: '/server/data/admin/stat/discharge/list',
     method: 'post',
     data: parameter
   })
@@ -81,7 +81,7 @@ export function onExport8(parameter) {
 //9.水面漂浮物明细
 export function onExport9(parameter) {
   return axios({
-    url: '/server/data/admin/stat/risksource/summary',
+    url: '/server/data/admin/stat/floatage/list',
     method: 'post',
     data: parameter
   })
