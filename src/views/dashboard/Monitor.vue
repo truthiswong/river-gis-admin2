@@ -1,7 +1,7 @@
 <template>
   <div style="width:100%;height:calc(100vh - 64px);" ref="monitor">
     <water-quality ref="waterquality"></water-quality>
-    <split-pane :min-percent="25" :default-percent="81.5" split="vertical">
+    <split-pane :min-percent="25" :default-percent="80" split="vertical">
       <template slot="paneL">
         <div class="left-info">
           <!-- <img src="../../assets/map.jpg" style="width:100%;height: calc(100vh - 66px);"> -->

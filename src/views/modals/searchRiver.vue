@@ -5,7 +5,7 @@
   <div class="searchRiver" v-show="visible">
     <p class="searchTitle">河道查询</p>
     <span class="closeSearch_r" @click="close">
-      <a-icon type="close" />
+      <a-icon type="close-circle" />
     </span>
     <div class="searchInfo" style="padding: 0 10px">
       <!-- <a-input placeholder="请输入河道名称" style="text-align:left;width: 240px;"/>
@@ -78,12 +78,16 @@ export default {
   width: 300px;
   background-color: #ffffff;
   padding-bottom: 14px;
+  border: 1px solid#00CCFF;
+  border-radius: 10px;
+  overflow: hidden;
+  color: #00CCFF;
 }
 .searchTitle {
   text-align: left;
   padding: 10px 0;
   padding-left: 20px;
-  border-bottom: 1px solid#F5F5F5;
+  border-bottom: 1px solid#00CCFF;
   background-color: #f5f5f5;
 }
 .closeSearch_r {
