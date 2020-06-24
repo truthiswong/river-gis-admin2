@@ -509,8 +509,15 @@
       color: #203868;
     }
 
-    .ant-tree-title {
-      color: #FFFFFF;
+    .ant-tree li {
+      .ant-tree-node-content-wrapper {
+        .ant-tree-title {
+          color: #FFFFFF;
+        }
+      }
+      .ant-tree-node-content-wrapper:hover {
+        background: rgba(0, 0, 0, 0);
+      }
     }
 
     .addTaskBtn {
