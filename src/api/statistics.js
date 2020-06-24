@@ -89,7 +89,7 @@ export function onExport9(parameter) {
 //10.督办单明细
 export function onExport10(parameter) {
   return axios({
-    url: '/server/data/admin/stat/risksource/summary',
+    url: '/server/data/admin/stat/supervision/details',
     method: 'post',
     data: parameter
   })
