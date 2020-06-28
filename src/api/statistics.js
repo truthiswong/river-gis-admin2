@@ -97,7 +97,7 @@ export function onExport10(parameter) {
 //11.水质数据统计
 export function onExport11(parameter) {
   return axios({
-    url: '/server/data/admin/stat/risksource/summary',
+    url: '/server/data/admin/stat/water/details',
     method: 'post',
     data: parameter
   })
