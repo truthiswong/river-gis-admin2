@@ -10,7 +10,7 @@
     >
       <div class="time_quantum" v-show="!canDownload">{{historyData?timeQuantum:defaultTime}}</div>
       <div class="compass_pointer" @click="compass" title="指北针">
-        <img class="pointer" src="../../assets/img/compassPointer.png" alt="指北针" />
+        <!-- <img class="pointer" src="../../assets/img/compassPointer.png" alt="指北针" /> -->
       </div>
     </div>
     <div class="time_line">
@@ -62,7 +62,7 @@
           <a-button
             icon="setting"
             shape="circle"
-            style="background-color: rgba(32, 56, 104, 1);color: white;width: 25px;height: 25px;line-height:23px;"
+            style="background-color: rgba(32, 56, 104, 1);color: white;width: 30px;height: 30px;line-height:28px;"
           ></a-button>
         </a-popover>
       </div>
@@ -114,7 +114,7 @@
           <a-button
             icon="setting"
             shape="circle"
-            style="background-color: rgba(32, 56, 104, 1);color: white;width: 25px;height: 25px;line-height:23px;"
+            style="background-color: rgba(32, 56, 104, 1);color: white;width: 30px;height: 30px;line-height:28px;"
           ></a-button>
         </a-popover>
       </div>
@@ -152,6 +152,7 @@
     </div>
     <div
       class="accordion_alert"
+      :class="{accordion_alert_right:(sharedChecked || swipeChecked)}"
       v-show="phonePhoto || riskMap || waterQuality || riverRisk || outlet"
     >
       <a-collapse accordion class="custom_collapse" v-model="accordionAlertKey">
@@ -368,7 +369,7 @@
       </a-collapse>
     </div>
     <!-- 河岸风险源 -->
-    <div class="river_risk_alert" v-show="riverRisk">
+    <div class="river_risk_alert" :class="{river_risk_alert_right:(sharedChecked || swipeChecked)}" v-show="riverRisk">
       <a-list size="small" style="padding:0 10px; max-height:240px; overflow: auto;">
         <a-list-item v-for="item in riskSourceList" :key="item.id">
           <a-row style="width:100%" type="flex" justify="space-between" align="middle">
@@ -414,7 +415,7 @@
         v-show="!(this.sharedChecked || this.swipeChecked)"
         v-if="jurisdiction"
       >
-        <img src="../../assets/img/draw.png" alt="工具" title="工具" />
+        <img src="../../assets/draw.png" alt="工具" title="工具" />
       </li>
       <li>
         <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
@@ -451,7 +452,7 @@
       </li>
       <li v-show="!(this.sharedChecked || this.swipeChecked)">
         <img
-          src="../../assets/img/screenshot.png"
+          src="../../assets/screenshot.png"
           id="export-png"
           @click="printImage"
           alt="截图"
@@ -488,7 +489,6 @@
               </a-col>
             </a-row>
             <a-row
-              v-show="listItemLeftRight==true"
               style="width:160px"
               type="flex"
               justify="space-between"
@@ -2843,7 +2843,13 @@ export default {
         if (this.markerTool) {
           this.markerTool.clear()
         }
+        let icon = new T.Icon({
+          iconUrl: require('../../assets/tool_point_icon.png'),
+          iconSize: new T.Point(41, 40),
+          iconAnchor: new T.Point(21, 40)
+        })
         this.markerTool = new T.MarkTool(this.map, {
+          icon: icon,
           follow: true
         })
         this.markerTool.open()
@@ -6832,7 +6838,7 @@ export default {
 
 .supervise {
   position: relative;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 52px);
   width: 100vw;
 }
 
@@ -6852,7 +6858,7 @@ export default {
 
 .main {
   width: 100%;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 52px);
 }
 
 .lmap {
@@ -6872,7 +6878,7 @@ export default {
   .half {
     padding: 0 10px;
     width: 50%;
-    height: calc(100vh - 64px);
+    height: calc(100vh - 52px);
     float: left;
   }
 }
@@ -7161,10 +7167,13 @@ export default {
 
   .time_set {
     position: absolute;
+    left: 0;
+    right: 0;
     bottom: 4px;
-    width: 100%;
+    width: 30px;
     height: 30px;
     text-align: center;
+    margin: auto;
   }
 }
 
@@ -7182,6 +7191,9 @@ export default {
   border-radius: 4px;
   box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.5);
 }
+.river_risk_alert_right {
+  right: 270px;
+}
 
 .accordion_alert {
   position: absolute;
@@ -7194,6 +7206,9 @@ export default {
   z-index: 887;
   border-radius: 4px;
   box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.5);
+}
+.accordion_alert_right {
+  right:60px;
 }
 
 .tools_card {
@@ -7247,7 +7262,7 @@ export default {
 
 .compass_pointer {
   position: absolute;
-  right: 10px;
+  right: 0;
   top: 10px;
   width: 90px;
   height: 90px;
@@ -7294,6 +7309,9 @@ export default {
 .menu_right {
   right: 80px;
 }
+.alert_right {
+  right: 60px;
+}
 
 .phone_wrap {
   overflow: auto;
@@ -7319,7 +7337,7 @@ export default {
   position: absolute;
   left: 70px;
   top: 8px;
-  z-index: 998;
+  z-index: 666;
   color: #333;
   padding: 4px 10px;
   border-radius: 4px;
@@ -7329,9 +7347,9 @@ export default {
 
 .doubleBall1 {
   position: absolute;
-  right: 70px;
+  left: 52%;
   top: 8px;
-  z-index: 998;
+  z-index: 666;
   color: #333;
   padding: 4px 10px;
   border-radius: 4px;
