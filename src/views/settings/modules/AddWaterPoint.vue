@@ -249,11 +249,12 @@ export default {
           // this.list.waterName = arr.waterName
           if (arr.river) {
             this.list.riverId = arr.river.id
-            this.list.waterCode = arr.river.code
+            // this.list.waterCode = arr.river.code
           }
           if (arr.street) {
             this.list.streetId = arr.street.id
           }
+          this.list.waterCode = arr.waterCode
           this.list.manageLevel = arr.manageLevel
           this.list.waterType = arr.waterType
           this.list.area = arr.area
