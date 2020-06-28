@@ -695,7 +695,7 @@ export default {
 }
 .supervise {
   position: relative;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 52px);
   width: 100vw;
 }
 #map {

@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%;height:calc(100vh - 64px);" class="home">
+  <div style="width:100%;height:calc(100vh - 52px);" class="home">
     <div class="home_content">
       <div>
         <img @click="gotoRouter(1)" src="./img/monitor.png" alt />

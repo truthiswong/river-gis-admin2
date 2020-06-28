@@ -1915,7 +1915,7 @@ export default {
 }
 .supervise {
   position: relative;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 52px);
   width: 100vw;
 }
 #map {
@@ -1954,7 +1954,7 @@ export default {
 }
 .task_face {
   width: 100%;
-  height: calc(100vh - 195px);
+  height: calc(100vh - 190px);
   overflow: auto;
   .ant-spin-container {
     .ant-list-item:hover {
@@ -1967,14 +1967,14 @@ export default {
   .ant-form-item {
     margin-bottom: 0;
   }
-  .bottom_add {
-    position: absolute;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-    margin: auto;
-    width: 60%;
-  }
+}
+.bottom_add {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  margin: auto;
+  width: 60%;
 }
 
 .menu {

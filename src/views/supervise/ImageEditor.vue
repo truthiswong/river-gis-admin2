@@ -182,7 +182,7 @@ export default {
   position: absolute;
   top: 0;
   z-index: 1001;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 52px);
   width: 100vw;
   background: #1e1e1e;
   overflow: auto;

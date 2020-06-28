@@ -713,7 +713,7 @@ export default {
 <style lang="less" scoped>
 .supervise {
   position: relative;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 52px);
   width: 100vw;
 }
 #map {
@@ -748,7 +748,7 @@ export default {
 }
 .task_face {
   width: 100%;
-  height: calc(100vh - 180px);
+  height: calc(100vh - 190px);
   overflow: auto;
   .ant-spin-container {
     .ant-list-item:hover {
