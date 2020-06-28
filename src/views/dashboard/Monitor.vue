@@ -71,7 +71,7 @@
                     v-for="item in patrolPlanInfo"
                     :key="item.river.id"
                   >
-                    <p style="margin:0;">{{text}}</p>
+                    <p style="margin:0;font-size:12px;">{{text}}</p>
                   </a-collapse-panel>
                 </a-collapse>
               </div>
@@ -95,7 +95,7 @@
                     </div>
                     <div class="river_risk_list">
                       <a-row
-                        style="width:100%"
+                        style="width:100%;margin:5px 0;"
                         type="flex"
                         justify="space-between"
                         align="middle"
@@ -1521,6 +1521,7 @@ export default {
       },
       addTaskCode: '1',
       patrolPlanInfo: [],
+      patrolPlanShow: false, // 推荐巡河方案
       riverList: [],
       asasd: {},
       newTaskObj: {}, // 新建计划传值

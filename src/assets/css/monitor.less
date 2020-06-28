@@ -75,6 +75,8 @@
   z-index: 888;
   top: 10px;
   left: 10px;
+
+
 }
 
 .left-date {
@@ -300,13 +302,13 @@
     }
 
     .ant-collapse>.ant-collapse-item>.ant-collapse-header {
-      padding: 4px 20px 4px 17px;
+      padding: 4px 20px 4px 10px;
       color: white;
       background: rgba(0, 0, 0, 0.85);
     }
 
-    .ant-collapse>.ant-collapse-item>.ant-collapse-header .arrow {
-      left: 124px;
+    .ant-collapse>.ant-collapse-item>.ant-collapse-header .ant-collapse-arrow {
+      left: 110px;
       margin-top: 2px;
     }
 
@@ -361,11 +363,11 @@
     font-weight: 500;
     font-size: 15px;
     font-weight: 500;
-    line-height: 20px;
+    line-height: 24px;
   }
 
-  .ant-collapse>.ant-collapse-item>.ant-collapse-header .arrow {
-    left: 124px;
+  .ant-collapse>.ant-collapse-item>.ant-collapse-header .ant-collapse-arrow {
+    left: 110px;
     margin-top: 2px;
   }
 
@@ -384,7 +386,8 @@
 
   .river_risk_content {
     max-height: 250px;
-    overflow: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     .river_risk_type {
       img {
