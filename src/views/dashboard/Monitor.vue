@@ -1,11 +1,15 @@
 <template>
-  <div style="width:100%;height:calc(100vh - 64px);" ref="monitor">
+  <div style="width:100%;height:calc(100vh - 52px);" ref="monitor">
     <water-quality ref="waterquality"></water-quality>
     <split-pane :min-percent="25" :default-percent="80" split="vertical">
       <template slot="paneL">
         <div class="left-info">
           <!-- <img src="../../assets/map.jpg" style="width:100%;height: calc(100vh - 66px);"> -->
-          <div id="map" class="map"></div>
+          <div id="map" class="map">
+            <div class="compass_pointer" @click="compass" title="指北针">
+              <!-- <img class="pointer" src="../../assets/img/compassPointer.png" alt="指北针" /> -->
+            </div>
+          </div>
           <div class="leftShow" v-if="noTitleKey === 'addPlan' || nosuperKey === 'taskCard'">
             <div class="left-date">
               <el-date-picker
@@ -19,21 +23,21 @@
             </div>
             <!-- 天气 -->
             <div class="weather">
-              <div>
+              <a-row type="flex" justify="space-between" align="middle">
                 <img v-show="weatherData.img" :src="weatherData.img" alt="天气" />
-              </div>
-              <div>
-                <p>实时天气: {{weatherData.text}}</p>
-                <p>风力: {{weatherData.wind_scale}}级</p>
-              </div>
-              <div class="weather_right">
+                <div>
+                  <p>实时天气: {{weatherData.text}}</p>
+                  <p>风力: {{weatherData.wind_scale}}级</p>
+                </div>
+              </a-row>
+              <!-- 天气弹窗 -->
+              <div class="weather_right" v-show="false">
                 <a-icon
                   class="right_icon"
                   type="caret-left"
                   :class="rightIcon == true ? 'right_icon_active':''"
                   @click="rightIconClick"
                 />
-                <!-- 天气弹窗 -->
                 <div class="weather_alert" v-show="rightIcon">
                   <div class="weather_content">
                     <a-select style="width: 200px" v-model="itgePortId">
@@ -5079,7 +5083,7 @@ export default {
 
 .task_face {
   width: 100%;
-  height: calc(100vh - 157px);
+  height: calc(100vh - 147px);
   overflow: auto;
 }
 
