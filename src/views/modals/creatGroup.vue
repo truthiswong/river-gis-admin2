@@ -13,7 +13,13 @@
               </a-col>
             </a-row>
           </div>
-          <draggable class="list-group" :list="nothingTaskList" group="people" @change="log"  onmouseout="normalImg">
+          <draggable
+            class="list-group"
+            :list="nothingTaskList"
+            group="people"
+            @change="log"
+            onmouseout="normalImg"
+          >
             <div
               class="list-group-item listItem"
               v-for="element in nothingTaskList"
@@ -21,43 +27,26 @@
             >{{element.objectName}}</div>
           </draggable>
         </div>
-        <a-collapse v-model="collapse">
-          <a-collapse-panel v-for="(item,index)  in groupingList" :key="index"  >
+        <a-collapse>
+          <a-collapse-panel v-for="(item,index)  in groupingList" :key="index">
             <template slot="header">
               <a-row style="width:100%">
-                <a-col :span="9">{{item.name}}</a-col>
-                <a-col :span="14" style="text-align:right;" :pull="1">
+                <a-col :span="20">{{item.name}}</a-col>
+                <a-col :span="4" style="text-align:right;" :pull="1">
                   <a-popconfirm
                     title="是否确认删除?"
                     @confirm="getGroupingDel(item.id)"
                     @cancel="cancel"
                     okText="确认"
                     cancelText="取消"
+                    placement="topRight"
                   >
-                    <a-button shape="circle" icon="close" style="font-size:8px;"></a-button>
+                    <a-button shape="circle" size="small" icon="close"></a-button>
                   </a-popconfirm>
                 </a-col>
               </a-row>
             </template>
-            <div style="width:100%;" >
-              <!-- <div class="group_title">
-                <a-row type="flex" justify="space-between" align="middle">
-                  <a-col :span="8">
-                    <span class="group_font">{{item.name}}</span>
-                  </a-col>
-                  <a-col :span="3">
-                    <a-popconfirm
-                      title="是否确认删除?"
-                      @confirm="getGroupingDel(item.id)"
-                      @cancel="cancel"
-                      okText="确认"
-                      cancelText="取消"
-                    >
-                      <a-button shape="circle" icon="close" style="font-size:8px;"></a-button>
-                    </a-popconfirm>
-                  </a-col>
-                </a-row>
-              </div> -->
+            <div style="width:100%;">
               <draggable class="list-group" :list="item.taskList" group="people" @change="log">
                 <div
                   class="list-group-item listItem"
@@ -68,7 +57,6 @@
             </div>
           </a-collapse-panel>
         </a-collapse>
-        
       </div>
     </div>
   </div>
@@ -77,13 +65,22 @@
 import '../../assets/css/creatGroup.less'
 import { groupingPage, groupingSave, groupingDel, targetPage, targetSetTeam } from '@/api/login'
 
-let data = [{ name: '黄浦江', id: 1 }, { name: '长江', id: 2 }, { name: '黄河', id: 3 }, { name: '鸭绿江', id: 4 }]
-let dataTwo = [{ name: '洞庭湖', id: 5 }, { name: '太湖', id: 6 }, { name: '黑龙江', id: 7 }]
+let data = [
+  { name: '黄浦江', id: 1 },
+  { name: '长江', id: 2 },
+  { name: '黄河', id: 3 },
+  { name: '鸭绿江', id: 4 }
+]
+let dataTwo = [
+  { name: '洞庭湖', id: 5 },
+  { name: '太湖', id: 6 },
+  { name: '黑龙江', id: 7 }
+]
 export default {
   name: 'creatGroup',
   data() {
     return {
-      collapse:'1',
+      collapse: '1',
       data,
       dataTwo,
       id: '',
@@ -95,13 +92,11 @@ export default {
     }
   },
   methods: {
-    normalImg(){
-      console.log('111');
-      
+    normalImg() {
+      console.log('111')
     },
-    akaiaiaiai(event){
-      console.log(event);
-      
+    akaiaiaiai(event) {
+      console.log(event)
     },
     //生成计划
     planGeneration(id) {

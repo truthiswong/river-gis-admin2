@@ -315,60 +315,6 @@
               </li>
             </ul>
           </div>
-          <div class="accordion_alert" v-show=" riskMap || waterQuality || riverRisk || outlet">
-            <a-collapse accordion class="custom_collapse" v-model="accordionAlertKey">
-              <a-collapse-panel
-                header="河岸风险源"
-                :style="customStyle"
-                v-show="riverRisk"
-                class="custom_list"
-                key="riverRisk"
-              >
-                <a-select
-                  showSearch
-                  mode="tags"
-                  :allowClear="true"
-                  placeholder="请选择河岸风险源等级"
-                  optionFilterProp="children"
-                  style="width: 100%"
-                  @change="riverRiskChange"
-                  v-model="riskSourceLevel"
-                  :filterOption="riverRiskFilterOption"
-                >
-                  <a-select-option value="one">Ⅰ级</a-select-option>
-                  <a-select-option value="two">Ⅱ级</a-select-option>
-                  <a-select-option value="three">Ⅲ级</a-select-option>
-                  <a-select-option value="four">Ⅳ级</a-select-option>
-                </a-select>
-              </a-collapse-panel>
-              <a-collapse-panel
-                header="排口"
-                :style="customStyle"
-                v-show="outlet"
-                class="custom_list"
-                key="outlet"
-              >
-                <a-select
-                  showSearch
-                  mode="tags"
-                  :allowClear="true"
-                  placeholder="请选择排口类别"
-                  optionFilterProp="children"
-                  style="width: 100%"
-                  @change="waterQualityChange"
-                  :filterOption="waterQualityFilterOption"
-                  v-model="dischargeLevel"
-                >
-                  <a-select-option value="rainwater">雨水</a-select-option>
-                  <a-select-option value="life">生活</a-select-option>
-                  <a-select-option value="mix">混合</a-select-option>
-                  <a-select-option value="industrial">工业</a-select-option>
-                  <a-select-option value="powerplant">电厂温排水</a-select-option>
-                  <a-select-option value="other">其他</a-select-option>
-                </a-select>
-              </a-collapse-panel>
-            </a-collapse>
-          </div>
           <search-river ref="selectPatrol" class="riverSearchModal"></search-river>
           <add-survey ref="addSurvey" class="riverSearchModal"></add-survey>
         </div>
@@ -395,7 +341,7 @@
                   <a-icon type="plus-circle" />新建计划
                 </span>
                 <!-- 新建计划 -->
-                <div class="task_face">
+                <div class="task_face new_plan">
                   <a-spin size="large" :spinning="spinning">
                     <!-- 判断显示内容 -->
                     <div v-if="ishidden == 1">
@@ -427,19 +373,20 @@
                       <div class="riverInfo" v-for="item in riverMontion" :key="item.value">
                         <div class="river_info">
                           <a-row type="flex" justify="space-between" align="middle">
-                            <a-col :span="18">{{item.objectName}}</a-col>
-                            <a-col :span="3">
+                            <a-col :span="20">{{item.objectName}}</a-col>
+                            <a-col :span="4">
                               <a-popconfirm
                                 title="是否确认删除?"
                                 @confirm="getInspectPointDel(item.id)"
                                 @cancel="cancel"
                                 okText="确认"
                                 cancelText="取消"
+                                placement="topRight"
                               >
                                 <a-button
                                   shape="circle"
+                                  size="small"
                                   icon="close"
-                                  style="font-size:8px;"
                                   v-show="jurisdiction"
                                 ></a-button>
                               </a-popconfirm>

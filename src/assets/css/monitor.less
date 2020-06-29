@@ -3,12 +3,6 @@
   padding-top: 15px;
 }
 
-.ant-btn-circle,
-.ant-btn-circle-outline {
-  width: 20px;
-  height: 20px;
-}
-
 .ant-tree {
   text-align: left;
   margin-left: 8px;
@@ -540,19 +534,47 @@
       color: #203868;
     }
 
-    .ant-tree li {
-      .ant-tree-node-content-wrapper {
-        .ant-tree-title {
-          color: #FFFFFF;
+    .task_face {
+      .ant-tree li {
+        .ant-tree-node-content-wrapper {
+          width: 100%;
+          height: auto;
+          white-space: normal;
+
+          .ant-tree-title {
+            color: #202020;
+          }
+        }
+
+        span.ant-tree-switcher.ant-tree-switcher-noop {
+          display: none;
+        }
+
+        .ant-tree-node-content-wrapper:hover {
+          background: rgba(0, 0, 0, 0);
+        }
+
+        .ant-tree-node-content-wrapper.ant-tree-node-selected {
+          background-color: rgba(0, 0, 0, 0);
         }
       }
+    }
 
-      .ant-tree-node-content-wrapper:hover {
-        background: rgba(0, 0, 0, 0);
-      }
+    .new_plan {
+      .ant-tree li {
+        .ant-tree-node-content-wrapper {
+          .ant-tree-title {
+            color: #FFFFFF;
+          }
+        }
 
-      .ant-tree-node-content-wrapper.ant-tree-node-selected {
-        background-color: rgba(0, 0, 0, 0);
+        .ant-tree-node-content-wrapper:hover {
+          background: rgba(0, 0, 0, 0);
+        }
+
+        .ant-tree-node-content-wrapper.ant-tree-node-selected {
+          background-color: rgba(0, 0, 0, 0);
+        }
       }
     }
 
@@ -573,8 +595,10 @@
       line-height: 1.499;
     }
 
-    .addTaskBtn .ant-btn {
-      color: #1890ff;
+    .addTaskBtn {
+      .ant-btn {
+        color: #1890ff;
+      }
     }
 
     .addPlan_foot {
@@ -594,7 +618,6 @@
 
   }
 }
-
 
 .planProgress {
   padding: 16px;
@@ -723,8 +746,10 @@
   text-align: center;
 }
 
-.btn_group .ant-btn {
-  color: #1890ff;
+.btn_group {
+  .ant-btn {
+    color: #1890ff;
+  }
 }
 
 .plan_personInfo {
@@ -803,8 +828,10 @@
   width: 90%;
 }
 
-.tree_succ .ant-btn {
-  height: 100%;
+.tree_succ {
+  .ant-btn {
+    height: 100%;
+  }
 }
 
 .but_type {
