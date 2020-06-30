@@ -22,7 +22,7 @@
               ></el-date-picker>
             </div>
             <!-- 天气 -->
-            <div class="weather">
+            <div class="weather" @click="rightIconClick">
               <a-row type="flex" justify="space-between" align="middle">
                 <img v-show="weatherData.img" :src="weatherData.img" alt="天气" />
                 <div>
@@ -31,12 +31,11 @@
                 </div>
               </a-row>
               <!-- 天气弹窗 -->
-              <div class="weather_right" v-show="false">
+              <div class="weather_right">
                 <a-icon
                   class="right_icon"
-                  type="caret-left"
+                  type="right"
                   :class="rightIcon == true ? 'right_icon_active':''"
-                  @click="rightIconClick"
                 />
                 <div class="weather_alert" v-show="rightIcon">
                   <div class="weather_content">
@@ -352,7 +351,7 @@
                         style="margin-bottom:15px;margin-top:15px;text-align:center;"
                       >
                         <a-col :span="12">
-                          <a-button style="padding:0 22px;color:#1890ff;" @click="addRiverBtn">
+                          <a-button style="padding:0 10px;color:#1890ff;" @click="addRiverBtn">
                             <img
                               style="width: 13px;height: 13px;margin-right: 4px;vertical-align: middle;"
                               src="./img/addRiverIcon.png"
@@ -361,7 +360,7 @@
                           </a-button>
                         </a-col>
                         <a-col :span="12">
-                          <a-button @click="addSurveyPoint" class="commBtn">
+                          <a-button style="padding:0 10px;color:#1890ff;" @click="addSurveyPoint" class="commBtn">
                             <img
                               style="width: 16px;height: 16px;vertical-align: middle;"
                               src="./img/addSurveyPointIcon.png"
@@ -999,7 +998,7 @@
               </a-row>
             </div>
           </div>
-          <div class="addPlan_foot" v-if="!firstShow">
+          <div class="addPlan_foot" style="margin:10px auto 0;text-align: center;" v-if="!firstShow">
             <div v-if="ishidden == 4">
               <a-button style="width:90%;" @click="returnPre">返回上一级</a-button>
             </div>

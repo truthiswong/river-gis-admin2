@@ -14,8 +14,8 @@
       </div>
     </div>
     <div class="time_line">
-      <ul class="time_ul">
-        <li>
+      <ul class="time_ul" style="transform: scaleX(-1);">
+        <li style="transform: scaleX(-1);">
           <!--v-for="item in timeData" :key="item.id" -->
           <!-- <h6 style="font-size:12px;text-align:center;margin:0;">{{item.title}}</h6> -->
           <a-tooltip
@@ -28,7 +28,7 @@
             :class="{'time_item_clicked':day.clicked == true}"
           >
             <template slot="title">
-              <span>{{day.date}}</span>
+              <span>{{day.dateString}}<br />{{day.dateWeekday}}</span>
             </template>
             <!-- <h6 style="font-size:12px;text-align:center;margin:0;">{{day.date}}</h6> -->
             <div class="line_style">
@@ -152,7 +152,6 @@
     </div>
     <div
       class="accordion_alert"
-      :class="{accordion_alert_right:(sharedChecked || swipeChecked)}"
       v-show="phonePhoto || riskMap || waterQuality || riverRisk || outlet"
     >
       <a-collapse accordion class="custom_collapse" v-model="accordionAlertKey">
@@ -236,6 +235,25 @@
             <a-select-option value="three">Ⅲ级</a-select-option>
             <a-select-option value="four">Ⅳ级</a-select-option>
           </a-select>
+          <!-- 河岸风险源 -->
+          <div class="river_risk_alert" v-show="riverRisk">
+            <a-list size="small" style="padding:0 10px; max-height:240px; overflow: auto;">
+              <a-list-item v-for="item in riskSourceList" :key="item.id">
+                <a-row style="width:100%" type="flex" justify="space-between" align="middle">
+                  <a-col :span="18">
+                    <p style="margin:0;">{{item.name}} ({{item.num}})</p>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-switch
+                      size="small"
+                      v-model="item.clicked"
+                      @click="onDrawType(item.id,item.clicked)"
+                    />
+                  </a-col>
+                </a-row>
+              </a-list-item>
+            </a-list>
+          </div>
         </a-collapse-panel>
         <a-collapse-panel
           header="风险地图"
@@ -368,25 +386,6 @@
         </a-collapse-panel>
       </a-collapse>
     </div>
-    <!-- 河岸风险源 -->
-    <div class="river_risk_alert" :class="{river_risk_alert_right:(sharedChecked || swipeChecked)}" v-show="riverRisk">
-      <a-list size="small" style="padding:0 10px; max-height:240px; overflow: auto;">
-        <a-list-item v-for="item in riskSourceList" :key="item.id">
-          <a-row style="width:100%" type="flex" justify="space-between" align="middle">
-            <a-col :span="18">
-              <p style="margin:0;">{{item.name}} ({{item.num}})</p>
-            </a-col>
-            <a-col :span="6">
-              <a-switch
-                size="small"
-                v-model="item.clicked"
-                @click="onDrawType(item.id,item.clicked)"
-              />
-            </a-col>
-          </a-row>
-        </a-list-item>
-      </a-list>
-    </div>
     <!-- 双球 -->
     <div class="showMap" id="showmap" v-show="sharedChecked">
       <div class="half">
@@ -406,7 +405,7 @@
     <ul class="menu" :class="{menu_right:(sharedChecked || swipeChecked)}">
       <!-- <li @click="setCenter">
         <img src="../../assets/historyIcon.png" alt="历史" />
-      </li> -->
+      </li>-->
       <li @click="setCenter">
         <img src="../../assets/restoration.png" alt="复位" />
       </li>
@@ -488,12 +487,7 @@
                 <a-switch size="small" v-model="riverShow" />
               </a-col>
             </a-row>
-            <a-row
-              style="width:160px"
-              type="flex"
-              justify="space-between"
-              align="middle"
-            >
+            <a-row style="width:160px" type="flex" justify="space-between" align="middle">
               <a-col :span="20">
                 <p style="margin:0;">左右岸</p>
               </a-col>
@@ -785,23 +779,43 @@
       />
       <a-radio-group>
         <a-radio-button value="0" @click="toolIndexFun(1)">
-          <img style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;" src="./img/toolIcon1.png" alt="">
+          <img
+            style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;"
+            src="./img/toolIcon1.png"
+            alt
+          />
           <span style="vertical-align: middle;">点</span>
         </a-radio-button>
         <a-radio-button value="1" @click="toolIndexFun(2)">
-          <img style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;" src="./img/toolIcon2.png" alt="">
+          <img
+            style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;"
+            src="./img/toolIcon2.png"
+            alt
+          />
           <span style="vertical-align: middle;">线</span>
         </a-radio-button>
         <a-radio-button value="2" @click="toolIndexFun(3)">
-          <img style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;" src="./img/toolIcon3.png" alt="">
+          <img
+            style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;"
+            src="./img/toolIcon3.png"
+            alt
+          />
           <span style="vertical-align: middle;">面</span>
         </a-radio-button>
         <a-radio-button value="3" @click="toolIndexFun(4)">
-          <img style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;" src="./img/toolIcon5.png" alt="">
+          <img
+            style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;"
+            src="./img/toolIcon5.png"
+            alt
+          />
           <span style="vertical-align: middle;">测面</span>
         </a-radio-button>
         <a-radio-button value="4" @click="toolIndexFun(5)">
-          <img style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;" src="./img/toolIcon4.png" alt="">
+          <img
+            style="width:20px;height:20px;vertical-align: middle;margin-right: 4px;"
+            src="./img/toolIcon4.png"
+            alt
+          />
           <span style="vertical-align: middle;">测距</span>
         </a-radio-button>
       </a-radio-group>
@@ -884,23 +898,18 @@
         </a-form-item>
       </a-form>
       <div slot="footer">
-      <a-row
-        style="width:100%;"
-        type="flex"
-        justify="space-around"
-        v-show="jurisdiction"
-      >
-        <a-col :span="3">
-          <a-button block @click="otherCancel">取消</a-button>
-        </a-col>
-        <a-col :span="3">
-          <a-button block @click="otherDel">删除</a-button>
-        </a-col>
-        <a-col :span="3">
-          <a-button block @click="otherOk">保存</a-button>
-        </a-col>
-      </a-row>
-    </div>
+        <a-row style="width:100%;" type="flex" justify="space-around" v-show="jurisdiction">
+          <a-col :span="3">
+            <a-button block @click="otherCancel">取消</a-button>
+          </a-col>
+          <a-col :span="3">
+            <a-button block @click="otherDel">删除</a-button>
+          </a-col>
+          <a-col :span="3">
+            <a-button block @click="otherOk">保存</a-button>
+          </a-col>
+        </a-row>
+      </div>
     </a-modal>
   </div>
 </template>
@@ -3362,6 +3371,8 @@ export default {
             item.title = item.date.substring(item.date.length - 2, item.date.length)
           } else {
             item.date = item.beginDate
+            item.dateString = item.beginDateString
+            item.dateWeekday = item.beginDateWeekday
             item.title = item.beginDate.substring(item.beginDate.length - 2, item.beginDate.length)
           }
           item.clicked = false
@@ -3403,7 +3414,7 @@ export default {
             this.mapDayRight = this.defaultTime.substring(8, 10)
           }
         }
-
+        console.log(this.timeData)
         this.timeData = res.data
         this.timeDataRight = JSON.parse(JSON.stringify(this.timeData))
         this.getWeatherList()
@@ -6840,6 +6851,7 @@ export default {
   position: relative;
   height: calc(100vh - 52px);
   width: 100vw;
+  overflow: hidden;
 }
 
 .vmap {
@@ -7051,7 +7063,7 @@ export default {
 
   ul {
     width: 100%;
-    height: calc(100% - 35px);
+    height: calc(100% - 40px);
     overflow: auto;
     margin: 0;
     padding: 0;
@@ -7183,22 +7195,19 @@ export default {
 
 .river_risk_alert {
   position: absolute;
-  right: 220px;
-  top: 10px;
+  left: 210px;
+  top: 1px;
   width: 180px;
   background-color: white;
   z-index: 889;
   border-radius: 4px;
   box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.5);
 }
-.river_risk_alert_right {
-  right: 270px;
-}
 
 .accordion_alert {
   position: absolute;
-  right: 10px;
-  top: 10px;
+  left: 60px;
+  top: 70px;
   width: 200px;
   max-height: calc(100vh - 85px);
   // overflow: auto;
@@ -7206,9 +7215,6 @@ export default {
   z-index: 887;
   border-radius: 4px;
   box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.5);
-}
-.accordion_alert_right {
-  right:60px;
 }
 
 .tools_card {
@@ -7245,7 +7251,7 @@ export default {
 
 .color_wrap {
   position: absolute;
-  right: 200px;
+  left: 210px;
   top: 2px;
 }
 

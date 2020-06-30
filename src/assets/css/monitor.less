@@ -103,7 +103,7 @@
 
 .weather {
   margin-top: 10px;
-  // width: 220px;
+  // width: 200px;
   width: 142px;
   height: 50px;
   z-index: 888;
@@ -171,18 +171,14 @@
 
   .weather_right {
     position: relative;
-    width: 46px;
     height: 100%;
-    border-left: 1px solid rgba(216, 216, 216, 0.56);
     display: flex;
     display: -webkit-flex;
     align-items: center;
     -webkit-align-items: center;
-    padding-left: 6px;
 
     .right_icon {
-      font-size: 18px;
-      padding: 10px;
+      font-size: 12px;
       transition: 0.5s;
       -moz-transition: 0.5s;
       /* Firefox 4 */
@@ -208,13 +204,13 @@
   //   }
   // }
   .right_icon_active {
-    color: #1890ff;
-    transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
+    // color: #1890ff;
+    transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
     /* IE 9 */
-    -moz-transform: rotate(180deg);
+    -moz-transform: rotate(90deg);
     /* Firefox */
-    -webkit-transform: rotate(180deg);
+    -webkit-transform: rotate(90deg);
     /* Safari 和 Chrome */
   }
 
@@ -357,11 +353,11 @@
     font-weight: 500;
     font-size: 15px;
     font-weight: 500;
-    line-height: 24px;
+    line-height: 29px;
   }
 
   .ant-collapse>.ant-collapse-item>.ant-collapse-header .ant-collapse-arrow {
-    left: 110px;
+    left: 120px;
     margin-top: 2px;
   }
 
@@ -486,7 +482,7 @@
 
     .ant-card {
       width: 100%;
-      height: calc(100vh - 52px);
+      height: calc(100vh - 100px);
       margin: 0;
       padding: 0;
     }
@@ -504,8 +500,8 @@
       position: absolute;
       top: 48px;
       z-index: 10;
-      bottom: 38px;
-      margin-bottom: 25px;
+      bottom: 0;
+      margin-bottom: 0;
       padding-top: 0;
     }
 
