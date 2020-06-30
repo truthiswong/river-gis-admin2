@@ -7087,11 +7087,11 @@ export default {
           }
 
           .time_bg_red {
-            background-color: rgba(247, 255, 0, 1);
+            background-color: rgba(12, 204, 243, 1);
           }
 
           .time_bg_blue {
-            background-color: rgba(12, 204, 243, 1);
+            background-color: rgba(247, 255, 0, 1);
           }
 
           .time_bg_gray {
