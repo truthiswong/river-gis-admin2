@@ -28,7 +28,11 @@
             :class="{'time_item_clicked':day.clicked == true}"
           >
             <template slot="title">
-              <span>{{day.dateString}}<br />{{day.dateWeekday}}</span>
+              <span>
+                {{day.dateString}}
+                <br />
+                {{day.dateWeekday}}
+              </span>
             </template>
             <!-- <h6 style="font-size:12px;text-align:center;margin:0;">{{day.date}}</h6> -->
             <div class="line_style">
@@ -81,7 +85,11 @@
             :class="{'time_item_clicked':day.clicked == true}"
           >
             <template slot="title">
-              <span>{{day.date}}</span>
+              <span>
+                {{day.dateString}}
+                <br />
+                {{day.dateWeekday}}
+              </span>
             </template>
             <div class="line_style">
               <div
@@ -478,7 +486,12 @@
                 <a-switch size="small" v-model="historyData" @click="onHistoryData" />
               </a-col>
             </a-row>
-            <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+            <a-row
+              style="width:160px;margin: 5px 0px;"
+              type="flex"
+              justify="space-between"
+              align="middle"
+            >
               <a-col :span="20">
                 <p style="margin:0;">河道显示</p>
               </a-col>
@@ -486,7 +499,12 @@
                 <a-switch size="small" v-model="riverShow" />
               </a-col>
             </a-row>
-            <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+            <a-row
+              style="width:160px;margin: 5px 0px;"
+              type="flex"
+              justify="space-between"
+              align="middle"
+            >
               <a-col :span="20">
                 <p style="margin:0;">左右岸</p>
               </a-col>
@@ -494,7 +512,12 @@
                 <a-switch size="small" v-model="leftRight" @click="leftRightSwitch" />
               </a-col>
             </a-row>
-            <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+            <a-row
+              style="width:160px;margin: 5px 0px;"
+              type="flex"
+              justify="space-between"
+              align="middle"
+            >
               <a-col :span="20">
                 <p style="margin:0;">街道显示</p>
               </a-col>
@@ -502,7 +525,12 @@
                 <a-switch size="small" v-model="streetShow" />
               </a-col>
             </a-row>
-            <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+            <a-row
+              style="width:160px;margin: 5px 0px;"
+              type="flex"
+              justify="space-between"
+              align="middle"
+            >
               <a-col :span="20">
                 <p style="margin:0;">双球对比</p>
               </a-col>
@@ -512,7 +540,12 @@
             </a-row>
             <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
               <template slot="content">
-                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+                <a-row
+                  style="width:160px;margin: 5px 0px;"
+                  type="flex"
+                  justify="space-between"
+                  align="middle"
+                >
                   <a-col :span="20">
                     <p style="margin:0;">手机照片</p>
                   </a-col>
@@ -534,7 +567,12 @@
                     <a-switch size="small" v-model="UAVPhoto" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+                <a-row
+                  style="width:160px;margin: 5px 0px;"
+                  type="flex"
+                  justify="space-between"
+                  align="middle"
+                >
                   <a-col :span="20">
                     <p style="margin:0;">360全景图</p>
                   </a-col>
@@ -547,7 +585,12 @@
             </a-popover>
             <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
               <template slot="content">
-                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+                <a-row
+                  style="width:160px;margin: 5px 0px;"
+                  type="flex"
+                  justify="space-between"
+                  align="middle"
+                >
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -559,7 +602,12 @@
                     <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+                <a-row
+                  style="width:160px;margin: 5px 0px;"
+                  type="flex"
+                  justify="space-between"
+                  align="middle"
+                >
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -571,7 +619,12 @@
                     <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+                <a-row
+                  style="width:160px;margin: 5px 0px;"
+                  type="flex"
+                  justify="space-between"
+                  align="middle"
+                >
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -583,7 +636,12 @@
                     <a-switch size="small" v-model="waterQuality" @click="onWaterQuality" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+                <a-row
+                  style="width:160px;margin: 5px 0px;"
+                  type="flex"
+                  justify="space-between"
+                  align="middle"
+                >
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -595,7 +653,12 @@
                     <a-switch size="small" v-model="waterFlotage" @click="onWaterFlotage" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+                <a-row
+                  style="width:160px;margin: 5px 0px;"
+                  type="flex"
+                  justify="space-between"
+                  align="middle"
+                >
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -607,7 +670,12 @@
                     <a-switch size="small" v-model="outlet" @click="onOutlet" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
+                <a-row
+                  style="width:160px;margin: 5px 0px;"
+                  type="flex"
+                  justify="space-between"
+                  align="middle"
+                >
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -879,14 +947,18 @@
       </div>
     </a-modal>
     <a-modal
-      :title="otherModalList.title+'绘制数据'"
       :visible="otherModal"
-      :footer="null"
       @cancel="otherCancel"
       :maskClosable="false"
       :mask="false"
       class="custom_modal"
     >
+      <template slot="closeIcon">
+        <a-icon type="close-circle" />
+      </template>
+      <template slot="title">
+        <span>{{otherModalList.title}}绘制数据</span>
+      </template>
       <span style="margin: 0 0 0 80px;">坐标: {{otherLatlng.lat}},{{otherLatlng.lng}}</span>
       <a-form class="from" style="margin-top:20px">
         <a-form-item label="名称" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -7094,17 +7166,17 @@ export default {
             box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
           }
 
-          .time_bg_red {
-            background-color: rgba(12, 204, 243, 1);
-          }
+          // .time_bg_red {
+          //   background-color: rgba(12, 204, 243, 1);
+          // }
 
-          .time_bg_blue {
-            background-color: rgba(247, 255, 0, 1);
-          }
+          // .time_bg_blue {
+          //   background-color: rgba(247, 255, 0, 1);
+          // }
 
-          .time_bg_gray {
-            background-color: rgba(255, 255, 255, 1);
-          }
+          // .time_bg_gray {
+          //   background-color: rgba(255, 255, 255, 1);
+          // }
         }
 
         p {
@@ -7127,11 +7199,12 @@ export default {
         }
 
         .time_bg_red {
-          background-color: rgba(247, 255, 0, 1);
+          background-color: rgba(12, 204, 243, 1);
+          color: white;
         }
 
         .time_bg_blue {
-          background-color: rgba(12, 204, 243, 1);
+          background-color: rgba(247, 255, 0, 1);
         }
 
         .time_bg_gray {
@@ -7337,8 +7410,8 @@ export default {
 
 .doubleBall {
   position: absolute;
-  left: 70px;
-  top: 8px;
+  left: 60px;
+  top: 10px;
   z-index: 666;
   color: #333;
   padding: 4px 10px;

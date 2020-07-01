@@ -78,8 +78,8 @@
             <!-- 河岸风险源 -->
             <!-- v-show="riverRisk" -->
             <div class="river_risk_alert" v-show="riverRisk">
-              <a-collapse>
-                <a-collapse-panel>
+              <a-collapse v-model="riverRiskActiveKey">
+                <a-collapse-panel key="1">
                   <div slot="header">
                     <img style="vertical-align: middle;" src="./img/riverRiskIcon.png" alt />
                     <span style="vertical-align: middle;">河岸风险源</span>
@@ -90,7 +90,7 @@
                       <img src="./img/level2.png" @click="getRiskSourceMapDrawPage('two')" alt />
                       <img src="./img/level3.png" @click="getRiskSourceMapDrawPage('three')" alt />
                       <img src="./img/level4.png" @click="getRiskSourceMapDrawPage('four')" alt />
-                      <img src="./img/levelno.png" alt />
+                      <img src="./img/levelno.png" @click="getRiskSourceMapDrawPage('')" alt />
                     </div>
                     <div class="river_risk_list">
                       <a-row
@@ -1450,6 +1450,7 @@ export default {
       waterFlotage: false, // 水质漂浮物
       waterFlotagePoints: [],
       riverRisk: false, // 河岸风险源
+      riverRiskActiveKey: ['1'],
       riverRiskPoints: [],
       waterLandLoss: false, // 水土流失
       waterLandLossPoints: [],
@@ -4467,6 +4468,7 @@ export default {
     },
     //风险源绘制数据
     getRiskSourceMapDrawPage(level) {
+      this.removeOverLays(this.riverRiskPoints)
       var time = this.threePicker
       var picker = time.split('/')
       var data = {

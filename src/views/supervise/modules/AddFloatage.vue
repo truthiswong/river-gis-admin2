@@ -97,13 +97,13 @@
     </a-spin>
     <template slot="footer">
       <a-row style="width:100%;" type="flex" justify="space-around" v-show="jurisdiction">
-        <a-col :span="3">
+        <a-col :span="2">
           <a-button block @click="handleCancel">取消</a-button>
         </a-col>
-        <a-col :span="3">
+        <a-col :span="2">
           <a-button block @click="handleDelete">删除</a-button>
         </a-col>
-        <a-col :span="3">
+        <a-col :span="2">
           <a-button block @click="saveClick">保存</a-button>
         </a-col>
       </a-row>
