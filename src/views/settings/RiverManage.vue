@@ -37,7 +37,7 @@
         <li>
           <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
             <template slot="content" style="overflow-y: scroll;">
-              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+              <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                 <a-col :span="18">
                   <p style="margin:0;">街道</p>
                 </a-col>
@@ -45,7 +45,7 @@
                   <a-switch size="small" v-model="streetShow" />
                 </a-col>
               </a-row>
-              <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+              <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                 <a-col :span="18">
                   <p style="margin:0;">左右岸</p>
                 </a-col>

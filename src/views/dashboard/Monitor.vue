@@ -77,7 +77,7 @@
             </div>
             <!-- 河岸风险源 -->
             <!-- v-show="riverRisk" -->
-            <div class="river_risk_alert">
+            <div class="river_risk_alert" v-show="riverRisk">
               <a-collapse>
                 <a-collapse-panel>
                   <div slot="header">
@@ -86,10 +86,10 @@
                   </div>
                   <div class="river_risk_content">
                     <div class="river_risk_type">
-                      <img src="./img/level1.png" alt />
-                      <img src="./img/level2.png" alt />
-                      <img src="./img/level3.png" alt />
-                      <img src="./img/level4.png" alt />
+                      <img src="./img/level1.png" @click="getRiskSourceMapDrawPage('one')" alt />
+                      <img src="./img/level2.png" @click="getRiskSourceMapDrawPage('two')" alt />
+                      <img src="./img/level3.png" @click="getRiskSourceMapDrawPage('three')" alt />
+                      <img src="./img/level4.png" @click="getRiskSourceMapDrawPage('four')" alt />
                       <img src="./img/levelno.png" alt />
                     </div>
                     <div class="river_risk_list">
@@ -202,7 +202,7 @@
                   <template slot="content" style="overflow-y: scroll;">
                     <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
                       <div slot="content" style="min-width: 180px;">
-                        <a-row type="flex" justify="space-between" align="middle">
+                        <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                           <a-col :span="20">
                             <img
                               style="width:20px;height:20px;margin-right:5px;"
@@ -214,7 +214,7 @@
                             <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
                           </a-col>
                         </a-row>
-                        <a-row type="flex" justify="space-between" align="middle">
+                        <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                           <a-col :span="20">
                             <img
                               style="width:20px;height:20px;margin-right:5px;"
@@ -226,7 +226,7 @@
                             <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
                           </a-col>
                         </a-row>
-                        <a-row type="flex" justify="space-between" align="middle">
+                        <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                           <a-col :span="20">
                             <img
                               style="width:20px;height:20px;margin-right:5px;"
@@ -238,7 +238,7 @@
                             <a-switch size="small" v-model="waterQuality" @click="onWaterQuality" />
                           </a-col>
                         </a-row>
-                        <a-row type="flex" justify="space-between" align="middle">
+                        <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                           <a-col :span="20">
                             <img
                               style="width:20px;height:20px;margin-right:5px;"
@@ -250,7 +250,7 @@
                             <a-switch size="small" v-model="waterFlotage" @click="onWaterFlotage" />
                           </a-col>
                         </a-row>
-                        <a-row type="flex" justify="space-between" align="middle">
+                        <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                           <a-col :span="20">
                             <img
                               style="width:20px;height:20px;margin-right:5px;"
@@ -262,7 +262,7 @@
                             <a-switch size="small" v-model="outlet" @click="onOutlet" />
                           </a-col>
                         </a-row>
-                        <a-row type="flex" justify="space-between" align="middle">
+                        <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                           <a-col :span="20">
                             <img
                               style="width:20px;height:20px;margin-right:5px;"
@@ -275,7 +275,7 @@
                           </a-col>
                         </a-row>
                       </div>
-                      <div>
+                      <div style="margin: 5px 0px;">
                         <span>风险管理</span>
                       </div>
                     </a-popover>
@@ -284,7 +284,7 @@
                         <a-row
                           v-for="item in otherList"
                           :key="item.id"
-                          style="width:150px"
+                          style="width:150px;margin: 5px 0px;"
                           type="flex"
                           justify="space-between"
                           align="middle"
@@ -304,7 +304,7 @@
                           </a-col>
                         </a-row>
                       </template>
-                      <div>
+                      <div style="margin: 5px 0px;">
                         <span>其他({{statisticsList.other}})</span>
                       </div>
                     </a-popover>
@@ -4334,7 +4334,7 @@ export default {
     // 河岸风险源
     riverRiskChange(value) {
       this.removeOverLays(this.riverRiskPoints)
-      this.getRiskSourceMapDrawPage(true)
+      this.getRiskSourceMapDrawPage()
     },
     //其他绘制数据
     getOtherMapDrawPage() {
@@ -4466,24 +4466,17 @@ export default {
       // polygon.addEventListener('click', this.riskPolygonClick)
     },
     //风险源绘制数据
-    getRiskSourceMapDrawPage(riskSourceType) {
-      var riskSourceLevel = qs.stringify(
-        {
-          riskSourceLevel: this.riskSourceLevel
-        },
-        {
-          indices: false
-        }
-      )
+    getRiskSourceMapDrawPage(level) {
       var time = this.threePicker
       var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
         // startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
         // endDate: this.picker,
+        riskSourceLevel: level,
         innerType: 'riskSource'
       }
-      mapdrawPageRiskSource(data, riskSourceLevel).then(res => {
+      mapdrawPageRiskSource(data).then(res => {
         let arr = res.data
         let ar = []
         arr.forEach(v => {
@@ -4506,7 +4499,7 @@ export default {
             this.onDrawType(item.id, true)
           }
         }
-        if (riskSourceType == true) {
+        if (this.riverRisk) {
           for (const risk of this.riskSourceList) {
             if (risk.clicked == true) {
               let point = []
@@ -4743,7 +4736,7 @@ export default {
       if (this.moreLoadOnce == '1') {
         //获取风险源绘制数据
         this.removeOverLays(this.riverRiskPoints)
-        this.getRiskSourceMapDrawPage(true)
+        this.getRiskSourceMapDrawPage()
         //其他绘制数据
         this.removeOverLays(this.otherPoints)
         this.getOtherMapDrawPage(true)

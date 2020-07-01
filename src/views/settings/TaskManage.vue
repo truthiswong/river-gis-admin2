@@ -37,8 +37,8 @@
         </li>
         <li>
           <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-            <div slot="content" style="width:120px">
-              <a-row type="flex" justify="space-between" align="middle">
+            <div slot="content" style="width:120px;">
+              <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                 <a-col :span="18">
                   <p style="margin:0;">自动监测点</p>
                 </a-col>
@@ -46,7 +46,7 @@
                   <a-switch size="small" v-model="autoDetection" />
                 </a-col>
               </a-row>
-              <a-row type="flex" justify="space-between" align="middle">
+              <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                 <a-col :span="18">
                   <p style="margin:0;">人工监测点</p>
                 </a-col>
@@ -54,7 +54,7 @@
                   <a-switch size="small" v-model="peopleDetection" />
                 </a-col>
               </a-row>
-              <a-row type="flex" justify="space-between" align="middle">
+              <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                 <a-col :span="18">
                   <p style="margin:0;">街道</p>
                 </a-col>
@@ -62,7 +62,7 @@
                   <a-switch size="small" v-model="streetShow" />
                 </a-col>
               </a-row>
-              <a-row type="flex" justify="space-between" align="middle">
+              <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                 <a-col :span="18">
                   <p style="margin:0;">河道</p>
                 </a-col>
@@ -70,12 +70,7 @@
                   <a-switch size="small" v-model="riverShow" />
                 </a-col>
               </a-row>
-              <a-row
-                v-show="listItemLeftRight==true"
-                type="flex"
-                justify="space-between"
-                align="middle"
-              >
+              <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                 <a-col :span="18">
                   <p style="margin:0;">左右岸</p>
                 </a-col>

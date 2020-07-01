@@ -467,7 +467,7 @@
           <template slot="content" style="overflow-y: scroll;">
             <a-row
               v-show="!(this.sharedChecked || this.swipeChecked)"
-              style="width:160px"
+              style="width:160px;margin: 5px 0px;"
               type="flex"
               justify="space-between"
               align="middle"
@@ -479,7 +479,7 @@
                 <a-switch size="small" v-model="historyData" @click="onHistoryData" />
               </a-col>
             </a-row>
-            <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+            <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
               <a-col :span="20">
                 <p style="margin:0;">河道显示</p>
               </a-col>
@@ -487,7 +487,7 @@
                 <a-switch size="small" v-model="riverShow" />
               </a-col>
             </a-row>
-            <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+            <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
               <a-col :span="20">
                 <p style="margin:0;">左右岸</p>
               </a-col>
@@ -495,7 +495,7 @@
                 <a-switch size="small" v-model="leftRight" @click="leftRightSwitch" />
               </a-col>
             </a-row>
-            <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+            <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
               <a-col :span="20">
                 <p style="margin:0;">街道显示</p>
               </a-col>
@@ -503,7 +503,7 @@
                 <a-switch size="small" v-model="streetShow" />
               </a-col>
             </a-row>
-            <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+            <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
               <a-col :span="20">
                 <p style="margin:0;">双球对比</p>
               </a-col>
@@ -513,7 +513,7 @@
             </a-row>
             <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
               <template slot="content">
-                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <p style="margin:0;">手机照片</p>
                   </a-col>
@@ -523,7 +523,7 @@
                 </a-row>
                 <a-row
                   v-show="!(this.sharedChecked || this.swipeChecked)"
-                  style="width:160px"
+                  style="width:160px;margin: 5px 0px;"
                   type="flex"
                   justify="space-between"
                   align="middle"
@@ -535,7 +535,7 @@
                     <a-switch size="small" v-model="UAVPhoto" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <p style="margin:0;">360全景图</p>
                   </a-col>
@@ -544,11 +544,11 @@
                   </a-col>
                 </a-row>
               </template>
-              <p style="margin:0;">影像管理</p>
+              <p style="margin: 5px 0px;">影像管理</p>
             </a-popover>
             <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
               <template slot="content">
-                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -560,7 +560,7 @@
                     <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -572,7 +572,7 @@
                     <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -584,7 +584,7 @@
                     <a-switch size="small" v-model="waterQuality" @click="onWaterQuality" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -596,7 +596,7 @@
                     <a-switch size="small" v-model="waterFlotage" @click="onWaterFlotage" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -608,7 +608,7 @@
                     <a-switch size="small" v-model="outlet" @click="onOutlet" />
                   </a-col>
                 </a-row>
-                <a-row style="width:160px" type="flex" justify="space-between" align="middle">
+                <a-row style="width:160px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -621,14 +621,14 @@
                   </a-col>
                 </a-row>
               </template>
-              <p style="margin:0;">风险管理</p>
+              <p style="margin: 5px 0px;">风险管理</p>
             </a-popover>
             <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
               <template slot="content">
                 <a-row
                   v-for="item in otherList"
                   :key="item.id"
-                  style="width:160px"
+                  style="width:160px;margin: 5px 0px;"
                   type="flex"
                   justify="space-between"
                   align="middle"
@@ -685,7 +685,7 @@
                       </a-row>
                 </a-list-item>-->
               </template>
-              <p style="margin:0;">其他({{statisticsList.other}})</p>
+              <p style="margin: 5px 0px;">其他({{statisticsList.other}})</p>
             </a-popover>
           </template>
           <img src="../../assets/more.png" alt="更多" title="更多" @click="getMapPageData()" />
@@ -6908,6 +6908,7 @@ export default {
   width: 220px;
   height: 50px;
   z-index: 888;
+  margin: 0;
   background-color: rgba(24, 44, 117, 0.95);
   color: white;
   opacity: 0.9;

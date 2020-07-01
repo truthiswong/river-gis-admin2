@@ -37,7 +37,7 @@
         <li>
           <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
             <template slot="content" style="overflow-y: scroll;">
-              <a-row style="width:120px" type="flex" justify="space-between" align="middle">
+              <a-row style="width:120px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                 <a-col :span="18">
                   <p style="margin:0;">河道</p>
                 </a-col>
@@ -46,8 +46,7 @@
                 </a-col>
               </a-row>
               <a-row
-                v-show="listItemLeftRight==true"
-                style="width:120px"
+                style="width:120px;margin: 5px 0px;"
                 type="flex"
                 justify="space-between"
                 align="middle"
