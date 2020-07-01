@@ -90,7 +90,7 @@
                       <img src="./img/level2.png" @click="getRiskSourceMapDrawPage('two')" alt />
                       <img src="./img/level3.png" @click="getRiskSourceMapDrawPage('three')" alt />
                       <img src="./img/level4.png" @click="getRiskSourceMapDrawPage('four')" alt />
-                      <img src="./img/levelno.png" alt />
+                      <img src="./img/levelno.png" @click="getRiskSourceMapDrawPage('')" alt />
                     </div>
                     <div class="river_risk_list">
                       <a-row
@@ -4468,6 +4468,7 @@ export default {
     },
     //风险源绘制数据
     getRiskSourceMapDrawPage(level) {
+      this.removeOverLays(this.riverRiskPoints)
       var time = this.threePicker
       var picker = time.split('/')
       var data = {
