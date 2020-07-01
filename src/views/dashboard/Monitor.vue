@@ -78,8 +78,8 @@
             <!-- 河岸风险源 -->
             <!-- v-show="riverRisk" -->
             <div class="river_risk_alert" v-show="riverRisk">
-              <a-collapse>
-                <a-collapse-panel>
+              <a-collapse v-model="riverRiskActiveKey">
+                <a-collapse-panel key="1">
                   <div slot="header">
                     <img style="vertical-align: middle;" src="./img/riverRiskIcon.png" alt />
                     <span style="vertical-align: middle;">河岸风险源</span>
@@ -1450,6 +1450,7 @@ export default {
       waterFlotage: false, // 水质漂浮物
       waterFlotagePoints: [],
       riverRisk: false, // 河岸风险源
+      riverRiskActiveKey: ['1'],
       riverRiskPoints: [],
       waterLandLoss: false, // 水土流失
       waterLandLossPoints: [],
