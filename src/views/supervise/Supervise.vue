@@ -120,7 +120,7 @@
       </div>
     </div>
     <!-- 天气 -->
-    <div class="weather" v-show="!sharedChecked && !swipeChecked">
+    <div class="weather" v-show="!sharedChecked && !swipeChecked" @click="rightIcon = !rightIcon">
       <div>
         <img v-show="weatherData.img" :src="weatherData.img" alt="天气" />
       </div>
@@ -131,9 +131,8 @@
       <div class="weather_right">
         <a-icon
           class="right_icon"
-          type="caret-left"
+          type="right"
           :class="rightIcon == true ? 'right_icon_active':''"
-          @click="rightIcon = !rightIcon"
         />
         <!-- 天气弹窗 -->
         <div class="weather_alert" v-show="rightIcon">
@@ -6905,7 +6904,7 @@ export default {
   position: absolute;
   left: 60px;
   top: 10px;
-  width: 220px;
+  width: 200px;
   height: 50px;
   z-index: 888;
   margin: 0;
@@ -6914,7 +6913,7 @@ export default {
   opacity: 0.9;
   border-radius: 10px;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-  padding: 13px;
+  padding: 10px;
   display: flex;
   display: -webkit-flex;
   justify-content: space-between;
@@ -6927,6 +6926,7 @@ export default {
   img {
     width: 32px;
     height: 32px;
+    margin: 0;
   }
 
   p {
@@ -6973,18 +6973,14 @@ export default {
 
   .weather_right {
     position: relative;
-    width: 40px;
     height: 100%;
-    border-left: 1px solid rgba(216, 216, 216, 0.56);
     display: flex;
     display: -webkit-flex;
     align-items: center;
     -webkit-align-items: center;
-    padding-left: 6px;
 
     .right_icon {
-      font-size: 18px;
-      padding: 10px;
+      font-size: 12px;
       transition: 0.5s;
       -moz-transition: 0.5s;
       /* Firefox 4 */
@@ -6994,21 +6990,20 @@ export default {
   }
 
   .right_icon_active {
-    color: #1890ff;
-    transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
+    transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
     /* IE 9 */
-    -moz-transform: rotate(180deg);
+    -moz-transform: rotate(90deg);
     /* Firefox */
-    -webkit-transform: rotate(180deg);
+    -webkit-transform: rotate(90deg);
     /* Safari 和 Chrome */
   }
 
   .weather_alert {
     display: block;
     position: absolute;
-    left: 50px;
-    top: -13px;
+    left: 10px;
+    top: -10px;
     z-index: 888;
     padding-left: 20px;
 
