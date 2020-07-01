@@ -4473,8 +4473,8 @@ export default {
       var picker = time.split('/')
       var data = {
         projectId: this.$store.state.id,
-        // startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
-        // endDate: this.picker,
+        startDate: picker[0]+'-'+picker[1]+'-'+picker[2],
+        endDate: this.picker,
         riskSourceLevel: level,
         innerType: 'riskSource'
       }
