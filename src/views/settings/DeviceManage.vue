@@ -68,8 +68,8 @@
           <div v-if="treeId=='3'">
             <p style="color: #333; font-weight: 900;font-size: 16px;">筛选查询</p>
             <div>
-              <a-input placeholder="请输入设备名称" style="width:200px;margin:0  10px 10px 0" />
-              <a-button type="primary">查询</a-button>
+              <a-input placeholder="请输入设备名称" style="width:200px;margin:0  10px 10px 0"  v-model="name"/>
+              <a-button type="primary" @click="getList1">查询</a-button>
             </div>
             <a-button
               type="primary"
@@ -257,6 +257,7 @@ export default {
       jurisdiction: this.$store.state.operationPermission[7], //权限
       parentId: '0',
       treeId: '1',
+      name:'',
       id: '',
       treeData,
       columns,
@@ -426,7 +427,8 @@ export default {
     getList1() {
       //设备列表
       var data = {
-        id: this.parentId
+        typeId: this.parentId,
+        name: this.name
       }
       equipmentNewsList(data)
         .then(res => {
@@ -453,6 +455,7 @@ export default {
           var arr = res.data
           console.log(arr)
           this.$message.success('删除成功')
+          this.name = ''
           this.getList1()
         })
         .catch(err => {
@@ -470,6 +473,7 @@ export default {
       equipmentTypetatus(data)
         .then(res => {
           this.$message.success('成功')
+          this.name = ''
           this.getList1()
         })
         .catch(err => {
@@ -522,6 +526,7 @@ export default {
     },
     twoGetList() {},
     select(e) {
+      this.name = ''
       if (e.code == '1') {
         this.treeId = '1'
         this.parentId = '0'

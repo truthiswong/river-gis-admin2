@@ -35,7 +35,7 @@ export function userList(parameter) {
   return axios({
     url: '/server/data/admin/user/page',
     method: 'get',
-    data: parameter
+    params: parameter
   })
 }
 //用户详情
@@ -172,8 +172,9 @@ export function equipmentTypeDel(parameter) {
 //设备信息列表
 export function equipmentNewsList(parameter) {
   return axios({
-    url: '/server/data/admin/device/info/page?typeId=' + parameter.id,
+    url: '/server/data/admin/device/info/page',
     method: 'get',
+    params:parameter
   })
 }
 //设备信息保存

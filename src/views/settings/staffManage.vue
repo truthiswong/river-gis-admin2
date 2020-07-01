@@ -8,20 +8,21 @@
       <a-divider style="margin: 10px 0" />
       <div>
         <a-form layout="inline">
-          <a-form-item label="角色">
-            <a-select style="width: 200px" placeholder="请选择">
-              <a-select-option value="jack">超级管理员</a-select-option>
-              <a-select-option value="lucy">巡河总监</a-select-option>
-            </a-select>
+          <a-form-item label="用户">
+            <a-input placeholder="请输入" v-model="list.name"/>
+          </a-form-item>
+          <a-form-item label="联系方式">
+            <a-input placeholder="请输入" v-model="list.mobile"/>
           </a-form-item>
           <a-form-item label="类型">
-            <a-select style="width: 200px" placeholder="请选择">
-              <a-select-option value="jack">外勤</a-select-option>
-              <a-select-option value="lucy">内业</a-select-option>
+            <a-select style="width: 200px" placeholder="请选择" v-model="list.type">
+              <a-select-option value="worker">外勤</a-select-option>
+              <a-select-option value="admin">内业</a-select-option>
             </a-select>
           </a-form-item>
           <a-form-item>
-            <a-button type="primary">查询</a-button>
+            <a-button type="primary" @click="getList">查询</a-button>
+            <a-button type="dashed" style="margin-left:20px" @click="delList"> 清空 </a-button>
           </a-form-item>
         </a-form>
       </div>
@@ -93,6 +94,11 @@ const columns = [
 export default {
   data() {
     return {
+      list: {
+        type:'',
+        name: '',
+        mobile: ''
+      },
       columns,
       data: []
     }
@@ -107,8 +113,7 @@ export default {
   },
   methods: {
     getList() {
-      var data = {}
-      userList(data)
+      userList(this.list)
         .then(res => {
           var arr = res.data.data
           for (let i = 0; i < arr.length; i++) {
@@ -123,9 +128,14 @@ export default {
             }
           }
           this.data = arr
-          console.log(arr)
         })
         .catch(err => {})
+    },
+    delList() {
+      this.list.type=''
+      this.list.name= ''
+      this.list.mobile= ''
+      this.getList()
     },
     enable(id) {
       var data = {

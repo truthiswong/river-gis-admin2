@@ -9,13 +9,14 @@
       <div>
         <a-form layout="inline">
           <a-form-item label="类型">
-            <a-select style="width: 200px" placeholder="请选择">
-              <a-select-option value="jack">外勤</a-select-option>
-              <a-select-option value="lucy">内业</a-select-option>
+            <a-select style="width: 200px" placeholder="请选择" v-model="type">
+              <a-select-option value="worker">外勤</a-select-option>
+              <a-select-option value="admin">内业</a-select-option>
             </a-select>
           </a-form-item>
           <a-form-item>
-            <a-button type="primary">查询</a-button>
+            <a-button type="primary" @click="getList">查询</a-button>
+            <a-button type="dashed" style="margin-left:20px" @click="type='',getList()"> 清空 </a-button>
           </a-form-item>
         </a-form>
       </div>
@@ -77,6 +78,7 @@ export default {
   data() {
     return {
       columns,
+      type:'',
       data: []
     }
   },
@@ -86,7 +88,7 @@ export default {
   },
   methods: {
     getList(){
-      roleList('').then(res => {
+      roleList(this.type).then(res => {
          var arr = res.data.data
          for (let i = 0; i < arr.length; i++) {
           arr[i].type=arr[i].type.name

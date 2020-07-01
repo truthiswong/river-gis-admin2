@@ -445,7 +445,7 @@ export default {
   methods: {
     moment,
     getList() {
-      SupervisePage(this.$store.state.id).then(res => {
+      SupervisePage({projectId:this.$store.state.id}).then(res => {
         function formatDate(now) {
           var year = now.getFullYear() //取得4位数的年份
           var month = now.getMonth() + 1 //取得日期中的月份，其中0表示1月，11表示12月
@@ -464,6 +464,7 @@ export default {
       getRiverList(this.$store.state.id).then(res => {
         this.riverList = res.data.data
       })
+      
       getStreetList(this.$store.state.id).then(res => {
         this.streetList = res.data.data
       })
