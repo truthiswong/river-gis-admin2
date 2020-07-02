@@ -4405,6 +4405,8 @@ export default {
         let point = []
         for (const item of this.otherPoints) {
           if (item.drawType.id == id) {
+            console.log(item);
+            
             if (item.locationType.code == 'point') {
               item.latlng = {
                 lng: item.point[0],
@@ -4432,6 +4434,19 @@ export default {
               } else {
                 item.innerName = ''
               }
+              let markerTool
+              let icon = new T.Icon({
+                iconUrl: item.drawType.icon,
+                iconSize: new T.Point(41, 40),
+                iconAnchor: new T.Point(21, 40)
+              })
+              markerTool = new T.Marker(item.polygon[0], {
+                icon: icon,
+                id: item.id,
+                title: item.innerName,
+                code: item.innerType.code
+              })
+              this.map.addOverLay(markerTool)
               this.noodlesDraw(
                 item.polygon,
                 item.frameColor,
