@@ -68,7 +68,11 @@
           <div v-if="treeId=='3'">
             <p style="color: #333; font-weight: 900;font-size: 16px;">筛选查询</p>
             <div>
-              <a-input placeholder="请输入设备名称" style="width:200px;margin:0  10px 10px 0"  v-model="name"/>
+              <a-input
+                placeholder="请输入设备名称"
+                style="width:200px;margin:0  10px 10px 0"
+                v-model="name"
+              />
               <a-button type="primary" @click="getList1">查询</a-button>
             </div>
             <a-button
@@ -106,7 +110,13 @@
         </div>
       </div>
     </a-card>
-    <a-modal v-model="visible" @ok="handleOk" @cancel="handleCancel" class="custom_modal">
+    <a-modal
+      v-model="visible"
+      @ok="handleOk"
+      @cancel="handleCancel"
+      class="custom_modal"
+      v-dragModal
+    >
       <template slot="closeIcon">
         <a-icon type="close-circle" />
       </template>
@@ -125,6 +135,7 @@
       @ok="handleOk1"
       @cancel="handleCancel1"
       class="custom_modal"
+      v-dragModal
     >
       <template slot="closeIcon">
         <a-icon type="close-circle" />
@@ -257,7 +268,7 @@ export default {
       jurisdiction: this.$store.state.operationPermission[7], //权限
       parentId: '0',
       treeId: '1',
-      name:'',
+      name: '',
       id: '',
       treeData,
       columns,

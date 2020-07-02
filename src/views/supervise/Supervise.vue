@@ -935,6 +935,7 @@
       :maskClosable="false"
       :mask="false"
       class="custom_modal"
+      v-dragModal
     >
       <div>点击坐标: {{UAVPhotosCoordinate}}</div>
       <div style="margin-top:10px;max-height: 600px;overflow-y: scroll;">
@@ -952,6 +953,7 @@
       :maskClosable="false"
       :mask="false"
       class="custom_modal"
+      v-dragModal
     >
       <template slot="closeIcon">
         <a-icon type="close-circle" />

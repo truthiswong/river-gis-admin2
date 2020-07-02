@@ -75,6 +75,7 @@
       @ok="handleOk"
       @cancel="handleCancel"
       class="custom_modal"
+      v-dragModal
     >
       <template slot="closeIcon">
         <a-icon type="close-circle" />
@@ -101,6 +102,7 @@
       @ok="handleOk1"
       @cancel="handleCancel1"
       class="custom_modal"
+      v-dragModal
     >
       <template slot="closeIcon">
         <a-icon type="close-circle" />

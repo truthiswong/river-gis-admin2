@@ -44,7 +44,7 @@
         </template>
       </a-table>
     </a-card>
-    <a-modal v-model="visible" @ok="submitUpload" @cancel="handleCancel" class="custom_modal">
+    <a-modal v-dragModal v-model="visible" @ok="submitUpload" @cancel="handleCancel" class="custom_modal">
       <template slot="closeIcon">
         <a-icon type="close-circle" />
       </template>
@@ -101,7 +101,7 @@
         </a-form-item>
       </a-form>
     </a-modal>
-    <a-modal v-model="visible1" @ok="submitUpload" @cancel="handleCancel" class="custom_modal">
+    <a-modal v-dragModal v-model="visible1" @ok="submitUpload" @cancel="handleCancel" class="custom_modal">
       <template slot="closeIcon">
         <a-icon type="close-circle" />
       </template>
