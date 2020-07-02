@@ -1021,6 +1021,7 @@
       @ok="showOk"
       :confirmLoading="confirmLoading"
       @cancel="showCancel"
+      v-if="infoVisible"
       v-dragModal
     >
       <template slot="closeIcon">
@@ -1042,6 +1043,7 @@
       @ok="recommendOk"
       :confirmLoading="confirmLoading"
       @cancel="recommendCancel"
+      v-if="infoVisibleRecommend"
       v-dragModal
     >
       <template slot="closeIcon">
@@ -1063,6 +1065,7 @@
       @ok="handleOk"
       :confirmLoading="confirmLoading"
       @cancel="handleCancel"
+      v-if="inspectVisible"
       v-dragModal
     >
       <template slot="closeIcon">

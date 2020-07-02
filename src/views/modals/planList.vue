@@ -25,6 +25,7 @@
       @cancel="cancleBtn"
       :maskClosable="false"
       class="modal_plan custom_modal"
+      v-if="visible"
       v-dragModal
     >
       <template slot="closeIcon">

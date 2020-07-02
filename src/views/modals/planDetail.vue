@@ -7,6 +7,7 @@
     @cancel="cancleBtn"
     :maskClosable="false"
     class="palnDetail_modal custom_modal"
+    v-if="visible"
     v-dragModal
   >
     <!-- <span class="editIcon" @click="editModalTitle" v-if="editShow">

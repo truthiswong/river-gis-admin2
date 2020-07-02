@@ -10,6 +10,7 @@
     :maskClosable="false"
     :mask="false"
     class="custom_modal"
+    v-if="visible"
     v-dragModal
   >
     <template slot="closeIcon">

@@ -115,6 +115,7 @@
       @ok="handleOk"
       @cancel="handleCancel"
       class="custom_modal"
+      v-if="visible"
       v-dragModal
     >
       <template slot="closeIcon">
@@ -135,6 +136,7 @@
       @ok="handleOk1"
       @cancel="handleCancel1"
       class="custom_modal"
+      v-if="equipmentModel"
       v-dragModal
     >
       <template slot="closeIcon">
