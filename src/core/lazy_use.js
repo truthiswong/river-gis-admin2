@@ -12,6 +12,8 @@ import PermissionHelper from '@/utils/helper/permission'
 // 引入全局指令
 import './directives/action'
 import './directives/clickoutside'
+import './directives/dragDialogElement'
+import './directives/dragModalAnt'
 
 VueClipboard.config.autoSetContainer = true
 
