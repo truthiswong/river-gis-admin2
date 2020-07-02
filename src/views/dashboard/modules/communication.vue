@@ -6,6 +6,7 @@
     @cancel="cmtHandle"
     :maskClosable="false"
     class="cmModal custom_modal"
+    v-dragModal
   >
     <template slot="closeIcon">
       <a-icon type="close-circle" />

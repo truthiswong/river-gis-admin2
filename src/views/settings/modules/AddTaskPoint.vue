@@ -8,6 +8,7 @@
     :centered="true"
     :maskClosable="false"
     class="custom_modal"
+    v-dragModal
   >
     <template slot="closeIcon">
       <a-icon type="close-circle" />

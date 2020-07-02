@@ -10,6 +10,7 @@
     class="comment_model custom_modal"
     :bodyStyle="{margin: 0, left:0}"
     :maskClosable="false"
+    v-dragModal
   >
     <template slot="closeIcon">
       <a-icon type="close-circle" />
