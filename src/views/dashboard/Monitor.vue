@@ -5,13 +5,13 @@
       <template slot="paneL">
         <div class="left-info">
           <!-- <img src="../../assets/map.jpg" style="width:100%;height: calc(100vh - 66px);"> -->
-          <div id="map" class="map">
+          <div id="map" class="map" @click="rightIcon = false">
             <div class="compass_pointer" @click="compass" title="指北针">
               <!-- <img class="pointer" src="../../assets/img/compassPointer.png" alt="指北针" /> -->
             </div>
           </div>
           <div class="leftShow" v-if="noTitleKey === 'addPlan' || nosuperKey === 'taskCard'">
-            <div class="left-date">
+            <div class="left-date" @click="rightIcon = false">
               <el-date-picker
                 v-model="picker"
                 type="date"
@@ -22,7 +22,7 @@
               ></el-date-picker>
             </div>
             <!-- 天气 -->
-            <div class="weather" @click="rightIconClick">
+            <div class="weather" @click="rightIcon = !rightIcon">
               <a-row type="flex" justify="space-between" align="middle">
                 <img v-show="weatherData.img" :src="weatherData.img" alt="天气" />
                 <div>
@@ -30,25 +30,25 @@
                   <p>风力: {{weatherData.wind_scale}}级</p>
                 </div>
               </a-row>
-              <!-- 天气弹窗 -->
               <div class="weather_right">
                 <a-icon
                   class="right_icon"
                   type="right"
-                  :class="rightIcon == true ? 'right_icon_active':''"
+                  :class="rightIcon ? 'right_icon_active':''"
                 />
-                <div class="weather_alert" v-show="rightIcon">
-                  <div class="weather_content">
-                    <a-select style="width: 200px" v-model="itgePortId">
-                      <a-select-option
-                        v-for="item in tigePage"
-                        :key="item.locationId"
-                        :value="item.portId"
-                      >{{item.portName}}</a-select-option>
-                    </a-select>
-                    <div id="main1" style="width:500px;height:450px"></div>
-                  </div>
-                </div>
+              </div>
+            </div>
+            <!-- 天气弹窗 -->
+            <div class="weather_alert" v-show="rightIcon">
+              <div class="weather_content">
+                <a-select style="width: 200px" v-model="itgePortId">
+                  <a-select-option
+                    v-for="item in tigePage"
+                    :key="item.locationId"
+                    :value="item.portId"
+                  >{{item.portName}}</a-select-option>
+                </a-select>
+                <div id="main1" style="width:500px;height:450px"></div>
               </div>
             </div>
             <!-- 新建计划时展示 -->
@@ -56,6 +56,7 @@
               class="left-patrol"
               v-if="noTitleKey === 'addPlan' || nosuperKey === 'taskCard'"
               v-show="jurisdiction"
+              @click="rightIcon = false"
             >
               <p class="left-patrol-title">
                 <img style="vertical-align: middle;" src="./img/patrolPlan.png" alt />
@@ -77,7 +78,7 @@
             </div>
             <!-- 河岸风险源 -->
             <!-- v-show="riverRisk" -->
-            <div class="river_risk_alert" v-show="riverRisk">
+            <div class="river_risk_alert" v-show="riverRisk" @click="rightIcon = false">
               <a-collapse v-model="riverRiskActiveKey">
                 <a-collapse-panel key="1">
                   <div slot="header">
@@ -147,7 +148,7 @@
               </a-tabs>
             </div>
           </div>
-          <div class="map_operate">
+          <div class="map_operate" @click="rightIcon = false">
             <ul>
               <li @click="setCenter">
                 <img src="../../assets/restoration.png" alt="复位" />
@@ -319,7 +320,7 @@
         </div>
       </template>
       <template slot="paneR">
-        <div class="right-info">
+        <div class="right-info" @click="rightIcon = false">
           <div class="right-body">
             <!-- <a-card
               class="mainCard"
@@ -4986,10 +4987,9 @@ export default {
 .weather_alert {
   display: block;
   position: absolute;
-  left: 50px;
-  top: -13px;
+  left: 160px;
+  top: 50px;
   z-index: 888;
-  padding-left: 20px;
 
   .weather_content {
     width: 500px;
