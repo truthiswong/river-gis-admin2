@@ -9,6 +9,7 @@
     :mask="false"
     :centered="true"
     class="custom_modal"
+    v-if="visible"
     v-dragModal
   >
     <template slot="closeIcon">

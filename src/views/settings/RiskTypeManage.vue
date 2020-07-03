@@ -41,7 +41,14 @@
         </template>
       </a-table>
     </a-card>
-    <a-modal v-dragModal v-model="visible" @ok="submitUpload" @cancel="handleCancel" class="custom_modal">
+    <a-modal
+      v-dragModal
+      v-if="visible"
+      v-model="visible"
+      @ok="submitUpload"
+      @cancel="handleCancel"
+      class="custom_modal"
+    >
       <template slot="closeIcon">
         <a-icon type="close-circle" />
       </template>

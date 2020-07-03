@@ -935,6 +935,7 @@
       :maskClosable="false"
       :mask="false"
       class="custom_modal"
+      v-if="UAVPhotosModal"
       v-dragModal
     >
       <div>点击坐标: {{UAVPhotosCoordinate}}</div>
@@ -953,6 +954,7 @@
       :maskClosable="false"
       :mask="false"
       class="custom_modal"
+      v-if="otherModal"
       v-dragModal
     >
       <template slot="closeIcon">
@@ -4231,6 +4233,8 @@ export default {
             this.showMap() //双球init
             this.moreLoadOnce = 1
             this.getMapPageDataRight()
+            // 河道街道左右岸等
+            this.watchAllSwitch()
           })
         } else {
           this.clearOlLayer()
@@ -4334,6 +4338,8 @@ export default {
           this.olRemoveLayer(this.otherPointsRight, 'olMap2')
         }
       }
+      // 河道街道左右岸等
+      this.watchAllSwitch()
       // 风险地图
       this.onRiskMap()
       // 水质数据
