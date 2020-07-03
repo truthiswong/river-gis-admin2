@@ -17,18 +17,18 @@
     </template>
     <div style="font-size:14px;font-family:PingFangSC-Semibold,PingFang SC;font-weight:600;color:rgba(82,90,111,1);margin-bottom:10px">经度：{{lng}},纬度：{{lat}}</div>
     <div  v-for="item in list" :key="item.id" style="margin-bottom:10px">
-      <div style="display:flex;">
+      <div style="display:flex;" v-show="item.creatorType== true">
         <img src="../img/head.png" alt="" style="width:30px;height:30px">
         <div class="nameTime">
-          <span style="width: 50px;padding: 0px;margin: 0px;color: rgb(0, 0, 0);">{{item.creator.name}}</span>
-          <span style="font-size:12px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(188,190,199,1);">{{item.date}}</span>
+          <span style="width: 50px;padding: 0px;margin: 0px;color: rgb(0, 0, 0);">{{item.creatorName}}</span>
+          <span style="font-size:12px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(188,190,199,1);">{{item.time}}</span>
         </div>
       </div>
       <!-- <div style="font-size:12px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(188,190,199,1);line-height:26px;">{{item.date}}</div> -->
       <div style="display:flex;margin-left:32px">
         <!-- <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;width:70px">{{item.creator.name}}</div> -->
         <div style="">
-            <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;margin-bottom:10px">内容：{{item.remark}}</div>
+            <div style="font-size:14px;font-family:PingFangSC-Regular,PingFang SC;font-weight:400;color:rgba(82,90,111,1);line-height:26px;margin-bottom:10px" v-show="item.remark != ''">内容：{{item.remark}}</div>
             <div style="width:393px">
               <viewer >
                 <img :src="item.media" alt style="height:200px" v-show="item.mediaType=='image'"/>
@@ -37,11 +37,6 @@
             </div>
         </div>
       </div>
-      <!-- <div class="header">{{item.remark}}</div>
-      <div class="player">
-        <img :src="item.media" alt style="width:100%" v-show="item.mediaType.code=='image'"/>
-        <a-button @click="audioBut(item.media)" v-show="item.mediaType.code!='image'">播放</a-button>
-      </div> -->
     </div>
   </a-modal>
 </template>
@@ -116,14 +111,40 @@ export default {
       }
       dataManual(data).then(res => {
         let arr = res.data.data
-        console.log(arr);
-        
+        function timeDate (data) {
+            var now = new Date(data)
+            var year=now.getFullYear();  //取得4位数的年份
+            var month=now.getMonth()+1;  //取得日期中的月份，其中0表示1月，11表示12月
+            var date=now.getDate();      //返回日期月份中的天数（1到31）
+            var hour=now.getHours();     //返回日期中的小时数（0到23）
+            var minute=now.getMinutes(); //返回日期中的分钟数（0到59）
+            var second=now.getSeconds(); //返回日期中的秒数（0到59）
+            if (Number(month)<10) {
+                month = '0'+month
+            }
+            if (Number(date)<10) {
+                date = '0'+date
+            }
+            if (Number(hour)<10) {
+                hour = '0'+hour
+            }
+            if (Number(minute)<10) {
+                minute = '0'+minute
+            }
+            if (Number(second)<10) {
+                second = '0'+second
+            }
+            return year+'-'+month+"-"+date+' '+hour+":"+minute+':'+second
+        }
         arr.forEach(v => {
-          // v.creator ={
-          //   code: "9",
-          //   mobile: "18861125267",
-          //   name: "邵超"
-          // }
+          if (v.creator.name) {
+            v.creatorType = true
+            v.creatorName = v.creator.name
+          } else {
+            v.creatorType = false
+            v.creatorName = ''
+          }
+          v.time = timeDate(v.timeCreated)
           if (v.mediaType) {
             v.mediaType = v.mediaType.code
           }else{
