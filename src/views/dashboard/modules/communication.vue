@@ -34,7 +34,7 @@
               <viewer >
                 <img :src="item.media" alt style="height:200px" v-show="item.mediaType=='image'"/>
               </viewer>
-              <a-button @click="audioBut(item.media)" v-show="item.mediaType=='audio'">播放</a-button>
+              <a-button @click="audioBut(item)" v-show="item.mediaType=='audio'">{{item.mediaName}}</a-button>
             </div>
         </div>
       </div>
@@ -69,13 +69,13 @@ export default {
         ],
         poster: 'https://surmon-china.github.io/vue-quill-editor/static/images/surmon-1.jpg'
       },
+      amr: null,
       list: []
     }
   },
   mounted() {
+    this.amr = new BenzAMRRecorder();
     setTimeout(() => {
-      console.log('dynamic change options', this.player)
-      // this.player.muted(false)
     }, 5000)
   },
   computed: {
@@ -85,16 +85,52 @@ export default {
   },
   methods: {
     audioBut(item){
-      var amr = new BenzAMRRecorder();
-      amr.initWithUrl(item).then(function() {
-        // amr.isPlaying() 返回音频的播放状态 是否正在播放 返回boolean类型
-        console.log(amr.isPlaying())
-        if(amr.isPlaying()){
-          amr.stop();
+      var that = this
+      if (that.amr.isPlaying()) {
+        that.amr.pause();
+        that.list.forEach(v => {
+          if (v.id == item.id) {
+            v.mediaName = '继续'
+          }
+        });
+      } else {
+        if (item.mediaName == '继续') {
+          this.amr.resume()
+          that.list.forEach(v => {
+            if (v.id == item.id) {
+              v.mediaName = '暂停'
+            }
+          });
+          that.amr.onEnded(function() {
+            that.list.forEach(v => {
+              if (v.id == item.id) {
+                v.mediaName = '播放'
+              }
+            });
+          })
         } else {
-          amr.play();
+          this.amr = new BenzAMRRecorder();
+          that.amr.initWithUrl(item.media).then(function() {
+            if(that.amr.isPlaying()){
+              that.amr.stop();
+            } else {
+              that.amr.play();
+              that.list.forEach(v => {
+                if (v.id == item.id) {
+                  v.mediaName = '暂停'  
+                }
+              });
+            }
+          });
+          that.amr.onEnded(function() {
+            that.list.forEach(v => {
+              if (v.id == item.id) {
+                v.mediaName = '播放'
+              }
+            });
+          })
         }
-      });
+      }
     },
     show(index, picker) {
       this.lng = index.target.options.coordinate.lng
@@ -138,6 +174,7 @@ export default {
           return year+'-'+month+"-"+date+' '+hour+":"+minute+':'+second
         }
         arr.forEach(v => {
+          v.mediaName = '播放'
           if (v.creator.name) {
             v.creatorType = true
             v.creatorName = v.creator.name
