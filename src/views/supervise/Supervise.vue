@@ -137,24 +137,20 @@
         <p>风力: {{weatherData.wind_scale}}级</p>
       </div>
       <div class="weather_right">
-        <a-icon
-          class="right_icon"
-          type="right"
-          :class="rightIcon == true ? 'right_icon_active':''"
-        />
-        <!-- 天气弹窗 -->
-        <div class="weather_alert" v-show="rightIcon">
-          <div class="weather_content">
-            <a-select style="width: 200px" v-model="itgePortId">
-              <a-select-option
-                v-for="item in tigePage"
-                :key="item.locationId"
-                :value="item.portId"
-              >{{item.portName}}</a-select-option>
-            </a-select>
-            <div id="main1" style="width:500px;height:450px"></div>
-          </div>
-        </div>
+        <a-icon class="right_icon" type="right" :class="rightIcon ? 'right_icon_active':''" />
+      </div>
+    </div>
+    <!-- 天气弹窗 -->
+    <div class="weather_alert" v-show="rightIcon">
+      <div class="weather_content">
+        <a-select style="width: 200px" v-model="itgePortId">
+          <a-select-option
+            v-for="item in tigePage"
+            :key="item.locationId"
+            :value="item.portId"
+          >{{item.portName}}</a-select-option>
+        </a-select>
+        <div id="main1" style="width:500px;height:450px"></div>
       </div>
     </div>
     <div
@@ -7078,51 +7074,51 @@ export default {
     -webkit-transform: rotate(90deg);
     /* Safari 和 Chrome */
   }
+}
 
-  .weather_alert {
-    display: block;
-    position: absolute;
-    left: 10px;
-    top: -10px;
-    z-index: 888;
-    padding-left: 20px;
+.weather_alert {
+  display: block;
+  position: absolute;
+  left: 250px;
+  top: 10px;
+  z-index: 888;
+  padding-left: 20px;
 
-    .weather_content {
-      width: 500px;
-      height: 500px;
-      background: rgba(255, 255, 255, 1);
-      box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.4);
-      border-radius: 10px;
-      padding: 10px;
+  .weather_content {
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    padding: 10px;
 
-      .weather_basic {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
+    .weather_basic {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
 
-        .weather_basic_content {
-          width: 50%;
-          color: #595959;
-          font-size: 12px;
-          margin-bottom: 12px;
-        }
-      }
-
-      .weather24 {
-        padding: 15px 9px;
-        box-sizing: border-box;
-        width: 100%;
-        border-top: 1px solid rgba(216, 216, 216, 0.5);
-        border-bottom: 1px solid rgba(216, 216, 216, 0.5);
+      .weather_basic_content {
+        width: 50%;
+        color: #595959;
         font-size: 12px;
-        display: flex;
+        margin-bottom: 12px;
+      }
+    }
 
-        .time24 {
-          width: 30px;
-          margin-right: 22px;
-          display: flex;
-          flex-direction: column;
-        }
+    .weather24 {
+      padding: 15px 9px;
+      box-sizing: border-box;
+      width: 100%;
+      border-top: 1px solid rgba(216, 216, 216, 0.5);
+      border-bottom: 1px solid rgba(216, 216, 216, 0.5);
+      font-size: 12px;
+      display: flex;
+
+      .time24 {
+        width: 30px;
+        margin-right: 22px;
+        display: flex;
+        flex-direction: column;
       }
     }
   }
