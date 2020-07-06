@@ -271,13 +271,14 @@
                           <a-checkbox-group
                             style="display:flex;flex-wrap:wrap;"
                             v-model="deviceTypeId"
+                            @change="onChange"
                           >
                             <a-row
                               style="width:100%"
                               v-for="index in option.children"
                               :key="index.id"
                             >
-                              <a-col :span="12" offset="4" style="height:30px;">
+                              <a-col :span="12" offset="4" style="">
                                 <a-checkbox :value="index.id" @change="peopleChoose">{{index.name}}</a-checkbox>
                               </a-col>
                               <a-col :span="8" style="height:30px;text-align:right;">
@@ -509,14 +510,15 @@
                           <a-checkbox-group
                             style="display:flex;flex-wrap:wrap;"
                             v-model="deviceTypeId"
+                            @change="onChange"
                           >
                             <a-row
                               style="width:100%"
                               v-for="index in option.children"
                               :key="index.id"
                             >
-                              <a-col :span="12" offset="4" style="height:30px;">
-                                <a-checkbox :value="index.id" @change="peopleChoose">{{index.name}}</a-checkbox>
+                              <a-col :span="12" offset="4" style="">
+                                <a-checkbox :value="index.id">{{index.name}}</a-checkbox>
                               </a-col>
                               <a-col :span="8" style="height:30px;text-align:right;">
                                 <a-input-number
@@ -669,7 +671,6 @@ export default {
         deviceId: '',
         deviceNum: '',
         deviceTypeId: '',
-        deviceNum: '',
         riverId: ''
       },
       roleId: [], //分配人员角色
@@ -1432,6 +1433,7 @@ export default {
         this.spotList.template = ''
         this.spotList.roleId = []
         this.spotList.roleNum = ''
+        this.spotList.deviceNum = ''
         this.spotList.deviceTypeNum = ''
         this.attachmentJpg = ''
       }
@@ -1456,9 +1458,17 @@ export default {
               for (const arr of arrr.children) {
                 if (item == arr.id) {
                   if (this.lineList.deviceNum != '') {
-                    this.lineList.deviceNum = this.lineList.deviceNum + ',' + arr.num
+                    if (arr.num) {
+                      this.lineList.deviceNum = this.lineList.deviceNum + ',' + arr.num
+                    }else{
+                      this.lineList.deviceNum = this.lineList.deviceNum + ',1'
+                    }
                   } else {
-                    this.lineList.deviceNum = arr.num
+                    if (arr.num) {
+                      this.lineList.deviceNum = arr.num + ''
+                    }else{
+                      this.lineList.deviceNum = '1'
+                    }
                   }
                 }
               }
@@ -1468,10 +1478,11 @@ export default {
         this.lineList.roleId = this.roleId.join(',')
         this.lineList.riverId = this.riverId.join(',')
         this.lineList.deviceId = this.deviceTypeId.join(',')
-        var data = this.lineList
+        const data = this.lineList
         if (this.fileList.length == 0) {
           getTaskSave(data)
             .then(res => {
+              this.deviceTypeId = []
               this.$message.success('保存成功')
               this.taskCancel()
               this.getRoleList()
@@ -1485,14 +1496,14 @@ export default {
           this.$refs.upload.submit()
         }
       } else if (this.actionTab == 2) {
-        var data = this.spotList
+        let data = {}
         for (let i = 0; i < this.spotList.roleId.length; i++) {
           for (let a = 0; a < this.personnelList.length; a++) {
             if (this.spotList.roleId[i] == this.personnelList[a].id) {
-              if (data.roleNum != '') {
-                data.roleNum = data.roleNum + ',' + this.personnelList[a].num
+              if (this.spotList.roleNum != '') {
+                this.spotList.roleNum = this.spotList.roleNum + ',' + this.personnelList[a].num
               } else {
-                data.roleNum = this.personnelList[a].num
+                this.spotList.roleNum = this.personnelList[a].num
               }
             }
           }
@@ -1502,22 +1513,24 @@ export default {
             for (const arrr of ar.children) {
               for (const arr of arrr.children) {
                 if (item == arr.id) {
-                  if (data.deviceNum != '') {
-                    data.deviceNum = data.deviceNum + ',' + arr.num
+                  if (this.spotList.deviceNum != '') {
+                    this.spotList.deviceNum = this.spotList.deviceNum + ',' + arr.num
                   } else {
-                    data.deviceNum = arr.num
+                    this.spotList.deviceNum = arr.num + ''
                   }
                 }
               }
             }
           }
         }
+        data = this.spotList
         data.deviceId = this.deviceTypeId.join(',')
         data.roleId = data.roleId.join(',')
         if (this.fileList.length == 0) {
           getTaskSave(data)
             .then(res => {
               var arr = res.data
+              this.deviceTypeId = []
               this.$message.success('保存成功')
               this.taskCancel()
               this.getRoleList()
@@ -1620,6 +1633,10 @@ export default {
           this.riverShowList = arr
         })
         .catch(err => {})
+    },
+    onChange(checkedValues) {
+      console.log(checkedValues);
+      
     },
     //固定监测分页
     getFixedList() {

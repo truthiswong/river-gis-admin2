@@ -66,7 +66,7 @@
           <a-button
             icon="setting"
             shape="circle"
-            style="background-color: rgba(32, 56, 104, 1);color: white;"
+            style="background-color: rgba(32, 56, 104, 1);color: white;line-height: 30px;"
           ></a-button>
         </a-popover>
       </div>
@@ -233,10 +233,11 @@
             v-model="riskSourceLevel"
             :filterOption="riverRiskFilterOption"
           >
-            <a-select-option value="one">Ⅰ级</a-select-option>
-            <a-select-option value="two">Ⅱ级</a-select-option>
-            <a-select-option value="three">Ⅲ级</a-select-option>
-            <a-select-option value="four">Ⅳ级</a-select-option>
+         
+            <a-select-option value="one"> <div style="width: 10px;height: 10px;background: #EE1C1D;display: inline-block;border-radius: 5px;"></div> Ⅰ级</a-select-option>
+            <a-select-option value="two"><div style="width: 10px;height: 10px;background: #FF8300;display: inline-block;border-radius: 5px;margin-right:5px"></div>Ⅱ级</a-select-option>
+            <a-select-option value="three"><div style="width: 10px;height: 10px;background: #FFFC01;display: inline-block;border-radius: 5px;margin-right:5px"></div>Ⅲ级</a-select-option>
+            <a-select-option value="four"><div style="width: 10px;height: 10px;background: #0D92EE;display: inline-block;border-radius: 5px;margin-right:5px"></div>Ⅳ级</a-select-option>
           </a-select>
           <!-- 河岸风险源 -->
           <div class="river_risk_alert" v-show="riverRisk">
@@ -6957,8 +6958,8 @@ export default {
   -webkit-justify-items: center;
 
   img {
-    width: 32px;
-    height: 32px;
+    max-width: 32px;
+    max-height: 32px;
     margin: 0;
   }
 

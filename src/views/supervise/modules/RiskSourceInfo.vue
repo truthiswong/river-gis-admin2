@@ -3,7 +3,7 @@
     :width="450"
     :visible="visible"
     :confirmLoading="confirmLoading"
-    @ok="handleSubmit"
+    @ok="handleCancel"
     @cancel="handleCancel"
     :mask="false"
     :centered="true"
@@ -21,6 +21,52 @@
     </template>
     <div v-show="show">
       <a-row>
+        <a-col :span="5">
+          <p>内部编码:</p>
+        </a-col>
+        <a-col :span="7">
+          <p>{{list.innerCode}}</p>
+        </a-col>
+        <a-col :span="6">
+          <p>风险源类别:</p>
+        </a-col>
+        <a-col :span="6">
+          <p>{{list.type}}</p>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="5">
+          <p>准确位置:</p>
+        </a-col>
+        <a-col :span="7">
+          <p>{{list.accurateLocation}}</p>
+        </a-col>
+        <a-col :span="6">
+          <p>首次发现时间:</p>
+        </a-col>
+        <a-col :span="6">
+          <p>{{list.discoveryTime}}</p>
+        </a-col>
+      </a-row>
+      <a-row >
+        <a-col :span="5">
+          <p>面积:</p>
+        </a-col>
+        <a-col :span="7">
+          <p>{{list.polygonSize}}</p>
+        </a-col>
+        <a-col :span="6">
+          <p>河道所属:</p>
+        </a-col>
+        <a-col :span="6">
+          <p>{{list.river}}</p>
+        </a-col>
+      </a-row>
+      <div style="text-align: right;margin-top:10px">
+        <a-button type="primary" ghost size="small" @click="riskSee">查看详情</a-button>
+      </div>
+     
+      <!-- <a-row>
         <a-col :span="12">
           <p>内部编码: {{list.innerCode}}</p>
           <p>准确位置: {{list.accurateLocation}}</p>
@@ -32,15 +78,20 @@
           <p>河道所属: {{list.river}}</p>
           <a-button type="primary" ghost size="small" @click="riskSee">查看详情</a-button>
         </a-col>
-      </a-row>
+      </a-row> -->
+       <!-- :header="`${data.length} 条状态`" -->
       <a-list
         class="comment-list custom_comment a-list"
-        :header="`${data.length} 条状态`"
+       
         itemLayout="horizontal"
         :dataSource="data"
         size="small"
         style
       >
+        <div slot="header" class="a-list-header">
+          <div>{{data.length}} 条状态</div>
+          <a-button type="primary"  @click="renewClick('1')" v-show="jurisdiction" size="small">更新风险状态</a-button>
+        </div>
         <a-list-item slot="renderItem" slot-scope="item" class="comment_list">
           <a-comment :avatar="item.avatar">
             <p slot="author" style="width:50px;padding:0;margin:0;color:#000000">{{item.author}}</p>
@@ -76,7 +127,6 @@
           </a-comment>
         </a-list-item>
       </a-list>
-      <a-button type="primary" block @click="renewClick('1')" v-show="jurisdiction">更新风险状态</a-button>
     </div>
     <div v-show="show_type">
       <a-form>
@@ -93,10 +143,10 @@
           :wrapper-col="{ span: 12 }"
         >
           <a-select defaultValue="one" v-model="drawList.level">
-            <a-select-option value="one">一级</a-select-option>
-            <a-select-option value="two">二级</a-select-option>
-            <a-select-option value="three">三级</a-select-option>
-            <a-select-option value="four">四级</a-select-option>
+            <a-select-option value="one"> <div style="width: 10px;height: 10px;background: #EE1C1D;display: inline-block;border-radius: 5px;"></div> Ⅰ级</a-select-option>
+            <a-select-option value="two"><div style="width: 10px;height: 10px;background: #FF8300;display: inline-block;border-radius: 5px;margin-right:5px"></div>Ⅱ级</a-select-option>
+            <a-select-option value="three"><div style="width: 10px;height: 10px;background: #FFFC01;display: inline-block;border-radius: 5px;margin-right:5px"></div>Ⅲ级</a-select-option>
+            <a-select-option value="four"><div style="width: 10px;height: 10px;background: #0D92EE;display: inline-block;border-radius: 5px;margin-right:5px"></div>Ⅳ级</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="管理建议" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
@@ -476,5 +526,9 @@ p {
 }
 .comment_img::-webkit-scrollbar {
   display: none;
+}
+.a-list-header{
+  display: flex;
+  justify-content:space-between
 }
 </style>

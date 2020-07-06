@@ -528,7 +528,7 @@
                   <a-icon type="calendar" />当日计划
                 </span>
                 <!-- 今日计划 -->
-                <div class="task_face">
+                <div class="task_face" style="height:calc(100vh - 98px)">
                   <a-spin size="large" :spinning="spinning">
                     <a-collapse
                       v-model="activePlanKey"
@@ -955,12 +955,11 @@
             </a-card>
           </div>
           <!-- 底部 -->
-          <div class="addPlan_foot" v-show="noTitleKey === 'addPlan'">
+          <div class="addPlan_foot"  v-show="noTitleKey === 'addPlan'">
             <div v-if="ishidden == 1">
               <a-row type="flex" justify="space-around" v-show="jurisdiction">
                 <a-col :span="10">
                   <a-button class="groupBtn" @click="newPlan_btn" v-show="hidingJudgment">生成计划</a-button>
-                  <!-- <a-button class="groupBtn" @click="newPlan_btn" >生成计划</a-button> -->
                 </a-col>
                 <a-col :span="10">
                   <a-popover placement="topLeft" trigger="click" :width="100">
