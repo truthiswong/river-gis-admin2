@@ -278,7 +278,7 @@
                               v-for="index in option.children"
                               :key="index.id"
                             >
-                              <a-col :span="12" offset="4" style="height:30px;">
+                              <a-col :span="12" offset="4" style="">
                                 <a-checkbox :value="index.id" @change="peopleChoose">{{index.name}}</a-checkbox>
                               </a-col>
                               <a-col :span="8" style="height:30px;text-align:right;">
@@ -517,7 +517,7 @@
                               v-for="index in option.children"
                               :key="index.id"
                             >
-                              <a-col :span="12" offset="4" style="height:30px;">
+                              <a-col :span="12" offset="4" style="">
                                 <a-checkbox :value="index.id">{{index.name}}</a-checkbox>
                               </a-col>
                               <a-col :span="8" style="height:30px;text-align:right;">
@@ -1452,17 +1452,23 @@ export default {
             }
           }
         }
-        
-        
         for (const item of this.deviceTypeId) {
           for (const ar of this.equipmentList) {
             for (const arrr of ar.children) {
               for (const arr of arrr.children) {
                 if (item == arr.id) {
                   if (this.lineList.deviceNum != '') {
-                    this.lineList.deviceNum = this.lineList.deviceNum + ',' + arr.num
+                    if (arr.num) {
+                      this.lineList.deviceNum = this.lineList.deviceNum + ',' + arr.num
+                    }else{
+                      this.lineList.deviceNum = this.lineList.deviceNum + ',1'
+                    }
                   } else {
-                    this.lineList.deviceNum = arr.num + ''
+                    if (arr.num) {
+                      this.lineList.deviceNum = arr.num + ''
+                    }else{
+                      this.lineList.deviceNum = '1'
+                    }
                   }
                 }
               }

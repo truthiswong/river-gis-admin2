@@ -3,7 +3,7 @@
     :width="450"
     :visible="visible"
     :confirmLoading="confirmLoading"
-    @ok="handleSubmit"
+    @ok="handleCancel"
     @cancel="handleCancel"
     :mask="false"
     :centered="true"
