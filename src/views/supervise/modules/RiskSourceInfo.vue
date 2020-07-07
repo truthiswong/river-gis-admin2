@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    :width="450"
+    :width="550"
     :visible="visible"
     :confirmLoading="confirmLoading"
     @ok="handleCancel"
@@ -21,44 +21,44 @@
     </template>
     <div v-show="show">
       <a-row>
-        <a-col :span="5">
+        <a-col :span="4">
           <p>内部编码:</p>
         </a-col>
         <a-col :span="7">
           <p>{{list.innerCode}}</p>
         </a-col>
-        <a-col :span="6">
+        <a-col :span="5">
           <p>风险源类别:</p>
         </a-col>
-        <a-col :span="6">
+        <a-col :span="8">
           <p>{{list.type}}</p>
         </a-col>
       </a-row>
       <a-row>
-        <a-col :span="5">
+        <a-col :span="4">
           <p>准确位置:</p>
         </a-col>
         <a-col :span="7">
           <p>{{list.accurateLocation}}</p>
         </a-col>
-        <a-col :span="6">
+        <a-col :span="5">
           <p>首次发现时间:</p>
         </a-col>
-        <a-col :span="6">
+        <a-col :span="8">
           <p>{{list.discoveryTime}}</p>
         </a-col>
       </a-row>
       <a-row >
-        <a-col :span="5">
+        <a-col :span="4">
           <p>面积:</p>
         </a-col>
         <a-col :span="7">
           <p>{{list.polygonSize}}</p>
         </a-col>
-        <a-col :span="6">
+        <a-col :span="5">
           <p>河道所属:</p>
         </a-col>
-        <a-col :span="6">
+        <a-col :span="8">
           <p>{{list.river}}</p>
         </a-col>
       </a-row>
@@ -511,7 +511,7 @@ p {
   }
 }
 .comment_title {
-  width: 295px;
+  width: 396px;
   display: flex;
   display: -webkit-flex;
   justify-content: space-between;
