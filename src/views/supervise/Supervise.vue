@@ -49,7 +49,7 @@
           </a-tooltip>
         </li>
       </ul>
-      <div class="time_set">
+      <div class="time_set" id="time_popover">
         <a-popover
           placement="rightBottom"
           trigger="click"
@@ -106,11 +106,15 @@
           </a-tooltip>
         </li>
       </ul>
-      <div class="time_set">
+      <div class="time_set" id="time_popover_right"> 
         <a-popover
           placement="rightBottom"
           trigger="click"
+<<<<<<< HEAD
           overlayClassName="custom_popover"
+=======
+          overlayClassName="popover_padding"
+>>>>>>> 9a5dcbaf3a61950c67d37ace38d470f6d0761731
           v-model="timeSetShowRight"
           @visibleChange="setTimeShow"
         >
@@ -124,7 +128,7 @@
           <a-button
             icon="setting"
             shape="circle"
-            style="background-color: rgba(32, 56, 104, 1);color: white;width: 30px;height: 30px;line-height:28px;"
+            style="background-color: rgba(32, 56, 104, 1);color: white;width: 30px;height: 30px;line-height: 18px;"
           ></a-button>
         </a-popover>
       </div>
