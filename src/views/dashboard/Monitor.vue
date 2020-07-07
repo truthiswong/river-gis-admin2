@@ -2454,10 +2454,8 @@ export default {
     },
     //当日计划绘制河道，调查点内的任务
     planDayDrawSpot(taskPage) {
-      console.log(taskPage)
-
       for (const item of taskPage.anomalous) {
-        if (item.region.length == 1) {
+        if (item.locationType.code == "point") {
           if (item.pic) {
             let icon = new T.Icon({
               iconUrl: item.pic,
@@ -2479,33 +2477,32 @@ export default {
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
           }
-        } else {
-          if (taskPage.clicked == true) {
-            let line = new T.Polyline(item.region, {
-              color: 'orange', //线颜色
-              weight: 3, //线宽
-              opacity: 0.5, //透明度
-              id: item.id,
-              name: item.name
-            })
-            //向地图上添加线
-            this.map.addOverLay(line)
-          } else {
-            let line = new T.Polyline(item.region, {
-              color: 'orange', //线颜色
-              weight: 3, //线宽
-              opacity: 0.5, //透明度
-              id: item.id,
-              name: item.name
-            })
-            //向地图上添加线
-            this.map.addOverLay(line)
-            this.showPosition(line, item)
-          }
+        } else if(item.locationType.code == "line"){
+          let line = new T.Polyline(item.region, {
+            color: 'blue', //线颜色
+            weight: 3, //线宽
+            opacity: 0.5, //透明度
+            id: item.id,
+            name: item.name
+          })
+          //向地图上添加线
+          this.map.addOverLay(line)
+          this.showPosition(line, item)
+        } else if(item.locationType.code == "polygon"){
+          let line = new T.Polygon(item.region, {
+            color: 'blue', //线颜色
+            weight: 3, //线宽
+            opacity: 0.5, //透明度
+            id: item.id,
+            name: item.name
+          })
+          //向地图上添加线
+          this.map.addOverLay(line)
+          this.showPosition(line, item)
         }
       }
       for (const item of taskPage.complete) {
-        if (item.region.length == 1) {
+        if (item.locationType.code == "point") {
           if (item.pic) {
             let icon = new T.Icon({
               iconUrl: item.pic,
@@ -2527,36 +2524,32 @@ export default {
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
           }
-        } else {
-          if (taskPage.clicked == true) {
-            let line = new T.Polyline(item.region, {
-              color: 'green', //线颜色
-              weight: 3, //线宽
-              opacity: 0.5, //透明度
-              id: item.id,
-              name: item.name
-            })
-            //向地图上添加线
-            this.map.addOverLay(line)
-            this.showPosition(line, item)
-          } else {
-            let line = new T.Polyline(item.region, {
-              color: 'green', //线颜色
-              weight: 3, //线宽
-              opacity: 0.5, //透明度
-              id: item.id,
-              name: item.name
-            })
-            //向地图上添加线
-            this.map.addOverLay(line)
-            this.showPosition(line, item)
-            // line.addEventListener('click', this.planDayDrawClick)
-          }
+        } else if(item.locationType.code == "line"){
+          let line = new T.Polyline(item.region, {
+            color: 'blue', //线颜色
+            weight: 3, //线宽
+            opacity: 0.5, //透明度
+            id: item.id,
+            name: item.name
+          })
+          //向地图上添加线
+          this.map.addOverLay(line)
+          this.showPosition(line, item)
+        } else if(item.locationType.code == "polygon"){
+          let line = new T.Polygon(item.region, {
+            color: 'blue', //线颜色
+            weight: 3, //线宽
+            opacity: 0.5, //透明度
+            id: item.id,
+            name: item.name
+          })
+          //向地图上添加线
+          this.map.addOverLay(line)
+          this.showPosition(line, item)
         }
-        // markerTool.addEventListener('click', this.taskPointClick)
       }
       for (const item of taskPage.incomplete) {
-        if (item.region.length == 1) {
+        if (item.locationType.code == "point") {
           if (item.pic) {
             let icon = new T.Icon({
               iconUrl: item.pic,
@@ -2578,8 +2571,19 @@ export default {
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
           }
-        } else {
+        } else if(item.locationType.code == "line"){
           let line = new T.Polyline(item.region, {
+            color: 'blue', //线颜色
+            weight: 3, //线宽
+            opacity: 0.5, //透明度
+            id: item.id,
+            name: item.name
+          })
+          //向地图上添加线
+          this.map.addOverLay(line)
+          this.showPosition(line, item)
+        } else if(item.locationType.code == "polygon"){
+          let line = new T.Polygon(item.region, {
             color: 'blue', //线颜色
             weight: 3, //线宽
             opacity: 0.5, //透明度
