@@ -86,13 +86,13 @@
                     <span style="vertical-align: middle;">河岸风险源</span>
                   </div>
                   <div class="river_risk_content">
-                    <div class="river_risk_type">
+                    <!-- <div class="river_risk_type">
                       <img src="./img/level1.png" @click="getRiskSourceMapDrawPage('one')" alt />
                       <img src="./img/level2.png" @click="getRiskSourceMapDrawPage('two')" alt />
                       <img src="./img/level3.png" @click="getRiskSourceMapDrawPage('three')" alt />
                       <img src="./img/level4.png" @click="getRiskSourceMapDrawPage('four')" alt />
                       <img src="./img/levelno.png" @click="getRiskSourceMapDrawPage('')" alt />
-                    </div>
+                    </div> -->
                     <div class="river_risk_list">
                       <a-row
                         style="width:100%;margin:5px 0;"

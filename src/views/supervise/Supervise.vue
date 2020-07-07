@@ -53,6 +53,7 @@
         <a-popover
           placement="rightBottom"
           trigger="click"
+          overlayClassName="custom_popover"
           v-model="timeSetShow"
           @visibleChange="setTimeShow"
         >
@@ -109,6 +110,7 @@
         <a-popover
           placement="rightBottom"
           trigger="click"
+          overlayClassName="custom_popover"
           v-model="timeSetShowRight"
           @visibleChange="setTimeShow"
         >
@@ -233,11 +235,26 @@
             v-model="riskSourceLevel"
             :filterOption="riverRiskFilterOption"
           >
-         
-            <a-select-option value="one"> <div style="width: 10px;height: 10px;background: #EE1C1D;display: inline-block;border-radius: 5px;"></div> Ⅰ级</a-select-option>
-            <a-select-option value="two"><div style="width: 10px;height: 10px;background: #FF8300;display: inline-block;border-radius: 5px;margin-right:5px"></div>Ⅱ级</a-select-option>
-            <a-select-option value="three"><div style="width: 10px;height: 10px;background: #FFFC01;display: inline-block;border-radius: 5px;margin-right:5px"></div>Ⅲ级</a-select-option>
-            <a-select-option value="four"><div style="width: 10px;height: 10px;background: #0D92EE;display: inline-block;border-radius: 5px;margin-right:5px"></div>Ⅳ级</a-select-option>
+            <a-select-option value="one">
+              <div
+                style="width: 10px;height: 10px;background: #EE1C1D;display: inline-block;border-radius: 5px;"
+              ></div>Ⅰ级
+            </a-select-option>
+            <a-select-option value="two">
+              <div
+                style="width: 10px;height: 10px;background: #FF8300;display: inline-block;border-radius: 5px;margin-right:5px"
+              ></div>Ⅱ级
+            </a-select-option>
+            <a-select-option value="three">
+              <div
+                style="width: 10px;height: 10px;background: #FFFC01;display: inline-block;border-radius: 5px;margin-right:5px"
+              ></div>Ⅲ级
+            </a-select-option>
+            <a-select-option value="four">
+              <div
+                style="width: 10px;height: 10px;background: #0D92EE;display: inline-block;border-radius: 5px;margin-right:5px"
+              ></div>Ⅳ级
+            </a-select-option>
           </a-select>
           <!-- 河岸风险源 -->
           <div class="river_risk_alert" v-show="riverRisk">
@@ -467,7 +484,12 @@
         <img @click="mapZoomOut" src="../../assets/min.png" alt="缩小" />
       </li>
       <li>
-        <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
+        <a-popover
+          placement="leftBottom"
+          arrowPointAtCenter
+          :getPopupContainer="triggerNode => {return triggerNode.parentNode || document.body}"
+          trigger="click"
+        >
           <div slot="content" style="width:160px;margin:0px 8px;">
             <a-row
               v-show="!(this.sharedChecked || this.swipeChecked)"
@@ -515,7 +537,12 @@
                 <a-switch size="small" v-model="sharedChecked" @click="sharedView" />
               </a-col>
             </a-row>
-            <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
+            <a-popover
+              placement="leftBottom"
+              arrowPointAtCenter
+              :getPopupContainer="triggerNode => {return triggerNode.parentNode || document.body}"
+              trigger="click"
+            >
               <div slot="content" style="width:160px;margin: 0px 8px;">
                 <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
@@ -548,13 +575,16 @@
                   </a-col>
                 </a-row>
               </div>
-              <div style="margin: 5px 0px;">
+              <div style="margin: 5px 0px;position: relative;" class="custom_popover_title" @click="imageManage = !imageManage">
                 <a-row>
                   <a-col :span="20">
                     <p style="margin:0;">影像管理</p>
                   </a-col>
                   <a-col :span="4" style="text-align: right;">
-                    <a-icon type="right" />
+                    <!-- <a-icon class="menu_right_icon" type="right" :class="imageManage ? 'menu_right_icon_active':''"/> -->
+                    <!-- <a-icon :type="imageManage?'down':'right'" /> -->
+                    <!-- <a-icon v-show="imageManage" type="down" /> -->
+                    <span><a-icon type="right" /></span>
                   </a-col>
                 </a-row>
               </div>
@@ -1192,7 +1222,7 @@ export default {
       historyData: false, // 历史数据
       riverShow: false, // 河道显示
       streetShow: false, // 街道显示
-      imageManagement: false, // 影像管理
+      imageManage: false, // 影像管理
       phonePhoto: false, // 手机照片
       photoAlertShow: false, // 照片弹窗显隐
       imageEditorData: {
@@ -1213,26 +1243,9 @@ export default {
             lat: 31.21493,
             lng: 121.49566
           }
-        },
-        {
-          id: 1,
-          name: '监测点2',
-          clicked: false,
-          latlng: {
-            lat: 31.22344,
-            lng: 121.47892
-          }
-        },
-        {
-          id: 2,
-          name: '监测点3',
-          clicked: false,
-          latlng: {
-            lat: 31.20649,
-            lng: 121.47712
-          }
         }
       ],
+      rightPanoramaPoints: [],
       labelCol: {
         xs: {
           span: 18
@@ -1975,6 +1988,7 @@ export default {
     // 获取当前页面数据
     getMapPageData() {
       if (this.moreLoadOnce == '1') {
+        // 其他
         this.getOtherDataStatistics()
         this.getDataStatistics()
         // 获取手机照片
@@ -2011,6 +2025,15 @@ export default {
     // 右侧 双球 获取当前页面数据
     getMapPageDataRight() {
       if (this.moreLoadOnce == '1') {
+        // 其他
+        this.getOtherDataStatisticsRight()
+        this.getDataStatistics()
+        // 右侧获取手机照片
+        this.removeOverLays(this.rightPhonePhotoPoints)
+        this.getPhonePhotoPointsRight()
+        // 右侧360点
+        this.removeOverLays(this.rightPanoramaPoints)
+        this.getPanoramaPointsRight()
         // 右侧获取风险地图
         this.getRiskMapListRight()
         // 右侧获取水面漂浮物
@@ -2076,6 +2099,45 @@ export default {
         this.onPhonePhoto()
       })
     },
+    // 右侧获取手机照片
+    getPhonePhotoPointsRight() {
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          mediaType: 'image',
+          from: 'admin'
+        }
+      } else {
+        var picker = this.defaultRightTime.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          mediaType: 'image',
+          from: 'admin'
+        }
+      }
+      dataManual(data).then(res => {
+        let arr = res.data.data
+        arr.forEach(v => {
+          v.latlng = v.coordinate
+          v.name = v.title
+          v.clicked = false
+          v.imgUrl = v.media
+          v.id = v.id
+        })
+        this.rightPhonePhotoPoints = []
+        for (const item of arr) {
+          if (item.coordinate) {
+            this.rightPhonePhotoPoints.push(item)
+          }
+        }
+        this.onPhonePhoto()
+      })
+    },
     // 获取360点
     getPanoramaPoints() {
       if (this.historyData) {
@@ -2103,6 +2165,35 @@ export default {
           v.latlng = v.coordinate
         })
         this.panoramaPoints = hh
+        this.onPanorama()
+      })
+    },
+    // 右侧获取360点
+    getPanoramaPointsRight() {
+      if (this.historyData) {
+        var data = {
+          projectId: this.$store.state.id,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          mediaType: 'image'
+        }
+      } else {
+        var picker = this.defaultTime.split('-')
+        var data = {
+          projectId: this.$store.state.id,
+          year: picker[0],
+          month: picker[1],
+          day: picker[2],
+          mediaType: 'image'
+        }
+      }
+      panoramaList(data).then(res => {
+        let hh = res.data.data
+        hh.forEach(v => {
+          v.name = v.title
+          v.latlng = v.coordinate
+        })
+        this.rightPanoramaPoints = hh
         this.onPanorama()
       })
     },
@@ -3659,6 +3750,8 @@ export default {
         }
         // 手机照片
         if (this.phonePhoto) {
+          this.olRemoveLayer(this.phonePhotoPoints, 'olMap1')
+          this.olRemoveLayer(this.rightPhonePhotoPoints, 'olMap2')
         }
         // 无人机照片
         if (this.UAVPhoto) {
@@ -3703,7 +3796,7 @@ export default {
             }
           }
           this.olRemoveLayer(data1, 'olMap1')
-          // this.olRemoveLayer(data2, 'olMap2')
+          this.olRemoveLayer(data2, 'olMap2')
         }
 
         // 专项调查点
@@ -4913,6 +5006,20 @@ export default {
           this.map.addOverLay(markerTool)
           markerTool.addEventListener('click', this.panoramaPointClick)
         }
+        // 双球开关
+        if (this.sharedChecked || this.swipeChecked) {
+          for (const item of this.panoramaPoints) {
+            this.olSharedDrawPoint(item.latlng, require('./img/360.png'), item.id, 'olMap1')
+          }
+          for (const item of this.rightPanoramaPoints) {
+            this.olSharedDrawPoint(item.latlng, require('./img/360.png'), item.id, 'olMap2')
+          }
+        }
+      } else {
+        if (this.sharedChecked || this.swipeChecked) {
+          this.olRemoveLayer(this.panoramaPoints, 'olMap1')
+          this.olRemoveLayer(this.rightPanoramaPoints, 'olMap2')
+        }
       }
     },
     // 360点点击事件
@@ -5308,89 +5415,92 @@ export default {
           let item = res.data.data[0]
           var html = `
             <div style='margin:0px;height: 300px;overflow-y: scroll;'>
-              <div style='line-height:30px;font-size:14px;margin-bottom:5px; '>
-                <span style='font-weight:400'>水体名称: ${item.name}</span>
-                <span style='margin-left:50px'>${item.date}</span>
-                <div style='border-bottom:1px #c3c3c3 solid'>断面名称: ${item.sectionName}</div>
-                <div style='display: flex;justify-content:space-around'>
+              <div style='line-height:20px;font-size:14px;margin-bottom:8px; '>
+                <div style='margin: 8px 0;'>
+                  <span>水体名称: ${item.name}</span>
+                </div>
+                <div style='margin: 8px 0;'>
+                  <span>日期: ${item.date}</span>
+                </div>
+                <div style='border-bottom:1px #c3c3c3 solid;padding-bottom: 8px;'>断面名称: ${item.sectionName}</div>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>PH值: ${item.ph}</span>
                   <span style='width:150px'>溶解氧: ${item.do}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>氨氮: ${item.nh3N}mg/L</span>
                   <span style='width:150px'>总磷: ${item.tp}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>高锰酸盐指数: ${item.kmnO}mg/L</span>
                   <span style='width:150px'>透明度: ${item.opacity}cm</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>氧化还原电位: ${item.orp}mv</span>
                   <span style='width:150px'>铜: ${item.cu}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>化学需氧量: ${item.cod}mg/L</span>
                   <span style='width:150px'>锌: ${item.zn}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>五日生化需氧量: ${item.bod}mg/L</span>
                   <span style='width:150px'>硒: ${item.se}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>总氮: ${item.tn}mg/L</span>
                   <span style='width:150px'>氟化物: ${item.pmsf}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>砷: ${item.as}mg/L</span>
                   <span style='width:150px'>汞: ${item.hg}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>镉: ${item.cd}mg/L</span>
                   <span style='width:150px'>六价铬: ${item.cr}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>铅: ${item.pb}mg/L</span>
                   <span style='width:150px'>总氰化物: ${item.cyanide}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>挥发酚: ${item.phenol}mg/L</span>
                   <span style='width:150px'>石油类: ${item.petroleum}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>阴离子表面活性剂: ${item.las}mg/L</span>
                   <span style='width:150px'>铁: ${item.fe}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>硫化物: ${item.sox}mg/L</span>
                   <span style='width:150px'>硫酸盐: ${item.sulfate}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>粪大肠菌群: ${item.coliform}个/L</span>
                   <span style='width:150px'>锰: ${item.mn}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>氯化物: ${item.ci}mg/L</span>
                   <span style='width:150px'>硝酸盐氮: ${item.nitrate}mg/L</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>亚硝酸盐氮: ${item.nitrite}mg/L</span>
                   <span style='width:150px'>浊度: ${item.turbidity}NTO</span>
                 </div>
-                <div style='display: flex;justify-content:space-around'>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
                   <span style='width:180px'>盐度: ${item.salinity}%</span>
                   <span style='width:150px'>水温: ${item.temperature}℃</span>
                 </div>
-                <div>
-                  <span style='width:180px'>流速: ${item.velocity}m/s</span>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
+                  <span style='width:180px;'>流速: ${item.velocity}m/s</span>
+                  <span style='width:150px;'>水质等级: ${item.waterLevel.code}(${item.waterLevel.name})</span>
                 </div>
-                <div>
-                  <span style='width:300px'>水质评价: ${item.quality}</span>
+                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
+                  <span style='width:180px;'>是否劣V: ${item.badV == 1?'是':'否'}</span>
+                  <span style='width:150px;'>是否黑臭: ${item.black == 1?'是':'否'}</span>
                 </div>
-                <div>
-                  <span style='width:300px'>黑臭评价: ${item.suncus}</span>
-                </div>
-                <div>
-                  <span style='width:300px'>备注: ${item.remark}</span>
+                <div style='margin: 8px 0;'>
+                  <span style='width:300px;'>超标因子: ${item.overproofFactor}</span>
                 </div>
               </div>
             </div>
