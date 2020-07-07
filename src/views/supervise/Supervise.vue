@@ -110,11 +110,7 @@
         <a-popover
           placement="rightBottom"
           trigger="click"
-<<<<<<< HEAD
           overlayClassName="custom_popover"
-=======
-          overlayClassName="popover_padding"
->>>>>>> 9a5dcbaf3a61950c67d37ace38d470f6d0761731
           v-model="timeSetShowRight"
           @visibleChange="setTimeShow"
         >
