@@ -1245,7 +1245,7 @@ export default {
           }
         }
       ],
-      rightPanoramaPoints: [],
+      panoramaPointsRight: [],
       labelCol: {
         xs: {
           span: 18
@@ -1361,7 +1361,7 @@ export default {
             latlng: { lat: 31.21935, lng: 121.50035 }
           }*/
       ],
-      rightWaterQualityPoints: [],
+      waterQualityPointsRight: [],
       waterFlotage: false, // 水面漂浮物
       waterFlotagePoints: [],
       waterFlotagePointsRight: [],
@@ -2025,14 +2025,9 @@ export default {
     // 右侧 双球 获取当前页面数据
     getMapPageDataRight() {
       if (this.moreLoadOnce == '1') {
-        // 其他
-        this.getOtherDataStatisticsRight()
-        this.getDataStatistics()
         // 右侧获取手机照片
-        this.removeOverLays(this.rightPhonePhotoPoints)
         this.getPhonePhotoPointsRight()
         // 右侧360点
-        this.removeOverLays(this.rightPanoramaPoints)
         this.getPanoramaPointsRight()
         // 右侧获取风险地图
         this.getRiskMapListRight()
@@ -2129,10 +2124,10 @@ export default {
           v.imgUrl = v.media
           v.id = v.id
         })
-        this.rightPhonePhotoPoints = []
+        this.phonePhotoPointsRight = []
         for (const item of arr) {
           if (item.coordinate) {
-            this.rightPhonePhotoPoints.push(item)
+            this.phonePhotoPointsRight.push(item)
           }
         }
         this.onPhonePhoto()
@@ -2193,7 +2188,7 @@ export default {
           v.name = v.title
           v.latlng = v.coordinate
         })
-        this.rightPanoramaPoints = hh
+        this.panoramaPointsRight = hh
         this.onPanorama()
       })
     },
@@ -2220,6 +2215,7 @@ export default {
         let arr = res.data.data
         arr.forEach(v => {
           v.clicked = false
+          v.latlng = v.coordinate
         })
         this.pointCount()
         this.surveyPointPoints = arr
@@ -2249,6 +2245,7 @@ export default {
         let arr = res.data.data
         arr.forEach(v => {
           v.clicked = false
+          v.latlng = v.coordinate
         })
         this.rightSurveyPointPoints = arr
         this.onSurveyPoint()
@@ -2410,6 +2407,9 @@ export default {
       getWaterStation(data)
         .then(res => {
           let arr = res.data
+          arr.forEach(v => {
+            v.latlng = v.coordinate
+          })
           this.waterQualityPoints = arr
           this.regulatorWaterCount()
           this.onWaterQuality()
@@ -2440,7 +2440,10 @@ export default {
       getWaterStation(data)
         .then(res => {
           let arr = res.data
-          this.rightWaterQualityPoints = JSON.parse(JSON.stringify(arr))
+          arr.forEach(v => {
+            v.latlng = v.coordinate
+          })
+          this.waterQualityPointsRight = JSON.parse(JSON.stringify(arr))
           this.onWaterQuality()
         })
         .catch(err => {})
@@ -3751,13 +3754,15 @@ export default {
         // 手机照片
         if (this.phonePhoto) {
           this.olRemoveLayer(this.phonePhotoPoints, 'olMap1')
-          this.olRemoveLayer(this.rightPhonePhotoPoints, 'olMap2')
+          this.olRemoveLayer(this.phonePhotoPointsRight, 'olMap2')
         }
         // 无人机照片
         if (this.UAVPhoto) {
         }
         // 360全景图
         if (this.panorama) {
+          this.olRemoveLayer(this.panoramaPoints, 'olMap1')
+          this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
         }
         // 风险地图
         if (this.riskMap) {
@@ -3766,6 +3771,8 @@ export default {
         }
         // 水质数据
         if (this.waterQuality) {
+          this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
+          this.olRemoveLayer(this.waterQualityPointsRight, 'olMap2')
         }
         // 水质漂浮物
         if (this.waterFlotage) {
@@ -3798,7 +3805,6 @@ export default {
           this.olRemoveLayer(data1, 'olMap1')
           this.olRemoveLayer(data2, 'olMap2')
         }
-
         // 专项调查点
         if (this.surveyPoint) {
           this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
@@ -3812,7 +3818,6 @@ export default {
           }
         }
       }
-
       this.getWeatherList()
       this.map.clearOverLays()
       this.moreLoadOnce = 1
@@ -3834,6 +3839,8 @@ export default {
       }
       // 360全景图
       if (this.panorama) {
+        this.olRemoveLayer(this.panoramaPoints, 'olMap1')
+        this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
       }
       // 风险地图
       if (this.riskMap) {
@@ -3842,6 +3849,8 @@ export default {
       }
       // 水质数据
       if (this.waterQuality) {
+        this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
+        this.olRemoveLayer(this.waterQualityPointsRight, 'olMap2')
       }
       // 水质漂浮物
       if (this.waterFlotage) {
@@ -4301,29 +4310,26 @@ export default {
       }
     },
     clearOlLayer() {
+      // 360全景图
+      this.olRemoveLayer(this.panoramaPoints, 'olMap1')
+      this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
+      if (!this.panorama) {}
       // 风险地图
-      if (!this.riskMap) {
-        this.olRemoveLayer(this.riskPolygonData, 'olMap1')
-        this.olRemoveLayer(this.riskPolygonDataRight, 'olMap2')
-      }
+      this.olRemoveLayer(this.riskPolygonData, 'olMap1')
+      this.olRemoveLayer(this.riskPolygonDataRight, 'olMap2')
+      if (!this.riskMap) {}
       // 水质数据
-      if (!this.waterQuality) {
-      }
+      this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
+      this.olRemoveLayer(this.waterQualityPointsRight, 'olMap2')
+      if (!this.waterQuality) {}
       // 水面漂浮物
       this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
       this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
-      if (!this.waterFlotage) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
-      }
-      this.onWaterFlotage()
+      if (!this.waterFlotage) {}
       // 排口
       this.olRemoveLayer(this.outletPoints, 'olMap1')
       this.olRemoveLayer(this.outletPointsRight, 'olMap2')
-      if (!this.outlet) {
-        this.olRemoveLayer(this.outletPoints, 'olMap1')
-        this.olRemoveLayer(this.outletPointsRight, 'olMap2')
-      }
+      if (!this.outlet) {}
       // 河岸风险源
       if (!this.riverRisk) {
         let data1 = []
@@ -4345,14 +4351,10 @@ export default {
         this.olRemoveLayer(data1, 'olMap1')
         this.olRemoveLayer(data2, 'olMap2')
       }
-
       // 专项调查点
       this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
       this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
-      if (!this.surveyPoint) {
-        this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
-        this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
-      }
+      if (!this.surveyPoint) {}
       // 其他
       for (const item of this.otherList) {
         if (!item.clicked) {
@@ -5007,18 +5009,18 @@ export default {
           markerTool.addEventListener('click', this.panoramaPointClick)
         }
         // 双球开关
-        if (this.sharedChecked || this.swipeChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           for (const item of this.panoramaPoints) {
             this.olSharedDrawPoint(item.latlng, require('./img/360.png'), item.id, 'olMap1')
           }
-          for (const item of this.rightPanoramaPoints) {
+          for (const item of this.panoramaPointsRight) {
             this.olSharedDrawPoint(item.latlng, require('./img/360.png'), item.id, 'olMap2')
           }
         }
       } else {
         if (this.sharedChecked || this.swipeChecked) {
           this.olRemoveLayer(this.panoramaPoints, 'olMap1')
-          this.olRemoveLayer(this.rightPanoramaPoints, 'olMap2')
+          this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
         }
       }
     },
@@ -5364,7 +5366,7 @@ export default {
             for (const item of this.waterQualityPoints) {
               this.olSharedDrawPoint(item.coordinate, require('./img/waterQualityIcon1.png'), item.id, 'olMap1')
             }
-            for (const item of this.rightWaterQualityPoints) {
+            for (const item of this.waterQualityPointsRight) {
               this.olSharedDrawPoint(item.coordinate, require('./img/waterQualityIcon1.png'), item.id, 'olMap2')
             }
           }
@@ -5382,7 +5384,7 @@ export default {
         // 双球开关水质数据关闭
         if (this.sharedChecked || this.sharedOnce == 2) {
           this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
-          this.olRemoveLayer(this.rightWaterQualityPoints, 'olMap2')
+          this.olRemoveLayer(this.waterQualityPointsRight, 'olMap2')
         }
         // 卷帘开关水质数据关闭
         if (this.swipeChecked) {
