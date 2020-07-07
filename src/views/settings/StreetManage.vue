@@ -5,7 +5,7 @@
       <ul class="menu">
         <li>
           <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-            <div slot="content" style="width:120px;">
+            <div slot="content" style="width:120px;margin: 4px 8px;">
               <a-row>
                 <a-radio-group v-model="mapType" @change="onMapChange">
                   <a-col :span="24">
@@ -36,7 +36,7 @@
         </li>
         <li>
           <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-            <template slot="content" style="overflow-y: scroll;">
+            <div slot="content" style="margin: 0px 8px;">
               <a-row style="width:120px;margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                 <a-col :span="18">
                   <p style="margin:0;">河道</p>
@@ -58,7 +58,7 @@
                   <a-switch size="small" v-model="leftRight" @click="leftRightSwitch" />
                 </a-col>
               </a-row>
-            </template>
+            </div>
             <img src="../../assets/more.png" alt="更多" title="更多" />
           </a-popover>
         </li>

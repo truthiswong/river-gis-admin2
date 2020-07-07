@@ -112,13 +112,13 @@
           v-model="timeSetShowRight"
           @visibleChange="setTimeShow"
         >
-          <template slot="content">
+          <div slot="content">
             <a-range-picker
               @change="setTime"
               :defaultValue="[moment(startDate, dateFormat), moment(endDate, dateFormat)]"
               :format="dateFormat"
             />
-          </template>
+          </div>
           <a-button
             icon="setting"
             shape="circle"
@@ -422,7 +422,7 @@
       </li>
       <li>
         <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-          <div slot="content" style="width:120px;">
+          <div slot="content" style="width:120px;margin:4px 8px;">
             <a-row>
               <a-radio-group v-model="mapType" @change="onMapChange">
                 <a-col :span="24">
@@ -468,10 +468,10 @@
       </li>
       <li>
         <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-          <template slot="content" style="overflow-y: scroll;">
+          <div slot="content" style="width:160px;margin:0px 8px;">
             <a-row
               v-show="!(this.sharedChecked || this.swipeChecked)"
-              style="width:160px;margin: 5px 0px;"
+              style="margin: 5px 0px;"
               type="flex"
               justify="space-between"
               align="middle"
@@ -483,12 +483,7 @@
                 <a-switch size="small" v-model="historyData" @click="onHistoryData" />
               </a-col>
             </a-row>
-            <a-row
-              style="width:160px;margin: 5px 0px;"
-              type="flex"
-              justify="space-between"
-              align="middle"
-            >
+            <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
               <a-col :span="20">
                 <p style="margin:0;">河道显示</p>
               </a-col>
@@ -496,12 +491,7 @@
                 <a-switch size="small" v-model="riverShow" />
               </a-col>
             </a-row>
-            <a-row
-              style="width:160px;margin: 5px 0px;"
-              type="flex"
-              justify="space-between"
-              align="middle"
-            >
+            <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
               <a-col :span="20">
                 <p style="margin:0;">左右岸</p>
               </a-col>
@@ -509,12 +499,7 @@
                 <a-switch size="small" v-model="leftRight" @click="leftRightSwitch" />
               </a-col>
             </a-row>
-            <a-row
-              style="width:160px;margin: 5px 0px;"
-              type="flex"
-              justify="space-between"
-              align="middle"
-            >
+            <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
               <a-col :span="20">
                 <p style="margin:0;">街道显示</p>
               </a-col>
@@ -522,12 +507,7 @@
                 <a-switch size="small" v-model="streetShow" />
               </a-col>
             </a-row>
-            <a-row
-              style="width:160px;margin: 5px 0px;"
-              type="flex"
-              justify="space-between"
-              align="middle"
-            >
+            <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
               <a-col :span="20">
                 <p style="margin:0;">双球对比</p>
               </a-col>
@@ -536,13 +516,8 @@
               </a-col>
             </a-row>
             <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-              <template slot="content">
-                <a-row
-                  style="width:160px;margin: 5px 0px;"
-                  type="flex"
-                  justify="space-between"
-                  align="middle"
-                >
+              <div slot="content" style="width:160px;margin: 0px 8px;">
+                <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <p style="margin:0;">手机照片</p>
                   </a-col>
@@ -552,7 +527,7 @@
                 </a-row>
                 <a-row
                   v-show="!(this.sharedChecked || this.swipeChecked)"
-                  style="width:160px;margin: 5px 0px;"
+                  style="margin: 5px 0px;"
                   type="flex"
                   justify="space-between"
                   align="middle"
@@ -564,12 +539,7 @@
                     <a-switch size="small" v-model="UAVPhoto" />
                   </a-col>
                 </a-row>
-                <a-row
-                  style="width:160px;margin: 5px 0px;"
-                  type="flex"
-                  justify="space-between"
-                  align="middle"
-                >
+                <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <p style="margin:0;">360全景图</p>
                   </a-col>
@@ -577,17 +547,21 @@
                     <a-switch size="small" v-model="panorama" />
                   </a-col>
                 </a-row>
-              </template>
-              <p style="margin: 5px 0px;">影像管理</p>
+              </div>
+              <div style="margin: 5px 0px;">
+                <a-row>
+                  <a-col :span="20">
+                    <p style="margin:0;">影像管理</p>
+                  </a-col>
+                  <a-col :span="4" style="text-align: right;">
+                    <a-icon type="right" />
+                  </a-col>
+                </a-row>
+              </div>
             </a-popover>
             <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-              <template slot="content">
-                <a-row
-                  style="width:160px;margin: 5px 0px;"
-                  type="flex"
-                  justify="space-between"
-                  align="middle"
-                >
+              <div slot="content" style="width:160px;margin: 0px 8px;">
+                <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -599,12 +573,7 @@
                     <a-switch size="small" v-model="riverRisk" @click="onRiverRisk" />
                   </a-col>
                 </a-row>
-                <a-row
-                  style="width:160px;margin: 5px 0px;"
-                  type="flex"
-                  justify="space-between"
-                  align="middle"
-                >
+                <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -616,12 +585,7 @@
                     <a-switch size="small" v-model="riskMap" @click="onRiskMap" />
                   </a-col>
                 </a-row>
-                <a-row
-                  style="width:160px;margin: 5px 0px;"
-                  type="flex"
-                  justify="space-between"
-                  align="middle"
-                >
+                <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -633,12 +597,7 @@
                     <a-switch size="small" v-model="waterQuality" @click="onWaterQuality" />
                   </a-col>
                 </a-row>
-                <a-row
-                  style="width:160px;margin: 5px 0px;"
-                  type="flex"
-                  justify="space-between"
-                  align="middle"
-                >
+                <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -650,12 +609,7 @@
                     <a-switch size="small" v-model="waterFlotage" @click="onWaterFlotage" />
                   </a-col>
                 </a-row>
-                <a-row
-                  style="width:160px;margin: 5px 0px;"
-                  type="flex"
-                  justify="space-between"
-                  align="middle"
-                >
+                <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -667,12 +621,7 @@
                     <a-switch size="small" v-model="outlet" @click="onOutlet" />
                   </a-col>
                 </a-row>
-                <a-row
-                  style="width:160px;margin: 5px 0px;"
-                  type="flex"
-                  justify="space-between"
-                  align="middle"
-                >
+                <a-row style="margin: 5px 0px;" type="flex" justify="space-between" align="middle">
                   <a-col :span="20">
                     <img
                       style="width:20px;height:20px;margin-right:5px;"
@@ -684,15 +633,26 @@
                     <a-switch size="small" v-model="surveyPoint" @click="onSurveyPoint" />
                   </a-col>
                 </a-row>
-              </template>
-              <p style="margin: 5px 0px;">风险管理</p>
+              </div>
+              <div style="margin: 5px 0px;">
+                <a-row>
+                  <a-col :span="20">
+                    <p style="margin:0;">风险管理</p>
+                  </a-col>
+                  <a-col :span="4" style="text-align: right;">
+                    <span>
+                      <a-icon type="right" />
+                    </span>
+                  </a-col>
+                </a-row>
+              </div>
             </a-popover>
             <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-              <template slot="content">
+              <div slot="content" style="width:160px;margin: 0px 8px;">
                 <a-row
                   v-for="item in otherList"
                   :key="item.id"
-                  style="width:160px;margin: 5px 0px;"
+                  style="margin: 5px 0px;"
                   type="flex"
                   justify="space-between"
                   align="middle"
@@ -708,50 +668,21 @@
                     />
                   </a-col>
                 </a-row>
-                <!-- <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">水面率</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="waterRatio" @click="onWaterRatio" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">底泥</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="bottomMud" @click="onBottomMud" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">河道连通性</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="riverLink" @click="onRiverLink" />
-                        </a-col>
-                      </a-row>
-                    </a-list-item>
-                    <a-list-item>
-                      <a-row style="width:160px" type="flex" justify="space-between" align="middle">
-                        <a-col :span="18">
-                          <p style="margin:0;">水陆分布</p>
-                        </a-col>
-                        <a-col :span="6">
-                          <a-switch size="small" v-model="landAndWater" @click="onLandAndWater" />
-                        </a-col>
-                      </a-row>
-                </a-list-item>-->
-              </template>
-              <p style="margin: 5px 0px;">其他({{statisticsList.other}})</p>
+              </div>
+              <div style="margin: 5px 0px;">
+                <a-row>
+                  <a-col :span="20">
+                    <p style="margin:0;">其他({{statisticsList.other}})</p>
+                  </a-col>
+                  <a-col :span="4" style="text-align: right;">
+                    <span>
+                      <a-icon type="right" />
+                    </span>
+                  </a-col>
+                </a-row>
+              </div>
             </a-popover>
-          </template>
+          </div>
           <img src="../../assets/more.png" alt="更多" title="更多" @click="getMapPageData()" />
         </a-popover>
       </li>
@@ -1261,6 +1192,7 @@ export default {
       historyData: false, // 历史数据
       riverShow: false, // 河道显示
       streetShow: false, // 街道显示
+      imageManagement: false, // 影像管理
       phonePhoto: false, // 手机照片
       photoAlertShow: false, // 照片弹窗显隐
       imageEditorData: {
@@ -5508,6 +5440,7 @@ export default {
                 }
                 item.pointsData = points
                 this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
+                this.olSharedDrawPoint(item.line[0], item.drawType.icon, item.id, 'olMap1')
               }
             } else {
               markerTool = new T.Marker(item.line[0], {
@@ -5561,6 +5494,7 @@ export default {
                   item.shapeColor,
                   item.shapePellucidity
                 )
+                this.olSharedDrawPoint(item.polygon[0], item.drawType.icon, item.id, 'olMap1')
               }
             }
           }
@@ -5584,7 +5518,8 @@ export default {
                 points.push([point.lng, point.lat])
               }
               item.pointsData = points
-              this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
+              this.olSharedDrawLine(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity)
+              this.olSharedDrawPoint(item.line[0], item.drawType.icon, item.id, 'olMap2')
             }
             if (item.locationType.code == 'polygon') {
               let points = []
@@ -5602,6 +5537,7 @@ export default {
                 item.shapeColor,
                 item.shapePellucidity
               )
+              this.olSharedDrawPoint(item.polygon[0], item.drawType.icon, item.id, 'olMap2')
             }
           }
           if (point.length > 0) {
@@ -5624,7 +5560,6 @@ export default {
       } else {
         this.removeOverLays(this.waterFlotagePoints)
         // 双球开关水面漂浮物关闭
-        console.log(this.waterFlotagePoints)
         if (this.sharedChecked || this.sharedOnce == 2) {
           this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
           this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
@@ -5678,6 +5613,7 @@ export default {
                 }
                 item.pointsData = points
                 this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
+                this.olSharedDrawPoint(item.line[0], item.drawType.icon, item.id, 'olMap1')
               }
             } else {
               markerTool = new T.Marker(item.line[0], {
@@ -5731,6 +5667,7 @@ export default {
                   item.shapeColor,
                   item.shapePellucidity
                 )
+                this.olSharedDrawPoint(item.polygon[0], item.drawType.icon, item.id, 'olMap1')
               }
             } else {
               markerTool = new T.Marker(item.polygon[0], {
@@ -5762,6 +5699,7 @@ export default {
               }
               item.pointsData = points
               this.olSharedDrawLine(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity)
+              this.olSharedDrawPoint(item.line[0], item.drawType.icon, item.id, 'olMap2')
             }
             if (item.locationType.code == 'polygon') {
               let points = []
@@ -5779,6 +5717,7 @@ export default {
                 item.shapeColor,
                 item.shapePellucidity
               )
+              this.olSharedDrawPoint(item.polygon[0], item.drawType.icon, item.id, 'olMap2')
             }
           }
           for (const item of point1) {
@@ -6021,6 +5960,7 @@ export default {
                   }
                   item.pointsData = points
                   this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
+                  this.olSharedDrawPoint(item.line[0], item.drawType.icon, item.id, 'olMap1')
                 }
               } else {
                 markerTool = new T.Marker(item.line[0], {
@@ -6074,6 +6014,7 @@ export default {
                     item.shapeColor,
                     item.shapePellucidity
                   )
+                  this.olSharedDrawPoint(item.polygon[0], item.drawType.icon, item.id, 'olMap1')
                 }
               } else {
                 markerTool = new T.Marker(item.polygon[0], {
@@ -6105,6 +6046,7 @@ export default {
                 }
                 item.pointsData = points
                 this.olSharedDrawLine(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity)
+                this.olSharedDrawPoint(item.line[0], item.drawType.icon, item.id, 'olMap2')
               }
               if (item.locationType.code == 'polygon') {
                 let points = []
@@ -6122,6 +6064,7 @@ export default {
                   item.shapeColor,
                   item.shapePellucidity
                 )
+                this.olSharedDrawPoint(item.polygon[0], item.drawType.icon, item.id, 'olMap2')
               }
             }
           }
@@ -6227,6 +6170,7 @@ export default {
                   }
                   item.pointsData = points
                   this.olSharedDrawLine(item.pointsData, item.id, 'olMap1', item.frameColor, item.framePellucidity)
+                  this.olSharedDrawPoint(item.line[0], item.drawType.icon, item.id, 'olMap1')
                 }
               } else {
                 markerTool = new T.Marker(item.line[0], {
@@ -6293,6 +6237,7 @@ export default {
                     item.shapeColor,
                     item.shapePellucidity
                   )
+                  this.olSharedDrawPoint(item.polygon[0], item.drawType.icon, item.id, 'olMap1')
                 }
               } else {
                 markerTool = new T.Marker(item.polygon[0], {
@@ -6331,6 +6276,7 @@ export default {
                 }
                 item.pointsData = points
                 this.olSharedDrawLine(item.pointsData, item.id, 'olMap2', item.frameColor, item.framePellucidity)
+                this.olSharedDrawPoint(item.line[0], item.drawType.icon, item.id, 'olMap2')
               }
               if (item.locationType.code == 'polygon') {
                 let points = []
@@ -6348,9 +6294,12 @@ export default {
                   item.shapeColor,
                   item.shapePellucidity
                 )
+                this.olSharedDrawPoint(item.polygon[0], item.drawType.icon, item.id, 'olMap2')
               }
             }
           }
+          console.log(point)
+          console.log(point2)
           for (const item of point) {
             this.olSharedDrawPoint(item.latlng, item.drawType.icon, item.id, 'olMap1')
           }
@@ -6439,11 +6388,13 @@ export default {
       let iconStyle = new Style({
         image: new Icon({
           anchor: [0.5, 40],
-          anchorOrigin: 'bottom-right',
-          anchorXUnits: 'pixels',
+          anchorOrigin: 'top-left',
+          anchorXUnits: 'fraction',
           anchorYUnits: 'pixels',
+          offset: [0, 0],
+          displacement: [0, 0],
           scale: 1,
-          size: [40, 40],
+          size: [41, 40],
           src: imgUrl
         })
       })
@@ -6549,11 +6500,13 @@ export default {
       })
       let iconStyle = new Style({
         image: new Icon({
-          anchor: [0.5, 40],
-          anchorOrigin: 'bottom-right',
-          anchorXUnits: 'pixels',
-          anchorYUnits: 'pixels',
-          scale: 1,
+          anchor: [-20, -40],
+          // anchorOrigin: 'top-left',
+          // anchorXUnits: 'pixels',
+          // anchorYUnits: 'pixels',
+          offset: [20, 20],
+          displacement: [20, 20],
+          scale: 0.2,
           size: [40, 40],
           src: imgUrl
         })
@@ -6572,10 +6525,12 @@ export default {
     // 双球卷帘移除图层
     olRemoveLayer(data, map) {
       if (map == 'olMap1') {
-        for (const item of data) {
-          for (const layer of this.olMap1.getLayers().array_) {
+        for (const layer of this.olMap1.getLayers().array_) {
+          for (const item of data) {
             if (layer.values_.id == item.id) {
-              this.olMap1.removeLayer(layer)
+              this.$nextTick(() => {
+                this.olMap1.removeLayer(layer)
+              })
             }
           }
         }
@@ -6583,7 +6538,9 @@ export default {
         for (const item of data) {
           for (const layer of this.olMap2.getLayers().array_) {
             if (layer.values_.id == item.id) {
-              this.olMap2.removeLayer(layer)
+              this.$nextTick(() => {
+                this.olMap2.removeLayer(layer)
+              })
             }
           }
         }
@@ -7075,6 +7032,23 @@ export default {
     -webkit-transform: rotate(90deg);
     /* Safari 和 Chrome */
   }
+}
+.menu_right_icon {
+  font-size: 12px;
+  transition: 0.5s;
+  -moz-transition: 0.5s;
+  /* Firefox 4 */
+  -webkit-transition: 0.5s;
+  /* Safari and Chrome */
+}
+.menu_right_icon_active {
+  transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  /* IE 9 */
+  -moz-transform: rotate(90deg);
+  /* Firefox */
+  -webkit-transform: rotate(90deg);
+  /* Safari 和 Chrome */
 }
 
 .weather_alert {

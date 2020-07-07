@@ -159,7 +159,7 @@
               </li>
               <li>
                 <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-                  <div slot="content" style="width:120px;">
+                  <div slot="content" style="width:120px;margin: 4px 8px;">
                     <a-row>
                       <a-radio-group v-model="mapType" @change="onMapChange">
                         <a-col :span="24">
@@ -200,9 +200,9 @@
               </li>
               <li class="popMore">
                 <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-                  <template slot="content" style="overflow-y: scroll;">
+                  <div slot="content" style="width:100px;margin: 0px 8px;">
                     <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-                      <div slot="content" style="min-width: 180px;">
+                      <div slot="content" style="width:160px;margin: 0px 8px;">
                         <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                           <a-col :span="20">
                             <img
@@ -277,15 +277,22 @@
                         </a-row>
                       </div>
                       <div style="margin: 5px 0px;">
-                        <span>风险管理</span>
+                        <a-row>
+                          <a-col :span="20">
+                            <span>风险管理</span>
+                          </a-col>
+                          <a-col :span="4" style="text-align: right;">
+                            <a-icon type="right" />
+                          </a-col>
+                        </a-row>
                       </div>
                     </a-popover>
                     <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-                      <template slot="content">
+                      <div slot="content" style="width:160px;margin: 0px 8px;">
                         <a-row
                           v-for="item in otherList"
                           :key="item.id"
-                          style="width:150px;margin: 5px 0px;"
+                          style="margin: 5px 0px;"
                           type="flex"
                           justify="space-between"
                           align="middle"
@@ -304,12 +311,19 @@
                             />
                           </a-col>
                         </a-row>
-                      </template>
+                      </div>
                       <div style="margin: 5px 0px;">
-                        <span>其他({{statisticsList.other}})</span>
+                        <a-row>
+                          <a-col :span="20">
+                            <span>其他({{statisticsList.other}})</span>
+                          </a-col>
+                          <a-col :span="4" style="text-align: right;">
+                            <a-icon type="right" />
+                          </a-col>
+                        </a-row>
                       </div>
                     </a-popover>
-                  </template>
+                  </div>
                   <img src="../../assets/more.png" alt="更多" title="更多" />
                 </a-popover>
               </li>

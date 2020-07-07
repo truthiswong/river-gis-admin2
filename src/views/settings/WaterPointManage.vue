@@ -6,7 +6,7 @@
       <ul class="menu">
         <li>
           <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-            <div slot="content" style="width:120px;">
+            <div slot="content" style="width:120px;margin: 4px 8px;">
               <a-row>
                 <a-radio-group v-model="mapType" @change="onMapChange">
                   <a-col :span="24">
@@ -37,7 +37,7 @@
         </li>
         <li>
           <a-popover placement="leftBottom" arrowPointAtCenter trigger="click">
-            <div slot="content" style="width:120px;">
+            <div slot="content" style="width:120px;margin: 0 8px;">
               <a-row type="flex" justify="space-between" align="middle" style="margin: 5px 0px;">
                 <a-col :span="18">
                   <p style="margin:0;">街道</p>
