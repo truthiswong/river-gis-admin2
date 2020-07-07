@@ -49,10 +49,12 @@
           </a-tooltip>
         </li>
       </ul>
-      <div class="time_set">
+      <div class="time_set" id="time_popover">
         <a-popover
           placement="rightBottom"
           trigger="click"
+          overlayClassName="popover_padding"
+          :getPopupContainer="triggerNode => {return triggerNode.parentNode || document.body}"
           v-model="timeSetShow"
           @visibleChange="setTimeShow"
         >
@@ -105,10 +107,11 @@
           </a-tooltip>
         </li>
       </ul>
-      <div class="time_set">
+      <div class="time_set" id="time_popover_right"> 
         <a-popover
           placement="rightBottom"
           trigger="click"
+          overlayClassName="popover_padding"
           v-model="timeSetShowRight"
           @visibleChange="setTimeShow"
         >
