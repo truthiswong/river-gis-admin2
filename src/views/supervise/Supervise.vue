@@ -5492,15 +5492,15 @@ export default {
                   <span style='width:150px'>水温: ${item.temperature}℃</span>
                 </div>
                 <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
-                  <span style='width:180px;'>流速: ${item.velocity}m/s</span>
-                  <span style='width:150px;'>水质等级: ${item.waterLevel.code}(${item.waterLevel.name})</span>
-                </div>
-                <div style='display: flex;justify-content:space-around;margin: 8px 0;'>
-                  <span style='width:180px;'>是否劣V: ${item.badV == 1?'是':'否'}</span>
-                  <span style='width:150px;'>是否黑臭: ${item.black == 1?'是':'否'}</span>
                 </div>
                 <div style='margin: 8px 0;'>
-                  <span style='width:300px;'>超标因子: ${item.overproofFactor}</span>
+                  <span style='width:300px;'>水质等级: ${item.waterLevel.code}</span>
+                </div>
+                <div style='margin: 8px 0;'>
+                  <span style='width:300px;'>黑臭评价: ${item.waterLevel.code == 'VIII' || item.waterLevel.code == 'VII' ? item.waterLevel.name : '无'}</span>
+                </div>
+                <div style='margin: 8px 0;'>
+                  <span style='width:300px;'>备注: ${item.overproofFactor}超标</span>
                 </div>
               </div>
             </div>
