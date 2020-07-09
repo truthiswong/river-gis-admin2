@@ -1846,7 +1846,6 @@ export default {
                 })
             }
             this.riverMontion = arr
-
             if (this.noTitleKey == 'nowPlan') {
               this.planDayDraw()
             } else {
@@ -1916,8 +1915,8 @@ export default {
     //绘制目标调查点
     renderingTarget(task) {
       let icon = new T.Icon({
-        iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
-        iconSize: new T.Point(19, 27),
+        iconUrl: require('../../assets/tool_point_icon.png'),
+        iconSize: new T.Point(40, 40),
         iconAnchor: new T.Point(10, 25)
       })
       let marker = new T.Marker(new T.LngLat(task.latlng.lng, task.latlng.lat), {
@@ -1952,31 +1951,36 @@ export default {
       // this.pointTarget(data.taskPage)
     },
     pointTarget(taskPage) {
-      for (const item of taskPage) {
-        console.log(item)
-
-        if (item.type.code == 'dot') {
-          let markerTool = new T.Marker(item.region[0], {
-            title: item.name,
-            id: item.id
-          })
-          this.map.addOverLay(markerTool)
-        } else if (item.type.code == 'plan') {
-          let markerTool = new T.Marker(item.region[0], {
-            title: item.name,
-            id: item.id
-          })
-          this.map.addOverLay(markerTool)
-        } else {
-          let line = new T.Polyline(item.region, {
-            color: 'blue', //线颜色
-            weight: 3, //线宽
-            opacity: 0.5, //透明度
-            id: item.id,
-            name: item.name
-          })
+      for (const key of taskPage) {
+        if (key.locationType.code == 'point') {
+          if (key.pic) {
+            let icon = new T.Icon({
+              iconUrl: key.pic,
+              iconSize: new T.Point(41, 40),
+              iconAnchor: new T.Point(21, 40)
+            })
+            var markerTool = new T.Marker(key.region[0], {
+              icon: icon
+            })
+            this.map.addOverLay(markerTool)
+          } else {
+            var markerTool = new T.Marker(key.region[0], {})
+            this.map.addOverLay(markerTool)
+          }
+        } else if (key.locationType.code == 'line') {
+          let line = new T.Polyline(key.region, {})
           //向地图上添加线
           this.map.addOverLay(line)
+        } else {
+          let polygon = new T.Polygon(key.region, {
+            color: 'blue', //线颜色
+            weight: 2, //线宽
+            opacity: 0.5, //透明度
+            fillColor: '#FFFFFF', //填充颜色
+            fillOpacity: 0.5 // 填充透明度
+          })
+          //向地图上添加面
+          this.map.addOverLay(polygon, {})
         }
         // markerTool.addEventListener('click', this.taskPointClick)
       }
@@ -1998,8 +2002,8 @@ export default {
     },
     showSurverPoint1(arr) {
       let icon = new T.Icon({
-        iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
-        iconSize: new T.Point(19, 27),
+        iconUrl: require('../../assets/tool_point_icon.png'),
+        iconSize: new T.Point(40, 40),
         iconAnchor: new T.Point(10, 25)
       })
       //向地图上添加中心标注
@@ -2021,8 +2025,8 @@ export default {
     },
     showSurverPoint(arr) {
       let icon = new T.Icon({
-        iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
-        iconSize: new T.Point(19, 27),
+        iconUrl: require('../../assets/tool_point_icon.png'),
+        iconSize: new T.Point(40, 40),
         iconAnchor: new T.Point(10, 25)
       })
       //向地图上添加中心标注
@@ -2376,6 +2380,11 @@ export default {
           }
           this.spinning = false
           this.planListPage = arr
+          if (this.noTitleKey == 'nowPlan') {
+            this.planDayDraw()
+          } else {
+            // this.judgeDate()
+          }
           if (this.planListPage.length == 0 && hidingJudgment == true) {
             this.hidingJudgment = true
           } else {
@@ -2418,8 +2427,8 @@ export default {
     //当日计划绘制目标调查点
     planDayDrawTarget(task) {
       let icon = new T.Icon({
-        iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
-        iconSize: new T.Point(19, 27),
+        iconUrl: require('../../assets/tool_point_icon.png'),
+        iconSize: new T.Point(40, 40),
         iconAnchor: new T.Point(10, 25)
       })
       let marker = new T.Marker(new T.LngLat(task.latlng.lng, task.latlng.lat), {
@@ -2470,7 +2479,13 @@ export default {
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
           } else {
+            let icon = new T.Icon({
+              iconUrl: require('../../assets/tool_point_icon.png'),
+              iconSize: new T.Point(40, 40),
+              iconAnchor: new T.Point(21, 40)
+            })
             let markerTool = new T.Marker(item.latlng, {
+              icon: icon,
               title: item.name,
               id: item.id
             })
@@ -2517,7 +2532,13 @@ export default {
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
           } else {
+            let icon = new T.Icon({
+              iconUrl: require('../../assets/tool_point_icon.png'),
+              iconSize: new T.Point(40, 40),
+              iconAnchor: new T.Point(21, 40)
+            })
             let markerTool = new T.Marker(item.latlng, {
+              icon: icon,
               title: item.name,
               id: item.id
             })
@@ -2564,7 +2585,13 @@ export default {
             this.map.addOverLay(markerTool)
             this.showPosition(markerTool, item)
           } else {
+            let icon = new T.Icon({
+              iconUrl: require('../../assets/tool_point_icon.png'),
+              iconSize: new T.Point(40, 40),
+              iconAnchor: new T.Point(21, 40)
+            })
             let markerTool = new T.Marker(item.latlng, {
+              icon: icon,
               title: item.name,
               id: item.id
             })
@@ -3542,8 +3569,8 @@ export default {
         this.markerTool.close()
       }
       let icon = new T.Icon({
-        iconUrl: 'http://api.tianditu.gov.cn/img/map/markerA.png',
-        iconSize: new T.Point(19, 27),
+        iconUrl: require('../../assets/tool_point_icon.png'),
+        iconSize: new T.Point(40, 40),
         iconAnchor: new T.Point(10, 25)
       })
       this.markerTool = new T.MarkTool(this.map, {
