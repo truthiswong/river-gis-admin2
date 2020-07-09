@@ -106,7 +106,7 @@
           </a-tooltip>
         </li>
       </ul>
-      <div class="time_set" id="time_popover_right"> 
+      <div class="time_set" id="time_popover_right">
         <a-popover
           placement="rightBottom"
           trigger="click"
@@ -157,7 +157,7 @@
     </div>
     <div
       class="accordion_alert"
-      v-show="phonePhoto || riskMap || waterQuality || riverRisk || outlet"
+      v-show="phonePhoto || riskMap || riskMapCopy || waterQuality || riverRisk || outlet"
     >
       <a-collapse accordion class="custom_collapse" v-model="accordionAlertKey">
         <a-collapse-panel
@@ -347,6 +347,25 @@
                 @click="riskCradDelete"
                 block
               >删除</a-button>
+            </a-row>
+          </a-card>
+          <a-card size="small" class="custom_card" style="width: 198px">
+            <a-row style="width:100%;" type="flex" justify="space-between">
+              <a-col :span="10">
+                <a-button @click="onRiskMapCopyStart" block>复制</a-button>
+              </a-col>
+              <a-col :span="10">
+                <a-popconfirm
+                  :title="`确认将 ${riskMapCopyStartDate} 的风险地图复制到 ${riskMapCopyEndDate} 吗？`"
+                  :visible="riskMapCopyPopconfirm"
+                  ok-text="确定"
+                  cancel-text="取消"
+                  @confirm="onRiskMapCopyConfirm"
+                  @cancel="onRiskMapCopyCancel"
+                >
+                  <a-button @click="onRiskMapCopyEnd" block>粘贴</a-button>
+                </a-popconfirm>
+              </a-col>
             </a-row>
           </a-card>
           <div class="color_wrap" v-show="colorAlertShow">
@@ -571,11 +590,15 @@
                     <p style="margin:0;">360全景图</p>
                   </a-col>
                   <a-col :span="4" style="text-align: right;">
-                    <a-switch size="small" v-model="panorama" />
+                    <a-switch size="small" v-model="panorama" @click="onPanorama" />
                   </a-col>
                 </a-row>
               </div>
-              <div style="margin: 5px 0px;position: relative;" class="custom_popover_title" @click="imageManage = !imageManage">
+              <div
+                style="margin: 5px 0px;position: relative;"
+                class="custom_popover_title"
+                @click="imageManage = !imageManage"
+              >
                 <a-row>
                   <a-col :span="20">
                     <p style="margin:0;">影像管理</p>
@@ -584,7 +607,9 @@
                     <!-- <a-icon class="menu_right_icon" type="right" :class="imageManage ? 'menu_right_icon_active':''"/> -->
                     <!-- <a-icon :type="imageManage?'down':'right'" /> -->
                     <!-- <a-icon v-show="imageManage" type="down" /> -->
-                    <span><a-icon type="right" /></span>
+                    <span>
+                      <a-icon type="right" />
+                    </span>
                   </a-col>
                 </a-row>
               </div>
@@ -957,6 +982,7 @@ import {
   mapdrawSave,
   mapdrawDelete,
   mapdrawPage,
+  mapdrawPageCopy,
   daydataList,
   weatherList,
   phoneLatlngList,
@@ -1080,7 +1106,7 @@ export default {
       uavPhotoList: [], //无人机照片
       UAVPhotosCoordinate: '', //无人机照片点击坐标
       drawName: '',
-      accordionAlertKey: ['phonePhoto'], // 手风琴
+      accordionAlertKey: [], //手风琴
       //水质数据上传参数
       waterQualityData: {
         projectId: this.$store.state.id
@@ -1324,7 +1350,6 @@ export default {
           }
         }
       ],
-
       riskMap: false, // 风险地图
       riskMapRiver: [
         {
@@ -1335,22 +1360,13 @@ export default {
             {
               lat: 31.21882,
               lng: 121.50364
-            },
-            {
-              lat: 31.21265,
-              lng: 121.50227
-            },
-            {
-              lat: 31.20583,
-              lng: 121.49703
-            },
-            {
-              lat: 31.19915,
-              lng: 121.49197
             }
           ]
         }
       ],
+      riskMapCopyStartDate: '', //要复制的时间
+      riskMapCopyEndDate: '', //复制到的时间
+      riskMapCopyPopconfirm: false, //确认框
       waterQuality: false, // 水质监测点
       waterQualityPoints: [
         /*{
@@ -1564,7 +1580,9 @@ export default {
         }
       }
     },
-    accordionAlertKey(key) {},
+    accordionAlertKey(key) {
+      console.log(key)
+    },
     // 历史数据
     historyData() {
       // this.watchAllSwitch()
@@ -1583,10 +1601,6 @@ export default {
     },
     // 无人机照片
     UAVPhoto() {
-      this.watchAllSwitch()
-    },
-    // 360全景图
-    panorama() {
       this.watchAllSwitch()
     }
   },
@@ -3744,7 +3758,7 @@ export default {
     // 时间轴切换操作
     timeLineChange() {
       // 双球开关 卷帘开关
-      if (this.sharedChecked || this.swipeChecked) {
+      if (this.sharedChecked || this.sharedOnce == 2) {
         // 河道显示
         if (this.riverShow) {
         }
@@ -3826,7 +3840,7 @@ export default {
     // 右侧时间轴切换操作
     rightTimeLineChange() {
       // 双球开关 卷帘开关
-      if (this.sharedChecked || this.swipeChecked) {
+      if (this.sharedChecked || this.sharedOnce == 2) {
       }
       // 河道显示
       if (this.riverShow) {
@@ -3880,7 +3894,7 @@ export default {
             }
           }
         }
-        // this.olRemoveLayer(data1, 'olMap1')
+        this.olRemoveLayer(data1, 'olMap1')
         this.olRemoveLayer(data2, 'olMap2')
       }
       // 专项调查点
@@ -4311,27 +4325,32 @@ export default {
     },
     clearOlLayer() {
       // 360全景图
-      this.olRemoveLayer(this.panoramaPoints, 'olMap1')
-      this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
-      if (!this.panorama) {}
+      if (this.panorama) {
+        this.olRemoveLayer(this.panoramaPoints, 'olMap1')
+        this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
+      }
       // 风险地图
       this.olRemoveLayer(this.riskPolygonData, 'olMap1')
       this.olRemoveLayer(this.riskPolygonDataRight, 'olMap2')
-      if (!this.riskMap) {}
+      if (!this.riskMap) {
+      }
       // 水质数据
       this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
       this.olRemoveLayer(this.waterQualityPointsRight, 'olMap2')
-      if (!this.waterQuality) {}
+      if (!this.waterQuality) {
+      }
       // 水面漂浮物
       this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
       this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
-      if (!this.waterFlotage) {}
+      if (!this.waterFlotage) {
+      }
       // 排口
       this.olRemoveLayer(this.outletPoints, 'olMap1')
       this.olRemoveLayer(this.outletPointsRight, 'olMap2')
-      if (!this.outlet) {}
+      if (!this.outlet) {
+      }
       // 河岸风险源
-      if (!this.riverRisk) {
+      if (this.riverRisk) {
         let data1 = []
         let data2 = []
         for (const listItem of this.riskSourceList) {
@@ -4354,16 +4373,19 @@ export default {
       // 专项调查点
       this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
       this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
-      if (!this.surveyPoint) {}
+      if (!this.surveyPoint) {
+      }
       // 其他
       for (const item of this.otherList) {
-        if (!item.clicked) {
+        if (item.clicked) {
           this.olRemoveLayer(this.otherPoints, 'olMap1')
           this.olRemoveLayer(this.otherPointsRight, 'olMap2')
         }
       }
       // 河道街道左右岸等
       this.watchAllSwitch()
+      // 360全景图
+      this.onPanorama()
       // 风险地图
       this.onRiskMap()
       // 水质数据
@@ -4663,7 +4685,7 @@ export default {
     // 河道显示
     onRiverShow() {
       this.removeOverLays(this.riverShowList)
-      if (this.sharedChecked) {
+      if (this.sharedChecked || this.sharedOnce == 2) {
         this.olRemoveLayer(this.riverShowList, 'olMap1')
         this.olRemoveLayer(this.riverShowList, 'olMap2')
         for (const item of this.riverShowList) {
@@ -4711,7 +4733,7 @@ export default {
           polygon.addEventListener('mouseout', this.polygonMouseout)
         }
         // 双球开关
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           for (const item of this.riverShowList) {
             let points = []
             for (const point of item.lineData) {
@@ -4736,7 +4758,7 @@ export default {
     // 左右岸
     leftRightSwitch() {
       // 双球卷帘移除图层
-      if (this.sharedChecked) {
+      if (this.sharedChecked || this.sharedOnce == 2) {
         for (const item of this.riverShowList) {
           for (const layer of this.olMap1.getLayers().array_) {
             if (layer.values_.id == item.id + '1') {
@@ -4790,7 +4812,7 @@ export default {
           }
         }
         // 双球开关
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           // 左岸
           for (const item of this.riverShowList) {
             let points = []
@@ -4863,7 +4885,7 @@ export default {
     // 街道显示
     onStreetShow() {
       this.removeOverLays(this.streetShowList)
-      if (this.sharedChecked) {
+      if (this.sharedChecked || this.sharedOnce == 2) {
         this.olRemoveLayer(this.streetShowList, 'olMap1')
         this.olRemoveLayer(this.streetShowList, 'olMap2')
       }
@@ -4886,7 +4908,7 @@ export default {
           polygon.addEventListener('mouseout', this.polygonStreetMouseout)
         }
         // 双球开关
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           for (const item of this.streetShowList) {
             let points = []
             for (const point of item.lineData) {
@@ -4901,7 +4923,7 @@ export default {
           }
         }
       } else {
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           this.olRemoveLayer(this.streetShowList, 'olMap1')
           this.olRemoveLayer(this.streetShowList, 'olMap2')
         }
@@ -5010,6 +5032,7 @@ export default {
         }
         // 双球开关
         if (this.sharedChecked || this.sharedOnce == 2) {
+          console.log(this.panoramaPoints)
           for (const item of this.panoramaPoints) {
             this.olSharedDrawPoint(item.latlng, require('./img/360.png'), item.id, 'olMap1')
           }
@@ -5018,7 +5041,7 @@ export default {
           }
         }
       } else {
-        if (this.sharedChecked || this.swipeChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           this.olRemoveLayer(this.panoramaPoints, 'olMap1')
           this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
         }
@@ -5045,6 +5068,7 @@ export default {
     onRiskMap() {
       this.removeOverLays(this.riskPolygonData)
       if (this.riskMap) {
+        this.accordionAlertKey = ['riskMap']
         // 风险地图绘制的面
         if (this.riskPolygonData.length != 0) {
           for (const item of this.riskPolygonData) {
@@ -5060,7 +5084,7 @@ export default {
             )
           }
           // 双球开关
-          if (this.sharedChecked) {
+          if (this.sharedChecked || this.sharedOnce == 2) {
             for (const item of this.riskPolygonData) {
               let points = []
               for (const point of item.lineData) {
@@ -5331,10 +5355,54 @@ export default {
         this.fullColor = index.hex
       }
     }, 300),
+    // 风险地图复制
+    onRiskMapCopyStart() {
+      this.riskMapCopyStartDate = this.defaultTime
+    },
+    onRiskMapCopyEnd() {
+      if (!this.riskMapCopyStartDate) {
+        this.$message.warning('请选择将要复制的日期')
+      } else {
+        this.riskMapCopyPopconfirm = true
+        this.riskMapCopyEndDate = this.defaultTime
+      }
+    },
+    onRiskMapCopyConfirm() {
+      this.riskMapCopyPopconfirm = false
+      if (!this.riskMapCopyStartDate) {
+        this.$message.warning('请选择将要复制的日期')
+      } else if (!this.riskMapCopyEndDate) {
+        this.$message.warning('请选择将要粘贴的日期')
+      } else if (this.riskMapCopyStartDate == this.riskMapCopyEndDate) {
+        this.$message.warning('请选择不要粘贴到当前日期')
+      } else {
+        var data = {
+          projectId: this.$store.state.id,
+          sourceDate: this.riskMapCopyStartDate,
+          targetDate: this.riskMapCopyEndDate,
+          type: 'riskMap'
+        }
+        mapdrawPageCopy(data)
+          .then(res => {
+            if (res.success) {
+              this.$message.success('复制成功')
+              this.timeLineChange()
+            }
+          })
+          .catch(err => {
+            this.$message.error(err.response.data.message)
+            console.log(err)
+          })
+      }
+    },
+    onRiskMapCopyCancel() {
+      this.riskMapCopyPopconfirm = false
+    },
     // 水质数据
     onWaterQuality() {
       this.removeOverLays(this.waterQualityPoints)
       if (this.waterQuality) {
+        this.accordionAlertKey = ['waterQuality']
         if (this.waterQualityPoints.length > 0) {
           for (const item of this.waterQualityPoints) {
             var icon = new T.Icon({
@@ -5362,7 +5430,7 @@ export default {
             }
           }
           // 双球开关
-          if (this.sharedChecked) {
+          if (this.sharedChecked || this.sharedOnce == 2) {
             for (const item of this.waterQualityPoints) {
               this.olSharedDrawPoint(item.coordinate, require('./img/waterQualityIcon1.png'), item.id, 'olMap1')
             }
@@ -5499,7 +5567,9 @@ export default {
                   <span style='width:300px;'>水质等级: ${item.waterLevel.code}</span>
                 </div>
                 <div style='margin: 8px 0;'>
-                  <span style='width:300px;'>黑臭评价: ${item.waterLevel.code == 'VIII' || item.waterLevel.code == 'VII' ? item.waterLevel.name : '无'}</span>
+                  <span style='width:300px;'>黑臭评价: ${
+                    item.waterLevel.code == 'VIII' || item.waterLevel.code == 'VII' ? item.waterLevel.name : '无'
+                  }</span>
                 </div>
                 <div style='margin: 8px 0;'>
                   <span style='width:300px;'>备注: ${item.overproofFactor}超标</span>
@@ -5545,7 +5615,7 @@ export default {
               })
               markerTool.addEventListener('click', this.floatageClick)
               this.map.addOverLay(markerTool)
-              if (this.sharedChecked) {
+              if (this.sharedChecked || this.sharedOnce == 2) {
                 let points = []
                 for (const point of item.line) {
                   points.push([point.lng, point.lat])
@@ -5590,7 +5660,7 @@ export default {
               })
               markerTool.addEventListener('click', this.floatageClick)
               this.map.addOverLay(markerTool)
-              if (this.sharedChecked) {
+              if (this.sharedChecked || this.sharedOnce == 2) {
                 let points = []
                 for (const point of item.polygon) {
                   points.push([point.lng, point.lat])
@@ -5615,7 +5685,7 @@ export default {
           this.spotDraw(point)
         }
         // 双球开关
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           for (let item of this.waterFlotagePointsRight) {
             if (item.locationType.code == 'point') {
               item.latlng = {
@@ -5691,6 +5761,7 @@ export default {
     // 排口
     onOutlet() {
       if (this.outlet) {
+        this.accordionAlertKey = ['outlet']
         let point1 = []
         let point2 = []
         for (const item of this.outletPoints) {
@@ -5718,7 +5789,7 @@ export default {
               })
               markerTool.addEventListener('click', this.sourceRiskClick)
               this.map.addOverLay(markerTool)
-              if (this.sharedChecked) {
+              if (this.sharedChecked || this.sharedOnce == 2) {
                 let points = []
                 for (const point of item.line) {
                   points.push([point.lng, point.lat])
@@ -5763,7 +5834,7 @@ export default {
               })
               markerTool.addEventListener('click', this.sourceRiskClick)
               this.map.addOverLay(markerTool)
-              if (this.sharedChecked) {
+              if (this.sharedChecked || this.sharedOnce == 2) {
                 let points = []
                 for (const point of item.polygon) {
                   points.push([point.lng, point.lat])
@@ -5795,7 +5866,7 @@ export default {
           this.spotDraw(point1)
         }
         // 双球开关
-        if (this.sharedChecked || this.swipeChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           for (const item of this.outletPointsRight) {
             if (item.locationType.code == 'point') {
               item.latlng = {
@@ -5848,7 +5919,7 @@ export default {
       } else {
         this.removeOverLays(this.outletPoints)
         // 双球开关排口关闭
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           this.olRemoveLayer(this.outletPoints, 'olMap1')
           this.olRemoveLayer(this.outletPointsRight, 'olMap2')
         }
@@ -5994,24 +6065,20 @@ export default {
     },
     // 河岸风险源
     onRiverRisk() {
+      this.removeOverLays(this.riverRiskPoints)
       if (this.riverRisk) {
+        this.accordionAlertKey = ['riverRisk']
         for (const item of this.riskSourceList) {
           if (item.clicked) {
             this.onDrawType(item.id, true)
           }
         }
       } else {
-        // this.riskSourceList.forEach(v => {
-        //   v.clicked = false
-        // })
-        this.removeOverLays(this.riverRiskPoints)
         // 双球开关
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           // 双球开关风险源关闭
-          if (this.sharedChecked) {
-            this.olRemoveLayer(this.riverRiskPoints, 'olMap1')
-            this.olRemoveLayer(this.riverRiskPointsRight, 'olMap2')
-          }
+          this.olRemoveLayer(this.riverRiskPoints, 'olMap1')
+          this.olRemoveLayer(this.riverRiskPointsRight, 'olMap2')
         }
       }
     },
@@ -6021,7 +6088,7 @@ export default {
       let data1 = []
       let data2 = []
       // 双球开关风险源关闭
-      if (this.sharedChecked) {
+      if (this.sharedChecked || this.sharedOnce == 2) {
         for (const item of this.riverRiskPoints) {
           if (item.drawType.id == id) {
             data1.push(item)
@@ -6065,7 +6132,7 @@ export default {
                 })
                 markerTool.addEventListener('click', this.sourceRiskClick)
                 this.map.addOverLay(markerTool)
-                if (this.sharedChecked) {
+                if (this.sharedChecked || this.sharedOnce == 2) {
                   let points = []
                   for (const point of item.line) {
                     points.push([point.lng, point.lat])
@@ -6110,7 +6177,7 @@ export default {
                 })
                 markerTool.addEventListener('click', this.sourceRiskClick)
                 this.map.addOverLay(markerTool)
-                if (this.sharedChecked) {
+                if (this.sharedChecked || this.sharedOnce == 2) {
                   let points = []
                   for (const point of item.polygon) {
                     points.push([point.lng, point.lat])
@@ -6141,7 +6208,7 @@ export default {
         }
         this.spotDraw(point)
         // 双球开关
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           for (const item of this.riverRiskPointsRight) {
             if (item.drawType.id == id) {
               if (item.locationType.code == 'point') {
@@ -6197,7 +6264,7 @@ export default {
         }
         this.removeOverLays(data1)
         // 双球开关风险源关闭
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           this.olRemoveLayer(data1, 'olMap1')
           for (const item of this.riverRiskPointsRight) {
             if (item.drawType.id == id) {
@@ -6214,7 +6281,7 @@ export default {
       let data1 = []
       let data2 = []
       // 双球开关风险源关闭
-      if (this.sharedChecked) {
+      if (this.sharedChecked || this.sharedOnce == 2) {
         for (const item of this.riverRiskPoints) {
           if (item.drawType.id == id) {
             data1.push(item)
@@ -6275,7 +6342,7 @@ export default {
                 })
                 markerTool.addEventListener('click', this.otherClick)
                 this.map.addOverLay(markerTool)
-                if (this.sharedChecked) {
+                if (this.sharedChecked || this.sharedOnce == 2) {
                   let points = []
                   for (const point of item.line) {
                     points.push([point.lng, point.lat])
@@ -6333,7 +6400,7 @@ export default {
                 })
                 markerTool.addEventListener('click', this.otherClick)
                 this.map.addOverLay(markerTool)
-                if (this.sharedChecked) {
+                if (this.sharedChecked || this.sharedOnce == 2) {
                   let points = []
                   for (const point of item.polygon) {
                     points.push([point.lng, point.lat])
@@ -6367,7 +6434,7 @@ export default {
         }
         this.spotDraw(point)
         // 双球开关
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           for (const item of this.otherPointsRight) {
             if (item.drawType.id == id) {
               if (item.locationType.code == 'point') {
@@ -6428,7 +6495,7 @@ export default {
         }
         this.removeOverLays(data)
         // 双球开关风险源关闭
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           this.olRemoveLayer(data, 'olMap1')
           for (const item of this.otherPointsRight) {
             if (item.drawType.id == id) {
@@ -6474,7 +6541,7 @@ export default {
           this.map.addOverLay(marker)
         }
         // 双球开关
-        if (this.sharedChecked || this.swipeChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           for (const item of this.surveyPointPoints) {
             this.olSharedDrawPoint(item.coordinate, require('./img/surveyPointIcon.png'), item.id, 'olMap1')
           }
@@ -6483,7 +6550,7 @@ export default {
           }
         }
       } else {
-        if (this.sharedChecked) {
+        if (this.sharedChecked || this.sharedOnce == 2) {
           this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
           this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
         }
@@ -6694,7 +6761,7 @@ export default {
       // 无人机照片
       this.onUAVPhoto()
       // 360全景图
-      this.onPanorama()
+      // this.onPanorama()
       // 风险地图
       // this.onRiskMap()
       // 水质数据
