@@ -809,6 +809,14 @@ export function mapdrawPage(data) {
     params: data,
   })
 }
+//基础绘制数据复制 风险地图复制
+export function mapdrawPageCopy(data) {
+  return axios({
+    url: '/server/data/admin/mapdraw/data/copy',
+    method: 'post',
+    params: data,
+  })
+}
 //基础绘制数据列表
 export function mapdrawPageRiskSource(data,aa) {
   if (aa) {
