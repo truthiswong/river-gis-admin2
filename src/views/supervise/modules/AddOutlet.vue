@@ -23,24 +23,24 @@
       <a-form class="from">
         <h3>基本信息</h3>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="内部编码">
               <a-input placeholder disabled v-model="list.innerCode" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="标准编码">
               <a-input placeholder v-model="list.standardCode" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="内部名称">
               <a-input placeholder disabled v-model="list.innerName" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="标准名称">
               <a-input placeholder v-model="list.standardName" />
             </a-form-item>
@@ -48,7 +48,7 @@
         </a-row>
         <!-- <h3 style="margin-top: 10px;">位置</h3> -->
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="所属河道">
               <a-select
                 :allowClear="true"
@@ -66,37 +66,37 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="排入水体功能区名称">
               <a-input placeholder v-model="list.functionName" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="河道序号">
               <a-input placeholder v-model="list.code" disabled />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="河道管理等级">
               <a-input placeholder v-model="list.supervisoryLevel" disabled />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="河道等级">
               <a-input placeholder v-model="list.priority" disabled />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="所属街道">
               <a-select
+              
                 :allowClear="true"
                 placeholder="请输入街道"
                 optionFilterProp="children"
-                style="width: 100%"
                 v-model="list.streetId"
                 @change="streetChange"
               >
@@ -110,61 +110,61 @@
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="一级河长">
               <a-input placeholder v-model="list.controller" disabled />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="二级河长">
               <a-input placeholder v-model="list.tworiver" disabled />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="地标位置">
               <a-input placeholder v-model="list.landmarkLocation" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="地址">
               <a-input placeholder v-model="list.address" disabled />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="经度">
               <a-input placeholder v-model="list.lng" disabled />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="纬度">
               <a-input placeholder v-model="list.lat" disabled />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="准确位置">
               <a-input placeholder v-model="list.accurateLocation" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="首次发现时间">
+          <a-col :span="14">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="首次发现时间" >
               <a-date-picker
                 :allowClear="false"
                 :value="moment(list.discoveryTime, 'YYYY-MM-DD')"
                 @change="onChange1"
-                style="width: 100%"
+                style="width:100%"
               />
             </a-form-item>
           </a-col>
         </a-row>
         <h3 style="margin-top: 10px;">属性</h3>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="类别">
               <a-select
                 :allowClear="true"
@@ -181,8 +181,8 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="排放方式">
+          <a-col :span="14">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="排放方式" >
               <a-select :allowClear="true" placeholder="请选择" v-model="list.letway">
                 <a-select-option value="sequence">连续</a-select-option>
                 <a-select-option value="interrupt">间接</a-select-option>
@@ -191,60 +191,60 @@
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="入河方式">
               <a-input placeholder v-model="list.enterRiverWay" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="大小">
-              <a-input placeholder v-model="list.enterRiverSize" />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="实际年排放总量(万吨)">
               <a-input placeholder v-model="list.yearLetSize" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+        </a-row>
+        <a-row style="width:100%">
+          <a-col :span="10">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="大小">
+              <a-input placeholder v-model="list.enterRiverSize" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="主要污染物">
               <a-input placeholder v-model="list.pollutant" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="设置单位">
               <a-input placeholder v-model="list.settingUnit" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="单位地址">
               <a-input placeholder v-model="list.unitAddress" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="联系人">
               <a-input placeholder v-model="list.linkman" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="联系地址">
               <a-input placeholder v-model="list.linktel" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="封堵状态">
               <a-input placeholder v-model="list.blockoffStatus" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="情况说明">
               <a-input placeholder v-model="list.statement" />
             </a-form-item>
@@ -252,48 +252,48 @@
         </a-row>
         <h3 style="margin-top: 10px;">等级情况</h3>
         <a-row style="width:100%">
-          <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="建成时间">
+          <a-col :span="10">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="建成时间" >
               <a-date-picker
                 :allowClear="false"
                 :value="moment(list.activateTime, 'YYYY-MM-DD')"
                 @change="onChange"
-                style="width: 100%"
+                style="width:100%"
               />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="登记情况">
               <a-input placeholder v-model="list.registrationState" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="批准情况">
               <a-input placeholder v-model="list.approveState" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="批准单位">
               <a-input placeholder v-model="list.approveUnit" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="排污许可">
               <a-input placeholder v-model="list.dischargeLicense" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="14">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="许可证号">
               <a-input placeholder v-model="list.licenseNo" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row style="width:100%">
-          <a-col :span="12">
+          <a-col :span="10">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="影像">
               <el-upload
                 class="upload-demo"
@@ -482,8 +482,8 @@ export default {
         id: ''
       },
       labelCol: {
-        xs: { span: 18 },
-        sm: { span: 6 }
+        xs: { span: 16 },
+        sm: { span: 8 }
       },
       wrapperCol: {
         xs: { span: 18 },

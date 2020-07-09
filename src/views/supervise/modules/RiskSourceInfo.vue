@@ -27,38 +27,41 @@
         <a-col :span="7">
           <p>{{list.innerCode}}</p>
         </a-col>
+        <a-col :span="1"></a-col>
         <a-col :span="5">
           <p>风险源类别:</p>
         </a-col>
-        <a-col :span="8">
+        <a-col :span="7">
           <p>{{list.type}}</p>
         </a-col>
       </a-row>
-      <a-row>
+      <a-row style="margin-top:10px">
         <a-col :span="4">
           <p>准确位置:</p>
         </a-col>
         <a-col :span="7">
           <p>{{list.accurateLocation}}</p>
         </a-col>
+        <a-col :span="1"></a-col>
         <a-col :span="5">
           <p>首次发现时间:</p>
         </a-col>
-        <a-col :span="8">
+        <a-col :span="7">
           <p>{{list.discoveryTime}}</p>
         </a-col>
       </a-row>
-      <a-row >
+      <a-row style="margin-top:10px">
         <a-col :span="4">
           <p>面积:</p>
         </a-col>
         <a-col :span="7">
-          <p>{{list.polygonSize}}</p>
+          <p>{{list.polygonSize}}(m²)</p>
         </a-col>
+        <a-col :span="1"></a-col>
         <a-col :span="5">
           <p>河道所属:</p>
         </a-col>
-        <a-col :span="8">
+        <a-col :span="7">
           <p>{{list.river}}</p>
         </a-col>
       </a-row>
@@ -82,7 +85,6 @@
        <!-- :header="`${data.length} 条状态`" -->
       <a-list
         class="comment-list custom_comment a-list"
-       
         itemLayout="horizontal"
         :dataSource="data"
         size="small"
@@ -92,9 +94,23 @@
           <div>{{data.length}} 条状态</div>
           <a-button type="primary"  @click="renewClick('1')" v-show="jurisdiction" size="small">更新风险状态</a-button>
         </div>
-        <a-list-item slot="renderItem" slot-scope="item" class="comment_list">
+        <a-list-item slot="renderItem" slot-scope="item" class="comment_list" id="listItem">
           <a-comment :avatar="item.avatar">
-            <p slot="author" style="width:50px;padding:0;margin:0;color:#000000">{{item.author}}</p>
+            <div slot="author" class="list_item_title">
+              <div>
+                <div>{{item.author}}</div>
+                <div style="color: #ccc;">{{item.datetime}}</div>
+              </div>
+              <a-popconfirm
+                title="确定删除吗？"
+                @confirm="confirmDelete(item.id)"
+                @cancel="cancelDelete"
+                v-show="jurisdiction"
+              >
+                <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                <a-button size="small">删除</a-button>
+              </a-popconfirm>
+            </div>
             <div class="comment_level">
               <p
                 v-show="code == 'riskSource'"
@@ -102,16 +118,10 @@
               >{{item.dangerDescribe}}</p>
               <span>{{item.dangerContent}}</span>
             </div>
-            <p slot="content" style="ma">{{'管理建议: ' + item.comment}}</p>
-            <div class="comment_img" v-show="item.imgList.length > 0">
-              <viewer :images="item.imgList">
-                <img v-for="img in item.imgList" :key="img" :src="img" :alt="img" />
-              </viewer>
-            </div>
-            <template slot="datetime">
+            <!-- <template slot="datetime">
               <div class="comment_title">
                 <a-tooltip slot="datetime" :title="item.datetime">
-                  <span>{{item.datetime}}</span>
+                  <span style="">{{item.datetime}}</span>
                 </a-tooltip>
                 <a-popconfirm
                   title="确定删除吗？"
@@ -123,7 +133,13 @@
                   <a-button size="small">删除</a-button>
                 </a-popconfirm>
               </div>
-            </template>
+            </template> -->
+            <p slot="content" style="margin-top:10px">{{'管理建议: ' + item.comment}}</p>
+            <div class="comment_img" v-show="item.imgList.length > 0">
+              <viewer :images="item.imgList">
+                <img v-for="img in item.imgList" :key="img" :src="img" :alt="img" />
+              </viewer>
+            </div>
           </a-comment>
         </a-list-item>
       </a-list>
@@ -530,5 +546,15 @@ p {
 .a-list-header{
   display: flex;
   justify-content:space-between
+}
+.list_item_title{
+  width:454px;
+  padding:0;
+  margin:0;
+  color:#000000;
+  height:32px;
+  display:flex;
+  justify-content:space-between;
+  align-items: center;
 }
 </style>

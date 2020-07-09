@@ -64,18 +64,6 @@
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="位置">
-              <a-input placeholder v-model="list.address" disabled />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row style="width:100%">
-          <a-col :span="12">
-            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="面积(m²)">
-              <a-input placeholder v-model="list.polygonSize" />
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="创建时间">
               <a-date-picker
                 disabled
@@ -87,7 +75,31 @@
               />
             </a-form-item>
           </a-col>
+          <!-- <a-col :span="12">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="位置">
+              <a-input placeholder v-model="list.address" disabled />
+            </a-form-item>
+          </a-col> -->
         </a-row>
+        <a-row style="width:100%">
+          <a-col :span="12">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="面积(m²)">
+              <a-input placeholder v-model="list.polygonSize" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="位置">
+              <a-textarea placeholder="" v-model="list.address" disabled  id="floatage" style="color:#000"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <!-- <a-row style="width:100%">
+          <a-col :span="24">
+            <a-form-item :label-col="{xs: { span: 21 }, sm: { span: 3 }}" :wrapper-col="{xs: { span: 4 }, sm: { span: 20 }}" label="位置">
+              <a-input placeholder v-model="list.address" disabled />
+            </a-form-item>
+          </a-col>
+        </a-row> -->
         <a-row style="width:100%">
           <a-col :span="12">
             <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="备注">

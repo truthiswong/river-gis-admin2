@@ -10,7 +10,7 @@
         <a-col :span="11">选择时间</a-col>
         <a-divider dashed type="vertical" style="height:2em; border-left: 1px dashed #e8e8e8;" />
         <a-col :span="11">
-          <a-range-picker @change="onChange" />
+          <a-range-picker @change="onChange" dropdownClassName="item_picker"/>
         </a-col>
       </a-row>
       <a-divider dashed style="margin: 10px 0" />
