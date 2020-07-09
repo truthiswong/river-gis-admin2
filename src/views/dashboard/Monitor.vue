@@ -464,7 +464,7 @@
                                 <a-radio-button value="line" @click.stop="addLineTool">线</a-radio-button>
                                 <a-radio-button value="polygon" @click.stop="addPolygonTool">面</a-radio-button>
                               </a-radio-group>
-                              <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;">查看</a-button> -->
+                              <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;" style="margin-right:4px">查看</a-button> -->
                             </a-form-item>
                             <a-form-item
                               label="任务职位"
@@ -579,7 +579,7 @@
                                       <a-row type="flex" justify="space-between" align="middle">
                                         <a-col :span="16">
                                           <span
-                                            style="padding:3px 5px;background-color:#2DBFFC;color:#fff;margin-right:3px;border-radius:10px;height: 20px;font-size: 10px;"
+                                            style="padding:3px 10px;background-color:#2DBFFC;color:#fff;margin-right:3px;border-radius:10px;height: 18px;font-size: 10px;"
                                           >{{targetId.completeTaskNum}}/{{targetId.totalTaskNum}}</span>
                                           <span
                                             @click="choosePointTask1(targetId.target.id,targetId)"
@@ -618,7 +618,7 @@
                                         >
                                           <template slot="custom" slot-scope="item">
                                             <span class>
-                                              <a-button @click.stop="searchItme(item.id)">查看</a-button>
+                                              <a-button @click.stop="searchItme(item.id)" style="margin-right:4px">查看</a-button>
                                             </span>
                                             <span>{{ item.name }}</span>
                                           </template>
@@ -695,7 +695,7 @@
                                                 @click.stop="addPolygonTool"
                                               >面</a-radio-button>
                                             </a-radio-group>
-                                            <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;">查看</a-button> -->
+                                            <!-- <a-button v-show="btnShow" @click="searchDraw" style="width:90%;" style="margin-right:4px">查看</a-button> -->
                                           </a-form-item>
                                           <a-form-item
                                             label="任务职位"
@@ -860,7 +860,7 @@
                                     >
                                       <template slot="custom" slot-scope="item">
                                         <span class>
-                                          <a-button class @click.stop="searchItme(item.id)">查看</a-button>
+                                          <a-button class @click.stop="searchItme(item.id)" style="margin-right:4px">查看</a-button>
                                         </span>
                                         <span>{{ item.name }}</span>
                                       </template>
@@ -1735,8 +1735,16 @@ export default {
             //向地图上添加线
             this.map.addOverLay(line)
           }
+          console.log(item.taskPoints);
+          
           for (const points of item.taskPoints) {
+            let icon = new T.Icon({
+              iconUrl: require('../../assets/tool_point_icon.png'),
+              iconSize: new T.Point(40, 40),
+              iconAnchor: new T.Point(10, 25)
+            })
             let markerTool = new T.Marker(points.coordinate, {
+              icon:icon,
               title: points.name,
               id: points.id
             })

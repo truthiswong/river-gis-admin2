@@ -922,8 +922,8 @@
       v-dragModal
     >
       <div>点击坐标: {{UAVPhotosCoordinate}}</div>
-      <div style="margin-top:10px;max-height: 600px;overflow-y: scroll;">
-        <viewer style="margin:5px" :images="uavPhotoList">
+      <div style="margin-top:10px;max-height: 600px;overflow-y: scroll;padding:0">
+        <viewer style="" :images="uavPhotoList">
           <div v-for="item in uavPhotoList" :key="item.id">
             <div style="margin:5px 0">日期：{{item.date}}</div>
             <img :src="item.pic" alt style="width:100%;margin:0 4px 4px 0;" />

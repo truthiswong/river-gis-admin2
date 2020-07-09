@@ -7,10 +7,11 @@
     <span class="closeSearch_r" @click="close">
       <a-icon type="close-circle" />
     </span>
-    <div class="searchInfo" style="padding: 0 10px">
+    <div class="searchInfo" style="padding: 0">
       <!-- <a-input placeholder="请输入河道名称" style="text-align:left;width: 240px;"/>
       <a-button shape="circle" icon="search" class="searchRiverBtn"/>-->
       <a-select
+        id="monitorSelect"
         showSearch
         :value="value"
         placeholder="请选择"
@@ -21,7 +22,6 @@
         @search="handleSearch"
         @change="handleChange"
       >
-        <!-- <a-spin v-if="loading" size="small" /> -->
         <a-select-option v-for="d in riverList" :key="d.id">{{d.name}}</a-select-option>
       </a-select>
     </div>
@@ -77,13 +77,14 @@ export default {
 .searchRiver {
   width: 300px;
   background-color: #ffffff;
-  padding-bottom: 14px;
+  /* padding-bottom: 14px; */
   border: 1px solid#00CCFF;
-  border-radius: 10px;
+  border-radius: 5px;
   overflow: hidden;
   color: #00CCFF;
 }
 .searchTitle {
+  margin-bottom: 0;
   text-align: left;
   padding: 10px 0;
   padding-left: 20px;
