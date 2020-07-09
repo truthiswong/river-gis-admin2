@@ -3457,7 +3457,7 @@ export default {
         for (const item of res.data) {
           if (item.uavTask != 0) {
             item.level = 1
-          } else if (item.manualTask != 0) {
+          } else if (item.manualTask != 0 || item.waterTask != 0) {
             item.level = 0
           } else {
             item.level = 2
