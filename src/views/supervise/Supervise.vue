@@ -159,7 +159,7 @@
     </div>
     <div
       class="accordion_alert"
-      v-show="phonePhoto || riskMap || riskMapCopy || waterQuality || riverRisk || outlet"
+      v-show="phonePhoto || riskMap || waterQuality || riverRisk || outlet"
     >
       <a-collapse accordion class="custom_collapse" v-model="accordionAlertKey">
         <a-collapse-panel
