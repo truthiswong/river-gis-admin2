@@ -157,7 +157,7 @@
     </div>
     <div
       class="accordion_alert"
-      v-show="phonePhoto || riskMap || riskMapCopy || waterQuality || riverRisk || outlet"
+      v-show="phonePhoto || riskMap || waterQuality || riverRisk || outlet"
     >
       <a-collapse accordion class="custom_collapse" v-model="accordionAlertKey">
         <a-collapse-panel
@@ -595,9 +595,10 @@
                 </a-row>
               </div>
               <div
-                style="margin: 5px 0px;position: relative;"
+                style="margin: 5px 0px;"
                 class="custom_popover_title"
                 @click="imageManage = !imageManage"
+                v-show="!(this.sharedChecked || this.swipeChecked)"
               >
                 <a-row>
                   <a-col :span="20">
@@ -1580,9 +1581,6 @@ export default {
         }
       }
     },
-    accordionAlertKey(key) {
-      console.log(key)
-    },
     // 历史数据
     historyData() {
       // this.watchAllSwitch()
@@ -2038,6 +2036,7 @@ export default {
     },
     // 右侧 双球 获取当前页面数据
     getMapPageDataRight() {
+      this.moreLoadOnce = 1
       if (this.moreLoadOnce == '1') {
         // 右侧获取手机照片
         this.getPhonePhotoPointsRight()
@@ -3411,6 +3410,13 @@ export default {
     },
     // 设置时间段
     setTime(date, dateString) {
+      // 设置时间段之前清除所有绘制
+      if (this.sharedChecked || this.sharedOnce == 2) {
+        this.clearOlLayer()
+        // this.olMap1.clear()
+        // this.olMap2.clear()
+      }
+      
       this.startDate = dateString[0]
       this.endDate = dateString[1]
       this.timeQuantum = `${dateString[0]} ~ ${dateString[1]}`
@@ -3832,81 +3838,86 @@ export default {
           }
         }
       }
-      this.getWeatherList()
       this.map.clearOverLays()
       this.moreLoadOnce = 1
       this.getMapPageData()
+      this.getWeatherList()
     },
     // 右侧时间轴切换操作
     rightTimeLineChange() {
-      // 双球开关 卷帘开关
+      // 双球开关
       if (this.sharedChecked || this.sharedOnce == 2) {
-      }
-      // 河道显示
-      if (this.riverShow) {
-      }
-      // 街道显示
-      if (this.streetShow) {
-      }
-      // 手机照片
-      if (this.phonePhoto) {
-      }
-      // 360全景图
-      if (this.panorama) {
-        this.olRemoveLayer(this.panoramaPoints, 'olMap1')
-        this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
-      }
-      // 风险地图
-      if (this.riskMap) {
-        this.olRemoveLayer(this.riskPolygonData, 'olMap1')
-        this.olRemoveLayer(this.riskPolygonDataRight, 'olMap2')
-      }
-      // 水质数据
-      if (this.waterQuality) {
-        this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
-        this.olRemoveLayer(this.waterQualityPointsRight, 'olMap2')
-      }
-      // 水质漂浮物
-      if (this.waterFlotage) {
-        this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
-        this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
-      }
-      // 排口
-      if (this.outlet) {
-        this.olRemoveLayer(this.outletPoints, 'olMap1')
-        this.olRemoveLayer(this.outletPointsRight, 'olMap2')
-      }
-      // 河岸风险源
-      if (this.riverRisk) {
-        let data1 = []
-        let data2 = []
-        for (const listItem of this.riskSourceList) {
-          if (listItem.clicked) {
-            for (const item of this.riverRiskPoints) {
-              if (item.drawType.id == listItem.id) {
-                data1.push(item)
+        // 河道显示
+        if (this.riverShow) {
+        }
+        // 街道显示
+        if (this.streetShow) {
+        }
+        // 手机照片
+        if (this.phonePhoto) {
+          this.olRemoveLayer(this.phonePhotoPoints, 'olMap1')
+          this.olRemoveLayer(this.phonePhotoPointsRight, 'olMap2')
+        }
+        // 无人机照片
+        if (this.UAVPhoto) {
+        }
+        // 360全景图
+        // if (this.panorama) {
+        //   this.olRemoveLayer(this.panoramaPoints, 'olMap1')
+        //   this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
+        // }
+        // 风险地图
+        if (this.riskMap) {
+          this.olRemoveLayer(this.riskPolygonData, 'olMap1')
+          this.olRemoveLayer(this.riskPolygonDataRight, 'olMap2')
+        }
+        // 水质数据
+        if (this.waterQuality) {
+          this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
+          this.olRemoveLayer(this.waterQualityPointsRight, 'olMap2')
+        }
+        // 水质漂浮物
+        if (this.waterFlotage) {
+          this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
+          this.olRemoveLayer(this.waterFlotagePointsRight, 'olMap2')
+        }
+        // 排口
+        if (this.outlet) {
+          this.olRemoveLayer(this.outletPoints, 'olMap1')
+          this.olRemoveLayer(this.outletPointsRight, 'olMap2')
+        }
+        // 河岸风险源
+        if (this.riverRisk) {
+          let data1 = []
+          let data2 = []
+          for (const listItem of this.riskSourceList) {
+            if (listItem.clicked) {
+              for (const item of this.riverRiskPoints) {
+                if (item.drawType.id == listItem.id) {
+                  data1.push(item)
+                }
               }
-            }
-            for (const item of this.riverRiskPointsRight) {
-              if (item.drawType.id == listItem.id) {
-                data2.push(item)
+              for (const item of this.riverRiskPointsRight) {
+                if (item.drawType.id == listItem.id) {
+                  data2.push(item)
+                }
               }
             }
           }
+          this.olRemoveLayer(data1, 'olMap1')
+          this.olRemoveLayer(data2, 'olMap2')
         }
-        this.olRemoveLayer(data1, 'olMap1')
-        this.olRemoveLayer(data2, 'olMap2')
-      }
-      // 专项调查点
-      if (this.surveyPoint) {
-        this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
-        this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
-      }
-      // 其他
-      for (const item of this.otherList) {
-        if (item.clicked) {
-          this.olRemoveLayer(this.otherPoints, 'olMap1')
-          this.olRemoveLayer(this.otherPointsRight, 'olMap2')
+        // 专项调查点
+        if (this.surveyPoint) {
+          this.olRemoveLayer(this.surveyPointPoints, 'olMap1')
+          this.olRemoveLayer(this.rightSurveyPointPoints, 'olMap2')
+        }
+        // 其他
+        for (const item of this.otherList) {
+          if (item.clicked) {
+            this.olRemoveLayer(this.otherPoints, 'olMap1')
+            this.olRemoveLayer(this.otherPointsRight, 'olMap2')
+          }
         }
       }
       this.moreLoadOnce = 1
@@ -4277,6 +4288,8 @@ export default {
           this.$nextTick(() => {
             this.showMap() //双球init
             this.moreLoadOnce = 1
+            this.getMapPageData()
+            this.moreLoadOnce = 1
             this.getMapPageDataRight()
             // 河道街道左右岸等
             this.watchAllSwitch()
@@ -4325,19 +4338,19 @@ export default {
     },
     clearOlLayer() {
       // 360全景图
-      if (this.panorama) {
-        this.olRemoveLayer(this.panoramaPoints, 'olMap1')
-        this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
-      }
+      // if (this.panorama) {
+      //   this.olRemoveLayer(this.panoramaPoints, 'olMap1')
+      //   this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
+      // }
       // 风险地图
       this.olRemoveLayer(this.riskPolygonData, 'olMap1')
       this.olRemoveLayer(this.riskPolygonDataRight, 'olMap2')
       if (!this.riskMap) {
       }
       // 水质数据
-      this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
-      this.olRemoveLayer(this.waterQualityPointsRight, 'olMap2')
-      if (!this.waterQuality) {
+      if (this.waterQuality) {
+        this.olRemoveLayer(this.waterQualityPoints, 'olMap1')
+        this.olRemoveLayer(this.waterQualityPointsRight, 'olMap2')
       }
       // 水面漂浮物
       this.olRemoveLayer(this.waterFlotagePoints, 'olMap1')
@@ -4385,7 +4398,7 @@ export default {
       // 河道街道左右岸等
       this.watchAllSwitch()
       // 360全景图
-      this.onPanorama()
+      // this.onPanorama()
       // 风险地图
       this.onRiskMap()
       // 水质数据
@@ -5031,20 +5044,19 @@ export default {
           markerTool.addEventListener('click', this.panoramaPointClick)
         }
         // 双球开关
-        if (this.sharedChecked || this.sharedOnce == 2) {
-          console.log(this.panoramaPoints)
-          for (const item of this.panoramaPoints) {
-            this.olSharedDrawPoint(item.latlng, require('./img/360.png'), item.id, 'olMap1')
-          }
-          for (const item of this.panoramaPointsRight) {
-            this.olSharedDrawPoint(item.latlng, require('./img/360.png'), item.id, 'olMap2')
-          }
-        }
+        // if (this.sharedChecked || this.sharedOnce == 2) {
+        //   for (const item of this.panoramaPoints) {
+        //     this.olSharedDrawPoint(item.latlng, require('./img/360.png'), item.id, 'olMap1')
+        //   }
+        //   for (const item of this.panoramaPointsRight) {
+        //     this.olSharedDrawPoint(item.latlng, require('./img/360.png'), item.id, 'olMap2')
+        //   }
+        // }
       } else {
-        if (this.sharedChecked || this.sharedOnce == 2) {
-          this.olRemoveLayer(this.panoramaPoints, 'olMap1')
-          this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
-        }
+        // if (this.sharedChecked || this.sharedOnce == 2) {
+        //   this.olRemoveLayer(this.panoramaPoints, 'olMap1')
+        //   this.olRemoveLayer(this.panoramaPointsRight, 'olMap2')
+        // }
       }
     },
     // 360点点击事件
