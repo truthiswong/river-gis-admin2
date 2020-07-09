@@ -59,6 +59,7 @@
         >
           <template slot="content">
             <a-range-picker
+              dropdownClassName="item_picker"
               @change="setTime"
               :defaultValue="[moment(startDate, dateFormat), moment(endDate, dateFormat)]"
               :format="dateFormat"
@@ -116,6 +117,7 @@
         >
           <div slot="content">
             <a-range-picker
+              dropdownClassName="item_picker"
               @change="setTime"
               :defaultValue="[moment(startDate, dateFormat), moment(endDate, dateFormat)]"
               :format="dateFormat"

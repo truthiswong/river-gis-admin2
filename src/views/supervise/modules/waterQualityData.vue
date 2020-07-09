@@ -34,6 +34,7 @@
       </el-form-item>
       <el-form-item label="查看时间">
         <a-range-picker
+          dropdownClassName="item_picker"
           :defaultValue="[moment(startDate, dateFormat), moment(endDate, dateFormat)]"
           :format="dateFormat"
           @change="onChange"
