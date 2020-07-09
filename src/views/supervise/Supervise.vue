@@ -1,7 +1,5 @@
 <template>
   <div class="supervise">
-    <div class="doubleBall" v-show="doubleBallTimeControl">{{defaultTime}}</div>
-    <div class="doubleBall1" v-show="doubleBallTimeControl">{{defaultRightTime}}</div>
     <div
       id="map"
       @click="rightIcon = false"
@@ -431,10 +429,16 @@
     <!-- 双球 -->
     <div class="showMap" id="showmap" v-show="sharedChecked">
       <div class="half">
-        <div id="leftMap" class="vmap"></div>
+        <div id="leftMap" class="vmap">
+          <div class="doubleBall" v-show="doubleBallTimeControl">{{defaultTime}}</div>
+          <div class="compass_pointer_ol_left" v-show="doubleBallTimeControl" title="指北针"></div>
+        </div>
       </div>
       <div class="half">
-        <div id="rightMap" class="vmap"></div>
+        <div id="rightMap" class="vmap">
+          <div class="doubleBall1" v-show="doubleBallTimeControl">{{defaultRightTime}}</div>
+          <div class="compass_pointer_ol_right" v-show="doubleBallTimeControl" title="指北针"></div>
+        </div>
       </div>
     </div>
     <!-- 卷帘 -->
@@ -1028,6 +1032,7 @@ import { toSize } from 'ol/size'
 import Text from 'ol/style/Text'
 
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer'
+import {ScaleLine} from 'ol/control' // 比例尺
 
 import Layer from 'ol/layer/Layer'
 
@@ -3942,6 +3947,19 @@ export default {
           this.olMap2.removeLayer(this.rightLayer)
           this.olMap1.addLayer(this.leftLayer2d)
           this.olMap2.addLayer(this.rightLayer2d)
+          // 双球比例尺
+          this.olMap1.removeControl(this.scaleLineControlLeft)
+          this.olMap2.removeControl(this.scaleLineControlRight)
+          this.scaleLineControlLeft = new ScaleLine({
+            className: 'scale_line_ol_black'
+          })
+          this.scaleLineControlLeft.setUnits('metric')
+          this.olMap1.addControl(this.scaleLineControlLeft)
+          this.scaleLineControlRight = new ScaleLine({
+            className: 'scale_line_ol_black'
+          })
+          this.scaleLineControlRight.setUnits('metric')
+          this.olMap2.addControl(this.scaleLineControlRight)
         }
         if (this.swipeChecked) {
           // 卷帘2d
@@ -3960,6 +3978,19 @@ export default {
           this.olMap2.removeLayer(this.rightLayer2d)
           this.olMap1.addLayer(this.leftLayer)
           this.olMap2.addLayer(this.rightLayer)
+          // 双球比例尺
+          this.olMap1.removeControl(this.scaleLineControlLeft)
+          this.olMap2.removeControl(this.scaleLineControlRight)
+          this.scaleLineControlLeft = new ScaleLine({
+            className: 'scale_line_ol'
+          })
+          this.scaleLineControlLeft.setUnits('metric')
+          this.olMap1.addControl(this.scaleLineControlLeft)
+          this.scaleLineControlRight = new ScaleLine({
+            className: 'scale_line_ol'
+          })
+          this.scaleLineControlRight.setUnits('metric')
+          this.olMap2.addControl(this.scaleLineControlRight)
         }
         if (this.swipeChecked) {
           // 卷帘卫星
@@ -4246,6 +4277,16 @@ export default {
         }
         this.olMap1.addLayer(this.leftLayer2d)
         this.olMap2.addLayer(this.rightLayer2d)
+        this.scaleLineControlLeft = new ScaleLine({
+          className: 'scale_line_ol_black'
+        });
+        this.scaleLineControlLeft.setUnits('metric')
+        this.olMap1.addControl(this.scaleLineControlLeft)
+        this.scaleLineControlRight = new ScaleLine({
+          className: 'scale_line_ol_black'
+        });
+        this.scaleLineControlRight.setUnits('metric')
+        this.olMap2.addControl(this.scaleLineControlRight)
       } else if (this.mapType == 'b') {
         if (this.sharedOnce == 2) {
           this.olMap1.removeLayer(this.leftLayer)
@@ -4253,6 +4294,16 @@ export default {
         }
         this.olMap1.addLayer(this.leftLayer)
         this.olMap2.addLayer(this.rightLayer)
+        this.scaleLineControlLeft = new ScaleLine({
+          className: 'scale_line_ol'
+        });
+        this.scaleLineControlLeft.setUnits('metric')
+        this.olMap1.addControl(this.scaleLineControlLeft)
+        this.scaleLineControlRight = new ScaleLine({
+          className: 'scale_line_ol'
+        });
+        this.scaleLineControlRight.setUnits('metric')
+        this.olMap2.addControl(this.scaleLineControlRight)
       }
       // 判断道路标注是否打开
       if (this.roadWordChange) {
@@ -7081,6 +7132,7 @@ export default {
 }
 
 .vmap {
+  position: relative;
   width: 100%;
   height: 100%;
 }
@@ -7527,6 +7579,34 @@ export default {
   }
 }
 
+.compass_pointer_ol_left {
+  position: absolute;
+  right: 50px;
+  top: 8px;
+  width: 90px;
+  height: 90px;
+  z-index: 880;
+  border-radius: 50%;
+  padding: 24px;
+  /* box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4); */
+  background: url('../../assets/img/leftRightArrows.png') no-repeat center center / 80%;
+  text-align: center;
+}
+.compass_pointer_ol_right {
+  position: absolute;
+  right: 50px;
+  top: 8px;
+  z-index: 666;
+  width: 90px;
+  height: 90px;
+  z-index: 880;
+  border-radius: 50%;
+  padding: 24px;
+  /* box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4); */
+  background: url('../../assets/img/leftRightArrows.png') no-repeat center center / 80%;
+  text-align: center;
+}
+
 .menu {
   position: fixed;
   right: 20px;
@@ -7582,7 +7662,7 @@ export default {
 
 .doubleBall {
   position: absolute;
-  left: 60px;
+  left: 50px;
   top: 10px;
   z-index: 666;
   color: #333;
@@ -7594,7 +7674,7 @@ export default {
 
 .doubleBall1 {
   position: absolute;
-  left: 52%;
+  left: 50px;
   top: 8px;
   z-index: 666;
   color: #333;
