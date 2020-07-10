@@ -52,10 +52,10 @@
       </a-row>
       <a-row style="margin-top:10px">
         <a-col :span="4">
-          <p>面积:</p>
+          <p>面积(m²):</p>
         </a-col>
         <a-col :span="7">
-          <p>{{list.polygonSize}}(m²)</p>
+          <p>{{list.polygonSize}}</p>
         </a-col>
         <a-col :span="1"></a-col>
         <a-col :span="5">

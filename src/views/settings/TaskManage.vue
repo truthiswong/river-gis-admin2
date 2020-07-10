@@ -254,6 +254,12 @@
                     :label-col="formItemLayout.labelCol"
                     :wrapper-col="formItemLayout.wrapperCol"
                   ></a-form-item>
+                  <!-- display:flex;flex-wrap:wrap; -->
+                  <a-checkbox-group
+                    style="width:100%"
+                    v-model="deviceTypeId"
+                    @change="onChange"
+                  >
                   <a-collapse size="small" style="margin-top:10px;" :bordered="false">
                     <a-collapse-panel
                       :style="customStyle"
@@ -268,18 +274,14 @@
                           :key="option.id"
                         >
                           <template slot="header">{{option.name}}</template>
-                          <a-checkbox-group
-                            style="display:flex;flex-wrap:wrap;"
-                            v-model="deviceTypeId"
-                            @change="onChange"
-                          >
+                          
                             <a-row
                               style="width:100%"
                               v-for="index in option.children"
                               :key="index.id"
                             >
                               <a-col :span="12" offset="4" style="">
-                                <a-checkbox :value="index.id" @change="peopleChoose">{{index.name}}</a-checkbox>
+                                <a-checkbox :value="index.id">{{index.name}}</a-checkbox>
                               </a-col>
                               <a-col :span="8" style="height:30px;text-align:right;">
                                 <a-input-number
@@ -293,11 +295,11 @@
                                 />
                               </a-col>
                             </a-row>
-                          </a-checkbox-group>
                         </a-collapse-panel>
                       </a-collapse>
                     </a-collapse-panel>
                   </a-collapse>
+                  </a-checkbox-group>
                   <a-form-item
                     label="备注"
                     :label-col="formItemLayout.labelCol"
@@ -493,6 +495,12 @@
                     :label-col="formItemLayout.labelCol"
                     :wrapper-col="formItemLayout.wrapperCol"
                   ></a-form-item>
+                  <!-- display:flex;flex-wrap:wrap; -->
+                  <a-checkbox-group
+                    style="width: 100%;"
+                    v-model="deviceTypeId"
+                    @change="onChange"
+                  >
                   <a-collapse size="small" style="margin-top:10px;" :bordered="false">
                     <a-collapse-panel
                       :style="customStyle"
@@ -507,18 +515,14 @@
                           :key="option.id"
                         >
                           <template slot="header">{{option.name}}</template>
-                          <a-checkbox-group
-                            style="display:flex;flex-wrap:wrap;"
-                            v-model="deviceTypeId"
-                            @change="onChange"
-                          >
+                          
                             <a-row
                               style="width:100%"
                               v-for="index in option.children"
                               :key="index.id"
                             >
                               <a-col :span="12" offset="4" style="">
-                                <a-checkbox :value="index.id">{{index.name}}</a-checkbox>
+                                <a-checkbox :value="index.id" >{{index.name}}</a-checkbox>
                               </a-col>
                               <a-col :span="8" style="height:30px;text-align:right;">
                                 <a-input-number
@@ -532,11 +536,12 @@
                                 />
                               </a-col>
                             </a-row>
-                          </a-checkbox-group>
+                          
                         </a-collapse-panel>
                       </a-collapse>
                     </a-collapse-panel>
                   </a-collapse>
+                  </a-checkbox-group>
                 </a-form>
               </section>
             </a-tab-pane>
@@ -1355,7 +1360,10 @@ export default {
       this.selectedKeys = selectedKeys
     },
     // 线路人员选择
-    peopleChoose(checkedValues) {},
+    peopleChoose(checkedValues) {
+      console.log(checkedValues);
+      
+    },
     // 线路人员配置人数
     peopleNum(value) {
       console.log('changed', value)
