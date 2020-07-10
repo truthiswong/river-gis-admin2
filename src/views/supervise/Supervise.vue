@@ -159,7 +159,7 @@
       class="accordion_alert"
       v-show="phonePhoto || riskMap || waterQuality || riverRisk || outlet"
     >
-      <a-collapse accordion class="custom_collapse" v-model="accordionAlertKey">
+      <a-collapse accordion class="custom_collapse" :style="{border: (sharedChecked?'0':'1px solid #d9d9d9')}" v-model="accordionAlertKey">
         <a-collapse-panel
           header="手机照片"
           :style="customStyle"
@@ -279,7 +279,7 @@
         <a-collapse-panel
           header="风险地图"
           :style="customStyle"
-          v-show="riskMap"
+          v-show="riskMap && !sharedChecked"
           class="custom_list"
           key="riskMap"
         >
