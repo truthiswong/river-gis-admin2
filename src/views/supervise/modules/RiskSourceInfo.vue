@@ -455,6 +455,8 @@ export default {
       commentRemove(id).then(res => {
         this.$message.success('删除成功')
         this.getCommentMapdraw()
+      }).catch(err => {
+        this.$message.error(err.response.data.message)
       })
     },
     cancelDelete() {},
