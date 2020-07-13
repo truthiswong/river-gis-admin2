@@ -3618,8 +3618,14 @@ export default {
       })
     },
     pointTargetAround(taskPage) {
+      let icon = new T.Icon({
+        iconUrl: require('../../assets/tool_point_icon.png'),
+        iconSize: new T.Point(40, 40),
+        iconAnchor: new T.Point(10, 25)
+      })
       for (const item of taskPage) {
         let markerTool = new T.Marker(item.coordinate, {
+          icon: icon,
           title: item.name,
           id: item.id
         })

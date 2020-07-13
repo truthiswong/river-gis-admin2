@@ -20,51 +20,44 @@
       <span>{{name}}信息</span>
     </template>
     <div v-show="show">
-      <a-row>
-        <a-col :span="4">
-          <p>内部编码:</p>
-        </a-col>
-        <a-col :span="7">
-          <p>{{list.innerCode}}</p>
-        </a-col>
-        <a-col :span="1"></a-col>
-        <a-col :span="5">
-          <p>风险源类别:</p>
-        </a-col>
-        <a-col :span="7">
-          <p>{{list.type}}</p>
-        </a-col>
-      </a-row>
-      <a-row style="margin-top:10px">
-        <a-col :span="4">
-          <p>准确位置:</p>
-        </a-col>
-        <a-col :span="7">
-          <p>{{list.accurateLocation}}</p>
-        </a-col>
-        <a-col :span="1"></a-col>
-        <a-col :span="5">
-          <p>首次发现时间:</p>
-        </a-col>
-        <a-col :span="7">
-          <p>{{list.discoveryTime}}</p>
-        </a-col>
-      </a-row>
-      <a-row style="margin-top:10px">
-        <a-col :span="4">
-          <p>面积(m²):</p>
-        </a-col>
-        <a-col :span="7">
-          <p>{{list.polygonSize}}</p>
-        </a-col>
-        <a-col :span="1"></a-col>
-        <a-col :span="5">
-          <p>河道所属:</p>
-        </a-col>
-        <a-col :span="7">
-          <p>{{list.river}}</p>
-        </a-col>
-      </a-row>
+      <a-form class="from" id="riskSourceInfoFrom">
+        <a-row>
+          <a-col :span="12">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="内部编码">
+              <span style="word-break: break-all;">{{list.innerCode}}</span>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="风险源类别">
+              <span style="word-break: break-all;">{{list.type}}</span>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row style="">
+          <a-col :span="12">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="准确位置">
+              <span style="word-break: break-all;">{{list.accurateLocation}}</span>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="首次发现时间">
+              <span style="word-break: break-all;">{{list.discoveryTime}}</span>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row style="">
+          <a-col :span="12">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="面积(m²)">
+              <span style="word-break: break-all;">{{list.polygonSize}}</span>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="河道所属">
+              <span style="word-break: break-all;">{{list.river}}</span>
+            </a-form-item>
+          </a-col>
+        </a-row>
+      </a-form>
       <div style="text-align: right;margin-top:10px">
         <a-button type="primary" ghost size="small" @click="riskSee">查看详情</a-button>
       </div>
@@ -215,6 +208,12 @@ import {
 export default {
   data() {
     return {
+      labelCol: {
+        span: 9 
+      },
+      wrapperCol: {
+        span: 13
+      },
       jurisdiction: this.$store.state.operationPermission[1], //权限
       name: '',
       fileList: [],
