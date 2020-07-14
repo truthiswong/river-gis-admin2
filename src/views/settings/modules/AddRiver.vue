@@ -274,7 +274,7 @@
         <a-col :span="4">
           <el-upload
             class="upload-demo"
-            :data="spotList"
+            :data="kmzlist"
             name="kmz"
             :headers="headers"
             action="/server/data/admin/river/save"
@@ -320,6 +320,10 @@ export default {
         'X-TENANT-ID': this.$store.state.tenantId
       },
       spotList:{
+        id: '',
+        projectId: this.$store.state.id,
+      },
+      kmzlist: {
         id: '',
         projectId: this.$store.state.id,
       },
@@ -497,6 +501,7 @@ export default {
     },
     //河道信息
     getRiver(id) {
+      this.kmzlist.id =id
       informationRiver(id)
         .then(res => {
           let arr = res.data
@@ -540,6 +545,7 @@ export default {
             this.rightKmz='已上传'
           }
           this.list.id = arr.info.id
+          
           this.list.name = arr.info.name
           this.list.length1 = arr.info.length
           this.list.dimension = arr.info.dimension
