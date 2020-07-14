@@ -54,10 +54,28 @@
     </a-spin>
     <template slot="footer">
       <a-row type="flex" justify="space-around" v-show="jurisdiction">
-        <a-col :span="6">
+        <a-col :span="4">
           <a-button type="primary" block @click="handleCancel">取消</a-button>
         </a-col>
-        <a-col :span="6">
+        <a-col :span="8">
+          <el-upload
+            class="upload-demo"
+            :data="fileList"
+            name="kmz"
+            :headers="headers"
+            action="/server/data/admin/street/save"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess1"
+            :show-file-list="false"
+            multiple
+            :limit="1"
+            accept=".kmz, .kml"
+            :file-list="fileList2">
+            <a-button block >重新上传KMZ</a-button>
+          </el-upload>
+        </a-col>
+        <a-col :span="4">
           <a-button type="primary" block @click="SaveStreet">保存</a-button>
         </a-col>
       </a-row>
@@ -68,17 +86,29 @@
 <script>
 const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters']
 import { informationStreet, getSaveStreet } from '@/api/login'
+import Vue from 'vue'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
 export default {
   data() {
     return {
+      headers: {
+        Authorization: Vue.ls.get(ACCESS_TOKEN),
+        'X-TENANT-ID': this.$store.state.tenantId
+      },
       jurisdiction: this.$store.state.operationPermission[3], //权限
       save: '1',
+      fileList2: [],
       list: {
         id: '',
+        projectId: this.$store.state.id,
         name: '',
         controller: '',
         job: '',
         tel: ''
+      },
+      fileList: {
+        id: '',
+        projectId: this.$store.state.id,
       },
       region: [],
       labelCol: {
@@ -123,6 +153,7 @@ export default {
           this.list.job = arr.job
           this.list.name = arr.name
           this.list.tel = arr.tel
+          this.fileList.id = arr.id
           this.region = arr.region
         })
         .catch(err => {})
@@ -220,6 +251,18 @@ export default {
     // 选择地址
     onChange(value, selectedOptions) {
       console.log(value, selectedOptions)
+    },
+    handleSuccess1(response, file, fileList) {
+      this.fileList2 = []
+      this.$message.success('保存成功')
+      this.$parent.getStreetShowList()
+      this.handleCancel()
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
     },
     filter(inputValue, path) {
       return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1)

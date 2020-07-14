@@ -268,10 +268,28 @@
     </a-spin>
     <template slot="footer">
       <a-row style="width:100%;" type="flex" justify="space-around" v-show="jurisdiction">
-        <a-col :span="6">
+        <a-col :span="4">
           <a-button block @click="handleCancel">取消</a-button>
         </a-col>
-        <a-col :span="6">
+        <a-col :span="4">
+          <el-upload
+            class="upload-demo"
+            :data="spotList"
+            name="kmz"
+            :headers="headers"
+            action="/server/data/admin/river/save"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess1"
+            :show-file-list="false"
+            multiple
+            :limit="1"
+            accept=".kmz, .kml"
+            :file-list="fileList2">
+            <a-button block >重新上传KMZ</a-button>
+          </el-upload>
+        </a-col>
+        <a-col :span="4">
           <a-button block @click="saveRiver" >保存</a-button>
         </a-col>
       </a-row>
@@ -296,6 +314,7 @@ export default {
       rightKmz:'上传kmz',
       fileList:[],
       fileList1:[],
+      fileList2: [],
       headers: {
         Authorization: Vue.ls.get(ACCESS_TOKEN),
         'X-TENANT-ID': this.$store.state.tenantId
@@ -706,6 +725,12 @@ export default {
     handleSuccess(response, file, fileList) {
       this.fileList = []
       this.fileList1 = []
+    },
+    handleSuccess1(response, file, fileList) {
+      this.fileList2 = []
+      this.$message.success('保存成功')
+      this.$parent.getList()
+      this.handleCancel()
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
