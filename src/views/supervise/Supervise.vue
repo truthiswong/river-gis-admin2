@@ -374,6 +374,7 @@
               v-model="riskMapColor"
               @input="changeColor(riskMapColor)"
             ></compact-picker>
+            <a-input @change="changeColorInput(riskMapColor)" v-model="riskMapColor.hex" placeholder="十六进制色值" />
           </div>
         </a-collapse-panel>
         <a-collapse-panel
@@ -5404,8 +5405,10 @@ export default {
       this.colorAlertShow = true
       if (index == 1) {
         this.colorIndex = 1
+        this.$message.warning('边框颜色选择')
       } else {
         this.colorIndex = 2
+        this.$message.warning('填充颜色选择')
       }
     },
     // 显示百分比
@@ -5420,6 +5423,14 @@ export default {
         this.fullColor = index.hex
       }
     }, 300),
+    changeColorInput: debounce(function(index) {
+      console.log(index)
+      if (this.colorIndex == 1) {
+        this.borderColor = index.hex
+      } else if (this.colorIndex == 2) {
+        this.fullColor = index.hex
+      }
+    }, 500),
     // 风险地图复制
     onRiskMapCopyStart() {
       this.riskMapCopyStartDate = this.defaultTime
