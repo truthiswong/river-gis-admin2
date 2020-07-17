@@ -248,6 +248,13 @@ export function projectNewsList(parameter) {
     method: 'get',
   })
 }
+//督办单位
+export function getOrganization() {
+  return axios({
+    url: '/server/data/admin/supervision/organization/list',
+    method: 'get',
+  })
+}
 //项目信息保存
 export function projectNewsSave(parameter) {
   return axios({

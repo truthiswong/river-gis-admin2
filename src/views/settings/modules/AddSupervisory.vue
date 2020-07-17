@@ -66,6 +66,24 @@
             >{{item.name}}</a-select-option>
           </a-select>
         </a-form-item>
+        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="督办单位" has-feedback>
+          <a-select
+            showSearch
+            :allowClear="true"
+            placeholder="请选择督办单位"
+            optionFilterProp="children"
+            style="width: 100%"
+            @change="handleChange4"
+            :filterOption="filterOption"
+            v-model="list.orgId"
+          >
+            <a-select-option
+              :value="item.id"
+              v-for="(item, index) in orgList"
+              :key="index"
+            >{{item.name}}</a-select-option>
+          </a-select>
+        </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="类型" has-feedback>
           <a-input placeholder="请输入类型" v-model="list.type" />
           <!-- <a-select
@@ -134,7 +152,7 @@
 import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters']
-import { SuperviseSave, SuperviseDetail } from '@/api/login'
+import { SuperviseSave, SuperviseDetail, getOrganization } from '@/api/login'
 import { type } from 'os'
 export default {
   props: {
@@ -158,7 +176,8 @@ export default {
         innerCode: '',
         surveyDate: '',
         remark: '',
-        tags: ''
+        tags: '',
+        orgId: ''
       },
       streetId: [],
       riverId: [],
@@ -170,6 +189,7 @@ export default {
         xs: { span: 24 },
         sm: { span: 16 }
       },
+      orgList: [],
       visible: false,
       confirmLoading: false,
       headers: {
@@ -189,9 +209,16 @@ export default {
   methods: {
     add() {
       this.visible = true
+      this.getOrganizationList()
+    },
+    getOrganizationList() {
+      getOrganization().then(res => {
+        this.orgList = res.data
+      })
     },
     add1(id) {
       this.visible = true
+      this.getOrganizationList()
       SuperviseDetail(id)
         .then(res => {
           var arr = res.data
@@ -235,6 +262,7 @@ export default {
           this.riverId = arr.rivers1
           this.list.streetId = arr.street.id
           this.list.tags = arr.tags1
+          this.list.orgId = arr.organization.id
           this.attachment = arr.documentName
         })
         .catch(err => {})
@@ -277,6 +305,16 @@ export default {
         }
       })
     },
+    handleChange4(index) {
+      console.log(`selected ${index}`)
+      this.orgList.forEach(value => {
+        if (value.name === index) {
+          value.clicked = true
+        } else {
+          value.clicked = false
+        }
+      })
+    },
     filterOption(input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
@@ -295,6 +333,7 @@ export default {
       this.list.remark = ''
       this.list.tags = ''
       this.attachment = ''
+      this.list.orgId = ''
     },
     onChange(date) {
       function formatDate(now) {
