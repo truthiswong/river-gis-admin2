@@ -287,19 +287,15 @@
             <a-row style="width:100%">
               <a-col :span="12">边框颜色</a-col>
               <a-col :span="12" @click="chooseColor(1)">
-                <p
-                  style="height:20px;margin:0;border: 2px solid rgba(198, 198, 198, 0.8); background-clip: padding-box;"
-                  :style="{background: borderColor, Opacity: borderOpacity / 100}"
-                ></p>
+                <a-button style="width:100%;height:20px;margin:0;background-clip: padding-box;"
+                  :style="{background: borderColor, Opacity: borderOpacity / 100}"></a-button>
               </a-col>
             </a-row>
             <a-row style="width:100%">
               <a-col :span="12">填充颜色</a-col>
               <a-col :span="12" @click="chooseColor(2)">
-                <p
-                  style="height:20px;margin:0;border: 2px solid rgba(198, 198, 198, 0.8); background-clip: padding-box;"
-                  :style="{background: fullColor, Opacity: fullOpacity / 100}"
-                ></p>
+                <a-button style="width:100%;height:20px;margin:0;background-clip: padding-box;"
+                  :style="{background: fullColor, Opacity: fullOpacity / 100}"></a-button>
               </a-col>
             </a-row>
             <a-row style="width:100%">
@@ -5424,7 +5420,6 @@ export default {
       }
     }, 300),
     changeColorInput: debounce(function(index) {
-      console.log(index)
       if (this.colorIndex == 1) {
         this.borderColor = index.hex
       } else if (this.colorIndex == 2) {
