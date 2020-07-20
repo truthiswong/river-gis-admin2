@@ -370,7 +370,7 @@
               v-model="riskMapColor"
               @input="changeColor(riskMapColor)"
             ></compact-picker>
-            <a-input @change="changeColorInput(riskMapColor)" v-model="riskMapColor.hex" placeholder="十六进制色值" />
+            <a-input @change="changeColorInput(riskMapColor.hex)" v-model="riskMapColor.hex" placeholder="十六进制色值" />
           </div>
         </a-collapse-panel>
         <a-collapse-panel
@@ -759,19 +759,24 @@
         <a-row style="width:100%">
           <a-col :span="12">边框颜色</a-col>
           <a-col :span="12" @click="chooseColor(1)">
-            <p
+            <!-- <p
               style="height:20px;margin:0;border: 2px solid rgba(198, 198, 198, 0.8); background-clip: padding-box;"
               :style="{background: borderColor}"
-            ></p>
+            ></p> -->
+            <a-button style="width:100%;height:20px;margin:0;background-clip: padding-box;"
+                  :style="{background: borderColor, Opacity: borderOpacity / 100}"></a-button>
           </a-col>
         </a-row>
         <a-row v-show="toolIndex == 3" style="width:100%">
           <a-col :span="12">填充颜色</a-col>
           <a-col :span="12" @click="chooseColor(2)">
-            <p
+            <!-- <p
               style="height:20px;margin:0;border: 2px solid rgba(198, 198, 198, 0.8); background-clip: padding-box;"
               :style="{background: fullColor}"
-            ></p>
+              
+            ></p> -->
+            <a-button style="width:100%;height:20px;margin:0;background-clip: padding-box;"
+              :style="{background: fullColor, Opacity: fullOpacity / 100}"></a-button>
           </a-col>
         </a-row>
         <a-row style="width:100%">
@@ -1187,10 +1192,7 @@ export default {
 
       customStyle: 'background: #fff;margin: 0;overflow: hidden', // 折叠面板样式
       canDownload: true, // 是否可以图片截图下载
-      riskMapColor: {
-        // 默认颜色
-        hex: '#F32C11'
-      },
+      riskMapColor: '#F32C11',// 默认颜色
       colorAlertShow: false, // 拾色器显隐
       colorIndex: 1, // 颜色选哪个
       borderColor: '#F32C11', // 边框颜色
@@ -5421,9 +5423,9 @@ export default {
     }, 300),
     changeColorInput: debounce(function(index) {
       if (this.colorIndex == 1) {
-        this.borderColor = index.hex
+        this.borderColor = index
       } else if (this.colorIndex == 2) {
-        this.fullColor = index.hex
+        this.fullColor = index
       }
     }, 500),
     // 风险地图复制
