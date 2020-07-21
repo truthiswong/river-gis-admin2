@@ -7,6 +7,13 @@ import qs from 'qs'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 let baseUrl, tenantId
 switch (process.env.VUE_APP_TITLE) {
+  case 'local':
+    baseUrl = "http://192.168.100.190/" //这里是本地环境中的url
+    tenantId = "jl:jlgis@2019" //这里是测试环境中的商户id
+    console.log("000")
+    store.commit('setServerUrl', baseUrl)
+    store.commit('tenantIdFn', tenantId)
+    break
   case 'test':
     baseUrl = "http://demo-jleco-river.jl-shgroup.com" //这里是测试环境中的url
     tenantId = "test:jlgis@2019" //这里是测试环境中的商户id

@@ -2,7 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const createThemeColorReplacerPlugin = require('./config/plugin.config')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
@@ -10,7 +10,7 @@ function resolve (dir) {
  * check production or preview(pro.loacg.com only)
  * @returns {boolean}
  */
-function isProd () {
+function isProd() {
   return process.env.NODE_ENV === 'production'
   // return process.env.NODE_ENV === 'http://jleco.jl-shgroup.com'
 }
@@ -33,7 +33,9 @@ const prodExternals = {
   vuex: 'Vuex',
   axios: 'axios'
 }
-let host = 'http://demo-jleco-river.jl-shgroup.com'
+let host = ''
+let host_sso = ''
+let host_data = ''
 // vue.config.js
 const vueConfig = {
   configureWebpack: {
@@ -50,17 +52,26 @@ const vueConfig = {
     console.log(config)
     if (process.env.NODE_ENV === 'production') {
       if (process.env.VUE_APP_TITLE === 'test') {
-        host = process.env.VUE_APP_SERVER_URL
+        host_sso = process.env.VUE_APP_SERVER_URL
+        host_data = process.env.VUE_APP_SERVER_URL
         console.log(111)
-        console.log(host)
+        console.log(process.env.VUE_APP_SERVER_URL)
       } else if (process.env.VUE_APP_TITLE === 'prod') {
-        host = process.env.VUE_APP_SERVER_URL
+        host_sso = process.env.VUE_APP_SERVER_URL
+        host_data = process.env.VUE_APP_SERVER_URL
         console.log(222)
-        console.log(host)
-      } else {
-        host = process.env.VUE_APP_SERVER_URL
+        console.log(process.env.VUE_APP_SERVER_URL)
+      } else if (process.env.VUE_APP_TITLE === 'local') {
+        host_sso = process.env.VUE_APP_SERVER_URL_SSO
+        host_data = process.env.VUE_APP_SERVER_URL_DATA
         console.log(333)
-        console.log(host)
+        console.log(process.env.VUE_APP_SERVER_URL_SSO)
+        console.log(process.env.VUE_APP_SERVER_URL_DATA)
+      } else {
+        host_sso = process.env.VUE_APP_SERVER_URL
+        host_data = process.env.VUE_APP_SERVER_URL
+        console.log(444)
+        console.log(process.env.VUE_APP_SERVER_URL)
       }
     }
     config.resolve.alias
@@ -111,14 +122,28 @@ const vueConfig = {
     port: 8000,
     // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
     proxy: {
-      '/server':{            //这里的key就是axios的baseURL
+      '/server': {            //这里的key就是axios的baseURL
         // target: 'http://demo-jleco-river.jl-shgroup.com/server/',    //访问域名http://www.qfii.club
         target: host + '/server/',    //访问域名http://www.qfii.club
         changeOrigin: true,            //开启跨域
-        pathRewrite:{  // 路径重写，
-            '^/server': ''  // 替换target中的请求地址
+        pathRewrite: {  // 路径重写，
+          '^/server': ''  // 替换target中的请求地址
         }
       }
+      // '/server/sso': {
+      //   target: host_sso,
+      //   ws: true,
+      //   changeOrigin: true
+      // },
+      // '/server/data': {
+      //   target: host_data,
+      //   ws: true,
+      //   changeOrigin: true
+      //   // 代理本地时需要使用pathRewrite替换/server/data
+      //   // pathRewrite: {
+      //   //     '^/server/data': '/'
+      //   // }
+      // }
     }
   },
 
