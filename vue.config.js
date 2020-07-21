@@ -123,20 +123,6 @@ const vueConfig = {
           '^/server': ''  // 替换target中的请求地址
         }
       }
-      // '/server/sso': {
-      //   target: host_sso,
-      //   ws: true,
-      //   changeOrigin: true
-      // },
-      // '/server/data': {
-      //   target: host_data,
-      //   ws: true,
-      //   changeOrigin: true
-      //   // 代理本地时需要使用pathRewrite替换/server/data
-      //   // pathRewrite: {
-      //   //     '^/server/data': '/'
-      //   // }
-      // }
     }
   },
 
