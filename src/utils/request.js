@@ -10,14 +10,14 @@ switch (process.env.VUE_APP_TITLE) {
   case 'local':
     baseUrl = "http://192.168.100.190" //这里是本地环境中的url
     tenantId = "jl:jlgis@2019" //这里是本地环境中的正式商户id
-    console.log("000")
+    console.log("0000")
     store.commit('setServerUrl', baseUrl)
     store.commit('tenantIdFn', tenantId)
     break
   case 'test':
     baseUrl = "http://demo-jleco-river.jl-shgroup.com" //这里是测试环境中的url
     tenantId = "test:jlgis@2019" //这里是测试环境中的商户id
-    console.log("111")
+    console.log("1111")
     store.commit('setServerUrl', baseUrl)
     store.commit('tenantIdFn', tenantId)
     break

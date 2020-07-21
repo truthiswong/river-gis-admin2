@@ -34,8 +34,6 @@ const prodExternals = {
   axios: 'axios'
 }
 let host = ''
-let host_sso = ''
-let host_data = ''
 // vue.config.js
 const vueConfig = {
   configureWebpack: {
@@ -52,24 +50,19 @@ const vueConfig = {
     console.log(config)
     if (process.env.NODE_ENV === 'production') {
       if (process.env.VUE_APP_TITLE === 'test') {
-        host_sso = process.env.VUE_APP_SERVER_URL
-        host_data = process.env.VUE_APP_SERVER_URL
+        host = process.env.VUE_APP_SERVER_URL
         console.log(111)
         console.log(process.env.VUE_APP_SERVER_URL)
       } else if (process.env.VUE_APP_TITLE === 'prod') {
-        host_sso = process.env.VUE_APP_SERVER_URL
-        host_data = process.env.VUE_APP_SERVER_URL
+        host = process.env.VUE_APP_SERVER_URL
         console.log(222)
         console.log(process.env.VUE_APP_SERVER_URL)
       } else if (process.env.VUE_APP_TITLE === 'local') {
-        host_sso = process.env.VUE_APP_SERVER_URL_SSO
-        host_data = process.env.VUE_APP_SERVER_URL_DATA
+        host = process.env.VUE_APP_SERVER_URL
         console.log(333)
-        console.log(process.env.VUE_APP_SERVER_URL_SSO)
-        console.log(process.env.VUE_APP_SERVER_URL_DATA)
+        console.log(process.env.VUE_APP_SERVER_URL)
       } else {
-        host_sso = process.env.VUE_APP_SERVER_URL
-        host_data = process.env.VUE_APP_SERVER_URL
+        host = process.env.VUE_APP_SERVER_URL
         console.log(444)
         console.log(process.env.VUE_APP_SERVER_URL)
       }
