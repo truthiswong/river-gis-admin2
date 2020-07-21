@@ -8,7 +8,7 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 let baseUrl, tenantId
 switch (process.env.VUE_APP_TITLE) {
   case 'local':
-    baseUrl = "http://192.168.100.190/" //这里是本地环境中的url
+    baseUrl = "http://192.168.100.190" //这里是本地环境中的url
     tenantId = "jl:jlgis@2019" //这里是本地环境中的正式商户id
     console.log("000")
     store.commit('setServerUrl', baseUrl)
