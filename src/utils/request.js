@@ -35,11 +35,12 @@ switch (process.env.VUE_APP_TITLE) {
     store.commit('setServerUrl', baseUrl)
     store.commit('tenantIdFn', tenantId)
 }
+console.log(store.state.serverUrl)
 console.log(store.state.tenantId)
 // 创建 axios 实例
 const service = axios.create({
   // baseURL: process.env.VUE_APP_API_BASE_URL, // api base_url
-  baseURL: store.state.baseUrl, // api base_url
+  baseURL: store.state.serverUrl, // api base_url
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
     'X-TENANT-ID': store.state.tenantId,
