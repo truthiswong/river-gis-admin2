@@ -8,7 +8,7 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 let baseUrl, tenantId
 switch (process.env.VUE_APP_TITLE) {
   case 'localtion':
-    baseUrl = "http://192.168.100.190" //这里是本地环境中的url
+    baseUrl = "http://192.168.100.190" //本地环境url
     tenantId = "jl:jlgis@2019" //这里是本地环境中的正式商户id
     console.log("0000")
     store.commit('setServerUrl', baseUrl)
@@ -40,6 +40,7 @@ console.log(store.state.tenantId)
 // 创建 axios 实例
 const service = axios.create({
   // baseURL: process.env.VUE_APP_API_BASE_URL, // api base_url
+  // baseURL: store.state.serverUrl, // api base_url
   baseURL: store.state.baseUrl, // api base_url
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
