@@ -57,7 +57,7 @@ const vueConfig = {
         host = process.env.VUE_APP_SERVER_URL
         console.log(222)
         console.log(process.env.VUE_APP_SERVER_URL)
-      } else if (process.env.VUE_APP_TITLE === 'local') {
+      } else if (process.env.VUE_APP_TITLE === 'localtion') {
         host = process.env.VUE_APP_SERVER_URL
         console.log(333)
         console.log(process.env.VUE_APP_SERVER_URL)
