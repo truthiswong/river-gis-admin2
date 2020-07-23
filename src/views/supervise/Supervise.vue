@@ -1603,11 +1603,6 @@ export default {
     }
   },
   mounted() {
-    console.log("this.$store.state.serverUrl")
-    console.log(this.$store.state.serverUrl)
-    this.$nextTick(()=>{
-      console.log(this.$store.state.serverUrl)
-    })
     // console.log(this.colorToRgba('#74c449', 0.3))
     let token = Vue.ls.get(ACCESS_TOKEN)
     // 初始化地图控件

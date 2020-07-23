@@ -61,6 +61,8 @@ export default {
         this.$store.commit('setServerUrl', baseUrl)
         this.$store.commit('tenantIdFn', tenantId)
     }
+    console.log("设置后")
+    console.log(this.$store.state.serverUrl)
     window.document.oncontextmenu = function() {
       return false
     }

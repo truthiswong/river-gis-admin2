@@ -31,7 +31,7 @@ switch (process.env.VUE_APP_TITLE) {
     store.commit('tenantIdFn', tenantId)
     break
   default:
-    baseUrl = "/" //这里是本地的请求url
+    baseUrl = "http://demo-jleco-river.jl-shgroup.com" //这里是本地的请求url
     tenantId = "test:jlgis@2019" //这里是测试环境中的url
     console.log("3333")
     store.commit('setServerUrl', baseUrl)
