@@ -32,37 +32,37 @@ export default {
     console.log(process.env.VUE_APP_TITLE)
     switch (process.env.VUE_APP_TITLE) {
       case 'localtion':
-        baseUrl = "http://192.168.100.190" //本地环境url
-        tenantId = "jl:jlgis@2019" //这里是本地环境中的正式商户id
+        baseUrl = 'http://192.168.100.190' //本地环境url
+        tenantId = 'jl:jlgis@2019' //这里是本地环境中的正式商户id
         // tenantId = "test:jlgis@2019" //这里是测试环境中的商户id
-        console.log("0000")
+        console.log('0000')
         console.log(baseUrl)
         this.$store.commit('setServerUrl', baseUrl)
         this.$store.commit('tenantIdFn', tenantId)
         break
       case 'test':
-        baseUrl = "http://demo-jleco-river.jl-shgroup.com" //这里是测试环境中的url
-        tenantId = "test:jlgis@2019" //这里是测试环境中的商户id
-        console.log("1111")
+        baseUrl = 'http://demo-jleco-river.jl-shgroup.com' //这里是测试环境中的url
+        tenantId = 'test:jlgis@2019' //这里是测试环境中的商户id
+        console.log('1111')
         this.$store.commit('setServerUrl', baseUrl)
         this.$store.commit('tenantIdFn', tenantId)
         break
       case 'prod':
-        baseUrl = "http://jleco-river.jl-shgroup.com" //生产环境url
-        tenantId = "jl:jlgis@2019" //这里是正式环境中的商户id
-        console.log("2222")
+        baseUrl = 'http://jleco-river.jl-shgroup.com' //生产环境url
+        tenantId = 'jl:jlgis@2019' //这里是正式环境中的商户id
+        console.log('2222')
         this.$store.commit('setServerUrl', baseUrl)
         this.$store.commit('tenantIdFn', tenantId)
         break
       default:
-        baseUrl = "http://demo-jleco-river.jl-shgroup.com" //这里是测试环境中的url
-        tenantId = "test:jlgis@2019" //这里是测试环境中的url
-        console.log("3333")
+        baseUrl = 'http://demo-jleco-river.jl-shgroup.com' //这里是测试环境中的url
+        tenantId = 'test:jlgis@2019' //这里是测试环境中的url
+        console.log('3333')
         this.$store.commit('setServerUrl', baseUrl)
         this.$store.commit('tenantIdFn', tenantId)
     }
-    console.log("设置后")
     console.log(this.$store.state.serverUrl)
+    console.log(store.state.tenantId)
     window.document.oncontextmenu = function() {
       return false
     }
